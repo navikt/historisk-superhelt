@@ -1,0 +1,14 @@
+node_modules/
+target/
+dist/
+build/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+local.env
+
+

@@ -1,0 +1,12 @@
+services:
+  mock-oidc:
+    build: .
+    ports:
+      - "8102:8102"
+    environment:
+      JSON_CONFIG_PATH: /config.json
+      SERVER_PORT: "8102"
+    restart: on-failure
+    env_file:
+      - path: ../../local.env
+        required: false

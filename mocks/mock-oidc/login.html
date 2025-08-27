@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Log in</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+<div class="container">
+    <div class="row mt-5 justify-content-md-center">
+        <div class="col-md-5">
+            <h4>Saksbehandlere</h4>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Sarah Saksbehandler</h5>
+                    <p class="card-text">Saksbehandler med vanlige saksbehandlerroller</p>
+                    <form method="post">
+                        <input type="hidden" name="username" value="sarah_saksbehandler">
+                        <input type="hidden" name="claims" value='{"NAVident": "SARAH", "name": "Sarah Saksbehandler", "preferred_username": "Sarah", "groups": ["saksbehandler", "attestant"]}'>
+                        <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Atle Attestant</h5>
+                    <p class="card-text">Saksbehandler med vanlige saksbehandlerroller</p>
+                    <form method="post">
+                        <input type="hidden" name="username" value="atle_attestant">
+                        <input type="hidden" name="claims" value='{"NAVident": "ATLE", "name": "Atle Attestant", "preferred_username": "AtleA", "groups": ["saksbehandler", "attestant"]}'>
+                        <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Sonja Sommervikar</h5>
+                    <p class="card-text">Saksbehandler som ikke kan attestere</p>
+                    <form method="post">
+                        <input type="hidden" name="username" value="sonja_sommervikar">
+                        <input type="hidden" name="claims" value='{"NAVident": "SONJA", "name": "Sonja Sommervikar", "preferred_username": "Sonja", "groups": ["saksbehandler"]}'>
+                        <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <h4>Spesialbrukere</h4>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Dribbe Drift</h5>
+                    <p class="card-text">Person med driftsrolle på teamet</p>
+                    <form method="post">
+                        <input type="hidden" name="username" value="dribbe_drift">
+                        <input type="hidden" name="claims" value='{"NAVident": "DRIBBE_DRIFT", "name": "Dribbe Drift", "preferred_username": "Dribbe", "groups": ["drift"]}'>
+                        <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Fagkoordinator Fagesen</h5>
+                    <p class="card-text">Fagkoordinator</p>
+                    <form method="post">
+                        <input type="hidden" name="username" value="fagkoordinator">
+                        <input type="hidden" name="claims" value='{"NAVident": "FAGKOORDINATOR", "name": "Fagkoordinator Fagesen", "preferred_username": "Fagesen", "groups": ["fagkoordinator"]}'>
+                        <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <h4 class="mt-5">Skreddersydd token</h4>
+            <p>
+                Hvis ingen av brukerne over passer til det du skal teste så kan du her lage token med skreddersydde claims.
+            </p>
+            <form method="post">
+                <div></div>
+                <hr class="divisor">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" autofocus="on"
+                           placeholder="Enter any user/subject">
+                </div>
+                <div class="form-group">
+                            <textarea class="form-control" name="claims" rows="15" placeholder="Optional claims JSON value, example:
+    {
+      &quot;acr&quot;: &quot;reference&quot;
+    }"
+                            ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

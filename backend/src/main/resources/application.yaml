@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: super
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://host.docker.internal:8102/azure-mock
+#          audiences: historisk-helt-backend
+  web:
+    resources:
+      static-locations:
+        - "file:./frontend/dist"
+server:
+  port: 8080
+
+
+logging.level.org.springframework.security: trace

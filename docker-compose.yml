@@ -1,0 +1,3 @@
+include:
+  - ./mocks/mock-oidc/compose.yml
+  - ./backend/compose.yml
