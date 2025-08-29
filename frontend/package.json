@@ -1,5 +1,6 @@
 {
-  "name": "tanstack",
+  "name": "super-frontend",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -30,11 +31,6 @@
     "typescript": "^5.7.2",
     "vite": "^6.3.5",
     "vitest": "^3.0.5"
-  },
-
-  "stylelint": {
-    "extends": [
-      "@navikt/aksel-stylelint/recommended"
-    ]
   }
+
 }

@@ -1,6 +1,6 @@
 import { createRootRoute, Link as RouterLink, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-// import "@navikt/ds-css/darkside";
+import "@navikt/ds-css/darkside";
 import { Theme } from "@navikt/ds-react/Theme";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import {Heading, InternalHeader, Link, Page, Spacer} from "@navikt/ds-react";
