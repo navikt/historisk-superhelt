@@ -29,6 +29,8 @@ jobs:
         with:
           team: historisk
           docker_context: ./backend
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Deploy backend til dev-gcp
         uses: nais/deploy/actions/deploy@v2
