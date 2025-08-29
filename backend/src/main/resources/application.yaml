@@ -5,14 +5,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://host.docker.internal:8102/azure-mock
-#          audiences: historisk-helt-backend
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+#          audiences: ${AZURE_APP_CLIENT_ID}
   web:
     resources:
       static-locations:
-        - "file:./frontend/dist"
-server:
-  port: 8080
+        - classpath:/static
 
-
-logging.level.org.springframework.security: trace
+  jpa:
+    open-in-view: false

@@ -21,6 +21,7 @@
     </properties>
     <modules>
         <module>backend</module>
+        <module>frontend</module>
 <!--        <module>mocks</module>-->
 <!--        <module>libs</module>-->
     </modules>
