@@ -24,16 +24,26 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: debug
-        run: |
-          echo ============================================================
-          env
-          echo ============================================================
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Installere node moduler
+        working-directory: ./frontend
+        run: npm install
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
+      - name: Bygge frontend
+        working-directory: ./frontend
+        run: npm run build
+
       - name: Build artifacts
-        run: mvn --batch-mode verify
+        run: |
+          env
+          mvn verify
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
