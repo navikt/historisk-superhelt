@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
     <root level="WARN">
         <appender-ref ref="CONSOLE" />
     </root>
     <logger name="no.nav" level="DEBUG"/>
+    <logger name="org.springframework.security" level="info"/>
 </configuration>

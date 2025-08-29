@@ -28,8 +28,9 @@ export const Route = createRootRoute({
 function Header() {
     return <InternalHeader>
         <InternalHeader.Title as="h1">Super</InternalHeader.Title>
-        <Spacer />
+
         <Link as={RouterLink} to="/about" >About</Link>
+        <Spacer />
         <InternalHeader.User name="Petter Normann" />
     </InternalHeader>
 }

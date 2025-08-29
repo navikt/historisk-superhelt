@@ -2,7 +2,9 @@ include:
   - ./mocks/mock-oidc/compose.yml
 
 services:
+
   backend:
+#    backend spring boot inkludert  frontend som kjører på 8080
     build: backend
     ports:
       - "8080:8080"
@@ -15,21 +17,24 @@ services:
       - path: ../../local.env
         required: false
 
-  #  backend-proxy:
-  #    image: alpine/socat
-  #    command:
-  #      "tcp-l:80,fork,reuseaddr tcp:host.docker.internal:8080"
-  #    extra_hosts:
-  #      - "host.docker.internal:host-gateway"
-
-  ingress:
+  frontend:
+    # Proxy for frontend som kan skrues av for lokal utvikling med vite. Pekes på av wonderwall
     image: alpine/socat
     command:
       "tcp-l:80,fork,reuseaddr tcp:wonderwall:80"
     ports:
       - "3000:80"
 
+  backend-proxy:
+    # Proxy for backend som pekes på av wonderwall. Trengs for å unngå problemer med å skru backend av og på
+    image: alpine/socat
+    command:
+      "tcp-l:80,fork,reuseaddr tcp:host.docker.internal:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   wonderwall:
+    # Auth-proxy som lytter på 4000 og gir bearertoken til backend-proxy
     image: ghcr.io/nais/wonderwall:latest
     command: >
       --openid.client-id=bogus
@@ -37,14 +42,15 @@ services:
       --openid.well-known-url=http://host.docker.internal:8102/azure-mock/.well-known/openid-configuration
       --ingress=http://localhost:3000
       --bind-address=0.0.0.0:80
-      --upstream-host=localhost:8080
+      --upstream-host=backend-proxy:80
       --log-level=debug
       --log-format=text
     restart: on-failure
     ports:
       - "4000:80"
     depends_on:
-      - "mock-oidc"
+      - mock-oidc
+      - backend-proxy
     extra_hosts:
       - "host.docker.internal:host-gateway"
       - "localhost:host-gateway"
