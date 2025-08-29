@@ -1,9 +1,10 @@
-import { createRootRoute, Link as RouterLink, Outlet } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import {createRootRoute, Outlet} from '@tanstack/react-router'
+import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import "@navikt/ds-css/darkside";
-import { Theme } from "@navikt/ds-react/Theme";
+import {Theme} from "@navikt/ds-react/Theme";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {Heading, InternalHeader, Link, Page, Spacer} from "@navikt/ds-react";
+import {Heading, Page} from "@navikt/ds-react";
+import {Header} from "../components/Header";
 
 export const Route = createRootRoute({
     component: () => (
@@ -24,16 +25,6 @@ export const Route = createRootRoute({
         </Theme>
     ),
 })
-
-function Header() {
-    return <InternalHeader>
-        <InternalHeader.Title as="h1">Super</InternalHeader.Title>
-
-        <Link as={RouterLink} to="/about" >About</Link>
-        <Spacer />
-        <InternalHeader.User name="Petter Normann" />
-    </InternalHeader>
-}
 
 function Footer() {
     return <div id="decorator-footer" >footer</div>;
