@@ -36,9 +36,9 @@ jobs:
 #        env:
 #          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
-      - name: Bygge frontend
-        working-directory: ./frontend
-        run: npm run build
+#      - name: Bygge frontend
+#        working-directory: ./frontend
+#        run: npm run build
 
       - name: Build artifacts
         run: mvn --batch-mode verify
