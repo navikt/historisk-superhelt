@@ -70,5 +70,5 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: .nais/app/backend.yaml
           VARS: .nais/dev.json
-          WORKLOAD_IMAGE: ${{ needs.backend.outputs.image }}
+          IMAGE: ${{ needs.backend.outputs.image }}
           TELEMETRY: ${{ needs.backend.outputs.telemetry }}
