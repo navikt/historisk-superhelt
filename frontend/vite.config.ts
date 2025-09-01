@@ -14,8 +14,10 @@ export default defineConfig({
         react(),
     ],
     server: {
+        // Proxy til wonderwall
         proxy: {
-            '/api': 'http://localhost:4000'
+            '/api': 'http://localhost:4000',
+            '/oauth2': 'http://localhost:4000'
         }
     }
 })
