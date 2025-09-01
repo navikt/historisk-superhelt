@@ -10,7 +10,9 @@ import java.security.Principal
 class UserController {
 
     @GetMapping
-    fun getUserInfo(principal: Principal): String {
-        return principal.name
+    fun getUserInfo(principal: Principal): User {
+        return User(name=principal.name, roles=listOf("TODO") )
     }
 }
+
+data class User(val name: String, val roles: List<String>)

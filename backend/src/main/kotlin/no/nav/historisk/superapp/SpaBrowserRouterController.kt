@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
  class SpaBrowserRouterController {
-//
-    @GetMapping("{path:(?!assets\$)[^.]*}/**")
+
+    @GetMapping("{path:(?!assets|swagger-ui)[^.]*}/**")
     fun handleFrontendPaths(): String {
         return "forward:/"
     }
