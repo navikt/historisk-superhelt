@@ -24,7 +24,7 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>process-classes</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -53,14 +53,14 @@
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>initialize</phase>
                     </execution>
                     <execution>
                         <id>npm install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <arguments>ci</arguments>
                         </configuration>
@@ -83,7 +83,7 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>prepare-package</phase>
+                        <phase>compile</phase>
                         <configuration>
                             <arguments>run build</arguments>
                         </configuration>
