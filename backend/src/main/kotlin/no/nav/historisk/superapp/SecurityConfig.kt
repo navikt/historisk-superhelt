@@ -16,6 +16,7 @@
 
 package no.nav.historisk.superapp
 
+import no.nav.historisk.superapp.auth.NavJwtAuthenticationConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -29,7 +30,9 @@ import org.springframework.security.web.SecurityFilterChain
  */
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val navJwtAuthenticationConverter: NavJwtAuthenticationConverter
+) {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -43,7 +46,9 @@ class SecurityConfig {
                 authorize(anyRequest, permitAll)
             }
             oauth2ResourceServer {
-                jwt{ }
+                jwt {
+                    jwtAuthenticationConverter = navJwtAuthenticationConverter
+                }
             }
             sessionManagement {
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
@@ -51,14 +56,4 @@ class SecurityConfig {
         }
         return http.build()
     }
-
-//    @Bean
-//    fun userDetailsService(): UserDetailsService {
-//        val userDetails = User.withDefaultPasswordEncoder()
-//            .username("user")
-//            .password("password")
-//            .roles("USER")
-//            .build()
-//        return InMemoryUserDetailsManager(userDetails)
-//    }
 }
