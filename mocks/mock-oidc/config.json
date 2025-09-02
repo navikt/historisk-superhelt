@@ -5,47 +5,8 @@
   "tokenCallbacks": [
     {
       "issuerId": "azure-mock",
-      "tokenExpiry": 3600,
+      "tokenExpiry": 7200,
       "requestMappings": [
-        {
-          "requestParam": "grant_type",
-          "match": "authorization_code",
-          "claims": {
-            "NAVident": "MOCK-OIDC-1234",
-            "name": "Demo Saksbehandler",
-            "preferred_username": "Demo",
-            "sid": "1234",
-            "aud": "${clientId}",
-            "groups": [
-              "drift",
-              "saksbehandler",
-              "attestant"
-            ],
-            "roles": [
-              "api_infotrygd_historikk"
-            ]
-          }
-        },
-        {
-          "requestParam": "scope",
-          "match": "api://historisk-helt-backend/.default",
-          "claims": {
-            "sub": "helt-backend",
-            "sid": "9988",
-            "aud": "historisk-helt-backend"
-          }
-        },
-        {
-          "requestParam": "scope",
-          "match": "api://historisk-helt-infotrygd/.default",
-          "claims": {
-            "sub": "helt-infotrygd",
-            "aud": "historisk-helt-infotrygd",
-            "roles": [
-              "api_infotrygd_historikk"
-            ]
-          }
-        }
       ]
     }
   ]
