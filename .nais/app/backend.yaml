@@ -40,3 +40,8 @@ spec:
 
   ingresses:
     - {{appIngress}}
+
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: sdk
