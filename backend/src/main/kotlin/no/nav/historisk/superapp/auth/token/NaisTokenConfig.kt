@@ -22,8 +22,8 @@ class NaisTokenConfig() {
     fun tokenService(naisToken: NaisTokenProperties): NaisTokenService {
 
         return NaisTokenService(
-            oboEndpoint = naisToken.endpoint,
-            m2mEndpoint = naisToken.exchange.endpoint
+            oboEndpoint = naisToken.exchange.endpoint,
+            m2mEndpoint = naisToken.endpoint
         )
     }
 }
@@ -31,19 +31,16 @@ class NaisTokenConfig() {
 /**
  * Samme struktur som nais environment properties https://doc.nais.io/auth/reference/#environment-variables
  */
-@Validated
+
 @ConfigurationProperties(prefix = "nais.token")
 data class NaisTokenProperties(
-    @field:NotBlank(message = "nais.token.endpoint må være satt")
     val endpoint: String,
-
-    @field:Valid
+    @NestedConfigurationProperty
     val exchange: NaisTokenExchangeProperties
 )
 
 
 data class NaisTokenExchangeProperties(
-    @field:NotBlank(message = "nais.token.exchange.endpoint må være satt")
     val endpoint: String
 )
 
