@@ -15,12 +15,12 @@ class TokenController(private val tokenService: NaisTokenService) {
 
     @GetMapping("obo")
     fun obotoken(): String {
-        return tokenService.oboToken("api://<cluster>.<namespace>.<other-api-app-name>/.default")
+        return tokenService.oboToken("api://dev-gcp.historisk.historisk-helt-infotrygd/.default")
     }
 
     @GetMapping("m2m")
     fun m2mtoken(): String {
-        return tokenService.m2mToken("api://<cluster>.<namespace>.<other-api-app-name>/.default")
+        return tokenService.m2mToken("api://dev-gcp.historisk.historisk-helt-infotrygd/.default")
     }
 
 
