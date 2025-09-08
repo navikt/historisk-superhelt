@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" role="img" aria-labelledby="title desc">
+    <title>Superhelt App Logo (Orange)</title>
+    <desc>Shield themed with Aksel orange tokens</desc>
+    <style>
+        :root {
+        /* Orange theme mappings (fallback hex if tokens missing) */
+        --shield-bg: var(--a-orange-600, #cc5c00);
+        --shield-border: var(--a-orange-800, #7a3300);
+        --inner-glow: var(--a-orange-400, #ff9a47);
+        --accent: var(--a-grey-200, #E0E3E6);       /* S stroke (white for high contrast) */
+        --accent-alt: var(--a-orange-200, #ffd29e);      /* Paragraph symbol fill */
+        --text: var(--a-text-on-action, #ffffff);
+        --highlight: rgba(255,255,255,0.18);
+        }
+        @media (prefers-color-scheme: dark) {
+        :root {
+        --shield-bg: var(--a-orange-500, #e17000);
+        --inner-glow: var(--a-orange-300, #ffb566);
+        --accent: var(--a-grey-200, #E0E3E6);
+        --accent-alt: var(--a-orange-100, #ffe2c7);
+        }
+        }
+        .shield { filter: drop-shadow(0 4px 10px rgba(0,0,0,0.55)); }
+    </style>
+
+    <!-- Shield base -->
+    <path class="shield" fill="var(--shield-bg)" stroke="var(--shield-border)" stroke-width="8"
+          d="M110 12 L190 40 Q194 130 110 208 Q26 130 30 40 Z"/>
+
+    <!-- Inner glow -->
+    <path fill="url(#gradGlow)" opacity="0.60"
+          d="M110 24 L176 48 Q180 122 110 192 Q40 122 44 48 Z"/>
+
+    <!-- Stylized S -->
+    <path fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"
+          d="M145 74 C145 50 75 52 75 78 C75 100 150 100 150 136 C150 166 70 164 70 138" />
+
+<!--    &lt;!&ndash; Paragraph symbol &ndash;&gt;-->
+<!--    <text x="110" y="142" text-anchor="middle"-->
+<!--          font-family="ui-serif, Georgia, 'Times New Roman', serif"-->
+<!--          font-size="98"-->
+<!--          fill="var(&#45;&#45;accent-alt)"-->
+<!--          stroke="var(&#45;&#45;shield-border)"-->
+<!--          stroke-width="4"-->
+<!--          paint-order="stroke">-->
+<!--        §-->
+<!--    </text>-->
+
+    <!-- Subtle highlight -->
+    <path fill="var(--highlight)"
+          d="M110 14 L186 42 Q188 72 186 90 Q170 54 110 38 Q50 54 34 90 Q32 72 34 42 Z"/>
+
+    <defs>
+        <linearGradient id="gradGlow" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="var(--inner-glow)"/>
+            <stop offset="100%" stop-color="var(--shield-bg)"/>
+        </linearGradient>
+    </defs>
+
+    <text x="110" y="210" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="18" text-anchor="middle"
+          fill="var(--text)" opacity="0">superhelt</text>
+</svg>

@@ -13,7 +13,7 @@ export function Header() {
         ...getUserInfoOptions()
     })
     return <InternalHeader>
-        <InternalHeader.Title as="h1">Superhelt</InternalHeader.Title>
+        <InternalHeader.Title as="h1"><img src="logo.svg" height="35rem"/>superhelt</InternalHeader.Title>
         <HStack
             as="form"
             paddingInline="space-20"
@@ -24,15 +24,14 @@ export function Header() {
             }}
         >
             <Search
-                label="InternalHeader søk"
+                label="Søk"
                 size="small"
                 variant="simple"
-                placeholder="Søk"
+                placeholder="Finn person"
             />
         </HStack>
         <Spacer />
 
-        <Spacer />
         <Dropdown >
             <InternalHeader.UserButton
                 as={Dropdown.Toggle}
