@@ -9,12 +9,12 @@ import {Header} from "../components/Header";
 export const Route = createRootRoute({
     component: () => (
         <Theme theme={"light"}>
-            <Page footer={<Footer />}>
-                <Page.Block as="main" width="xl" gutters>
-                        <Heading level="1" size="large">
-                            <Header />
-                        </Heading>
-                        <Outlet />
+            <Page footer={<Footer />} >
+                <Page.Block as="header" width="2xl" gutters>
+                    <Header />
+                </Page.Block>
+                <Page.Block as="main" width="2xl" gutters>
+                    <Outlet />
                 </Page.Block>
             </Page>
 

@@ -1,17 +1,10 @@
-import {InternalHeader, Link, Spacer} from "@navikt/ds-react";
+import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 
 import {getUserInfoOptions} from "../gen/@tanstack/react-query.gen"
+import {LeaveIcon} from "@navikt/aksel-icons";
 
-async function fetchUser() {
-    const response= await fetch("/api/user")
-
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json()
-}
 
 
 export function Header() {
@@ -20,10 +13,46 @@ export function Header() {
         ...getUserInfoOptions()
     })
     return <InternalHeader>
-        <InternalHeader.Title as="h1">Super</InternalHeader.Title>
-
-        <Link as={RouterLink} to="/about" >About</Link>
+        <InternalHeader.Title as="h1">Superhelt</InternalHeader.Title>
+        <HStack
+            as="form"
+            paddingInline="space-20"
+            align="center"
+            onSubmit={(e) => {
+                e.preventDefault();
+                console.info("Search!");
+            }}
+        >
+            <Search
+                label="InternalHeader søk"
+                size="small"
+                variant="simple"
+                placeholder="Søk"
+            />
+        </HStack>
         <Spacer />
-        <InternalHeader.User name={user?.name?? "----"} />
+
+        <Spacer />
+        <Dropdown >
+            <InternalHeader.UserButton
+                as={Dropdown.Toggle}
+                name={user?.name?? "--"}
+                description="Enhet: Skien"
+            />
+            <Dropdown.Menu>
+                <dl>
+                    <BodyShort as="dt" size="small">
+                        {user?.name}
+                    </BodyShort>
+                    <Detail as="dd">123123</Detail>
+                </dl>
+                <Dropdown.Menu.Divider />
+                <Dropdown.Menu.List>
+                    <Dropdown.Menu.List.Item>
+                        Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
+                    </Dropdown.Menu.List.Item>
+                </Dropdown.Menu.List>
+            </Dropdown.Menu>
+        </Dropdown>
     </InternalHeader>
 }
