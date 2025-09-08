@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as OppgaveTableRouteImport } from './routes/OppgaveTable'
 import { Route as IndexRouteImport } from './routes/index'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OppgaveTableRoute = OppgaveTableRouteImport.update({
-  id: '/OppgaveTable',
-  path: '/OppgaveTable',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,31 +25,27 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/OppgaveTable': typeof OppgaveTableRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/OppgaveTable': typeof OppgaveTableRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/OppgaveTable': typeof OppgaveTableRoute
   '/about': typeof AboutRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/OppgaveTable' | '/about'
+  fullPaths: '/' | '/about'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/OppgaveTable' | '/about'
-  id: '__root__' | '/' | '/OppgaveTable' | '/about'
+  to: '/' | '/about'
+  id: '__root__' | '/' | '/about'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  OppgaveTableRoute: typeof OppgaveTableRoute
   AboutRoute: typeof AboutRoute
 }
 
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/OppgaveTable': {
-      id: '/OppgaveTable'
-      path: '/OppgaveTable'
-      fullPath: '/OppgaveTable'
-      preLoaderRoute: typeof OppgaveTableRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -87,7 +70,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  OppgaveTableRoute: OppgaveTableRoute,
   AboutRoute: AboutRoute,
 }
 export const routeTree = rootRouteImport

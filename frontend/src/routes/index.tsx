@@ -1,5 +1,5 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {OppgaveTable} from "~/routes/OppgaveTable";
+import {OppgaveTabell} from "../components/OppgaveTabell";
 
 export const Route = createFileRoute('/')({
     component: Index,
@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({
 
 function Index() {
     return (
-        <OppgaveTable/>
+        <OppgaveTabell/>
 
     )
 }
