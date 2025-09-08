@@ -1,4 +1,4 @@
-package no.nav.historisk.superapp.auth.token
+package no.nav.historisk.superhelt.auth.token
 
  data class M2MRequest(
     val identity_provider: String = "azuread",

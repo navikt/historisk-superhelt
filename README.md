@@ -10,7 +10,7 @@ Saksbehanding og Utbetaling På Enkle Regler
 docker-compose up
 ```
 ### Backend
-Start backend i ved å kjøre [DevApplication.kt](./backend/src/test/kotlin/no/nav/historisk/superapp/DevApplication.kt) i IDE
+Start backend i ved å kjøre [DevApplication.kt](./backend/src/test/kotlin/no/nav/historisk/superhelt/DevApplication.kt) i IDE
 
 Appen er da tilgjengelig på http://localhost:4000 med pålogging via wonderwall. Frontend blir oppdatert ved bygg av frontend
 

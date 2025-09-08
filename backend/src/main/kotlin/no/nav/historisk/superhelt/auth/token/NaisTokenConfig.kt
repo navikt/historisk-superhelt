@@ -1,15 +1,12 @@
-package no.nav.historisk.superapp.auth.token
+package no.nav.historisk.superhelt.auth.token
 
 
-import jakarta.validation.Valid
-import jakarta.validation.constraints.NotBlank
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.stereotype.Component
 import org.springframework.validation.annotation.Validated
 
 @Configuration

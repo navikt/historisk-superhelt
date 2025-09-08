@@ -1,6 +1,6 @@
-package no.nav.historisk.superapp
+package no.nav.historisk.superhelt
 
-import no.nav.historisk.superapp.auth.NavJwtAuthenticationConverter
+import no.nav.historisk.superhelt.auth.NavJwtAuthenticationConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

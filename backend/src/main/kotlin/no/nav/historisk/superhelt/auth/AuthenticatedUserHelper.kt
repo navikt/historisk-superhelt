@@ -1,4 +1,4 @@
-package no.nav.historisk.superapp.auth
+package no.nav.historisk.superhelt.auth
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt

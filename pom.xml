@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>no.nav.historisk</groupId>
-    <artifactId>superapp-parent</artifactId>
+    <artifactId>superhelt-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>superapp-parent</name>
+    <name>superhelt-parent</name>
     <description>Saksbehandling og Utbetaling På Enkle Regler</description>
 
     <properties>

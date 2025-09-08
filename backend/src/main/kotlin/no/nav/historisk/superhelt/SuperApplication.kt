@@ -1,4 +1,4 @@
-package no.nav.historisk.superapp
+package no.nav.historisk.superhelt
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

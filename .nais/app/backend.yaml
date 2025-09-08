@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: superapp
+  name: superhelt
   namespace: historisk
   labels:
     team: historisk

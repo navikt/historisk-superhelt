@@ -1,4 +1,4 @@
-package no.nav.historisk.superapp.auth
+package no.nav.historisk.superhelt.auth
 
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.core.GrantedAuthority

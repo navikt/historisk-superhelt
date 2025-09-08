@@ -1,6 +1,6 @@
-package no.nav.historisk.superapp.auth.token
+package no.nav.historisk.superhelt.auth.token
 
-import no.nav.historisk.superapp.auth.getCurrentUserToken
+import no.nav.historisk.superhelt.auth.getCurrentUserToken
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestClient.builder
 
