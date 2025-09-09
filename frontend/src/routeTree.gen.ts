@@ -9,9 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SakRouteImport } from './routes/sak'
+import { Route as PersonRouteImport } from './routes/person'
+import { Route as BrevRouteImport } from './routes/brev'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SakRoute = SakRouteImport.update({
+  id: '/sak',
+  path: '/sak',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonRoute = PersonRouteImport.update({
+  id: '/person',
+  path: '/person',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrevRoute = BrevRouteImport.update({
+  id: '/brev',
+  path: '/brev',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -26,31 +44,64 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/brev': typeof BrevRoute
+  '/person': typeof PersonRoute
+  '/sak': typeof SakRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/brev': typeof BrevRoute
+  '/person': typeof PersonRoute
+  '/sak': typeof SakRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/brev': typeof BrevRoute
+  '/person': typeof PersonRoute
+  '/sak': typeof SakRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '/' | '/about' | '/brev' | '/person' | '/sak'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/' | '/about' | '/brev' | '/person' | '/sak'
+  id: '__root__' | '/' | '/about' | '/brev' | '/person' | '/sak'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BrevRoute: typeof BrevRoute
+  PersonRoute: typeof PersonRoute
+  SakRoute: typeof SakRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sak': {
+      id: '/sak'
+      path: '/sak'
+      fullPath: '/sak'
+      preLoaderRoute: typeof SakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/person': {
+      id: '/person'
+      path: '/person'
+      fullPath: '/person'
+      preLoaderRoute: typeof PersonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brev': {
+      id: '/brev'
+      path: '/brev'
+      fullPath: '/brev'
+      preLoaderRoute: typeof BrevRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -71,6 +122,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BrevRoute: BrevRoute,
+  PersonRoute: PersonRoute,
+  SakRoute: SakRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

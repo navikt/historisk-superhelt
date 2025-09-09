@@ -13,7 +13,10 @@ export function Header() {
         ...getUserInfoOptions()
     })
     return <InternalHeader>
-        <InternalHeader.Title as="h1"><img src="logo.svg" height="35rem"/>superhelt</InternalHeader.Title>
+        <InternalHeader.Title as="h1">
+            <RouterLink to={"/"}><img src="logo.svg" height="35rem"/>Superhelt</RouterLink>
+
+        </InternalHeader.Title>
         <HStack
             as="form"
             paddingInline="space-20"
