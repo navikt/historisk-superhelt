@@ -1,0 +1,9 @@
+name: Bygg og test PR
+
+on:
+  pull_request
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-and-test.yml
+    secrets: inherit
