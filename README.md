@@ -1,6 +1,18 @@
-# Super app
+# Superhelt
 
-Saksbehanding og Utbetaling På Enkle Regler
+Saksbehanding og Utbetaling På Enkle Regler innen Helsetjenster
+
+>Alle trenger hjelp av en superhelt en gang i blant
+
+App som skal tilby saksbehandling og engangsutbetaling på en rekke enkle stønader. 
+Målet med appen er å erstatte infotrygd rutiner  HT-MV, SB-SA og GE-PP
+
+### Stønader som skal støttes
+- Ortoser
+- Parykk
+- Fottøy
+- Proteser
+- Reiseutgifter
 
 ## Lokal utvikling
 
