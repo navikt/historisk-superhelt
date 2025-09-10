@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.historisk.mock</groupId>
         <artifactId>mocks</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>mock-server</artifactId>
