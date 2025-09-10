@@ -1,0 +1,41 @@
+{
+  "data": {
+    "hentPerson": {
+      "navn": [
+        {
+          "fornavn": "GUL",
+          "mellomnavn": "MELLOM",
+          "etternavn": "SNERK"
+        }
+      ],
+      "doedsfall": [],
+      "adressebeskyttelse":[
+        {
+          "gradering":"FORTROLIG"
+        }
+      ],
+      "bostedsadresse":[
+        {"utenlandskAdresse":
+          {"landkode":"SWE"}
+        },
+        {"utenlandskAdresse":
+          {"landkode":"FIN"}
+        }
+      ]
+    },
+    "hentIdenter": {
+      "identer": [
+        {
+          "ident": "11111111111",
+          "gruppe": "FOLKEREGISTERIDENT",
+          "historisk": false
+        },
+        {
+          "ident": "9999999999999",
+          "gruppe": "AKTORID",
+          "historisk": false
+        }
+      ]
+    }
+  }
+}

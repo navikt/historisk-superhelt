@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: historisk-mock-server
+server:
+  port: 9080
+
+springdoc:
+  swaggerUi:
+    tryItOutEnabled: true

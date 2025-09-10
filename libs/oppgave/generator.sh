@@ -1,0 +1,1 @@
+openapi-generator generate -i https://oppgave.dev.intern.nav.no/api/openapi.yaml -g kotlin  -o . -c generator-config.yml --global-property supportingFiles=maven,apiTests=false,modelTests=false,apiDocs=false,modelDocs=false

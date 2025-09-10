@@ -1,0 +1,8 @@
+groupId: no.nav.oppgave
+packageName: no.nav.oppgave
+artifactId: oppgave-lib
+library: jvm-spring-restclient
+omitGradleWrapper: true
+serializationLibrary: jackson
+useSpringBoot3: true
+
