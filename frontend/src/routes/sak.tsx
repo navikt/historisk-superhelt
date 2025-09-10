@@ -9,7 +9,6 @@ import {
   Radio,
   Alert,
   Tabs,
-  Table,
   Tag,
   VStack,
   HStack
@@ -25,6 +24,8 @@ function SakPage() {
   const [selectedSak, setSelectedSak] = useState<string>('')
   const [vedtak, setVedtak] = useState<string>('')
   const [begrunnelse, setBegrunnelse] = useState<string>('')
+  const [payoutType, setPayoutType] = useState<'bruker' | 'faktura'>('bruker')
+  const [payoutAmount, setPayoutAmount] = useState('')
 
   // Mock data for available cases
   const saker = [
@@ -148,7 +149,6 @@ function SakPage() {
         <VStack gap="6" style={{ flex: 1 }}>
           {selectedSak ? (
             <>
-              {/* Saksinfo */}
               <Panel border>
                 <HStack gap="4" align="start">
                   <FileTextIcon fontSize="2rem" />
@@ -230,11 +230,40 @@ function SakPage() {
                     <VStack gap="4">
                       <Heading size="small">Fatte vedtak</Heading>
 
-                      <RadioGroup legend="Vedtak" value={vedtak} onChange={setVedtak}>
-                        <Radio value="innvilget">Innvilget</Radio>
-                        <Radio value="delvis_innvilget">Delvis innvilget</Radio>
-                        <Radio value="avslatt">Avslått</Radio>
-                      </RadioGroup>
+                      <HStack gap="8" align="start">
+                        <VStack style={{ flex: 1 }}>
+                          <RadioGroup legend="Vedtak" value={vedtak} onChange={setVedtak}>
+                            <Radio value="innvilget">Innvilget</Radio>
+                            <Radio value="delvis_innvilget">Delvis innvilget</Radio>
+                            <Radio value="avslatt">Avslått</Radio>
+                          </RadioGroup>
+                        </VStack>
+                        {vedtak !== 'avslatt' && (
+                          <VStack style={{ flex: 1 }}>
+                            <RadioGroup
+                              legend="Utbetaling"
+                              value={payoutType}
+                              onChange={v => setPayoutType(v as 'bruker' | 'faktura')}
+                            >
+                              <Radio value="bruker">Utbetaling til bruker</Radio>
+                              {payoutType === 'bruker' && (
+                                <div style={{ marginLeft: 32, marginTop: 4 }}>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    placeholder="Beløp (kr)"
+                                    value={payoutAmount}
+                                    onChange={e => setPayoutAmount(e.target.value)}
+                                    style={{ width: 120 }}
+                                  />
+                                </div>
+                              )}
+                              <Radio value="faktura">Venter faktura</Radio>
+                            </RadioGroup>
+                          </VStack>
+                        )}
+                      </HStack>
 
                       <Textarea
                         label="Begrunnelse"
@@ -284,3 +313,5 @@ function SakPage() {
     </VStack>
   )
 }
+
+
