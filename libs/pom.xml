@@ -8,7 +8,6 @@
         <version>${revision}</version>
     </parent>
 
-    <groupId>no.nav.historisk.mock</groupId>
     <artifactId>libs</artifactId>
     <packaging>pom</packaging>
     <description>Parent for libs</description>
