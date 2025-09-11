@@ -8,11 +8,10 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>tilgangsmaskin-dto</artifactId>
+    <artifactId>pdl</artifactId>
+    <description>Klient mot pdl</description>
+
     <dependencies>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
     </dependencies>
+
 </project>
