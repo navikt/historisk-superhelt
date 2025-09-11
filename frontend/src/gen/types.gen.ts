@@ -7,7 +7,7 @@ export type SakCreateRequestDto = {
     begrunnelse?: string;
 };
 
-export type SakResponseDto = {
+export type SakDto = {
     saksnummer: string;
     type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     person: string;
@@ -33,7 +33,7 @@ export type GetAllSakerResponses = {
     /**
      * OK
      */
-    200: Array<SakResponseDto>;
+    200: Array<SakDto>;
 };
 
 export type GetAllSakerResponse = GetAllSakerResponses[keyof GetAllSakerResponses];
@@ -49,7 +49,7 @@ export type CreateSakResponses = {
     /**
      * OK
      */
-    200: SakResponseDto;
+    200: SakDto;
 };
 
 export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];
@@ -83,7 +83,7 @@ export type GetSakBySaksnummerResponses = {
     /**
      * OK
      */
-    200: SakResponseDto;
+    200: SakDto;
 };
 
 export type GetSakBySaksnummerResponse = GetSakBySaksnummerResponses[keyof GetSakBySaksnummerResponses];
