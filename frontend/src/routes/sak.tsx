@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import {createFileRoute, Link} from '@tanstack/react-router'
 import {
   Heading,
   Panel,
@@ -15,13 +15,14 @@ import {
 } from '@navikt/ds-react'
 import { FileTextIcon, ClockIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
+import {PersonHeader} from "../components/PersonHeader";
 
 export const Route = createFileRoute('/sak')({
   component: SakPage,
 })
 
 function SakPage() {
-  const [selectedSak, setSelectedSak] = useState<string>('')
+  const [selectedSak, setSelectedSak] = useState<string>('SAK001')
   const [vedtak, setVedtak] = useState<string>('')
   const [begrunnelse, setBegrunnelse] = useState<string>('')
   const [payoutType, setPayoutType] = useState<'bruker' | 'faktura'>('bruker')
@@ -32,15 +33,15 @@ function SakPage() {
     {
       id: 'SAK001',
       bruker: 'Ola Nordmann (12345678901)',
-      tema: 'Dagpenger',
+      tema: 'Parykk',
       opprettet: '2024-01-15',
       frist: '2024-02-15',
       status: 'Under behandling'
     },
     {
       id: 'SAK003',
-      bruker: 'Kari Hansen (10987654321)',
-      tema: 'Arbeidsavklaringspenger',
+      bruker: 'Ola Nordmann (12345678901)',
+      tema: 'Fottøy i ulik størrelse',
       opprettet: '2024-02-01',
       frist: '2024-03-01',
       status: 'Venter på bruker'
@@ -50,19 +51,19 @@ function SakPage() {
   const sakDetaljer = {
     id: 'SAK001',
     bruker: 'Ola Nordmann (12345678901)',
-    tema: 'Dagpenger',
-    beskrivelse: 'Søknad om dagpenger etter permittering',
+    tema: 'Parykk',
+    beskrivelse: 'Søknad om parykk grunnet medisinsk tilstand',
     opprettet: '2024-01-15',
     frist: '2024-02-15',
-    saksbehandler: 'Anne Hansen',
+    saksbehandler: 'Sarah Saksbehandler',
     dokumenter: [
       {
-        tittel: 'Søknad om dagpenger',
+        tittel: 'Søknad om parykk',
         dato: '2024-01-15',
         type: 'Innkommende'
       },
       {
-        tittel: 'Inntektsopplysninger fra arbeidsgiver',
+        tittel: 'Attest fra lege',
         dato: '2024-01-20',
         type: 'Innkommende'
       }
@@ -106,7 +107,7 @@ function SakPage() {
   return (
     <VStack gap="6">
       <Heading size="xlarge">Behandle sak</Heading>
-
+      <PersonHeader/>
       <HStack gap="6" align="start">
         {/* Saksliste */}
         <VStack gap="4" style={{ minWidth: '300px' }}>
@@ -131,7 +132,7 @@ function SakPage() {
                           {sak.status}
                         </Tag>
                       </HStack>
-                      <BodyShort size="small">{sak.bruker}</BodyShort>
+                      {/*<BodyShort size="small">{sak.bruker}</BodyShort>*/}
                       <BodyShort size="small">{sak.tema}</BodyShort>
                       <HStack gap="1" align="center">
                         <ClockIcon fontSize="1rem" />
@@ -156,7 +157,6 @@ function SakPage() {
                     <Heading size="medium">{sakDetaljer.id} - {sakDetaljer.tema}</Heading>
                     <HStack gap="8">
                       <VStack gap="1">
-                        <BodyShort size="small"><strong>Bruker:</strong> {sakDetaljer.bruker}</BodyShort>
                         <BodyShort size="small"><strong>Opprettet:</strong> {sakDetaljer.opprettet}</BodyShort>
                         <BodyShort size="small"><strong>Frist:</strong> {sakDetaljer.frist}</BodyShort>
                       </VStack>
@@ -169,11 +169,11 @@ function SakPage() {
                 </HStack>
               </Panel>
 
-              <Tabs defaultValue="dokumenter">
+              <Tabs defaultValue="vedtak">
                 <Tabs.List>
+                  <Tabs.Tab value="vedtak" label="Fatte vedtak" />
                   <Tabs.Tab value="dokumenter" label="Dokumenter" />
                   <Tabs.Tab value="historikk" label="Historikk" />
-                  <Tabs.Tab value="vedtak" label="Fatte vedtak" />
                 </Tabs.List>
 
                 <Tabs.Panel value="dokumenter">
@@ -273,14 +273,11 @@ function SakPage() {
                         minRows={4}
                       />
 
-                      <Alert variant="info">
-                        Når du fatter vedtak vil det automatisk sendes brev til bruker.
-                      </Alert>
-
                       <HStack gap="4">
                         <Button
+                          as={Link}
+                          to="/brev"
                           variant="primary"
-                          onClick={handleFatteVedtak}
                           disabled={!vedtak || !begrunnelse}
                         >
                           Fatte vedtak
@@ -288,9 +285,7 @@ function SakPage() {
                         <Button variant="secondary">
                           Lagre kladd
                         </Button>
-                        <Button variant="tertiary">
-                          Send til kvalitetssikring
-                        </Button>
+
                       </HStack>
                     </VStack>
                   </Panel>

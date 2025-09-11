@@ -18,7 +18,7 @@ export function OppgaveTabell() {
       id: 'OPP001',
       fnr: '12345678901',
       navn: 'Ola Nordmann',
-      tema: 'Dagpenger',
+      tema: 'Reiseutgifter',
       oppgavetype: 'Behandle søknad',
       frist: '2024-02-15',
       status: 'Under behandling',
@@ -28,7 +28,7 @@ export function OppgaveTabell() {
       id: 'OPP002',
       fnr: '10987654321',
       navn: 'Kari Hansen',
-      tema: 'Sykepenger',
+      tema: 'Fottøy i ulik størrelse',
       oppgavetype: 'Vurder dokument',
       frist: '2024-02-10',
       status: 'Ny',
@@ -38,7 +38,7 @@ export function OppgaveTabell() {
       id: 'OPP003',
       fnr: '11122233344',
       navn: 'Per Olsen',
-      tema: 'Arbeidsavklaringspenger',
+      tema: 'Parykk',
       oppgavetype: 'Behandle klage',
       frist: '2024-02-20',
       status: 'Venter på bruker',
@@ -129,11 +129,8 @@ export function OppgaveTabell() {
                 <Table.DataCell>{oppgave.saksbehandler || 'Ikke tildelt'}</Table.DataCell>
                 <Table.DataCell>
                   <HStack gap="2">
-                    <Button size="small" variant="primary">
+                    <Button size="small" variant="primary" as={Link} to="sak">
                       Behandle
-                    </Button>
-                    <Button size="small" variant="secondary">
-                      Se detaljer
                     </Button>
                   </HStack>
                 </Table.DataCell>

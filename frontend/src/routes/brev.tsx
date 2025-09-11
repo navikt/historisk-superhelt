@@ -13,13 +13,14 @@ import {
 } from '@navikt/ds-react'
 import { PencilWritingIcon, PersonIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
+import {PersonHeader} from "../components/PersonHeader";
 
 export const Route = createFileRoute('/brev')({
   component: BrevPage,
 })
 
 function BrevPage() {
-  const [mottaker, setMottaker] = useState<string>('')
+  const [mottaker, setMottaker] = useState<string>('Ola Nordmann')
   const [brevtype, setBrevtype] = useState<string>('')
   const [tittel, setTittel] = useState<string>('')
   const [innhold, setInnhold] = useState<string>('')
@@ -123,6 +124,7 @@ Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
   return (
     <VStack gap="6">
       <Heading size="xlarge">Skriv brev</Heading>
+      <PersonHeader/>
 
       <Panel border>
         <VStack gap="6">
@@ -135,18 +137,18 @@ Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
           </HStack>
 
           <VStack gap="4">
-            <HStack gap="4">
-              <TextField
-                label="Mottaker"
-                placeholder="Søk etter person (fødselsnummer eller navn)"
-                value={mottaker}
-                onChange={(e) => setMottaker(e.target.value)}
-                style={{ flex: 1 }}
-              />
-              <Button variant="secondary" icon={<PersonIcon />}>
-                Søk
-              </Button>
-            </HStack>
+            {/*<HStack gap="4">*/}
+            {/*  <TextField*/}
+            {/*    label="Mottaker"*/}
+            {/*    placeholder="Søk etter person (fødselsnummer eller navn)"*/}
+            {/*    value={mottaker}*/}
+            {/*    onChange={(e) => setMottaker(e.target.value)}*/}
+            {/*    style={{ flex: 1 }}*/}
+            {/*  />*/}
+            {/*  <Button variant="secondary" icon={<PersonIcon />}>*/}
+            {/*    Søk*/}
+            {/*  </Button>*/}
+            {/*</HStack>*/}
 
             <Select
               label="Brevmal"
@@ -189,7 +191,7 @@ Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
               <Button
                 variant="primary"
                 onClick={handleSendBrev}
-                disabled={!mottaker || !brevtype || !tittel || !innhold}
+                disabled={  !brevtype || !tittel || !innhold}
               >
                 Send brev
               </Button>
