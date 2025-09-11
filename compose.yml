@@ -1,5 +1,6 @@
 include:
   - ./mocks/mock-oidc/compose.yml
+  - ./mocks/mock-server/compose.yml
 
 services:
 

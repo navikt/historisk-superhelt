@@ -1,0 +1,14 @@
+services:
+  mock-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9080:9080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - path: ../../local.env
+        required: false
+
+
