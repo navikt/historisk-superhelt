@@ -20,7 +20,7 @@ export const Route = createFileRoute('/brev')({
 })
 
 function BrevPage() {
-  const [mottaker, setMottaker] = useState<string>('')
+  const [mottaker, setMottaker] = useState<string>('Ola Nordmann')
   const [brevtype, setBrevtype] = useState<string>('')
   const [tittel, setTittel] = useState<string>('')
   const [innhold, setInnhold] = useState<string>('')
@@ -137,18 +137,18 @@ Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
           </HStack>
 
           <VStack gap="4">
-            <HStack gap="4">
-              <TextField
-                label="Mottaker"
-                placeholder="Søk etter person (fødselsnummer eller navn)"
-                value={mottaker}
-                onChange={(e) => setMottaker(e.target.value)}
-                style={{ flex: 1 }}
-              />
-              <Button variant="secondary" icon={<PersonIcon />}>
-                Søk
-              </Button>
-            </HStack>
+            {/*<HStack gap="4">*/}
+            {/*  <TextField*/}
+            {/*    label="Mottaker"*/}
+            {/*    placeholder="Søk etter person (fødselsnummer eller navn)"*/}
+            {/*    value={mottaker}*/}
+            {/*    onChange={(e) => setMottaker(e.target.value)}*/}
+            {/*    style={{ flex: 1 }}*/}
+            {/*  />*/}
+            {/*  <Button variant="secondary" icon={<PersonIcon />}>*/}
+            {/*    Søk*/}
+            {/*  </Button>*/}
+            {/*</HStack>*/}
 
             <Select
               label="Brevmal"
@@ -191,7 +191,7 @@ Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
               <Button
                 variant="primary"
                 onClick={handleSendBrev}
-                disabled={!mottaker || !brevtype || !tittel || !innhold}
+                disabled={  !brevtype || !tittel || !innhold}
               >
                 Send brev
               </Button>
