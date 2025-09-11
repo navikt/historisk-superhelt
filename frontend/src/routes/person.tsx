@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import {createFileRoute, Link} from '@tanstack/react-router'
 import {
   Heading,
   Panel,
@@ -31,21 +31,21 @@ function PersonPage() {
   const saker = [
     {
       id: 'SAK001',
-      tema: 'Dagpenger',
+      tema: 'Reiseutgifter',
       status: 'Under behandling',
       opprettet: '2024-01-15',
       saksbehandler: 'Anne Hansen'
     },
     {
       id: 'SAK002',
-      tema: 'Sykepenger',
+      tema: 'Parykk',
       status: 'Avsluttet',
       opprettet: '2023-11-20',
       saksbehandler: 'Per Olsen'
     },
     {
       id: 'SAK003',
-      tema: 'Arbeidsavklaringspenger',
+      tema: 'Caps eller lue',
       status: 'Venter på bruker',
       opprettet: '2024-02-01',
       saksbehandler: 'Kari Nilsen'
@@ -145,7 +145,7 @@ function PersonPage() {
                       <Table.DataCell>{sak.opprettet}</Table.DataCell>
                       <Table.DataCell>{sak.saksbehandler}</Table.DataCell>
                       <Table.DataCell>
-                        <Button size="small" variant="secondary">
+                        <Button size="small" variant="secondary" as={Link} to={"/sak"}>
                           Åpne sak
                         </Button>
                       </Table.DataCell>
