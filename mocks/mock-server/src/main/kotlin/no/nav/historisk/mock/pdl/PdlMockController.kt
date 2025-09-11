@@ -36,7 +36,7 @@ class PdlMockController() {
         val response= generatePdlTestdata(ident)
         repository[ident] = response
         logger.info("Registerer ny person i PDL-mock: $ident -> $response")
-        return pdlResponse
+        return response
     }
 
     data class Variables(
