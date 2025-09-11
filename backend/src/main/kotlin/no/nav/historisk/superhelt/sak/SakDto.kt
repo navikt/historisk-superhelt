@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.sak
 import jakarta.validation.constraints.Size
 import no.nav.historisk.superhelt.sak.model.*
 
-data class SakResponseDto(
+data class SakDto(
     val saksnummer: Saksnummer,
     val type: StonadsType,
     val person: String,
@@ -29,8 +29,8 @@ data class SakUpdateRequestDto(
 )
 
 // Extension functions for mapping between Entity and DTO
-fun SakEntity.toResponseDto(): SakResponseDto {
-    return SakResponseDto(
+fun SakEntity.toResponseDto(): SakDto {
+    return SakDto(
         saksnummer = this.saksnummer,
         type = this.type,
         person = this.person,
@@ -43,7 +43,6 @@ fun SakEntity.toResponseDto(): SakResponseDto {
 
 fun SakCreateRequestDto.toEntity(): SakEntity {
     return SakEntity(
-        saksnummer = "todo",
         type = this.type,
         person = this.person,
         tittel = this.tittel,

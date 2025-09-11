@@ -7,20 +7,23 @@ import jakarta.persistence.*
 class SakEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private var id: Long?=null,
-    var saksnummer: Saksnummer,
+    var id: Long?=null,
+
     @Enumerated(EnumType.STRING)
     var type: StonadsType,
     var person: Personident,
-    var tittel: String?= null,
-    var begrunnelse: String?=null,
+    var tittel: String? = null,
+
     @Enumerated(EnumType.STRING)
     var status: SakStatus= SakStatus.UNDER_BEHANDLING,
+
+    // vedtak
     @Enumerated(EnumType.STRING)
-    var vedtak: VedtakType? = null,
+    var vedtak: VedtakType? =null ,
+    var begrunnelse: String?= null,
     // Utbetaling
     // Oppgaver
     // Brev
 ) {
-    fun getId(): Long? = id
+
 }
