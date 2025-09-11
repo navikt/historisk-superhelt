@@ -15,6 +15,7 @@ import {
 } from '@navikt/ds-react'
 import { FileTextIcon, ClockIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
+import {PersonHeader} from "../components/PersonHeader";
 
 export const Route = createFileRoute('/sak')({
   component: SakPage,
@@ -106,7 +107,7 @@ function SakPage() {
   return (
     <VStack gap="6">
       <Heading size="xlarge">Behandle sak</Heading>
-
+      <PersonHeader/>
       <HStack gap="6" align="start">
         {/* Saksliste */}
         <VStack gap="4" style={{ minWidth: '300px' }}>
