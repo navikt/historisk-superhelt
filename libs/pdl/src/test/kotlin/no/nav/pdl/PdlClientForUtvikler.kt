@@ -6,6 +6,7 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestClient
+import java.util.UUID
 
 @Disabled
 class PdlClientForUtvikler {
@@ -15,7 +16,7 @@ class PdlClientForUtvikler {
      */
 
     val accessToken = """
-  
+        
       """.trimIndent()
 
     private val baseUrl = "https://pdl-api.dev.intern.nav.no"
@@ -49,11 +50,11 @@ class PdlClientForUtvikler {
         return RestClient.builder()
             .baseUrl(baseUrl)
             .requestInterceptor(bearerTokenInterceptor())
-//            .defaultHeaders { headers ->
-//                {
-//                    headers.set("Nav-Call-Id", UUID.randomUUID().toString())
-//                }
-//            }
+            .defaultHeaders { headers ->
+                {
+                    headers.set("Nav-Call-Id", UUID.randomUUID().toString())
+                }
+            }
             .build()
     }
 

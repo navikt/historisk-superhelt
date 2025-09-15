@@ -3,22 +3,16 @@ package no.nav.pdl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
-import org.springframework.test.web.client.response.MockRestResponseCreators.*
-import org.springframework.web.client.HttpClientErrorException
+import org.springframework.test.web.client.response.MockRestResponseCreators.withServerError
+import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.support.RestClientAdapter
-import org.springframework.web.service.invoker.HttpServiceProxyFactory
-import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -35,8 +29,7 @@ class PdlClientTest {
     private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()
 
     private val restClient = RestClient.builder(restTemplate).build()
-    private  val pdlClient=PdlClient(restClient, behandlingsnummer)
-
+    private val pdlClient = PdlClient(restClient, behandlingsnummer)
 
     @AfterEach
     fun tearDown() {
@@ -61,12 +54,12 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertEquals(expectedData.hentPerson?.navn?.first()?.fornavn, result.hentPerson?.navn?.first()?.fornavn)
-        assertEquals(expectedData.hentIdenter?.identer?.first()?.ident, result.hentIdenter?.identer?.first()?.ident)
+        assertEquals(expectedData.hentPerson?.navn?.first()?.fornavn, result.data?.hentPerson?.navn?.first()?.fornavn)
+        assertEquals(expectedData.hentIdenter?.identer?.first()?.ident, result.data?.hentIdenter?.identer?.first()?.ident)
     }
 
     @Test
-    fun `getPersonOgIdenter kaster FORBIDDEN når PDL returnerer UNAUTHORIZED feil`() {
+    fun `getPersonOgIdenter returnerer PDL feil når PDL returnerer feilmeldinger`() {
         // Given
         val ident = "12345678901"
         val errors = listOf(
@@ -84,96 +77,19 @@ class PdlClientTest {
             .andExpect(header("Behandlingsnummer", behandlingsnummer))
             .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
 
-        // When & Then
-        val exception = assertThrows<HttpClientErrorException> {
-            pdlClient.getPersonOgIdenter(ident)
-        }
-        assertEquals(HttpStatus.FORBIDDEN, exception.statusCode)
-        assertEquals("403 Ikke tilgang til person i PDL: Ikke tilgang", exception.message)
+        // When
+        val result = pdlClient.getPersonOgIdenter(ident)
+
+        // Then
+        assertNotNull(result)
+        assertNotNull(result.errors)
+        assertEquals(1, result.errors?.size)
+        assertEquals("Ikke tilgang", result.errors?.first()?.message)
+        assertEquals(PdlFeilkoder.UNAUTHORIZED, result.errors?.first()?.extensions?.code)
     }
 
     @Test
-    fun `getPersonOgIdenter kaster NOT_FOUND når PDL returnerer NOT_FOUND feil`() {
-        // Given
-        val ident = "12345678901"
-        val errors = listOf(
-            PdlError(
-                message = "Fant ikke person",
-                locations = emptyList(),
-                path = listOf("hentPerson"),
-                extensions = PdlErrorExtension(code = PdlFeilkoder.NOT_FOUND, classification = "ValidationError")
-            )
-        )
-        val response = HentPdlResponse(data = null, errors = errors)
-
-        mockServer.expect(requestTo("/graphql"))
-            .andExpect(method(HttpMethod.POST))
-            .andExpect(header("Behandlingsnummer", behandlingsnummer))
-            .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
-
-        // When & Then
-        val exception = assertThrows<HttpClientErrorException> {
-            pdlClient.getPersonOgIdenter(ident)
-        }
-        assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
-        assertEquals("404 Person ikke funnet: Fant ikke person", exception.message)
-    }
-
-    @Test
-    fun `getPersonOgIdenter kaster INTERNAL_SERVER_ERROR når PDL returnerer SERVER_ERROR`() {
-        // Given
-        val ident = "12345678901"
-        val errors = listOf(
-            PdlError(
-                message = "Intern feil",
-                locations = emptyList(),
-                path = listOf("hentPerson"),
-                extensions = PdlErrorExtension(code = PdlFeilkoder.SERVER_ERROR, classification = "ExecutionError")
-            )
-        )
-        val response = HentPdlResponse(data = null, errors = errors)
-
-        mockServer.expect(requestTo("/graphql"))
-            .andExpect(method(HttpMethod.POST))
-            .andExpect(header("Behandlingsnummer", behandlingsnummer))
-            .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
-
-        // When & Then
-        val exception = assertThrows<HttpClientErrorException> {
-            pdlClient.getPersonOgIdenter(ident)
-        }
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.statusCode)
-        assertEquals("500 Feil mot PDL: Intern feil", exception.message)
-    }
-
-    @Test
-    fun `getPersonOgIdenter kaster IllegalArgumentException for ukjente feilkoder`() {
-        // Given
-        val ident = "12345678901"
-        val errors = listOf(
-            PdlError(
-                message = "Ukjent feil",
-                locations = emptyList(),
-                path = listOf("hentPerson"),
-                extensions = PdlErrorExtension(code = "UNKNOWN_ERROR", classification = "ValidationError")
-            )
-        )
-        val response = HentPdlResponse(data = null, errors = errors)
-
-        mockServer.expect(requestTo("/graphql"))
-            .andExpect(method(HttpMethod.POST))
-            .andExpect(header("Behandlingsnummer", behandlingsnummer))
-            .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
-
-        // When & Then
-        val exception = assertThrows<IllegalArgumentException> {
-            pdlClient.getPersonOgIdenter(ident)
-        }
-        assertEquals("Fikk feilmeldinger fra PDL: UNKNOWN_ERROR \"[hentPerson]\" \"Ukjent feil\"", exception.message)
-    }
-
-    @Test
-    fun `getPersonOgIdenter returnerer null data når PDL returnerer tom respons uten feil`() {
+    fun `getPersonOgIdenter returnerer tom data når PDL returnerer tom respons uten feil`() {
         // Given
         val ident = "12345678901"
         val response = HentPdlResponse(data = null, errors = null)
@@ -187,11 +103,13 @@ class PdlClientTest {
         val result = pdlClient.getPersonOgIdenter(ident)
 
         // Then
-        assertNull(result)
+        assertNotNull(result)
+        assertNull(result.data)
+        assertNull(result.errors)
     }
 
     @Test
-    fun `getPersonOgIdenter håndterer multiple feil og viser alle i feilmelding`() {
+    fun `getPersonOgIdenter returnerer multiple feil når PDL returnerer flere feilmeldinger`() {
         // Given
         val ident = "12345678901"
         val errors = listOf(
@@ -215,15 +133,19 @@ class PdlClientTest {
             .andExpect(header("Behandlingsnummer", behandlingsnummer))
             .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
 
-        // When & Then
-        val exception = assertThrows<IllegalArgumentException> {
-            pdlClient.getPersonOgIdenter(ident)
-        }
-        assertEquals("Fikk feilmeldinger fra PDL: ERROR_1 \"[hentPerson]\" \"Feil 1\", ERROR_2 \"[hentIdenter]\" \"Feil 2\"", exception.message)
+        // When
+        val result = pdlClient.getPersonOgIdenter(ident)
+
+        // Then
+        assertNotNull(result)
+        assertNotNull(result.errors)
+        assertEquals(2, result.errors?.size)
+        assertEquals("Feil 1", result.errors?.get(0)?.message)
+        assertEquals("Feil 2", result.errors?.get(1)?.message)
     }
 
     @Test
-    fun `getPersonOgIdenter håndterer HTTP feil fra serveren`() {
+    fun `getPersonOgIdenter kaster exception ved HTTP feil fra serveren`() {
         // Given
         val ident = "12345678901"
 
@@ -274,11 +196,131 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertNotNull(result.hentPerson?.vergemaalEllerFremtidsfullmakt)
-        assertEquals(1, result.hentPerson?.vergemaalEllerFremtidsfullmakt?.size)
-        assertNotNull(result.hentPerson?.adressebeskyttelse)
+        assertNotNull(result.data?.hentPerson?.vergemaalEllerFremtidsfullmakt)
+        assertEquals(1, result.data?.hentPerson?.vergemaalEllerFremtidsfullmakt?.size)
+        assertNotNull(result.data?.hentPerson?.adressebeskyttelse)
         assertEquals(AdressebeskyttelseGradering.FORTROLIG,
-                    result.hentPerson?.adressebeskyttelse?.first()?.gradering)
+                    result.data?.hentPerson?.adressebeskyttelse?.first()?.gradering)
+    }
+
+    @Test
+    fun `getPersonOgIdenter håndterer person uten navn`() {
+        // Given
+        val ident = "12345678901"
+        val pdlData = PdlData(
+            hentPerson = Person(
+                navn = emptyList(),
+                doedsfall = emptyList(),
+                adressebeskyttelse = emptyList(),
+                vergemaalEllerFremtidsfullmakt = emptyList()
+            ),
+            hentIdenter = Identliste(
+                identer = listOf(
+                    IdentInformasjon(ident = ident, gruppe = IdentGruppe.FOLKEREGISTERIDENT, historisk = false)
+                )
+            )
+        )
+        val response = HentPdlResponse(data = pdlData, errors = null)
+
+        mockServer.expect(requestTo("/graphql"))
+            .andExpect(method(HttpMethod.POST))
+            .andExpect(header("Behandlingsnummer", behandlingsnummer))
+            .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
+
+        // When
+        val result = pdlClient.getPersonOgIdenter(ident)
+
+        // Then
+        assertNotNull(result)
+        assertEquals(emptyList(), result.data?.hentPerson?.navn)
+    }
+
+    @Test
+    fun `getPersonOgIdenter håndterer person med dødsfall`() {
+        // Given
+        val ident = "12345678901"
+        val pdlData = PdlData(
+            hentPerson = Person(
+                navn = listOf(Navn(fornavn = "Deceased", mellomnavn = null, etternavn = "Person")),
+                doedsfall = listOf(Doedsfall(doedsdato = "2023-01-15")),
+                adressebeskyttelse = emptyList(),
+                vergemaalEllerFremtidsfullmakt = emptyList()
+            ),
+            hentIdenter = Identliste(
+                identer = listOf(
+                    IdentInformasjon(ident = ident, gruppe = IdentGruppe.FOLKEREGISTERIDENT, historisk = false)
+                )
+            )
+        )
+        val response = HentPdlResponse(data = pdlData, errors = null)
+
+        mockServer.expect(requestTo("/graphql"))
+            .andExpect(method(HttpMethod.POST))
+            .andExpect(header("Behandlingsnummer", behandlingsnummer))
+            .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
+
+        // When
+        val result = pdlClient.getPersonOgIdenter(ident)
+
+        // Then
+        assertNotNull(result)
+        assertEquals(1, result.data?.hentPerson?.doedsfall?.size)
+        assertEquals("2023-01-15", result.data?.hentPerson?.doedsfall?.first()?.doedsdato)
+    }
+
+    @Test
+    fun `getPersonOgIdenter håndterer person med historiske identer`() {
+        // Given
+        val ident = "12345678901"
+        val pdlData = PdlData(
+            hentPerson = Person(
+                navn = listOf(Navn(fornavn = "Historical", mellomnavn = null, etternavn = "Person")),
+                doedsfall = emptyList(),
+                adressebeskyttelse = emptyList(),
+                vergemaalEllerFremtidsfullmakt = emptyList()
+            ),
+            hentIdenter = Identliste(
+                identer = listOf(
+                    IdentInformasjon(ident = ident, gruppe = IdentGruppe.FOLKEREGISTERIDENT, historisk = false),
+                    IdentInformasjon(ident = "98765432109", gruppe = IdentGruppe.FOLKEREGISTERIDENT, historisk = true),
+                    IdentInformasjon(ident = "1234567890123", gruppe = IdentGruppe.AKTORID, historisk = false),
+                    IdentInformasjon(ident = "9876543210987", gruppe = IdentGruppe.AKTORID, historisk = true)
+                )
+            )
+        )
+        val response = HentPdlResponse(data = pdlData, errors = null)
+
+        mockServer.expect(requestTo("/graphql"))
+            .andExpect(method(HttpMethod.POST))
+            .andExpect(header("Behandlingsnummer", behandlingsnummer))
+            .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
+
+        // When
+        val result = pdlClient.getPersonOgIdenter(ident)
+
+        // Then
+        assertNotNull(result)
+        val identer = result.data?.hentIdenter?.identer ?: emptyList()
+        assertEquals(4, identer.size)
+        assertEquals(2, identer.count { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT })
+        assertEquals(2, identer.count { it.gruppe == IdentGruppe.AKTORID })
+        assertEquals(2, identer.count { it.historisk })
+    }
+
+    @Test
+    fun `getPersonOgIdenter kaster exception ved ugyldig JSON respons`() {
+        // Given
+        val ident = "12345678901"
+
+        mockServer.expect(requestTo("/graphql"))
+            .andExpect(method(HttpMethod.POST))
+            .andExpect(header("Behandlingsnummer", behandlingsnummer))
+            .andRespond(withSuccess("invalid json", MediaType.APPLICATION_JSON))
+
+        // When & Then
+        assertThrows<Exception> {
+            pdlClient.getPersonOgIdenter(ident)
+        }
     }
 
     private fun createValidPdlData(ident: String): PdlData {
