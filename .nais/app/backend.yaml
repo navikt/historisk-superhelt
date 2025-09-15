@@ -45,3 +45,21 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: sdk
+
+  accessPolicy:
+    outbound:
+      rules:
+        - application: populasjonstilgangskontroll
+          namespace: tilgangsmaskin
+      external:
+        - host: "pdl-api.{{env}}-fss-pub.nais.io"
+        - host: "oppgave.{{env}}-fss-pub.nais.io"
+        - host: "dokarkiv.{{env}}-fss-pub.nais.io"
+        - host: "dokdistfordeling.{{env}}-fss-pub.nais.io"
+
+  env:
+    - name: APP_PDL_URL
+      value: https://pdl-api.{{env}}-fss-pub.nais.io
+    - name: APP_PDL_AUDIENCE
+      value: api://{{env}}-fss.pdl.pdl-api/.default
+
