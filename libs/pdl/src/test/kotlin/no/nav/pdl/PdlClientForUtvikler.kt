@@ -51,9 +51,7 @@ class PdlClientForUtvikler {
             .baseUrl(baseUrl)
             .requestInterceptor(bearerTokenInterceptor())
             .defaultHeaders { headers ->
-                {
-                    headers.set("Nav-Call-Id", UUID.randomUUID().toString())
-                }
+                headers.set("Nav-Call-Id", UUID.randomUUID().toString())
             }
             .build()
     }

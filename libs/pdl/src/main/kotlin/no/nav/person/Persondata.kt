@@ -11,12 +11,12 @@ data class Persondata(
     val aktorId: AktorId,
     val alleFnr: Set<Fnr>,
     val doedsfall: Doedsfall,
-    val adressebeskyttelseGradering: AdressebeskyttelseGradering= AdressebeskyttelseGradering.UGRADERT,
+    val adressebeskyttelseGradering: AdressebeskyttelseGradering = AdressebeskyttelseGradering.UGRADERT,
     val verge: Fnr?
 )
 
 typealias Fnr = String
 typealias AktorId = String
-typealias Doedsfall= String?
+typealias Doedsfall = String?
 
 
