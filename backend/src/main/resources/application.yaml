@@ -21,3 +21,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+app:
+  pdl:
+    behandlingsnummer: B986
+

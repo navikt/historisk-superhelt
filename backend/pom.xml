@@ -14,11 +14,20 @@
 
     <dependencies>
 
+        <!-- Lokale avhengigheter -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>superhelt-frontend</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>pdl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
