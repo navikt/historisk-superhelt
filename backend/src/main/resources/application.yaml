@@ -21,7 +21,9 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+  mvc:
+    problemdetails:
+      enabled: true
 app:
   pdl:
     behandlingsnummer: B986
-
