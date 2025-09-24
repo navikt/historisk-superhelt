@@ -1,7 +1,6 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { Alert, Button } from '@navikt/ds-react';
-import {ProblemDetail} from "~/gen";
-
+import React, {Component, ErrorInfo, ReactNode} from 'react';
+import {ErrorAlert} from "~/components/error/ErrorAlert";
+import {ProblemDetail} from "@api";
 
 
 interface Props {
@@ -49,15 +48,7 @@ export class RfcErrorBoundary extends Component<Props, State> {
 
   private renderDefaultFallback() {
     const { error, problemDetails } = this.state;
-    return (
-      <div>
-        <Alert variant="error">
-          <strong>{problemDetails?.title || 'Noe gikk galt'}</strong>
-          {problemDetails?.detail && <p>{problemDetails.detail}</p>}
-          {!problemDetails?.detail && error?.message && <p>{error.message}</p>}
-        </Alert>
-      </div>
-    );
+    return <ErrorAlert problemDetails={problemDetails} error={error}/>;
   }
 
   render() {
