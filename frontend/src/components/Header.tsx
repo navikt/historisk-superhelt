@@ -1,10 +1,8 @@
 import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
-
-
 import {LeaveIcon} from "@navikt/aksel-icons";
-import {getUserInfoOptions} from "../../api/@tanstack/react-query.gen";
+import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
 
 
 

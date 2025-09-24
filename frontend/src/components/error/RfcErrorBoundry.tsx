@@ -1,6 +1,6 @@
 import React, {Component, ErrorInfo, ReactNode} from 'react';
 import {ErrorAlert} from "~/components/error/ErrorAlert";
-import {ProblemDetail} from "@api";
+import {ProblemDetail} from "~/api";
 
 
 interface Props {
