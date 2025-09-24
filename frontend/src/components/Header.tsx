@@ -2,7 +2,7 @@ import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Space
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 
-import {getUserInfoOptions} from "../gen/@tanstack/react-query.gen"
+import {getUserInfoOptions} from "~/gen/@tanstack/react-query.gen"
 import {LeaveIcon} from "@navikt/aksel-icons";
 
 

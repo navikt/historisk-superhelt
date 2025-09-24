@@ -1,7 +1,7 @@
 import {createFileRoute, Link} from '@tanstack/react-router'
 import {Button, Heading, HStack, Panel, Table, Tabs, Tag, VStack} from '@navikt/ds-react'
 import {ExternalLinkIcon, FileTextIcon} from '@navikt/aksel-icons'
-import {PersonHeader} from "../components/PersonHeader";
+import {PersonHeader} from "~/components/PersonHeader";
 
 export const Route = createFileRoute('/person')({
   component: PersonPage,
