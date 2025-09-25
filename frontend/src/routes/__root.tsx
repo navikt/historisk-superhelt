@@ -3,9 +3,9 @@ import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import "@navikt/ds-css/darkside";
 import {Theme} from "@navikt/ds-react/Theme";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {Heading, Page} from "@navikt/ds-react";
+import {Page} from "@navikt/ds-react";
 import {Header} from "~/components/Header";
-import {RfcErrorBoundary} from "~/components/error/RfcErrorBoundry";
+import {RfcErrorBoundary} from "~/components/error/RfcErrorBoundary";
 
 export const Route = createRootRoute({
     component: () => (
