@@ -13,7 +13,7 @@ import {
 } from '@navikt/ds-react'
 import { PencilWritingIcon, PersonIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
-import {PersonHeader} from "../components/PersonHeader";
+import {PersonHeader} from "~/components/PersonHeader";
 
 export const Route = createFileRoute('/brev')({
   component: BrevPage,

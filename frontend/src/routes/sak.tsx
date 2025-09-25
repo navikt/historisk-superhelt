@@ -15,7 +15,7 @@ import {
 } from '@navikt/ds-react'
 import { FileTextIcon, ClockIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
-import {PersonHeader} from "../components/PersonHeader";
+import {PersonHeader} from "~/components/PersonHeader";
 
 export const Route = createFileRoute('/sak')({
   component: SakPage,

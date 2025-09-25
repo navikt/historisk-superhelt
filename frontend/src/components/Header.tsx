@@ -1,9 +1,8 @@
 import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
-
-import {getUserInfoOptions} from "../gen/@tanstack/react-query.gen"
 import {LeaveIcon} from "@navikt/aksel-icons";
+import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
 
 
 
@@ -12,6 +11,7 @@ export function Header() {
     const {  data: user}  = useQuery({
         ...getUserInfoOptions()
     })
+
     return <InternalHeader>
         <InternalHeader.Title as="h1">
             <RouterLink to={"/"}><img src="logo.svg" height="35rem"/>Superhelt</RouterLink>
