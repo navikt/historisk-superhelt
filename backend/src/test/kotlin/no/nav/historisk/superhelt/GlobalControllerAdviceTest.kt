@@ -2,7 +2,6 @@ package no.nav.historisk.superhelt
 
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
