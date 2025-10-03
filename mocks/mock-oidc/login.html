@@ -25,7 +25,7 @@
                     <p class="card-text">Saksbehandler med vanlige saksbehandlerroller</p>
                     <form method="post">
                         <input type="hidden" name="username" value="sarah_saksbehandler">
-                        <input type="hidden" name="claims" value='{"NAVident": "SARAH", "name": "Sarah Saksbehandler", "preferred_username": "Sarah", "groups": ["saksbehandler", "attestant"]}'>
+                        <input type="hidden" name="claims" value='{"NAVident": "SARAH", "name": "Sarah Saksbehandler", "preferred_username": "Sarah", "groups": ["gr_saksbehandler", "gr_attestant"]}'>
                         <button type="submit" class="btn btn-primary topBtn" autofocus><i class="fa fa-sign-in"></i>Sign-in</button>
                     </form>
                 </div>
@@ -40,7 +40,7 @@
                     <p class="card-text">Saksbehandler med vanlige saksbehandlerroller</p>
                     <form method="post">
                         <input type="hidden" name="username" value="atle_attestant">
-                        <input type="hidden" name="claims" value='{"NAVident": "ATLE", "name": "Atle Attestant", "preferred_username": "AtleA", "groups": ["saksbehandler", "attestant"]}'>
+                        <input type="hidden" name="claims" value='{"NAVident": "ATLE", "name": "Atle Attestant", "preferred_username": "AtleA", "groups": ["gr_saksbehandler", "gr_attestant"]}'>
                         <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
                     </form>
                 </div>
@@ -55,7 +55,7 @@
                     <p class="card-text">Saksbehandler som ikke kan attestere</p>
                     <form method="post">
                         <input type="hidden" name="username" value="sonja_sommervikar">
-                        <input type="hidden" name="claims" value='{"NAVident": "SONJA", "name": "Sonja Sommervikar", "preferred_username": "Sonja", "groups": ["saksbehandler"]}'>
+                        <input type="hidden" name="claims" value='{"NAVident": "SONJA", "name": "Sonja Sommervikar", "preferred_username": "Sonja", "groups": ["gr_saksbehandler"]}'>
                         <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
                     </form>
                 </div>
@@ -70,30 +70,16 @@
                     Featured
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Dribbe Drift</h5>
-                    <p class="card-text">Person med driftsrolle på teamet</p>
+                    <h5 class="card-title">Lisa Les</h5>
+                    <p class="card-text">Person med leserolle på teamet</p>
                     <form method="post">
-                        <input type="hidden" name="username" value="dribbe_drift">
-                        <input type="hidden" name="claims" value='{"NAVident": "DRIBBE_DRIFT", "name": "Dribbe Drift", "preferred_username": "Dribbe", "groups": ["drift"]}'>
+                        <input type="hidden" name="username" value="lisa_les">
+                        <input type="hidden" name="claims" value='{"NAVident": "LISA_LES", "name": "Lisa les", "preferred_username": "Lisa", "groups": ["gr_les"]}'>
                         <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
                     </form>
                 </div>
             </div>
 
-            <div class="card mb-2">
-                <div class="card-header">
-                    Featured
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Fagkoordinator Fagesen</h5>
-                    <p class="card-text">Fagkoordinator</p>
-                    <form method="post">
-                        <input type="hidden" name="username" value="fagkoordinator">
-                        <input type="hidden" name="claims" value='{"NAVident": "FAGKOORDINATOR", "name": "Fagkoordinator Fagesen", "preferred_username": "Fagesen", "groups": ["fagkoordinator"]}'>
-                        <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
-                    </form>
-                </div>
-            </div>
         </div>
 
         <div class="col-md-5">

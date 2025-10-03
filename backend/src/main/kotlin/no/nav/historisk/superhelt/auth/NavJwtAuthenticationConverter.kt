@@ -9,7 +9,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component
 
 @Component
-class NavJwtAuthenticationConverter : Converter<Jwt, JwtAuthenticationToken> {
+class NavJwtAuthenticationConverter(private val gruppeMapping: Map<String, Gruppe> ) : Converter<Jwt, JwtAuthenticationToken> {
+
 
     override fun convert(jwt: Jwt): JwtAuthenticationToken {
         val authorities = extractAuthorities(jwt)
@@ -19,9 +20,10 @@ class NavJwtAuthenticationConverter : Converter<Jwt, JwtAuthenticationToken> {
     }
 
     private fun extractAuthorities(jwt: Jwt): Collection<GrantedAuthority> {
-        val groups = jwt.getClaimAsStringList("groups") ?: emptyList()
-//TODO Mappe om groups uuid til rolle enum
-        return groups.map { SimpleGrantedAuthority("ROLE_$it") }
+        val groupsClaims = jwt.getClaimAsStringList("groups") ?: emptyList()
+        return groupsClaims
+            .map { gruppeMapping[it] }
+            .map { SimpleGrantedAuthority("ROLE_$it") }
     }
 
     private fun extractNavIdent(jwt: Jwt): String? {
