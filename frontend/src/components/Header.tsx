@@ -6,10 +6,6 @@ import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
 import {useState} from "react";
 import {findPerson} from "@api";
 
-interface Props {
-    maskertPersonId: string
-}
-
 export function Header() {
     const [search, setSearch] = useState<string>();
     const [seachError, setSearchError] = useState<string>();
@@ -42,7 +38,7 @@ export function Header() {
 
     return <InternalHeader>
         <InternalHeader.Title as="h1">
-            <RouterLink to={"/"}><img src="logo.svg" height="35rem"/>Superhelt</RouterLink>
+            <RouterLink to={"/"}><img src="/logo.svg" height="35rem" alt={""}/>Superhelt</RouterLink>
 
         </InternalHeader.Title>
         <HStack

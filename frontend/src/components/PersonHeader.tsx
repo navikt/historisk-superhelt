@@ -1,4 +1,4 @@
-import {Alert, BodyShort, Box, Heading, HStack, Panel, Tag, VStack} from "@navikt/ds-react";
+import {Alert, BodyShort, Box, Heading, HStack, Tag, VStack} from "@navikt/ds-react";
 import {PersonIcon} from "@navikt/aksel-icons";
 import {Link} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";

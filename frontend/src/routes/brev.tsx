@@ -11,7 +11,7 @@ import {
   VStack,
   HStack
 } from '@navikt/ds-react'
-import { PencilWritingIcon, PersonIcon } from '@navikt/aksel-icons'
+import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
 import {PersonHeader} from "~/components/PersonHeader";
 
