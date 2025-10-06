@@ -1,16 +1,39 @@
-import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
+import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Search, Spacer} from "@navikt/ds-react";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
 import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
+import {useState} from "react";
+import {findPerson} from "@api";
 
-
+interface Props {
+    maskertPersonId: string
+}
 
 export function Header() {
+    const [search, setSearch] = useState<string>();
+    const [seachError, setSearchError] = useState<string>();
     // const {  data: username}  = useQuery({ queryKey: ['user'], queryFn: fetchUser })
-    const {  data: user}  = useQuery({
+    const {data: user} = useQuery({
         ...getUserInfoOptions()
     })
+
+    async function doSeach() {
+        setSearchError(undefined)
+        if (search?.length != 11) {
+            setSearchError("Ugyldig fødselsnummer")
+        }
+
+        const {data, error} = await findPerson({
+                body: {fnr: search!}
+            }
+        )
+        if(error){
+            setSearchError("Noe gikk galt "+ error)
+        }
+        console.log(data)
+
+    }
 
     return <InternalHeader>
         <InternalHeader.Title as="h1">
@@ -23,7 +46,7 @@ export function Header() {
             align="center"
             onSubmit={(e) => {
                 e.preventDefault();
-                console.info("Search!");
+                doSeach();
             }}
         >
             <Search
@@ -31,14 +54,17 @@ export function Header() {
                 size="small"
                 variant="simple"
                 placeholder="Finn person"
+                value={search}
+                onChange={setSearch}
+                error={seachError}
             />
         </HStack>
-        <Spacer />
+        <Spacer/>
 
-        <Dropdown >
+        <Dropdown>
             <InternalHeader.UserButton
                 as={Dropdown.Toggle}
-                name={user?.name?? "--"}
+                name={user?.name ?? "--"}
                 description="Enhet: Skien"
             />
             <Dropdown.Menu>
@@ -48,10 +74,10 @@ export function Header() {
                     </BodyShort>
                     <Detail as="dd">123123</Detail>
                 </dl>
-                <Dropdown.Menu.Divider />
+                <Dropdown.Menu.Divider/>
                 <Dropdown.Menu.List>
                     <Dropdown.Menu.List.Item>
-                        Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
+                        Logg ut <Spacer/> <LeaveIcon aria-hidden fontSize="1.5rem"/>
                     </Dropdown.Menu.List.Item>
                 </Dropdown.Menu.List>
             </Dropdown.Menu>

@@ -1,8 +1,14 @@
 import {BodyShort, Heading, HStack, Panel, VStack} from "@navikt/ds-react";
 import {PersonIcon} from "@navikt/aksel-icons";
 import {Link} from "@tanstack/react-router";
+import {useQuery} from "@tanstack/react-query";
+import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
+import {getPerson} from "@api";
 
 export function PersonHeader() {
+  const {data: person} = useQuery({
+    ...getPerson()
+  })
   // Mock data
   const person = {
     fnr: '12345678901',

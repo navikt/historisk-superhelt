@@ -25,5 +25,10 @@ class PersonService(
         //TODO fix maskering
         return fnr.reversed()
     }
+
+    fun decodeMaskertFnr(maskertPersonident: String): Fnr {
+        //TODO fix dekoding
+        return maskertPersonident.reversed()
+    }
 }
 
