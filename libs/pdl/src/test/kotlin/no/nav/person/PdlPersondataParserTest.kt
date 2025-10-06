@@ -1,6 +1,8 @@
 package no.nav.person
 
 import no.nav.pdl.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,15 +28,15 @@ class PdlPersondataParserTest {
         val result = parser.parsePdlResponse(response)
 
         // Then
-        assertEquals("Ola Nordmann", result.navn)
-        assertEquals("Ola", result.fornavn)
-        assertEquals("Nordmann", result.etternavn)
-        assertEquals("12345678901", result.fnr)
-        assertEquals("1234567890123", result.aktorId)
-        assertEquals(setOf("12345678901", "10987654321"), result.alleFnr)
-        assertNull(result.doedsfall)
-        assertEquals(AdressebeskyttelseGradering.UGRADERT, result.adressebeskyttelseGradering)
-        assertNull(result.verge)
+        assertEquals("Ola Nordmann", result?.navn)
+        assertEquals("Ola", result?.fornavn)
+        assertEquals("Nordmann", result?.etternavn)
+        assertEquals("12345678901", result?.fnr)
+        assertEquals("1234567890123", result?.aktorId)
+        assertEquals(setOf("12345678901", "10987654321"), result?.alleFnr)
+        assertNull(result?.doedsfall)
+        assertEquals(AdressebeskyttelseGradering.UGRADERT, result?.adressebeskyttelseGradering)
+        assertNull(result?.verge)
     }
 
     @Test
@@ -46,12 +48,12 @@ class PdlPersondataParserTest {
         val result = parser.parsePdlResponse(response)
 
         // Then
-        assertEquals("Kari Anne Hansen", result.navn)
-        assertEquals("Kari Anne", result.fornavn)
-        assertEquals("Hansen", result.etternavn)
-        assertEquals(AdressebeskyttelseGradering.FORTROLIG, result.adressebeskyttelseGradering)
-        assertEquals("98765432109", result.verge)
-        assertEquals("2023-01-15", result.doedsfall)
+        assertEquals("Kari Anne Hansen", result?.navn)
+        assertEquals("Kari Anne", result?.fornavn)
+        assertEquals("Hansen", result?.etternavn)
+        assertEquals(AdressebeskyttelseGradering.FORTROLIG, result?.adressebeskyttelseGradering)
+        assertEquals("98765432109", result?.verge)
+        assertEquals("2023-01-15", result?.doedsfall)
     }
 
     @Test
@@ -69,7 +71,7 @@ class PdlPersondataParserTest {
             val result = parser.parsePdlResponse(response)
 
             // Then
-            assertEquals(gradering, result.adressebeskyttelseGradering)
+            assertEquals(gradering, result?.adressebeskyttelseGradering)
         }
     }
 
@@ -82,9 +84,9 @@ class PdlPersondataParserTest {
         val result = parser.parsePdlResponse(response)
 
         // Then
-        assertEquals("Ola Nordmann", result.navn)
-        assertEquals("Ola", result.fornavn)
-        assertEquals("Nordmann", result.etternavn)
+        assertEquals("Ola Nordmann", result?.navn)
+        assertEquals("Ola", result?.fornavn)
+        assertEquals("Nordmann", result?.etternavn)
     }
 
     @Test
@@ -96,22 +98,23 @@ class PdlPersondataParserTest {
         val result = parser.parsePdlResponse(response)
 
         // Then
-        assertEquals("12345678901", result.fnr) // Aktivt FNR
-        assertEquals("1234567890123", result.aktorId) // Aktiv AktørID
-        assertEquals(setOf("12345678901", "98765432109", "11111111111"), result.alleFnr) // Alle FNR
+        assertEquals("12345678901", result?.fnr) // Aktivt FNR
+        assertEquals("1234567890123", result?.aktorId) // Aktiv AktørID
+        assertEquals(setOf("12345678901", "98765432109", "11111111111"), result?.alleFnr) // Alle FNR
     }
 
     @Test
-    fun `parsePdlResponse kaster HttpClientErrorException ved UNAUTHORIZED feil`() {
+    fun `parsePdlResponse returnerer person uten tilgang ved feilkode unauthorized`() {
         // Given
         val response = createPdlResponseWithError(PdlFeilkoder.UNAUTHORIZED, "Ikke tilgang")
 
-        // When & Then
-        val exception = assertThrows<HttpClientErrorException> {
-            parser.parsePdlResponse(response)
-        }
-        assertEquals(HttpStatus.FORBIDDEN, exception.statusCode)
-        assertTrue(exception.message?.contains("Ikke tilgang til person i PDL") == true)
+        // When
+        val result = parser.parsePdlResponse(response)
+
+        // Then
+        assertNotNull(result)
+        assertThat(result?.navn).contains("*")
+        assertThat(result?.harTilgang).isFalse()
     }
 
     @Test
@@ -119,12 +122,11 @@ class PdlPersondataParserTest {
         // Given
         val response = createPdlResponseWithError(PdlFeilkoder.NOT_FOUND, "Person ikke funnet")
 
-        // When & Then
-        val exception = assertThrows<HttpClientErrorException> {
-            parser.parsePdlResponse(response)
-        }
-        assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
-        assertTrue(exception.message?.contains("Person ikke funnet") == true)
+        // When
+        val result = parser.parsePdlResponse(response)
+
+        // Then
+        assertNull(result)
     }
 
     @Test
@@ -141,19 +143,18 @@ class PdlPersondataParserTest {
     }
 
     @Test
-    fun `parsePdlResponse kaster IllegalArgumentException ved ukjent feilkode`() {
+    fun `parsePdlResponse kaster RuntimeExeception ved ukjent feilkode`() {
         // Given
         val response = createPdlResponseWithError("UNKNOWN_ERROR", "Ukjent feil")
 
         // When & Then
-        val exception = assertThrows<IllegalArgumentException> {
-            parser.parsePdlResponse(response)
-        }
-        assertTrue(exception.message?.contains("Fikk feilmeldinger fra PDL") == true)
+      assertThatThrownBy{ parser.parsePdlResponse(response)}
+          .isInstanceOf(RuntimeException::class.java)
+          .hasMessageContaining("Uventet feil fra PDL")
     }
 
     @Test
-    fun `parsePdlResponse kaster IllegalArgumentException når data er null`() {
+    fun `parsePdlResponse kaster IllegalArgumentException når alle data er null`() {
         // Given
         val response = HentPdlResponse(data = null, errors = null)
 
@@ -183,7 +184,7 @@ class PdlPersondataParserTest {
     }
 
     @Test
-    fun `parsePdlResponse kaster IllegalArgumentException når person er null`() {
+    fun `parsePdlResponse gir default navn og ingen tilgang når person er null`() {
         // Given
         val response = HentPdlResponse(
             data = PdlData(
@@ -197,41 +198,15 @@ class PdlPersondataParserTest {
             ),
             errors = null
         )
+        // When
+        val result = parser.parsePdlResponse(response)
 
-        // When & Then
-        val exception = assertThrows<IllegalArgumentException> {
-            parser.parsePdlResponse(response)
-        }
-        assertEquals("Forventet å finne persondata", exception.message)
+        // Then
+        assertNotNull(result)
+        assertEquals(false, result?.harTilgang)
     }
 
-    @Test
-    fun `parsePdlResponse kaster IllegalArgumentException når navn mangler`() {
-        // Given
-        val response = HentPdlResponse(
-            data = PdlData(
-                hentPerson = Person(
-                    navn = emptyList(),
-                    doedsfall = emptyList(),
-                    adressebeskyttelse = emptyList(),
-                    vergemaalEllerFremtidsfullmakt = emptyList()
-                ),
-                hentIdenter = Identliste(
-                    identer = listOf(
-                        IdentInformasjon("12345678901", IdentGruppe.FOLKEREGISTERIDENT, false),
-                        IdentInformasjon("1234567890123", IdentGruppe.AKTORID, false)
-                    )
-                )
-            ),
-            errors = null
-        )
 
-        // When & Then
-        val exception = assertThrows<IllegalArgumentException> {
-            parser.parsePdlResponse(response)
-        }
-        assertEquals("Forventet å finne navn på person", exception.message)
-    }
 
     @Test
     fun `parsePdlResponse håndterer multiple feil og viser alle i feilmelding`() {
@@ -253,7 +228,7 @@ class PdlPersondataParserTest {
         val response = HentPdlResponse(data = null, errors = errors)
 
         // When & Then
-        val exception = assertThrows<IllegalArgumentException> {
+        val exception = assertThrows<RuntimeException> {
             parser.parsePdlResponse(response)
         }
         assertTrue(exception.message?.contains("ERROR_1") == true)
@@ -372,7 +347,15 @@ class PdlPersondataParserTest {
 
     private fun createPdlResponseWithError(errorCode: String, message: String): HentPdlResponse {
         return HentPdlResponse(
-            data = null,
+            data = PdlData(
+                hentPerson = null,
+                hentIdenter = Identliste(
+                    identer = listOf(
+                        IdentInformasjon("12345678901", IdentGruppe.FOLKEREGISTERIDENT, false),
+                        IdentInformasjon("1234567890123", IdentGruppe.AKTORID, false)
+                    )
+                )
+            ),
             errors = listOf(
                 PdlError(
                     message = message,

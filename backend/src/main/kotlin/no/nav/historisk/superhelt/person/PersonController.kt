@@ -17,7 +17,6 @@ class PersonController(
 //    @PreAuthorize("@tilgangsmaskin.harTilgang(#request.fnr)")
     @PostMapping()
     fun hentPersondataMedPersonident(@RequestBody @Valid request: PersonRequest): Person {
-       // TODO legge inn avvisningsårsak i responsen
         val persondata = personService.hentPerson(request.fnr)
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
         val maskertPersonident = personService.maskerFnr(request.fnr)

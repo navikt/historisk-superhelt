@@ -45,8 +45,8 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertTrue(result.harTilgang)
-        assertEquals(null, result.response)
+        assertTrue(result?.harTilgang)
+        assertEquals(null, result?.response)
         mockServer.verify()
     }
 
@@ -80,11 +80,11 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_STRENGT_FORTROLIG_ADRESSE, result.response?.title)
-        assertEquals(403, result.response?.status)
-        assertFalse(result.response?.kanOverstyres ?: true)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_STRENGT_FORTROLIG_ADRESSE, result?.response?.title)
+        assertEquals(403, result?.response?.status)
+        assertFalse(result?.response?.kanOverstyres ?: true)
         mockServer.verify()
     }
 
@@ -116,10 +116,10 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_STRENGT_FORTROLIG_UTLAND, result.response?.title)
-        assertEquals(403, result.response?.status)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_STRENGT_FORTROLIG_UTLAND, result?.response?.title)
+        assertEquals(403, result?.response?.status)
         mockServer.verify()
     }
 
@@ -151,10 +151,10 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_FORTROLIG_ADRESSE, result.response?.title)
-        assertEquals(403, result.response?.status)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_FORTROLIG_ADRESSE, result?.response?.title)
+        assertEquals(403, result?.response?.status)
         mockServer.verify()
     }
 
@@ -186,10 +186,10 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_SKJERMING, result.response?.title)
-        assertTrue(result.response?.kanOverstyres ?: false)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_SKJERMING, result?.response?.title)
+        assertTrue(result?.response?.kanOverstyres ?: false)
         mockServer.verify()
     }
 
@@ -221,9 +221,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_GEOGRAFISK, result.response?.title)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_GEOGRAFISK, result?.response?.title)
         mockServer.verify()
     }
 
@@ -255,9 +255,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_HABILITET, result.response?.title)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_HABILITET, result?.response?.title)
         mockServer.verify()
     }
 
@@ -289,9 +289,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_PERSON_UTLAND, result.response?.title)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_PERSON_UTLAND, result?.response?.title)
         mockServer.verify()
     }
 
@@ -323,9 +323,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_UKJENT_BOSTED, result.response?.title)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_UKJENT_BOSTED, result?.response?.title)
         mockServer.verify()
     }
 
@@ -357,9 +357,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.AVVIST_AVDØD, result.response?.title)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.AVVIST_AVDØD, result?.response?.title)
         mockServer.verify()
     }
 
@@ -376,11 +376,11 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result.harTilgang)
-        assertNotNull(result.response)
-        assertEquals(Avvisningskode.UKJENT_PERSON, result.response?.title)
-        assertEquals(404, result.response?.status)
-        assertEquals("Personen finnes ikke", result.response?.begrunnelse)
+        assertFalse(result?.harTilgang)
+        assertNotNull(result?.response)
+        assertEquals(Avvisningskode.UKJENT_PERSON, result?.response?.title)
+        assertEquals(404, result?.response?.status)
+        assertEquals("Personen finnes ikke", result?.response?.begrunnelse)
         mockServer.verify()
     }
 

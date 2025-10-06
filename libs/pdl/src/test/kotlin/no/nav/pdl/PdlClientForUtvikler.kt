@@ -1,5 +1,7 @@
 package no.nav.pdl
 
+import no.nav.person.PdlPersondataParser
+import no.nav.person.Persondata
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpRequest
@@ -24,25 +26,34 @@ class PdlClientForUtvikler {
 
     private val pdlClient = PdlClient(getRestClient(), "B986")
 
+    private fun getAndParse(ident: String): Persondata? {
+        val response=pdlClient.getPersonOgIdenter(ident)
+        println(response)
+        return PdlPersondataParser().parsePdlResponse(response)
+    }
+
     @Test
     fun `egen ansatt`() {
-        val personInfo = pdlClient.getPersonOgIdenter("10507646250")
+        val personInfo = getAndParse("10507646250")
         println(personInfo)
-    }    @Test
+    }
+
+
+    @Test
     fun `død`() {
-        val personInfo = pdlClient.getPersonOgIdenter("04457215563")
+        val personInfo = getAndParse("04457215563")
         println(personInfo)
     }
 
     @Test
     fun `fortrolig adresse`() {
-        val personInfo = pdlClient.getPersonOgIdenter("19475832941")
+        val personInfo = getAndParse("19475832941")
         println(personInfo)
     }
 
     @Test
     fun `Ikke funnet`() {
-        val personInfo = pdlClient.getPersonOgIdenter("12345678901")
+        val personInfo = getAndParse("12345678901")
         println(personInfo)
     }
 
