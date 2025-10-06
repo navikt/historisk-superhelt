@@ -24,9 +24,6 @@ enum class Avvisningskode {
     AVVIST_GEOGRAFISK,
     AVVIST_HABILITET,
 
-    // Egen kode for  person som ikke er funnet
+    // Egen kode for person som ikke er funnet
     UKJENT_PERSON
-    ;
 }
-
-

@@ -43,13 +43,13 @@ class TilgangsmaskinClientForUtvikler {
 
     @Test
     fun `fortrolig adresse`() {
-        val personInfo = pdlClient.kjerne("19475832941")
+        val personInfo = pdlClient.komplett("19475832941")
         println(personInfo)
     }
 
     @Test
     fun `Ikke funnet`() {
-        val personInfo = pdlClient.kjerne("tullball")
+        val personInfo = pdlClient.komplett("tullball")
         println(personInfo)
     }
 
