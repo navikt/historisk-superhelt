@@ -7,21 +7,30 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableConfigurationProperties(GruppeConfigProperties::class)
-class GruppeConfig {
+class GruppeRoleConfig {
     @Bean
-    fun gruppeMapping(props: GruppeConfigProperties): Map<String, Gruppe> {
+    fun gruppeRoleMapping(props: GruppeConfigProperties): Map<String, Role> {
         return mapOf(
-            props.les to Gruppe.LES,
-            props.saksbehandler to Gruppe.SAKSBEHANDLER,
-            props.attestant to Gruppe.ATTESTANT,
+            props.les to Role.LES,
+            props.saksbehandler to Role.SAKSBEHANDLER,
+            props.attestant to Role.ATTESTANT,
         )
     }
 }
 
-enum class Gruppe {
-    LES,
-    SAKSBEHANDLER,
-    ATTESTANT,
+enum class Permission {
+    READ,
+    WRITE,
+    DELETE,
+}
+
+enum class Role(private vararg val _permissions: Permission) {
+    LES(Permission.READ),
+    SAKSBEHANDLER(Permission.READ, Permission.WRITE),
+    ATTESTANT(Permission.READ);
+
+    val permissions: List<Permission>
+        get() = _permissions.toList()
 }
 
 @ConfigurationProperties(prefix = "app.gruppe")
