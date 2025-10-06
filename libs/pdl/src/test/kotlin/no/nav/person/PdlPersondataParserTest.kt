@@ -27,7 +27,6 @@ class PdlPersondataParserTest {
         // When
         val result = parser.parsePdlResponse(response)
 
-        // Then
         assertEquals("Ola Nordmann", result?.navn)
         assertEquals("Ola", result?.fornavn)
         assertEquals("Nordmann", result?.etternavn)
@@ -37,6 +36,7 @@ class PdlPersondataParserTest {
         assertNull(result?.doedsfall)
         assertEquals(AdressebeskyttelseGradering.UGRADERT, result?.adressebeskyttelseGradering)
         assertNull(result?.verge)
+        assertThat(result?.verge).isNull()
     }
 
     @Test
@@ -46,14 +46,14 @@ class PdlPersondataParserTest {
 
         // When
         val result = parser.parsePdlResponse(response)
-
-        // Then
         assertEquals("Kari Anne Hansen", result?.navn)
         assertEquals("Kari Anne", result?.fornavn)
         assertEquals("Hansen", result?.etternavn)
         assertEquals(AdressebeskyttelseGradering.FORTROLIG, result?.adressebeskyttelseGradering)
         assertEquals("98765432109", result?.verge)
         assertEquals("2023-01-15", result?.doedsfall)
+        assertThat(result?.verge).isEqualTo("98765432109")
+        assertThat(result?.doedsfall).isEqualTo("2023-01-15")
     }
 
     @Test
@@ -70,8 +70,8 @@ class PdlPersondataParserTest {
             // When
             val result = parser.parsePdlResponse(response)
 
-            // Then
             assertEquals(gradering, result?.adressebeskyttelseGradering)
+            assertThat(result?.adressebeskyttelseGradering).isEqualTo(gradering)
         }
     }
 
@@ -198,15 +198,16 @@ class PdlPersondataParserTest {
             ),
             errors = null
         )
+
         // When
         val result = parser.parsePdlResponse(response)
-
-        // Then
         assertNotNull(result)
         assertEquals(false, result?.harTilgang)
+        assertThat(result).isNotNull
+        assertThat(result?.harTilgang).isFalse()
+
+
     }
-
-
 
     @Test
     fun `parsePdlResponse håndterer multiple feil og viser alle i feilmelding`() {
@@ -227,7 +228,6 @@ class PdlPersondataParserTest {
         )
         val response = HentPdlResponse(data = null, errors = errors)
 
-        // When & Then
         val exception = assertThrows<RuntimeException> {
             parser.parsePdlResponse(response)
         }

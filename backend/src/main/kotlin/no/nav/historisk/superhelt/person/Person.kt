@@ -19,7 +19,7 @@ data class Person(
     val fnr: Fnr,
     val maskertPersonident: String,
     val doed: Boolean = false,
-    val adressebeskyttelseGradering: AdressebeskyttelseGradering = AdressebeskyttelseGradering.UGRADERT,
+    val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
     val verge: Boolean = false,
     val avvisningsKode: Avvisningskode? = null,
     val avvisningsBegrunnelse: String? = null

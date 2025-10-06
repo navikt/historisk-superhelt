@@ -1,7 +1,6 @@
 package no.nav.person
 
 import no.nav.pdl.AdressebeskyttelseGradering
-import java.time.LocalDate
 
 data class Persondata(
     val navn: String,

@@ -2,9 +2,9 @@ package no.nav.tilgangsmaskin
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import org.junit.jupiter.api.BeforeEach
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -13,10 +13,6 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.*
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class TilgangsmaskinClientTest {
 
@@ -45,8 +41,8 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertTrue(result?.harTilgang)
-        assertEquals(null, result?.response)
+        assertThat(result.harTilgang).isTrue()
+        assertThat(result.response).isNull()
         mockServer.verify()
     }
 
@@ -80,11 +76,11 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_STRENGT_FORTROLIG_ADRESSE, result?.response?.title)
-        assertEquals(403, result?.response?.status)
-        assertFalse(result?.response?.kanOverstyres ?: true)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_STRENGT_FORTROLIG_ADRESSE)
+        assertThat(result.response?.status).isEqualTo(403)
+        assertThat(result.response?.kanOverstyres).isFalse()
         mockServer.verify()
     }
 
@@ -116,10 +112,10 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_STRENGT_FORTROLIG_UTLAND, result?.response?.title)
-        assertEquals(403, result?.response?.status)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_STRENGT_FORTROLIG_UTLAND)
+        assertThat(result.response?.status).isEqualTo(403)
         mockServer.verify()
     }
 
@@ -151,10 +147,10 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_FORTROLIG_ADRESSE, result?.response?.title)
-        assertEquals(403, result?.response?.status)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_FORTROLIG_ADRESSE)
+        assertThat(result.response?.status).isEqualTo(403)
         mockServer.verify()
     }
 
@@ -186,10 +182,10 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_SKJERMING, result?.response?.title)
-        assertTrue(result?.response?.kanOverstyres ?: false)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_SKJERMING)
+        assertThat(result.response?.kanOverstyres).isTrue()
         mockServer.verify()
     }
 
@@ -221,9 +217,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_GEOGRAFISK, result?.response?.title)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_GEOGRAFISK)
         mockServer.verify()
     }
 
@@ -255,9 +251,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_HABILITET, result?.response?.title)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_HABILITET)
         mockServer.verify()
     }
 
@@ -289,9 +285,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_PERSON_UTLAND, result?.response?.title)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_PERSON_UTLAND)
         mockServer.verify()
     }
 
@@ -323,9 +319,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_UKJENT_BOSTED, result?.response?.title)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_UKJENT_BOSTED)
         mockServer.verify()
     }
 
@@ -357,9 +353,9 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.AVVIST_AVDØD, result?.response?.title)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.AVVIST_AVDØD)
         mockServer.verify()
     }
 
@@ -376,11 +372,11 @@ class TilgangsmaskinClientTest {
         val result = tilgangsmaskinClient.komplett(personident)
 
         // Assert
-        assertFalse(result?.harTilgang)
-        assertNotNull(result?.response)
-        assertEquals(Avvisningskode.UKJENT_PERSON, result?.response?.title)
-        assertEquals(404, result?.response?.status)
-        assertEquals("Personen finnes ikke", result?.response?.begrunnelse)
+        assertThat(result.harTilgang).isFalse()
+        assertThat(result.response).isNotNull
+        assertThat(result.response?.title).isEqualTo(Avvisningskode.UKJENT_PERSON)
+        assertThat(result.response?.status).isEqualTo(404)
+        assertThat(result.response?.begrunnelse).isEqualTo("Personen finnes ikke")
         mockServer.verify()
     }
 
@@ -394,9 +390,9 @@ class TilgangsmaskinClientTest {
             .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
 
         // Act & Assert
-        assertThrows<RuntimeException> {
+        assertThatThrownBy {
             tilgangsmaskinClient.komplett(personident)
-        }
+        }.isInstanceOf(RuntimeException::class.java)
         mockServer.verify()
     }
 
@@ -410,9 +406,9 @@ class TilgangsmaskinClientTest {
             .andRespond(withStatus(HttpStatus.BAD_REQUEST))
 
         // Act & Assert
-        assertThrows<RuntimeException> {
+        assertThatThrownBy {
             tilgangsmaskinClient.komplett(personident)
-        }
+        }.isInstanceOf(RuntimeException::class.java)
         mockServer.verify()
     }
 }
