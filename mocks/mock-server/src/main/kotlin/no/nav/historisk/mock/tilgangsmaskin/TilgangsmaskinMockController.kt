@@ -1,7 +1,8 @@
 package no.nav.historisk.mock.tilgangsmaskin
 
-import no.nav.historisk.integration.tilgangsmaskin.Avvisningskoder
-import no.nav.historisk.integration.tilgangsmaskin.ProblemDetaljResponse
+
+import no.nav.tilgangsmaskin.Avvisningskode
+import no.nav.tilgangsmaskin.ProblemDetaljResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,11 +16,11 @@ class TilgangsmaskinMockController {
     @PostMapping("/api/v1/komplett", "/api/v1/kjerne")
     fun komplett(@RequestBody personident: String): ResponseEntity<Any?> {
         // todo: vi behøver en personmodell som er konsistent med pdl-mocken.
-        val avvisningskode: Avvisningskoder? =
+        val avvisningskode: Avvisningskode? =
             if (personident.startsWith("6")) {
-                Avvisningskoder.KjenteVerdier.AVVIST_STRENGT_FORTROLIG_ADRESSE
+                Avvisningskode.AVVIST_STRENGT_FORTROLIG_ADRESSE
             } else if (personident.startsWith("7")) {
-                Avvisningskoder.KjenteVerdier.AVVIST_SKJERMING
+                Avvisningskode.AVVIST_SKJERMING
             } else {
                 null
             }

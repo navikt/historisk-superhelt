@@ -1,8 +1,5 @@
 package no.nav.tilgangsmaskin
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonValue
-
 data class ProblemDetaljResponse(
     val type: String,
     val title: Avvisningskode,
@@ -16,15 +13,20 @@ data class ProblemDetaljResponse(
 )
 
 enum class Avvisningskode {
+    // Fra schema https://tilgangsmaskin.intern.nav.no/swagger-ui/index.html#/TilgangController/kjerneregler
     AVVIST_STRENGT_FORTROLIG_ADRESSE,
     AVVIST_STRENGT_FORTROLIG_UTLAND,
     AVVIST_AVDØD,
     AVVIST_PERSON_UTLAND,
     AVVIST_SKJERMING,
     AVVIST_FORTROLIG_ADRESSE,
-    AVVIST_PERSON_UKJENT,
+    AVVIST_UKJENT_BOSTED,
     AVVIST_GEOGRAFISK,
-    AVVIST_HABILITET;
+    AVVIST_HABILITET,
+
+    // Egen kode for  person som ikke er funnet
+    UKJENT_PERSON
+    ;
 }
 
 
