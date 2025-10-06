@@ -107,7 +107,7 @@ function SakPage() {
   return (
     <VStack gap="6">
       <Heading size="xlarge">Behandle sak</Heading>
-      <PersonHeader/>
+      <PersonHeader maskertPersonId={"todo"}/>
       <HStack gap="6" align="start">
         {/* Saksliste */}
         <VStack gap="4" style={{ minWidth: '300px' }}>

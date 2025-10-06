@@ -1,5 +1,5 @@
 import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Search, Spacer} from "@navikt/ds-react";
-import {Link as RouterLink} from "@tanstack/react-router";
+import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
 import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
@@ -13,6 +13,8 @@ interface Props {
 export function Header() {
     const [search, setSearch] = useState<string>();
     const [seachError, setSearchError] = useState<string>();
+    const navigate= useNavigate()
+
     // const {  data: username}  = useQuery({ queryKey: ['user'], queryFn: fetchUser })
     const {data: user} = useQuery({
         ...getUserInfoOptions()
@@ -32,6 +34,9 @@ export function Header() {
             setSearchError("Noe gikk galt "+ error)
         }
         console.log(data)
+        await navigate({to:"/person/$personid", params:{ personid: data?.maskertPersonident!}})
+        setSearch("")
+        setSearchError(undefined)
 
     }
 

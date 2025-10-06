@@ -3,12 +3,12 @@ import {Button, Heading, HStack, Panel, Table, Tabs, Tag, VStack} from '@navikt/
 import {ExternalLinkIcon, FileTextIcon} from '@navikt/aksel-icons'
 import {PersonHeader} from "~/components/PersonHeader";
 
-export const Route = createFileRoute('/person')({
+export const Route = createFileRoute('/person/$personid')({
   component: PersonPage,
 })
 
 function PersonPage() {
-
+  const { personid } = Route.useParams()
 
   const saker = [
     {
@@ -71,7 +71,7 @@ function PersonPage() {
     <VStack gap="6">
       <Heading size="xlarge">Personside</Heading>
 
-      <PersonHeader/>
+      <PersonHeader maskertPersonId={personid}/>
 
       <Tabs defaultValue="saker">
         <Tabs.List>
