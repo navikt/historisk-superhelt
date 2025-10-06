@@ -73,9 +73,9 @@ spec:
       value: https://pdl-api.{{env}}-fss-pub.nais.io
     - name: APP_PDL_AUDIENCE
       value: api://{{env}}-fss.pdl.pdl-api/.default
-    - name: TILGANGSMASKIN_BASE_URL
+    - name: APP_TILGANGSMASKIN_URL
       value: "http://populasjonstilgangskontroll.tilgangsmaskin"
-    - name: TILGANGSMASKIN_SCOPES
+    - name: APP_TILGANGSMASKIN_AUDIENCE
       value: "api://{{env}}-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"
 
 
