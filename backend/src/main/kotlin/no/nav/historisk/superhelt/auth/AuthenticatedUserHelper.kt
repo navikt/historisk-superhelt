@@ -4,6 +4,16 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
+val rolePrefix = "ROLE_"
+
+fun getCurrentUserRoles(): List<Role> {
+    val authentication = getJwtAuthentication()
+    return authentication?.authorities
+        ?.filter { it.authority.startsWith(rolePrefix) }
+        ?.map { it.authority.removePrefix(rolePrefix) }
+        ?.mapNotNull { Role.valueOf(it) } ?: emptyList()
+
+}
 
 fun getCurrentNavIdent(): String? {
     val authentication = getJwtAuthentication()

@@ -1,6 +1,10 @@
 spring:
   application:
     name: super
+  http:
+    client:
+      connect-timeout: 1s
+      read-timeout: 3s
   security:
     oauth2:
       resourceserver:

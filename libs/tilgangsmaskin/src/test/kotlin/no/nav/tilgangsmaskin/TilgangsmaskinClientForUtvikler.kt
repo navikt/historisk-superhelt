@@ -1,59 +1,55 @@
-package no.nav.pdl
+package no.nav.tilgangsmaskin
 
-import no.nav.person.PdlPersondataParser
-import no.nav.person.Persondata
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestClient
-import java.util.UUID
 
 @Disabled
-class PdlClientForUtvikler {
+class TilgangsmaskinClientForUtvikler {
 
     /**
-     * Genereres i Ida  auth token med client id dev-fss.pdl.pdl-api
+     * Genereres i Ida  auth token med client id dev-gcp.tilgangsmaskin.populasjonstilgangskontroll
      */
 
     val accessToken = """
-        
+      
       """.trimIndent()
 
-    private val baseUrl = "https://pdl-api.dev.intern.nav.no"
-    //    private val baseUrl = "http://localhost:9080/pdl-mock"
+    private val baseUrl = "https://tilgangsmaskin.intern.dev.nav.no/"
+    //    private val baseUrl = "http://localhost:9080/tilgangsmaskin-mock""
 
-    private val pdlClient = PdlClient(getRestClient(), "B986")
+    private val pdlClient = TilgangsmaskinClient(getRestClient())
 
-    private fun getAndParse(ident: String): Persondata? {
-        val response=pdlClient.getPersonOgIdenter(ident)
-        println(response)
-        return PdlPersondataParser().parsePdlResponse(response)
+    @Test
+    fun `normal`() {
+        val personInfo = pdlClient.komplett("28498914510")
+        println(personInfo)
     }
 
     @Test
     fun `egen ansatt`() {
-        val personInfo = getAndParse("10507646250")
+        val personInfo = pdlClient.komplett("10507646250")
         println(personInfo)
     }
 
-
     @Test
     fun `død`() {
-        val personInfo = getAndParse("04457215563")
+        val personInfo = pdlClient.komplett("04457215563")
         println(personInfo)
     }
 
     @Test
     fun `fortrolig adresse`() {
-        val personInfo = getAndParse("19475832941")
+        val personInfo = pdlClient.komplett("19475832941")
         println(personInfo)
     }
 
     @Test
     fun `Ikke funnet`() {
-        val personInfo = getAndParse("12345678901")
+        val personInfo = pdlClient.komplett("tullball")
         println(personInfo)
     }
 
@@ -61,9 +57,9 @@ class PdlClientForUtvikler {
         return RestClient.builder()
             .baseUrl(baseUrl)
             .requestInterceptor(bearerTokenInterceptor())
-            .defaultHeaders { headers ->
-                headers.set("Nav-Call-Id", UUID.randomUUID().toString())
-            }
+//            .defaultHeaders { headers ->
+//                headers.set("Nav-Call-Id", UUID.randomUUID().toString())
+//            }
             .build()
     }
 

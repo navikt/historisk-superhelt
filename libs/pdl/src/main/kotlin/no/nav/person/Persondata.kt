@@ -1,7 +1,6 @@
 package no.nav.person
 
 import no.nav.pdl.AdressebeskyttelseGradering
-import java.time.LocalDate
 
 data class Persondata(
     val navn: String,
@@ -11,8 +10,9 @@ data class Persondata(
     val aktorId: AktorId,
     val alleFnr: Set<Fnr>,
     val doedsfall: Doedsfall,
-    val adressebeskyttelseGradering: AdressebeskyttelseGradering = AdressebeskyttelseGradering.UGRADERT,
-    val verge: Fnr?
+    val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
+    val verge: Fnr?,
+    val harTilgang: Boolean
 )
 
 typealias Fnr = String

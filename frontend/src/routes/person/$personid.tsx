@@ -1,14 +1,14 @@
 import {createFileRoute, Link} from '@tanstack/react-router'
-import {Button, Heading, HStack, Panel, Table, Tabs, Tag, VStack} from '@navikt/ds-react'
+import {Box, Button, Heading, HStack, Table, Tabs, Tag, VStack} from '@navikt/ds-react'
 import {ExternalLinkIcon, FileTextIcon} from '@navikt/aksel-icons'
 import {PersonHeader} from "~/components/PersonHeader";
 
-export const Route = createFileRoute('/person')({
+export const Route = createFileRoute('/person/$personid')({
   component: PersonPage,
 })
 
 function PersonPage() {
-
+  const { personid } = Route.useParams()
 
   const saker = [
     {
@@ -71,7 +71,7 @@ function PersonPage() {
     <VStack gap="6">
       <Heading size="xlarge">Personside</Heading>
 
-      <PersonHeader/>
+      <PersonHeader maskertPersonId={personid}/>
 
       <Tabs defaultValue="saker">
         <Tabs.List>
@@ -80,7 +80,7 @@ function PersonPage() {
         </Tabs.List>
 
         <Tabs.Panel value="saker">
-          <Panel border>
+          <Box padding="4" borderWidth="1" borderRadius="small">
             <VStack gap="4">
               <Heading size="medium">Relevante saker</Heading>
               <Table>
@@ -116,11 +116,11 @@ function PersonPage() {
                 </Table.Body>
               </Table>
             </VStack>
-          </Panel>
+          </Box>
         </Tabs.Panel>
 
         <Tabs.Panel value="dokumenter">
-          <Panel border>
+          <Box padding="4" borderWidth="1" borderRadius="small">
             <VStack gap="4">
               <Heading size="medium">Dokumenter</Heading>
               <Table>
@@ -167,7 +167,7 @@ function PersonPage() {
                 </Table.Body>
               </Table>
             </VStack>
-          </Panel>
+          </Box>
         </Tabs.Panel>
       </Tabs>
     </VStack>

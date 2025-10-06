@@ -1,11 +1,9 @@
 package no.nav.pdl
 
-import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestClient
 
 class PdlClient(private val restClient: RestClient, private val behandlingsnummer: String) {
-    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun getPersonOgIdenter(ident: String): HentPdlResponse {
         val req = pdlRequest(ident)

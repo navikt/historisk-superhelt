@@ -38,7 +38,7 @@ class MappeApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun finnMapper(xCorrelationID: kotlin.String, tema: kotlin.collections.List<kotlin.String>? = null, enhetsnr: kotlin.String? = null, offset: kotlin.Long? = null, limit: kotlin.Long? = 10L): HentMapperResponse {
         val result = finnMapperWithHttpInfo(xCorrelationID = xCorrelationID, tema = tema, enhetsnr = enhetsnr, offset = offset, limit = limit)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -88,7 +88,7 @@ class MappeApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun hentMappe(xCorrelationID: kotlin.String, id: kotlin.Long): Mappe {
         val result = hentMappeWithHttpInfo(xCorrelationID = xCorrelationID, id = id)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)

@@ -11,7 +11,7 @@ import {
   VStack,
   HStack
 } from '@navikt/ds-react'
-import { PencilWritingIcon, PersonIcon } from '@navikt/aksel-icons'
+import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
 import {PersonHeader} from "~/components/PersonHeader";
 
@@ -124,7 +124,7 @@ Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
   return (
     <VStack gap="6">
       <Heading size="xlarge">Skriv brev</Heading>
-      <PersonHeader/>
+      <PersonHeader maskertPersonId={"todo"}/>
 
       <Panel border>
         <VStack gap="6">

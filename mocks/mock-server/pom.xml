@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.historisk</groupId>
-            <artifactId>tilgangsmaskin-dto</artifactId>
+            <artifactId>tilgangsmaskin</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

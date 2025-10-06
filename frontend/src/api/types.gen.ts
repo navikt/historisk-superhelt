@@ -37,13 +37,15 @@ export type Person = {
     fnr: string;
     maskertPersonident: string;
     doed: boolean;
-    adressebeskyttelseGradering: 'FORTROLIG' | 'STRENGT_FORTROLIG' | 'STRENGT_FORTROLIG_UTLAND' | 'UGRADERT';
+    adressebeskyttelseGradering?: 'FORTROLIG' | 'STRENGT_FORTROLIG' | 'STRENGT_FORTROLIG_UTLAND' | 'UGRADERT';
     verge: boolean;
+    avvisningsKode?: 'AVVIST_STRENGT_FORTROLIG_ADRESSE' | 'AVVIST_STRENGT_FORTROLIG_UTLAND' | 'AVVIST_AVDØD' | 'AVVIST_PERSON_UTLAND' | 'AVVIST_SKJERMING' | 'AVVIST_FORTROLIG_ADRESSE' | 'AVVIST_UKJENT_BOSTED' | 'AVVIST_GEOGRAFISK' | 'AVVIST_HABILITET' | 'UKJENT_PERSON';
+    avvisningsBegrunnelse?: string;
 };
 
 export type User = {
     name: string;
-    roles: Array<string>;
+    roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
 };
 
 export type GetAllSakerData = {
@@ -54,6 +56,10 @@ export type GetAllSakerData = {
 };
 
 export type GetAllSakerErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
     /**
      * Internal Server Error
      */
@@ -80,6 +86,10 @@ export type CreateSakData = {
 
 export type CreateSakErrors = {
     /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
      * Internal Server Error
      */
     500: ProblemDetail;
@@ -96,30 +106,34 @@ export type CreateSakResponses = {
 
 export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];
 
-export type HentPersondataMedPersonidentData = {
+export type FindPersonData = {
     body: PersonRequest;
     path?: never;
     query?: never;
     url: '/api/person/';
 };
 
-export type HentPersondataMedPersonidentErrors = {
+export type FindPersonErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
     /**
      * Internal Server Error
      */
     500: ProblemDetail;
 };
 
-export type HentPersondataMedPersonidentError = HentPersondataMedPersonidentErrors[keyof HentPersondataMedPersonidentErrors];
+export type FindPersonError = FindPersonErrors[keyof FindPersonErrors];
 
-export type HentPersondataMedPersonidentResponses = {
+export type FindPersonResponses = {
     /**
      * OK
      */
     200: Person;
 };
 
-export type HentPersondataMedPersonidentResponse = HentPersondataMedPersonidentResponses[keyof HentPersondataMedPersonidentResponses];
+export type FindPersonResponse = FindPersonResponses[keyof FindPersonResponses];
 
 export type GetUserInfoData = {
     body?: never;
@@ -129,6 +143,10 @@ export type GetUserInfoData = {
 };
 
 export type GetUserInfoErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
     /**
      * Internal Server Error
      */
@@ -157,6 +175,10 @@ export type GetSakBySaksnummerData = {
 
 export type GetSakBySaksnummerErrors = {
     /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
      * Internal Server Error
      */
     500: ProblemDetail;
@@ -172,6 +194,37 @@ export type GetSakBySaksnummerResponses = {
 };
 
 export type GetSakBySaksnummerResponse = GetSakBySaksnummerResponses[keyof GetSakBySaksnummerResponses];
+
+export type GetPersonData = {
+    body?: never;
+    path: {
+        maskertPersonident: string;
+    };
+    query?: never;
+    url: '/api/person/{maskertPersonident}';
+};
+
+export type GetPersonErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetPersonError = GetPersonErrors[keyof GetPersonErrors];
+
+export type GetPersonResponses = {
+    /**
+     * OK
+     */
+    200: Person;
+};
+
+export type GetPersonResponse = GetPersonResponses[keyof GetPersonResponses];
 
 export type ClientOptions = {
     baseUrl: 'http://localhost:8080' | (string & {});

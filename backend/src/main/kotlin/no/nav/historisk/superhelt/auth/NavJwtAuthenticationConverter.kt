@@ -9,19 +9,26 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component
 
 @Component
-class NavJwtAuthenticationConverter : Converter<Jwt, JwtAuthenticationToken> {
+class NavJwtAuthenticationConverter(private val gruppeRoleMapping: Map<String, Role> ) : Converter<Jwt, JwtAuthenticationToken> {
+
 
     override fun convert(jwt: Jwt): JwtAuthenticationToken {
-        val authorities = extractAuthorities(jwt)
+        val authorities = mapGroupsToAuthorities(jwt)
         val navIdent = extractNavIdent(jwt)
 
         return JwtAuthenticationToken(jwt, authorities, navIdent)
     }
 
-    private fun extractAuthorities(jwt: Jwt): Collection<GrantedAuthority> {
-        val groups = jwt.getClaimAsStringList("groups") ?: emptyList()
-//TODO Mappe om groups uuid til rolle enum
-        return groups.map { SimpleGrantedAuthority("ROLE_$it") }
+    private fun mapGroupsToAuthorities(jwt: Jwt): Collection<GrantedAuthority> {
+        val groupsClaims = jwt.getClaimAsStringList("groups") ?: emptyList()
+        val roles = groupsClaims.map { gruppeRoleMapping[it] }
+        val authorities = mutableSetOf<GrantedAuthority>()
+
+        roles.filterNotNull().forEach { role ->
+            authorities.add(SimpleGrantedAuthority("${rolePrefix}${role.name}"))
+            authorities.addAll(role.permissions.map { SimpleGrantedAuthority(it.name) })
+        }
+        return authorities
     }
 
     private fun extractNavIdent(jwt: Jwt): String? {

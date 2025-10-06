@@ -10,19 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SakRouteImport } from './routes/sak'
-import { Route as PersonRouteImport } from './routes/person'
 import { Route as BrevRouteImport } from './routes/brev'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PersonPersonidRouteImport } from './routes/person/$personid'
 
 const SakRoute = SakRouteImport.update({
   id: '/sak',
   path: '/sak',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PersonRoute = PersonRouteImport.update({
-  id: '/person',
-  path: '/person',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrevRoute = BrevRouteImport.update({
@@ -40,43 +35,48 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PersonPersonidRoute = PersonPersonidRouteImport.update({
+  id: '/person/$personid',
+  path: '/person/$personid',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/brev': typeof BrevRoute
-  '/person': typeof PersonRoute
   '/sak': typeof SakRoute
+  '/person/$personid': typeof PersonPersonidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/brev': typeof BrevRoute
-  '/person': typeof PersonRoute
   '/sak': typeof SakRoute
+  '/person/$personid': typeof PersonPersonidRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/brev': typeof BrevRoute
-  '/person': typeof PersonRoute
   '/sak': typeof SakRoute
+  '/person/$personid': typeof PersonPersonidRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/brev' | '/person' | '/sak'
+  fullPaths: '/' | '/about' | '/brev' | '/sak' | '/person/$personid'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/brev' | '/person' | '/sak'
-  id: '__root__' | '/' | '/about' | '/brev' | '/person' | '/sak'
+  to: '/' | '/about' | '/brev' | '/sak' | '/person/$personid'
+  id: '__root__' | '/' | '/about' | '/brev' | '/sak' | '/person/$personid'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BrevRoute: typeof BrevRoute
-  PersonRoute: typeof PersonRoute
   SakRoute: typeof SakRoute
+  PersonPersonidRoute: typeof PersonPersonidRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -86,13 +86,6 @@ declare module '@tanstack/react-router' {
       path: '/sak'
       fullPath: '/sak'
       preLoaderRoute: typeof SakRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/person': {
-      id: '/person'
-      path: '/person'
-      fullPath: '/person'
-      preLoaderRoute: typeof PersonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/brev': {
@@ -116,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/person/$personid': {
+      id: '/person/$personid'
+      path: '/person/$personid'
+      fullPath: '/person/$personid'
+      preLoaderRoute: typeof PersonPersonidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -123,8 +123,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BrevRoute: BrevRoute,
-  PersonRoute: PersonRoute,
   SakRoute: SakRoute,
+  PersonPersonidRoute: PersonPersonidRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

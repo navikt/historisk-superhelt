@@ -40,7 +40,7 @@ class DefaultApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun finnOppgaver1(enhetsnr: kotlin.String, xCorrelationID: kotlin.String? = null, oppgavesok: Oppgavesok? = null): SokOppgaverResponse {
         val result = finnOppgaver1WithHttpInfo(enhetsnr = enhetsnr, xCorrelationID = xCorrelationID, oppgavesok = oppgavesok)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -78,7 +78,7 @@ class DefaultApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun hentRestanse(enhetsnr: kotlin.String, xCorrelationID: kotlin.String? = null, filter: Filter? = null): SokOppgaverResponse {
         val result = hentRestanseWithHttpInfo(enhetsnr = enhetsnr, xCorrelationID = xCorrelationID, filter = filter)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -150,7 +150,7 @@ class DefaultApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun tildelMeg(enhetsnr: kotlin.String, xCorrelationID: kotlin.String? = null, koekriterier: Koekriterier? = null): SokOppgaverResponse {
         val result = tildelMegWithHttpInfo(enhetsnr = enhetsnr, xCorrelationID = xCorrelationID, koekriterier = koekriterier)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
