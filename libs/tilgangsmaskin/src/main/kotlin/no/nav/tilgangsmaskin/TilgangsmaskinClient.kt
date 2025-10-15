@@ -13,10 +13,6 @@ class TilgangsmaskinClient(private val restClient: RestClient) {
         return sjekkTilgang("/api/v1/komplett", personident)
     }
 
-//    fun kjerne(personident: String): TilgangResult {
-//        return sjekkTilgang("/api/v1/kjerne", personident)
-//    }
-
     private fun sjekkTilgang(url: String, personident: String): TilgangResult {
         try {
             val responseEntity = restClient

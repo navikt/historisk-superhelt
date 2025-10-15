@@ -31,7 +31,7 @@ class SakService(private val sakRepository: SakRepository) {
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.person)")
+    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject?.person)")
     fun findBySaksnummer(saksnummer: Saksnummer): SakDto? {
         return sakRepository.findByIdOrNull(saksnummer.toId())?.toResponseDto()
     }
