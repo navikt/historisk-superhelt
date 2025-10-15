@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/user")
 class UserController {
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     fun getUserInfo(auth: Authentication): User {
         val roles = getCurrentUserRoles()

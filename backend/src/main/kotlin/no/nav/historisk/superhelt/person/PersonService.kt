@@ -12,7 +12,6 @@ class PersonService(
 ) {
     private val pdlParser = PdlPersondataParser()
 
-    //    @PreAuthorize("@tilgangsmaskin.harTilgang(#fnr)")
     // TODO caching?
     fun hentPerson(fnr: Fnr): Persondata? {
         val pdlResponse = pdlClient.getPersonOgIdenter(ident = fnr)
