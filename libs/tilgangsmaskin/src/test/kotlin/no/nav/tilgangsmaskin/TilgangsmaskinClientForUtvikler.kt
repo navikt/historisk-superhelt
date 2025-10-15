@@ -15,41 +15,40 @@ class TilgangsmaskinClientForUtvikler {
      */
 
     val accessToken = """
-      
       """.trimIndent()
 
     private val baseUrl = "https://tilgangsmaskin.intern.dev.nav.no/"
     //    private val baseUrl = "http://localhost:9080/tilgangsmaskin-mock""
 
-    private val pdlClient = TilgangsmaskinClient(getRestClient())
+    private val tilgangsmaskinClient = TilgangsmaskinClient(getRestClient())
 
     @Test
     fun `normal`() {
-        val personInfo = pdlClient.komplett("28498914510")
+        val personInfo = tilgangsmaskinClient.komplett("28498914510")
         println(personInfo)
     }
 
     @Test
     fun `egen ansatt`() {
-        val personInfo = pdlClient.komplett("10507646250")
+        val personInfo = tilgangsmaskinClient.komplett("10507646250")
         println(personInfo)
     }
 
     @Test
     fun `død`() {
-        val personInfo = pdlClient.komplett("04457215563")
+        val personInfo = tilgangsmaskinClient.komplett("04457215563")
         println(personInfo)
     }
 
     @Test
     fun `fortrolig adresse`() {
-        val personInfo = pdlClient.komplett("19475832941")
+        val personInfo = tilgangsmaskinClient.komplett("19475832941")
         println(personInfo)
     }
 
     @Test
     fun `Ikke funnet`() {
-        val personInfo = pdlClient.komplett("tullball")
+        val personInfo = tilgangsmaskinClient.komplett("tullball")
         println(personInfo)
     }
 

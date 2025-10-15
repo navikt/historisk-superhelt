@@ -18,7 +18,6 @@ class PdlClientForUtvikler {
      */
 
     val accessToken = """
-        
       """.trimIndent()
 
     private val baseUrl = "https://pdl-api.dev.intern.nav.no"
@@ -30,6 +29,12 @@ class PdlClientForUtvikler {
         val response=pdlClient.getPersonOgIdenter(ident)
         println(response)
         return PdlPersondataParser().parsePdlResponse(response)
+    }
+
+    @Test
+    fun `normal`() {
+        val personInfo = getAndParse("28498914510")
+        println(personInfo)
     }
 
     @Test
