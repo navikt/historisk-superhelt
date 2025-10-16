@@ -1,6 +1,9 @@
 package no.nav.historisk.mock.pdl
 
+import no.nav.pdl.HentPdlResponse
+import no.nav.pdl.PdlData
 import org.slf4j.LoggerFactory
+import org.springframework.validation.Errors
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -10,14 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("pdl-mock")
-class PdlMockController() {
+class PdlMockController(private val repository: PersonTestRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val repository = mutableMapOf<String, String>()
-
     @GetMapping()
-    fun info(): Map<String, String> {
-        return repository
+    fun info(): Map<String, PersonTestRepository.TestPerson> {
+        return repository.getAll()
     }
 
     @RequestMapping(value = ["/graphql"], method = [RequestMethod.OPTIONS])
@@ -25,19 +26,18 @@ class PdlMockController() {
     }
 
     @PostMapping(value = ["/graphql"], produces = ["application/json"])
-    fun graphql(@RequestBody body: GraphqlQuery<Variables>): String {
+    fun graphql(@RequestBody body: GraphqlQuery<Variables>): HentPdlResponse {
         logger.debug("søker etter : {}", body)
         val ident = body.variables.ident
-        return repository[ident]
-            ?: generateAndCacheResponse(ident)
+        val testPerson= repository.findOrCreate(ident)
+        if (testPerson.avisningskode!=null){
+            val errorData= testPerson.data.copy(hentPerson = null)
+            val errors = pdlError(testPerson.avisningskode)
+            return HentPdlResponse(data= errorData, errors=errors)
+        }
+        return HentPdlResponse(data= testPerson.data, errors=null)
     }
 
-    private fun generateAndCacheResponse(ident: String): String {
-        val response= generatePdlTestdata(ident)
-        repository[ident] = response
-        logger.info("Registerer ny person i PDL-mock: $ident -> $response")
-        return response
-    }
 
     data class Variables(
         val ident: String,
