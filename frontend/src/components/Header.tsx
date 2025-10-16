@@ -1,20 +1,44 @@
-import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
-import {Link as RouterLink} from "@tanstack/react-router";
+import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Search, Spacer} from "@navikt/ds-react";
+import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
 import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
-
-
+import {useState} from "react";
+import {findPerson} from "@api";
 
 export function Header() {
+    const [search, setSearch] = useState<string>();
+    const [searchError, setSearchError] = useState<string>();
+    const navigate= useNavigate()
+
     // const {  data: username}  = useQuery({ queryKey: ['user'], queryFn: fetchUser })
-    const {  data: user}  = useQuery({
+    const {data: user} = useQuery({
         ...getUserInfoOptions()
     })
 
+    async function doSearch() {
+        setSearchError(undefined)
+        if (search?.length != 11) {
+            setSearchError("Ugyldig fødselsnummer")
+        }
+
+        const {data, error} = await findPerson({
+                body: {fnr: search!}
+            }
+        )
+        if(error){
+            setSearchError("Noe gikk galt "+ error)
+        }
+        console.log(data)
+        await navigate({to:"/person/$personid", params:{ personid: data?.maskertPersonident!}})
+        setSearch("")
+        setSearchError(undefined)
+
+    }
+
     return <InternalHeader>
         <InternalHeader.Title as="h1">
-            <RouterLink to={"/"}><img src="logo.svg" height="35rem"/>Superhelt</RouterLink>
+            <RouterLink to={"/"}><img src="/logo.svg" height="35rem" alt={""}/>Superhelt</RouterLink>
 
         </InternalHeader.Title>
         <HStack
@@ -23,7 +47,7 @@ export function Header() {
             align="center"
             onSubmit={(e) => {
                 e.preventDefault();
-                console.info("Search!");
+                doSearch();
             }}
         >
             <Search
@@ -31,14 +55,17 @@ export function Header() {
                 size="small"
                 variant="simple"
                 placeholder="Finn person"
+                value={search}
+                onChange={setSearch}
+                error={searchError}
             />
         </HStack>
-        <Spacer />
+        <Spacer/>
 
-        <Dropdown >
+        <Dropdown>
             <InternalHeader.UserButton
                 as={Dropdown.Toggle}
-                name={user?.name?? "--"}
+                name={user?.name ?? "--"}
                 description="Enhet: Skien"
             />
             <Dropdown.Menu>
@@ -48,10 +75,10 @@ export function Header() {
                     </BodyShort>
                     <Detail as="dd">123123</Detail>
                 </dl>
-                <Dropdown.Menu.Divider />
+                <Dropdown.Menu.Divider/>
                 <Dropdown.Menu.List>
                     <Dropdown.Menu.List.Item>
-                        Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
+                        Logg ut <Spacer/> <LeaveIcon aria-hidden fontSize="1.5rem"/>
                     </Dropdown.Menu.List.Item>
                 </Dropdown.Menu.List>
             </Dropdown.Menu>

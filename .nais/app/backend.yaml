@@ -18,6 +18,10 @@ spec:
       claims:
         extra:
           - NAVident
+        groups:
+          - id: {{gruppe.saksbehandler}}
+          - id: {{gruppe.attestant}}
+          - id: {{gruppe.les}}
 
   liveness:
     path: /actuator/health/liveness
@@ -58,8 +62,19 @@ spec:
         - host: "dokdistfordeling.{{env}}-fss-pub.nais.io"
 
   env:
+    - name: APP_GRUPPE_SAKSBEHANDLER
+      value: "{{gruppe.saksbehandler}}"
+    - name: APP_GRUPPE_ATTESTANT
+      value: "{{gruppe.attestant}}"
+    - name: APP_GRUPPE_LES
+      value: "{{gruppe.les}}"
     - name: APP_PDL_URL
       value: https://pdl-api.{{env}}-fss-pub.nais.io
     - name: APP_PDL_AUDIENCE
       value: api://{{env}}-fss.pdl.pdl-api/.default
+    - name: APP_TILGANGSMASKIN_URL
+      value: "http://populasjonstilgangskontroll.tilgangsmaskin"
+    - name: APP_TILGANGSMASKIN_AUDIENCE
+      value: "api://{{env}}-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"
+
 

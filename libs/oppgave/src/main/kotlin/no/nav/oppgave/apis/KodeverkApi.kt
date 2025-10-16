@@ -39,7 +39,7 @@ class KodeverkApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun hentAlleTemaer(xCorrelationID: kotlin.String): kotlin.collections.List<Tema> {
         val result = hentAlleTemaerWithHttpInfo(xCorrelationID = xCorrelationID)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -75,7 +75,7 @@ class KodeverkApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun hentGjelderverdierForTema(xCorrelationID: kotlin.String, tema: kotlin.String): kotlin.collections.List<Gjelder> {
         val result = hentGjelderverdierForTemaWithHttpInfo(xCorrelationID = xCorrelationID, tema = tema)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -112,7 +112,7 @@ class KodeverkApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun hentOppgavetyperForTema(xCorrelationID: kotlin.String, tema: kotlin.String): kotlin.collections.List<Oppgavetype> {
         val result = hentOppgavetyperForTemaWithHttpInfo(xCorrelationID = xCorrelationID, tema = tema)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)

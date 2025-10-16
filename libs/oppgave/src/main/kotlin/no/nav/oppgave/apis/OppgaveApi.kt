@@ -41,7 +41,7 @@ class OppgaveApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun finnOppgaver(xCorrelationID: kotlin.String, statuskategori: kotlin.String? = null, tema: kotlin.collections.List<kotlin.String>? = null, oppgavetype: kotlin.collections.List<kotlin.String>? = null, tildeltEnhetsnr: kotlin.String? = null, tilordnetRessurs: kotlin.String? = null, behandlingstema: kotlin.String? = null, behandlingstype: kotlin.String? = null, aktoerId: kotlin.collections.List<kotlin.String>? = null, journalpostId: kotlin.collections.List<kotlin.String>? = null, saksreferanse: kotlin.collections.List<kotlin.String>? = null, ferdigstiltFom: kotlin.String? = null, ferdigstiltTom: kotlin.String? = null, orgnr: kotlin.collections.List<kotlin.String>? = null, limit: kotlin.Long? = 10L, offset: kotlin.Long? = null): SokOppgaverResponse {
         val result = finnOppgaverWithHttpInfo(xCorrelationID = xCorrelationID, statuskategori = statuskategori, tema = tema, oppgavetype = oppgavetype, tildeltEnhetsnr = tildeltEnhetsnr, tilordnetRessurs = tilordnetRessurs, behandlingstema = behandlingstema, behandlingstype = behandlingstype, aktoerId = aktoerId, journalpostId = journalpostId, saksreferanse = saksreferanse, ferdigstiltFom = ferdigstiltFom, ferdigstiltTom = ferdigstiltTom, orgnr = orgnr, limit = limit, offset = offset)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -124,7 +124,7 @@ class OppgaveApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun hentHendelser(xCorrelationID: kotlin.String, oppgaveId: kotlin.Long): HendelseJson {
         val result = hentHendelserWithHttpInfo(xCorrelationID = xCorrelationID, oppgaveId = oppgaveId)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -196,7 +196,7 @@ class OppgaveApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun hentOppgave(xCorrelationID: kotlin.String, id: kotlin.Long): Oppgave {
         val result = hentOppgaveWithHttpInfo(xCorrelationID = xCorrelationID, id = id)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -233,7 +233,7 @@ class OppgaveApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun opprettOppgave(xCorrelationID: kotlin.String, opprettOppgaveRequest: OpprettOppgaveRequest): Oppgave {
         val result = opprettOppgaveWithHttpInfo(xCorrelationID = xCorrelationID, opprettOppgaveRequest = opprettOppgaveRequest)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)
@@ -270,7 +270,7 @@ class OppgaveApi(client: RestClient) : ApiClient(client) {
     @Throws(RestClientResponseException::class)
     fun patchOppgave(xCorrelationID: kotlin.String, id: kotlin.Long, patchOppgaveRequest: PatchOppgaveRequest): Oppgave {
         val result = patchOppgaveWithHttpInfo(xCorrelationID = xCorrelationID, id = id, patchOppgaveRequest = patchOppgaveRequest)
-        return result.body!!
+        return result?.body!!
     }
 
     @Throws(RestClientResponseException::class)

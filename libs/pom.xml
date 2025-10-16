@@ -13,7 +13,7 @@
     <description>Parent for libs</description>
     <modules>
         <module>oppgave</module>
-        <module>tilgangsmaskin-dto</module>
+        <module>tilgangsmaskin</module>
         <module>pdl</module>
     </modules>
 

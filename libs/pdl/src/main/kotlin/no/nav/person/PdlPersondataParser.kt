@@ -1,30 +1,47 @@
 package no.nav.person
 
-import no.nav.pdl.AdressebeskyttelseGradering
-import no.nav.pdl.HentPdlResponse
-import no.nav.pdl.IdentGruppe
-import no.nav.pdl.PdlData
-import no.nav.pdl.PdlError
-import no.nav.pdl.PdlErrorList
-import no.nav.pdl.PdlFeilkoder
+import no.nav.pdl.*
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.HttpClientErrorException
-import kotlin.collections.joinToString
-import kotlin.jvm.java
 
 
 class PdlPersondataParser {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun parsePdlResponse(response: HentPdlResponse): Persondata {
-        handlePdlErrors(response.errors)
+    fun parsePdlResponse(response: HentPdlResponse): Persondata? {
+        val errors = response.errors
+        if (errors?.isNotEmpty() == true) {
+
+            val feilmelding = errors
+                .joinToString(separator = ", ") { "${it.extensions.code} \"${it.path}\" \"${it.message}\"" }
+            logger.debug("Feilmeldinger fra PDL: $feilmelding")
+
+
+            // Ikke tilgang av en eller annen grunn
+            response.errors.finnFeil(PdlFeilkoder.UNAUTHORIZED)?.let {
+                logger.warn("Ikke tilgang til person i PDL: ${it.message}")
+                return parsePdlData(response.data).copy(harTilgang = false)
+            }
+            // Person ikke funnet
+            errors.finnFeil(PdlFeilkoder.NOT_FOUND)?.let {
+                logger.warn("Person ikke funnet i PDL: ${it.message}")
+                return null
+            }
+            errors.finnFeil(PdlFeilkoder.SERVER_ERROR)?.let {
+                throw HttpClientErrorException(
+                    org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Feil mot PDL: ${it.message}"
+                )
+            }
+            throw RuntimeException("Uventet feil fra PDL: $feilmelding")
+        }
+
         return parsePdlData(response.data)
     }
 
     private fun parsePdlData(data: PdlData?): Persondata {
         val identer = data?.hentIdenter?.identer
         require(!identer.isNullOrEmpty()) { "Fikk ingen identer fra PDL" }
-
 
         val alleFnrIdenter = identer.filter { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT }
         val aktivtFnr = alleFnrIdenter.first { !it.historisk }.ident
@@ -35,15 +52,12 @@ class PdlPersondataParser {
             .ident
 
         val hentPerson = data.hentPerson
-        require(hentPerson != null) { "Forventet å finne persondata" }
-
-        val navn = hentPerson.navn?.firstOrNull()
-        require(navn != null) { "Forventet å finne navn på person" }
-
+        // Gir default navn om det ikke skulle være noe der. Betyr at personen ikke finnes eller det ikke er tilgan
+        val navn = hentPerson?.navn?.firstOrNull() ?: Navn("***", "", "***")
         val adressebeskyttelse =
-            hentPerson.adressebeskyttelse?.firstOrNull()?.gradering ?: AdressebeskyttelseGradering.UGRADERT
-        val dodsDato = hentPerson.doedsfall?.firstOrNull()?.doedsdato
-        val verge = hentPerson.vergemaalEllerFremtidsfullmakt?.firstOrNull()?.vergeEllerFullmektig?.motpartsPersonident
+            hentPerson?.adressebeskyttelse?.firstOrNull()?.gradering
+        val dodsDato = hentPerson?.doedsfall?.firstOrNull()?.doedsdato
+        val verge = hentPerson?.vergemaalEllerFremtidsfullmakt?.firstOrNull()?.vergeEllerFullmektig?.motpartsPersonident
 
         return Persondata(
             navn = getSammensattNavnString(listOf(navn.fornavn, navn.mellomnavn, navn.etternavn)),
@@ -54,40 +68,11 @@ class PdlPersondataParser {
             alleFnr = alleFnr.toSet(),
             doedsfall = dodsDato,
             adressebeskyttelseGradering = adressebeskyttelse,
-            verge = verge
+            verge = verge,
+            harTilgang = hentPerson != null
         )
     }
 
-
-    /** Oversetter PDL-feilkoder til rest api med passende HTTP-status. */
-    private fun handlePdlErrors(errors: PdlErrorList?) {
-        if (errors?.isNotEmpty() == true) {
-
-            val feilmelding = errors
-                .joinToString(separator = ", ") { "${it.extensions.code} \"${it.path}\" \"${it.message}\"" }
-            logger.info("Feilmeldinger fra PDL: $feilmelding")
-
-            errors.finnFeil(PdlFeilkoder.UNAUTHORIZED)?.let {
-                throw HttpClientErrorException(
-                    org.springframework.http.HttpStatus.FORBIDDEN,
-                    "Ikke tilgang til person i PDL: ${it.message}"
-                )
-            }
-            errors.finnFeil(PdlFeilkoder.NOT_FOUND)?.let {
-                throw HttpClientErrorException(
-                    org.springframework.http.HttpStatus.NOT_FOUND,
-                    "Person ikke funnet: ${it.message}"
-                )
-            }
-            errors.finnFeil(PdlFeilkoder.SERVER_ERROR)?.let {
-                throw HttpClientErrorException(
-                    org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Feil mot PDL: ${it.message}"
-                )
-            }
-            require(errors.isEmpty()) { "Fikk feilmeldinger fra PDL: $feilmelding" }
-        }
-    }
 
     private fun PdlErrorList.finnFeil(pdlFeilkode: String): PdlError? {
         return this.find { it.extensions.code == pdlFeilkode }

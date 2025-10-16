@@ -13,14 +13,21 @@ class PersonService(
     private val pdlParser = PdlPersondataParser()
 
     // TODO caching?
-    fun hentPerson(fnr: Fnr): Persondata {
+    fun hentPerson(fnr: Fnr): Persondata? {
         val pdlResponse = pdlClient.getPersonOgIdenter(ident = fnr)
-        return pdlParser.parsePdlResponse(pdlResponse)
+        val persondata = pdlParser.parsePdlResponse(pdlResponse)
+
+        return persondata
     }
 
     fun maskerFnr(fnr: Fnr): String {
         //TODO fix maskering
         return fnr.reversed()
+    }
+
+    fun decodeMaskertFnr(maskertPersonident: String): Fnr {
+        //TODO fix dekoding
+        return maskertPersonident.reversed()
     }
 }
 

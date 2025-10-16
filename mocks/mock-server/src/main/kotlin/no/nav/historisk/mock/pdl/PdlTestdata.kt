@@ -1,24 +1,58 @@
 package no.nav.historisk.mock.pdl
 
-import com.jayway.jsonpath.JsonPath
 import net.datafaker.Faker
+import no.nav.pdl.*
+import no.nav.tilgangsmaskin.Avvisningskode
 
 val faker = Faker()
-
-fun generatePdlTestdata(ident: String): String {
-    val response = JsonPath.parse(pdlResponse)
-        .set("$..identer[?(@.gruppe == 'FOLKEREGISTERIDENT' )].ident", ident)
-        .set("$..identer[?(@.gruppe == 'AKTORID' )].ident", fakeAktoerIdFromFnr(ident))
-        .set("$..fornavn", faker.name().firstName())
-        .set("$..mellomnavn", "Mock")
-        .set("$..etternavn", faker.name().lastName())
-        .jsonString()
-
-    return response
-}
 
 fun fakeAktoerIdFromFnr(fnr: String): String = "AK" + fnr.take(11)
 fun fnrFromAktoerId(aktoerId: String): String = aktoerId.substring(2, 13)
 
+fun pdlData(fnr: String) = PdlData(
+    hentPerson = Person(
+        navn = listOf(
+            Navn(
+                fornavn = faker.name().firstName(),
+                mellomnavn = "Mock",
+                etternavn = faker.name().lastName()
+            )
+        ),
+        doedsfall = listOf(),
+        adressebeskyttelse = listOf(),
+        vergemaalEllerFremtidsfullmakt = listOf()
+    ),
+    hentIdenter = Identliste(
+        identer = listOf(
+            IdentInformasjon(
+                ident = fnr,
+                gruppe = IdentGruppe.FOLKEREGISTERIDENT,
+                historisk = false
+            ),
+            IdentInformasjon(
+                ident = fakeAktoerIdFromFnr(fnr),
+                gruppe = IdentGruppe.AKTORID,
+                historisk = false
+            ),
+        )
+    )
+)
 
-val pdlResponse = classpathString("/graphql/pdl/respons_dev.json")
+fun pdlError(avvisningskode: Avvisningskode)= listOf(
+    PdlError(
+        message = avvisningskode.name,
+        locations = listOf(),
+        path = listOf(),
+        extensions = PdlErrorExtension(
+            code = avvisningskode.toPdlKode(),
+            classification = "ExecutionAborted"
+        )
+    )
+)
+
+private fun Avvisningskode.toPdlKode(): String? {
+    return when (this) {
+        Avvisningskode.UKJENT_PERSON -> PdlFeilkoder.NOT_FOUND
+        else ->  PdlFeilkoder.UNAUTHORIZED
+    }
+}
