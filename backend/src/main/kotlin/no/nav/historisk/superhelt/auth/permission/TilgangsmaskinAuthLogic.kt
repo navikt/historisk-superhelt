@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component
         }
         val (granted, response) = tilgangsmaskinService.sjekkKomplettTilgang(fnr)
 
+//         return TilgangsmaskinAuthorizationDecision(granted, response?.begrunnelse)
         if (!granted) {
             throw AuthorizationDeniedException(
                 "Mangler tilgang til bruker",
@@ -25,8 +26,9 @@ import org.springframework.stereotype.Component
 
     }
 
-    class TilgangsmaskinAuthorizationDecision(granted: Boolean, val reason: String? = null) :
-        AuthorizationDecision(granted) {
+    class Til
+
+    class TilgangsmaskinAuthorizationDecision(granted: Boolean, val reason: String? = null) : AuthorizationDecision(granted){
         override fun toString(): String {
             return "Tilgangsmaskin nekter tilgang fordi " + this.reason
 
