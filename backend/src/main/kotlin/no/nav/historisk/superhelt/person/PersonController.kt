@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/person/")
 class PersonController(
     private val personService: PersonService,
+    private val maskertPersonService: MaskertPersonService,
     private val tilgangsmaskinService: TilgangsmaskinService
 ) {
 
@@ -18,7 +19,7 @@ class PersonController(
     fun findPerson(@RequestBody @Valid request: PersonRequest): ResponseEntity<Person> {
         val persondata = personService.hentPerson(request.fnr)
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
-        val maskertPersonident = personService.maskerFnr(request.fnr)
+        val maskertPersonident = maskertPersonService.maskerFnr(request.fnr)
         if (persondata == null) {
             return ResponseEntity.notFound().build()
         }
@@ -26,20 +27,9 @@ class PersonController(
     }
 
     @GetMapping("/{maskertPersonident}")
-    fun getPerson(@PathVariable maskertPersonident: String): ResponseEntity<Person> {
-        val fnr = personService.decodeMaskertFnr(maskertPersonident)
+    fun getPerson(@PathVariable maskertPersonident: MaskertPersonIdent): ResponseEntity<Person> {
+        val fnr = maskertPersonService.decodeMaskertFnr(maskertPersonident)
         return findPerson(PersonRequest(fnr = fnr))
     }
 
-    @PreAuthorize("@tilgangsmaskin.harTilgang(#request.fnr)")
-    @PostMapping("v2")
-    fun findPerson2(@RequestBody @Valid request: PersonRequest): ResponseEntity<Person> {
-        val persondata = personService.hentPerson(request.fnr)
-        val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
-        val maskertPersonident = personService.maskerFnr(request.fnr)
-        if (persondata == null) {
-            return ResponseEntity.notFound().build()
-        }
-        return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang))
-    }
 }
