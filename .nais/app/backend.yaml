@@ -19,10 +19,9 @@ spec:
         extra:
           - NAVident
         groups:
-          - id: {{gruppe.drift}}
           - id: {{gruppe.saksbehandler}}
           - id: {{gruppe.attestant}}
-          - id: {{gruppe.fagkoordinator}}
+          - id: {{gruppe.les}}
 
   liveness:
     path: /actuator/health/liveness
