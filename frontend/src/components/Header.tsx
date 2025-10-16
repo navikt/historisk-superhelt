@@ -8,7 +8,7 @@ import {findPerson} from "@api";
 
 export function Header() {
     const [search, setSearch] = useState<string>();
-    const [seachError, setSearchError] = useState<string>();
+    const [searchError, setSearchError] = useState<string>();
     const navigate= useNavigate()
 
     // const {  data: username}  = useQuery({ queryKey: ['user'], queryFn: fetchUser })
@@ -16,7 +16,7 @@ export function Header() {
         ...getUserInfoOptions()
     })
 
-    async function doSeach() {
+    async function doSearch() {
         setSearchError(undefined)
         if (search?.length != 11) {
             setSearchError("Ugyldig fødselsnummer")
@@ -47,7 +47,7 @@ export function Header() {
             align="center"
             onSubmit={(e) => {
                 e.preventDefault();
-                doSeach();
+                doSearch();
             }}
         >
             <Search
@@ -57,7 +57,7 @@ export function Header() {
                 placeholder="Finn person"
                 value={search}
                 onChange={setSearch}
-                error={seachError}
+                error={searchError}
             />
         </HStack>
         <Spacer/>

@@ -34,7 +34,7 @@ class PdlPersondataParserTest {
         assertEquals("1234567890123", result?.aktorId)
         assertEquals(setOf("12345678901", "10987654321"), result?.alleFnr)
         assertNull(result?.doedsfall)
-        assertEquals(AdressebeskyttelseGradering.UGRADERT, result?.adressebeskyttelseGradering)
+        assertNull(result?.adressebeskyttelseGradering)
         assertNull(result?.verge)
         assertThat(result?.verge).isNull()
     }
