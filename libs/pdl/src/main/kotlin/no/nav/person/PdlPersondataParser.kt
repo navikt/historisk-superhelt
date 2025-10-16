@@ -55,7 +55,7 @@ class PdlPersondataParser {
         // Gir default navn om det ikke skulle være noe der. Betyr at personen ikke finnes eller det ikke er tilgan
         val navn = hentPerson?.navn?.firstOrNull() ?: Navn("***", "", "***")
         val adressebeskyttelse =
-            hentPerson?.adressebeskyttelse?.firstOrNull()?.gradering ?: AdressebeskyttelseGradering.UGRADERT
+            hentPerson?.adressebeskyttelse?.firstOrNull()?.gradering
         val dodsDato = hentPerson?.doedsfall?.firstOrNull()?.doedsdato
         val verge = hentPerson?.vergemaalEllerFremtidsfullmakt?.firstOrNull()?.vergeEllerFullmektig?.motpartsPersonident
 

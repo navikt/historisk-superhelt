@@ -4,9 +4,9 @@ import no.nav.historisk.superhelt.sak.model.SakEntity
 import no.nav.historisk.superhelt.sak.model.SakRepository
 import no.nav.historisk.superhelt.sak.model.Saksnummer
 import no.nav.historisk.superhelt.sak.model.toId
+import no.nav.person.Fnr
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
@@ -24,9 +24,8 @@ class SakService(private val sakRepository: SakRepository) {
         return sakRepository.save(sakEntity)
     }
 
-    @PreAuthorize("hasAuthority('READ')")
-    @PostFilter("@tilgangsmaskin.harTilgang(filterObject.person)")
-    fun findAll(): List<SakDto> {
+    @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
+    fun findSakForPerson(fnr: Fnr): List<SakDto> {
         return sakRepository.findAll().map { it.toResponseDto() }
     }
 

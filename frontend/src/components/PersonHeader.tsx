@@ -25,8 +25,8 @@ export function PersonHeader({maskertPersonId}: Props) {
           <HStack gap="8">
             <VStack gap="1">
               <BodyShort size="small"><strong>Fødselsnummer:</strong> {person?.fnr}</BodyShort>
-              <BodyShort size="small"><strong>Adresse:</strong>  {person?.adressebeskyttelseGradering && <Tag variant={"info"} >{person?.adressebeskyttelseGradering}</Tag>}</BodyShort>
-              {/*<BodyShort size="small"><strong>Telefon:</strong> {person.telefon}</BodyShort>*/}
+              <BodyShort size="small"><strong>Adressegradering:</strong>  {person?.adressebeskyttelseGradering && <Tag variant={"info"} >{person?.adressebeskyttelseGradering}</Tag>}</BodyShort>
+                <BodyShort size="small"><strong>Verge:</strong> {person?.verge}</BodyShort>
 
             </VStack>
             <VStack gap="1">

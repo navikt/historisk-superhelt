@@ -48,14 +48,16 @@ export type User = {
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
 };
 
-export type GetAllSakerData = {
+export type FindSakerData = {
     body?: never;
     path?: never;
-    query?: never;
+    query: {
+        personId: string;
+    };
     url: '/api/sak';
 };
 
-export type GetAllSakerErrors = {
+export type FindSakerErrors = {
     /**
      * Forbidden
      */
@@ -66,16 +68,16 @@ export type GetAllSakerErrors = {
     500: ProblemDetail;
 };
 
-export type GetAllSakerError = GetAllSakerErrors[keyof GetAllSakerErrors];
+export type FindSakerError = FindSakerErrors[keyof FindSakerErrors];
 
-export type GetAllSakerResponses = {
+export type FindSakerResponses = {
     /**
      * OK
      */
     200: Array<SakDto>;
 };
 
-export type GetAllSakerResponse = GetAllSakerResponses[keyof GetAllSakerResponses];
+export type FindSakerResponse = FindSakerResponses[keyof FindSakerResponses];
 
 export type CreateSakData = {
     body: SakCreateRequestDto;
@@ -105,6 +107,35 @@ export type CreateSakResponses = {
 };
 
 export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];
+
+export type FindPerson2Data = {
+    body: PersonRequest;
+    path?: never;
+    query?: never;
+    url: '/api/person/v2';
+};
+
+export type FindPerson2Errors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FindPerson2Error = FindPerson2Errors[keyof FindPerson2Errors];
+
+export type FindPerson2Responses = {
+    /**
+     * OK
+     */
+    200: Person;
+};
+
+export type FindPerson2Response = FindPerson2Responses[keyof FindPerson2Responses];
 
 export type FindPersonData = {
     body: PersonRequest;

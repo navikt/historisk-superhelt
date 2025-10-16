@@ -18,7 +18,7 @@ class SakController(private val sakService: SakService) {
 
     @GetMapping()
     fun findSaker(@RequestParam personId: String): ResponseEntity<List<SakDto>> {
-        val saker = sakService.findAll()
+        val saker = sakService.findSakForPerson(personId.reversed())
         return ResponseEntity.ok(saker)
     }
     @PostMapping
