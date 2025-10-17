@@ -60,19 +60,3 @@ class SaltedXorEncryptor(private val key: String): Encryptor {
         return String(decrypted)
     }
 }
-
-
-
-fun main() {
-    // Generer nøkkel én gang og lagre sikkert
-    val secretKey = "correct horse battery staple"
-    val encryptor = SaltedXorEncryptor(secretKey)
-
-    // Krypter
-    val encrypted = encryptor.encrypt("12345678902")
-    println("encrypted:${encrypted.length} $encrypted")
-    // Dekrypter
-    val decrypted = encryptor.decrypt(encrypted)
-    println("Decrypted: $decrypted")
-    println("Decrypted: ${encryptor.decrypt("nU2q8c8Q67fNGOnpzBLp")}")
-}

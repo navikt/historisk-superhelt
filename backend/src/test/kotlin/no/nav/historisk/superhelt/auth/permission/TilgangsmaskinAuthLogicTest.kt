@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.auth.permission
 
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
+import no.nav.person.Fnr
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
@@ -24,10 +25,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 @ActiveProfiles("junit")
 @SpringBootTest()
-//@ExtendWith(SpringExtension::class)
-//@Import(MethodSecurityTestConfig::class)
-@Import(TilgangsmaskinAuthLogic2Test.TestService::class)
-class TilgangsmaskinAuthLogic2Test {
+@Import(TilgangsmaskinAuthLogicTest.TestService::class)
+class TilgangsmaskinAuthLogicTest {
 
     @MockitoBean
     private lateinit var tilgangsmaskinService: TilgangsmaskinService
@@ -38,16 +37,16 @@ class TilgangsmaskinAuthLogic2Test {
 
     @Test
     fun `PreAuthorize skal gi tilgang tilgangsmaskin godkjenner`() {
-        val fnr = "12345678901"
+        val fnr = Fnr("12345678901")
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr))
             .thenReturn(TilgangsmaskinClient.TilgangResult(true))
-        testService.testPreAuthorize(fnr)
+        testService.testPreAuthorize(fnr.value)
         verify(tilgangsmaskinService).sjekkKomplettTilgang(fnr)
     }
 
     @Test
     fun `PreAuthorize skal gi exception om tilgangsmaskin gir feil`() {
-        val fnr = "12345678901"
+        val fnr = Fnr("12345678901")
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr))
             .thenReturn(
                 TilgangsmaskinClient.TilgangResult(
@@ -57,9 +56,8 @@ class TilgangsmaskinAuthLogic2Test {
             )
 
         val exception = Assertions.assertThrows(AuthorizationDeniedException::class.java) {
-            testService.testPreAuthorize(fnr)
+            testService.testPreAuthorize(fnr.value)
         }
-//        assertThat(exception.message).contains("Mangler tilgang til bruker")
         assertThat(exception.isGranted).isFalse
         assertThat(exception.authorizationResult.toString()).contains("begrunnelse123")
 
@@ -68,19 +66,21 @@ class TilgangsmaskinAuthLogic2Test {
 
     @Test
     fun `PostAuthorize skal gi ok svar ved tilgang`() {
-        val fnr = "12345678901"
-        whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr.reversed()))
+        val fnr = Fnr("12345678901")
+        val reversed = Fnr(fnr.value.reversed())
+        whenever(tilgangsmaskinService.sjekkKomplettTilgang(reversed))
             .thenReturn(TilgangsmaskinClient.TilgangResult(true))
 
-        testService.testPostAuthorize(fnr)
+        testService.testPostAuthorize(fnr.value)
 
-        verify(tilgangsmaskinService).sjekkKomplettTilgang(fnr.reversed())
+        verify(tilgangsmaskinService).sjekkKomplettTilgang(reversed)
     }
 
     @Test
     fun `PostAuthorize skal gi exception om tilgangsmaskin gir feil`() {
-        val fnr = "12345678901"
-        whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr.reversed()))
+        val fnr = Fnr("12345678901")
+        val reversed = Fnr(fnr.value.reversed())
+        whenever(tilgangsmaskinService.sjekkKomplettTilgang(reversed))
             .thenReturn(
                 TilgangsmaskinClient.TilgangResult(
                     false, TilgangsmaskinTestData.problemDetailResponse.copy(
@@ -90,17 +90,16 @@ class TilgangsmaskinAuthLogic2Test {
             )
 
         val exception = Assertions.assertThrows(AuthorizationDeniedException::class.java) {
-            testService.testPostAuthorize(fnr)
+            testService.testPostAuthorize(fnr.value)
         }
         assertThat(exception.isGranted).isFalse
         assertThat(exception.authorizationResult.toString()).contains("begrunnelse345")
 
-        verify(tilgangsmaskinService).sjekkKomplettTilgang(fnr.reversed())
+        verify(tilgangsmaskinService).sjekkKomplettTilgang(reversed)
     }
 
     @Test
     fun `PostFilter skal kalle tilgangsmaskin for hvert element`() {
-        val fnr = "12345678901"
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(any()))
             .thenReturn(TilgangsmaskinClient.TilgangResult(true))
 
@@ -112,14 +111,12 @@ class TilgangsmaskinAuthLogic2Test {
     }
 
 
-    //TODO fiks slik at denne fungerer
     @Disabled("Virker ikke med throws")
     @Test
     fun `PostFilter skal  filtere ut elementer som ikke er lov`() {
-        val fnr = "12345678901"
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(any()))
             .thenReturn(TilgangsmaskinClient.TilgangResult(true))
-        whenever(tilgangsmaskinService.sjekkKomplettTilgang("222"))
+        whenever(tilgangsmaskinService.sjekkKomplettTilgang(Fnr("222")))
             .thenReturn(TilgangsmaskinClient.TilgangResult(false))
 
         testService.testPostFilter().also {
@@ -148,6 +145,4 @@ class TilgangsmaskinAuthLogic2Test {
             return fnr.reversed()
         }
     }
-
-
 }

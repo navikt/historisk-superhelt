@@ -14,7 +14,7 @@ class PersonService(
 
     // TODO caching?
     fun hentPerson(fnr: Fnr): Persondata? {
-        val pdlResponse = pdlClient.getPersonOgIdenter(ident = fnr)
+        val pdlResponse = pdlClient.getPersonOgIdenter(ident = fnr.value)
         val persondata = pdlParser.parsePdlResponse(pdlResponse)
 
         return persondata

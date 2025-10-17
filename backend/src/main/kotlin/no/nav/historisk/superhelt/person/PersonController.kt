@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.person
 
 
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Size
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -25,8 +26,8 @@ class PersonController(
     }
 
     @GetMapping("/{maskertPersonident}")
-    fun getPerson(@PathVariable maskertPersonident: MaskertPersonIdent): ResponseEntity<Person> {
-        val fnr = maskertPersonident.toFnr()
+    fun getPerson(@Size(max = 100) @PathVariable maskertPersonident: MaskertPersonIdent): ResponseEntity<Person> {
+        val fnr = maskertPersonident.toFnr()?: return ResponseEntity.notFound().build()
         return findPerson(PersonRequest(fnr = fnr))
     }
 

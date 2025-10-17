@@ -14,8 +14,12 @@ data class Persondata(
     val verge: Fnr?,
     val harTilgang: Boolean
 )
-
-typealias Fnr = String
+@JvmInline
+value class Fnr(val value: String){
+    fun isValid(): Boolean {
+        return value.length == 11 && value.all { it.isDigit() }
+    }
+}
 typealias AktorId = String
 typealias Doedsfall = String?
 

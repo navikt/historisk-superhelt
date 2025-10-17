@@ -10,7 +10,7 @@ class TilgangsmaskinService(
 
     //TODO caching?
     fun sjekkKomplettTilgang(fnr: Fnr): TilgangsmaskinClient.TilgangResult {
-        return tilgangsmaskinClient.komplett(fnr)
+        return tilgangsmaskinClient.komplett(fnr.value)
     }
 
 }

@@ -63,12 +63,12 @@ class PdlPersondataParser {
             navn = getSammensattNavnString(listOf(navn.fornavn, navn.mellomnavn, navn.etternavn)),
             fornavn = getSammensattNavnString(listOf(navn.fornavn, navn.mellomnavn)),
             etternavn = navn.etternavn,
-            fnr = aktivtFnr,
+            fnr = Fnr(aktivtFnr),
             aktorId = aktorId,
-            alleFnr = alleFnr.toSet(),
+            alleFnr = alleFnr.map { Fnr(it)}.toSet(),
             doedsfall = dodsDato,
             adressebeskyttelseGradering = adressebeskyttelse,
-            verge = verge,
+            verge = verge?.let { Fnr(it)},
             harTilgang = hentPerson != null
         )
     }

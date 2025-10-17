@@ -2,7 +2,6 @@ package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
-import no.nav.historisk.superhelt.person.toFnr
 import no.nav.historisk.superhelt.sak.model.Saksnummer
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,7 +22,7 @@ class SakController(
 
     @GetMapping()
     fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<SakDto>> {
-        val fnr= maskertPersonId.toFnr()
+        val fnr= maskertPersonId.toFnr()?: return ResponseEntity.notFound().build()
         val saker = sakService.findSakForPerson(fnr)
         return ResponseEntity.ok(saker)
     }
