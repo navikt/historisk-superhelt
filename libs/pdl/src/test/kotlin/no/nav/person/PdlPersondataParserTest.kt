@@ -1,14 +1,15 @@
 package no.nav.person
 
 import no.nav.pdl.*
+import no.nav.pdl.Doedsfall
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
 
 class PdlPersondataParserTest {
 
@@ -30,9 +31,9 @@ class PdlPersondataParserTest {
         assertEquals("Ola Nordmann", result?.navn)
         assertEquals("Ola", result?.fornavn)
         assertEquals("Nordmann", result?.etternavn)
-        assertEquals("12345678901", result?.fnr)
+        assertThat(result?.fnr).isEqualTo(Fnr("12345678901"))
         assertEquals("1234567890123", result?.aktorId)
-        assertEquals(setOf("12345678901", "10987654321"), result?.alleFnr)
+        assertThat(result?.alleFnr?.map { it.value }).contains("12345678901", "10987654321")
         assertNull(result?.doedsfall)
         assertNull(result?.adressebeskyttelseGradering)
         assertNull(result?.verge)
@@ -50,9 +51,8 @@ class PdlPersondataParserTest {
         assertEquals("Kari Anne", result?.fornavn)
         assertEquals("Hansen", result?.etternavn)
         assertEquals(AdressebeskyttelseGradering.FORTROLIG, result?.adressebeskyttelseGradering)
-        assertEquals("98765432109", result?.verge)
         assertEquals("2023-01-15", result?.doedsfall)
-        assertThat(result?.verge).isEqualTo("98765432109")
+        assertThat(result?.verge).isEqualTo(Fnr("98765432109"))
         assertThat(result?.doedsfall).isEqualTo("2023-01-15")
     }
 
@@ -98,9 +98,9 @@ class PdlPersondataParserTest {
         val result = parser.parsePdlResponse(response)
 
         // Then
-        assertEquals("12345678901", result?.fnr) // Aktivt FNR
+        assertThat(result?.fnr).isEqualTo(Fnr("12345678901")) // Aktivt FNR
         assertEquals("1234567890123", result?.aktorId) // Aktiv AktørID
-        assertEquals(setOf("12345678901", "98765432109", "11111111111"), result?.alleFnr) // Alle FNR
+        assertThat(result?.alleFnr?.map { it.value }).contains("12345678901", "98765432109", "11111111111") // Alle FNR
     }
 
     @Test
@@ -148,9 +148,9 @@ class PdlPersondataParserTest {
         val response = createPdlResponseWithError("UNKNOWN_ERROR", "Ukjent feil")
 
         // When & Then
-      assertThatThrownBy{ parser.parsePdlResponse(response)}
-          .isInstanceOf(RuntimeException::class.java)
-          .hasMessageContaining("Uventet feil fra PDL")
+        assertThatThrownBy { parser.parsePdlResponse(response) }
+            .isInstanceOf(RuntimeException::class.java)
+            .hasMessageContaining("Uventet feil fra PDL")
     }
 
     @Test

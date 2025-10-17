@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component
 @Component("tilgangsmaskin")
  class TilgangsmaskinAuthLogic(private val tilgangsmaskinService: TilgangsmaskinService) {
 
-     fun harTilgang(fnr: Fnr?): Boolean? {
+     fun harTilgang(fnr: String?): Boolean? {
         if (fnr == null || fnr.isBlank()) {
             return null
         }
-        val (granted, response) = tilgangsmaskinService.sjekkKomplettTilgang(fnr)
+        val (granted, response) = tilgangsmaskinService.sjekkKomplettTilgang(Fnr(fnr))
 
 //         return TilgangsmaskinAuthorizationDecision(granted, response?.begrunnelse)
         if (!granted) {

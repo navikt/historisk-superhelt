@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.auth
 
+import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -8,13 +9,16 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @EnableConfigurationProperties(GruppeConfigProperties::class)
 class GruppeRoleConfig {
+    private val logger = LoggerFactory.getLogger(javaClass)
     @Bean
     fun gruppeRoleMapping(props: GruppeConfigProperties): Map<String, Role> {
-        return mapOf(
+        val gruppeRoller = mapOf(
             props.les to Role.LES,
             props.saksbehandler to Role.SAKSBEHANDLER,
             props.attestant to Role.ATTESTANT,
         )
+        logger.debug("GruppeRoleMapping: {}", gruppeRoller)
+        return gruppeRoller
     }
 }
 

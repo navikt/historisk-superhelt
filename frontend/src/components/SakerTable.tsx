@@ -57,12 +57,10 @@ const saker: Array<Sak> = [
 
 export function SakerTable({person}: SakerTableProps) {
 
-
-
     const {data, isPending, error} = useQuery( {
         ...findSakerOptions({
             query: {
-                personId: person
+                maskertPersonId: person
             },
         }),
         retry: false

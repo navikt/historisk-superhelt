@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 @Component
 class NavJwtAuthenticationConverter(private val gruppeRoleMapping: Map<String, Role> ) : Converter<Jwt, JwtAuthenticationToken> {
 
-
     override fun convert(jwt: Jwt): JwtAuthenticationToken {
         val authorities = mapGroupsToAuthorities(jwt)
         val navIdent = extractNavIdent(jwt)
