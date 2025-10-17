@@ -1,15 +1,14 @@
-package no.nav.historisk.superhelt.auth.cryptoo
+package no.nav.historisk.superhelt.auth.crypto
 
-import no.nav.historisk.superhelt.auth.crypto.XorWithSaltEncryption
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
-class XorWithSaltEncryptionTest {
+class SaltedXorEncryptorTest {
 
     private val secretKey = "correct horse battery staple"
-    private val encryptor = XorWithSaltEncryption(secretKey)
+    private val encryptor = SaltedXorEncryptor(secretKey)
 
     @Test
     fun `encrypt og decrypt skal returnere original tekst`() {
@@ -88,7 +87,7 @@ class XorWithSaltEncryptionTest {
     @Test
     fun `constructor skal kaste exception for tom key`() {
         // Act & Assert
-        Assertions.assertThatThrownBy { XorWithSaltEncryption("") }
+        Assertions.assertThatThrownBy { SaltedXorEncryptor("") }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("Key cannot be empty")
     }
@@ -97,8 +96,8 @@ class XorWithSaltEncryptionTest {
     fun `ulike keys skal produsere ulike ciphertekster`() {
         // Arrange
         val plaintext = "12345678901"
-        val encryptor1 = XorWithSaltEncryption("key1")
-        val encryptor2 = XorWithSaltEncryption("key2")
+        val encryptor1 = SaltedXorEncryptor("key1")
+        val encryptor2 = SaltedXorEncryptor("key2")
 
         // Act
         val encrypted1 = encryptor1.encrypt(plaintext)
@@ -112,8 +111,8 @@ class XorWithSaltEncryptionTest {
     fun `decrypt med feil key skal ikke returnere original tekst`() {
         // Arrange
         val plaintext = "12345678901"
-        val encryptor1 = XorWithSaltEncryption("correctKey")
-        val encryptor2 = XorWithSaltEncryption("wrongKey")
+        val encryptor1 = SaltedXorEncryptor("correctKey")
+        val encryptor2 = SaltedXorEncryptor("wrongKey")
 
         // Act
         val encrypted = encryptor1.encrypt(plaintext)

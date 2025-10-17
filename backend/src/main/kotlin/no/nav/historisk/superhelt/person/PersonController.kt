@@ -4,14 +4,12 @@ package no.nav.historisk.superhelt.person
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/person/")
 class PersonController(
     private val personService: PersonService,
-    private val maskertPersonService: MaskertPersonService,
     private val tilgangsmaskinService: TilgangsmaskinService
 ) {
 
@@ -19,7 +17,7 @@ class PersonController(
     fun findPerson(@RequestBody @Valid request: PersonRequest): ResponseEntity<Person> {
         val persondata = personService.hentPerson(request.fnr)
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
-        val maskertPersonident = maskertPersonService.maskerFnr(request.fnr)
+        val maskertPersonident = request.fnr.toMaskertPersonIdent()
         if (persondata == null) {
             return ResponseEntity.notFound().build()
         }
@@ -28,7 +26,7 @@ class PersonController(
 
     @GetMapping("/{maskertPersonident}")
     fun getPerson(@PathVariable maskertPersonident: MaskertPersonIdent): ResponseEntity<Person> {
-        val fnr = maskertPersonService.decodeMaskertFnr(maskertPersonident)
+        val fnr = maskertPersonident.toFnr()
         return findPerson(PersonRequest(fnr = fnr))
     }
 

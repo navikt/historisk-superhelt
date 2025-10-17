@@ -52,7 +52,7 @@ export type FindSakerData = {
     body?: never;
     path?: never;
     query: {
-        personId: string;
+        maskertPersonId: string;
     };
     url: '/api/sak';
 };
@@ -107,35 +107,6 @@ export type CreateSakResponses = {
 };
 
 export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];
-
-export type FindPerson2Data = {
-    body: PersonRequest;
-    path?: never;
-    query?: never;
-    url: '/api/person/v2';
-};
-
-export type FindPerson2Errors = {
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type FindPerson2Error = FindPerson2Errors[keyof FindPerson2Errors];
-
-export type FindPerson2Responses = {
-    /**
-     * OK
-     */
-    200: Person;
-};
-
-export type FindPerson2Response = FindPerson2Responses[keyof FindPerson2Responses];
 
 export type FindPersonData = {
     body: PersonRequest;

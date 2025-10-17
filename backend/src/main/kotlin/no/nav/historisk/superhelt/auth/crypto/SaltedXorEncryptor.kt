@@ -4,8 +4,14 @@ import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.random.Random
 
+/**
+ * Enkel kryptering med XOR og salt.
+ * Ikke egnet for sensitive data i produksjon.
+ * Kun for å hindre enkel lesing av data i f.eks. URL.
+ */
+
 @OptIn(ExperimentalEncodingApi::class)
-class XorWithSaltEncryption(private val key: String) {
+class SaltedXorEncryptor(private val key: String): Encryptor {
 
     init {
         require(key.isNotEmpty()) { "Key cannot be empty" }
@@ -13,7 +19,7 @@ class XorWithSaltEncryption(private val key: String) {
 
     private val saltSize = 4 // bytes
 
-    fun encrypt(plaintext: String): String {
+    override fun encrypt(plaintext: String): String {
         val salt = ByteArray(saltSize)
         Random.Default.nextBytes(salt)
 
@@ -33,7 +39,7 @@ class XorWithSaltEncryption(private val key: String) {
         return Base64.UrlSafe.encode(result)
     }
 
-    fun decrypt(ciphertext: String): String {
+    override fun decrypt(ciphertext: String): String {
         val data = Base64.UrlSafe.decode(ciphertext)
         require(data.size >= saltSize) { "Invalid ciphertext size ${data.size} bytes" }
 
@@ -60,7 +66,7 @@ class XorWithSaltEncryption(private val key: String) {
 fun main() {
     // Generer nøkkel én gang og lagre sikkert
     val secretKey = "correct horse battery staple"
-    val encryptor = XorWithSaltEncryption(secretKey)
+    val encryptor = SaltedXorEncryptor(secretKey)
 
     // Krypter
     val encrypted = encryptor.encrypt("12345678902")
