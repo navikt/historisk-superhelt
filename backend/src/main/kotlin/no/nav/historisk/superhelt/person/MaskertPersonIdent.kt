@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.person
 
 import no.nav.historisk.superhelt.auth.crypto.CachedEncryptor
 import no.nav.historisk.superhelt.auth.crypto.SaltedXorEncryptor
+import no.nav.historisk.superhelt.auth.exception.IkkeFunnetException
 import no.nav.person.Fnr
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -18,24 +19,30 @@ private object FnrEncryptor {
         return MaskertPersonIdent(encrypt)
     }
 
-    fun decrypt(maskertFnr: String): Fnr? {
+    fun decrypt(maskertFnr: String): Fnr {
         try {
             val decrypted = encryptor.decrypt(maskertFnr)
             val fnr = Fnr(decrypted)
             if (fnr.isValid()) {
                 return fnr
             } else {
-                logger.info("Dekryptert fnr er ikke gyldig: $decrypted")
+                logger.info("Feil ved validering av fnr {}", fnr)
+                throw IkkeFunnetException("Ugyldig personident $maskertFnr")
             }
         } catch (e: IllegalArgumentException) {
             logger.info("Feil ved dekryptering av fnr", e)
+            throw IkkeFunnetException("Ugyldig personident $maskertFnr", e)
         }
-        return null
     }
 }
 
 @JvmInline
 value class MaskertPersonIdent(val value: String) {
+    /**
+     * Dekrypterer det maskerte personidentet til et gyldig Fnr-objekt.
+     *
+     * @throws IkkeFunnetException hvis dekrypteringen mislykkes eller hvis det resulterende Fnr-objektet ikke er gyldig.
+     */
     fun toFnr() = FnrEncryptor.decrypt(this.value)
 }
 
