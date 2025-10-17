@@ -65,10 +65,10 @@ class PdlPersondataParser {
             etternavn = navn.etternavn,
             fnr = Fnr(aktivtFnr),
             aktorId = aktorId,
-            alleFnr = alleFnr.map { Fnr(it)}.toSet(),
+            alleFnr = alleFnr.map { Fnr(it) }.toSet(),
             doedsfall = dodsDato,
             adressebeskyttelseGradering = adressebeskyttelse,
-            verge = verge?.let { Fnr(it)},
+            verge = verge?.let { Fnr(it) },
             harTilgang = hentPerson != null
         )
     }
