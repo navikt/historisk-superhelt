@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.person
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Size
-import no.nav.historisk.superhelt.auth.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

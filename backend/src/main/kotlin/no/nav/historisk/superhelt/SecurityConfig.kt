@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt
 
-import no.nav.historisk.superhelt.auth.NavJwtAuthenticationConverter
+import no.nav.historisk.superhelt.infrastruktur.NavJwtAuthenticationConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod

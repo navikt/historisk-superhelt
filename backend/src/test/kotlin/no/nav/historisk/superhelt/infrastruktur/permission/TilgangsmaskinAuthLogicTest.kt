@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.permission
+package no.nav.historisk.superhelt.infrastruktur.permission
 
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService

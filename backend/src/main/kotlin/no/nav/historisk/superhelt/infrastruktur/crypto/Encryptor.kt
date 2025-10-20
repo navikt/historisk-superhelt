@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.crypto
+package no.nav.historisk.superhelt.infrastruktur.crypto
 
 interface Encryptor {
     fun encrypt(plaintext: String): String

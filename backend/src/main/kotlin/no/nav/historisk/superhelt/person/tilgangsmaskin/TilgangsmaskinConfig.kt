@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.person.tilgangsmaskin
 
 
-import no.nav.historisk.superhelt.auth.token.NaisTokenClientRequestInterceptor
-import no.nav.historisk.superhelt.auth.token.NaisTokenService
+import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties

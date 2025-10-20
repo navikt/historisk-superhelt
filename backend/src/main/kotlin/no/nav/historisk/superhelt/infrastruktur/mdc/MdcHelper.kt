@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.mdc
+package no.nav.historisk.superhelt.infrastruktur.mdc
 
 import org.slf4j.MDC
 

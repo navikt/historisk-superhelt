@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth
+package no.nav.historisk.superhelt.infrastruktur
 
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties

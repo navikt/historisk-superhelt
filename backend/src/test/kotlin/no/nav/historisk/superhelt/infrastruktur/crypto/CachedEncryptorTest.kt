@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.crypto
+package no.nav.historisk.superhelt.infrastruktur.crypto
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.crypto
+package no.nav.historisk.superhelt.infrastruktur.crypto
 
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi

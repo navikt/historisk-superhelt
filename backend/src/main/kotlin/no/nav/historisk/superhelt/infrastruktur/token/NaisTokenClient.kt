@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.token
+package no.nav.historisk.superhelt.infrastruktur.token
 
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestClient

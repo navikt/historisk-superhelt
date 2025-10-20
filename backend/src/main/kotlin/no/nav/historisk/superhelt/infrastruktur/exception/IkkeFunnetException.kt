@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.exception
+package no.nav.historisk.superhelt.infrastruktur.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException

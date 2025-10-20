@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth.crypto
+package no.nav.historisk.superhelt.infrastruktur.crypto
 
 import java.time.Clock
 import java.time.Duration

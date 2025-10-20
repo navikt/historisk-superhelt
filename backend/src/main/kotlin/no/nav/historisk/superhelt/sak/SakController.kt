@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
-import no.nav.historisk.superhelt.auth.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.model.Saksnummer
 import org.springframework.http.HttpStatus

@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.person
 
-import no.nav.historisk.superhelt.auth.crypto.CachedEncryptor
-import no.nav.historisk.superhelt.auth.crypto.SaltedXorEncryptor
-import no.nav.historisk.superhelt.auth.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.infrastruktur.crypto.CachedEncryptor
+import no.nav.historisk.superhelt.infrastruktur.crypto.SaltedXorEncryptor
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.person.Fnr
 import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.Logger
