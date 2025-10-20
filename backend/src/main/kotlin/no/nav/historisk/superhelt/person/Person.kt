@@ -17,7 +17,7 @@ data class PersonRequest(
 data class Person(
     val navn: String,
     val fnr: Fnr,
-    val maskertPersonident: String,
+    val maskertPersonident: MaskertPersonIdent,
     val doed: Boolean = false,
     val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
     val verge: Boolean = false,
@@ -25,7 +25,7 @@ data class Person(
     val avvisningsBegrunnelse: String? = null
 )
 
-fun Persondata.toDto(maskertPersonident: String, tilgang: TilgangsmaskinClient.TilgangResult) = Person(
+fun Persondata.toDto(maskertPersonident: MaskertPersonIdent, tilgang: TilgangsmaskinClient.TilgangResult) = Person(
     navn = this.navn,
     maskertPersonident = maskertPersonident,
     fnr = this.fnr,

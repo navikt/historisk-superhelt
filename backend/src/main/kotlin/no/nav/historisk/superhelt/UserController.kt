@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt
 
-import no.nav.historisk.superhelt.auth.Role
-import no.nav.historisk.superhelt.auth.getCurrentUserRoles
+import no.nav.historisk.superhelt.infrastruktur.Role
+import no.nav.historisk.superhelt.infrastruktur.getCurrentUserRoles
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.GetMapping

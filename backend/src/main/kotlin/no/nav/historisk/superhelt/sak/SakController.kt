@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
+import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.model.Saksnummer
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,11 +15,15 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/sak")
-class SakController(private val sakService: SakService) {
+class SakController(
+    private val sakService: SakService,
+
+) {
 
     @GetMapping()
-    fun findSaker(@RequestParam personId: String): ResponseEntity<List<SakDto>> {
-        val saker = sakService.findSakForPerson(personId.reversed())
+    fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<SakDto>> {
+        val fnr= maskertPersonId.toFnr()
+        val saker = sakService.findSakForPerson(fnr)
         return ResponseEntity.ok(saker)
     }
     @PostMapping

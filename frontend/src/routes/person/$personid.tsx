@@ -2,8 +2,8 @@ import {createFileRoute} from '@tanstack/react-router'
 import {Box, Button, Heading, HStack, Table, Tabs, Tag, VStack} from '@navikt/ds-react'
 import {ExternalLinkIcon, FileTextIcon} from '@navikt/aksel-icons'
 import {PersonHeader} from "~/components/PersonHeader";
-import {SakerTable} from "./SakerTable";
 import {RfcErrorBoundary} from "~/components/error/RfcErrorBoundary";
+import {SakerTable} from "~/components/SakerTable";
 
 export const Route = createFileRoute('/person/$personid')({
     component: PersonPage,

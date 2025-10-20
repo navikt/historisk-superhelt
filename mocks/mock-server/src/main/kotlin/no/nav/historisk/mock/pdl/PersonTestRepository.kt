@@ -11,12 +11,17 @@ class PersonTestRepository {
     private val repository = mutableMapOf<String, TestPerson>()
     
     init {
-        // noen forhåndsdefinerte personer med avvisningskoder
+        // Person
         generateAndCacheResponse("40400000000", Avvisningskode.UKJENT_PERSON)
+
+        // Noen personer med avvisningskoder
         generateAndCacheResponse("40300000001", Avvisningskode.AVVIST_HABILITET)
-        generateAndCacheResponse("40400000002", Avvisningskode.AVVIST_AVDØD)
+        generateAndCacheResponse("40300000002", Avvisningskode.AVVIST_AVDØD)
         generateAndCacheResponse("40300000006", Avvisningskode.AVVIST_STRENGT_FORTROLIG_ADRESSE)
-        generateAndCacheResponse("40400000007", Avvisningskode.AVVIST_FORTROLIG_ADRESSE)
+        generateAndCacheResponse("40300000007", Avvisningskode.AVVIST_FORTROLIG_ADRESSE)
+
+        // Noen personer med hemmelig adresse som blir godtatt av tilgangasmaskin
+        //TODO
     }
 
 

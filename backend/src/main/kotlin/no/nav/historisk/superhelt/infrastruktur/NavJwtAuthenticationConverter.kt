@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.auth
+package no.nav.historisk.superhelt.infrastruktur
 
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.core.GrantedAuthority
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class NavJwtAuthenticationConverter(private val gruppeRoleMapping: Map<String, Role> ) : Converter<Jwt, JwtAuthenticationToken> {
-
 
     override fun convert(jwt: Jwt): JwtAuthenticationToken {
         val authorities = mapGroupsToAuthorities(jwt)

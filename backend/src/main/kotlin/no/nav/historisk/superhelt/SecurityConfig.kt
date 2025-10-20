@@ -1,8 +1,9 @@
 package no.nav.historisk.superhelt
 
-import no.nav.historisk.superhelt.auth.NavJwtAuthenticationConverter
+import no.nav.historisk.superhelt.infrastruktur.NavJwtAuthenticationConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -18,16 +19,32 @@ class SecurityConfig(
     private val navJwtAuthenticationConverter: NavJwtAuthenticationConverter
 ) {
 
+    private val publicGetPaths = listOf(
+        "/actuator/**",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/*.js",
+        "/*.css",
+        "/*.html",
+        "/*.ico",
+        "/*.png",
+        "/*.jpg",
+        "/*.svg",
+        "/static/**",
+        "/assets/**"
+    )
+
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
             authorizeHttpRequests {
-//                authorize("/actuator/**", permitAll)
-//                authorize ( "*.js", permitAll )
-//                authorize ( "*.css", permitAll )
+                publicGetPaths.forEach { path ->
+                    authorize(HttpMethod.GET, path, permitAll)
+                }
 
-                authorize("/api/**", authenticated)
-                authorize(anyRequest, permitAll)
+                authorize("/api/user", authenticated)
+                authorize("/api/**", hasAuthority("READ"))
+                authorize(anyRequest, authenticated)
             }
             oauth2ResourceServer {
                 jwt {
