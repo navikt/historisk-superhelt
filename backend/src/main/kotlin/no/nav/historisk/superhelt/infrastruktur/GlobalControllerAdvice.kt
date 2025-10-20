@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt
+package no.nav.historisk.superhelt.infrastruktur
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
