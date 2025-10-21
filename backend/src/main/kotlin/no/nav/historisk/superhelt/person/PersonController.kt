@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.person
 
 
+import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Size
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -15,6 +16,7 @@ class PersonController(
     private val tilgangsmaskinService: TilgangsmaskinService
 ) {
 
+    @Operation(operationId = "findPersonByFnr", summary = "Finn person basert på fødselsnummer")
     @PostMapping()
     fun findPerson(@RequestBody @Valid request: PersonRequest): ResponseEntity<Person> {
         val persondata = personService.hentPerson(request.fnr)
@@ -26,8 +28,9 @@ class PersonController(
         return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang))
     }
 
+    @Operation(operationId = "getPersonByMaskertIdent")
     @GetMapping("/{maskertPersonident}")
-    fun getPerson(@Size(max = 100) @PathVariable maskertPersonident: MaskertPersonIdent): ResponseEntity<Person> {
+    fun getPerson(@PathVariable maskertPersonident: MaskertPersonIdent): ResponseEntity<Person> {
         val fnr = maskertPersonident.toFnr()
         return findPerson(PersonRequest(fnr = fnr))
     }

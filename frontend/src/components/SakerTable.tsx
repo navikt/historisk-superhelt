@@ -1,7 +1,7 @@
 import {Button, Heading, Skeleton, Table, Tag, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
 import {useQuery} from "@tanstack/react-query";
-import {findSakerOptions} from "@api/@tanstack/react-query.gen";
+import {findSakerForPersonOptions} from "@api/@tanstack/react-query.gen";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
 import { ProblemDetail} from "@api";
 
@@ -58,7 +58,7 @@ const saker: Array<Sak> = [
 export function SakerTable({person}: SakerTableProps) {
 
     const {data, isPending, error} = useQuery( {
-        ...findSakerOptions({
+        ...findSakerForPersonOptions({
             query: {
                 maskertPersonId: person
             },

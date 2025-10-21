@@ -2,7 +2,7 @@ import {Alert, BodyShort, Box, Heading, HStack, Tag, VStack} from "@navikt/ds-re
 import {PersonIcon} from "@navikt/aksel-icons";
 import {Link} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
-import {getPersonOptions} from "@api/@tanstack/react-query.gen";
+import {getPersonByMaskertIdentOptions} from "@api/@tanstack/react-query.gen";
 
 interface Props {
     maskertPersonId: string
@@ -10,7 +10,7 @@ interface Props {
 
 export function PersonHeader({maskertPersonId}: Props) {
   const {data: person} = useQuery(
-      {...getPersonOptions({
+      {...getPersonByMaskertIdentOptions({
           path:{
             maskertPersonident: maskertPersonId
           }

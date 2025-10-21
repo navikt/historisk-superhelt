@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
+import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.model.Saksnummer
@@ -19,13 +20,15 @@ class SakController(
     private val sakService: SakService,
 
 ) {
-
+    @Operation(operationId = "findSakerForPerson", summary = "Finn saker for en person")
     @GetMapping()
     fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<SakDto>> {
         val fnr= maskertPersonId.toFnr()
         val saker = sakService.findSakerForPerson(fnr)
         return ResponseEntity.ok(saker)
     }
+
+    @Operation(operationId = "createSak", summary = "opprett en ny sak")
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<SakDto> {
         val createdSak = sakService.createSak(sak)
@@ -38,6 +41,7 @@ class SakController(
 //        return ResponseEntity.ok(createdSak.toResponseDto())
 //    }
 
+    @Operation(operationId = "getSakBySaksnummer", summary = "Hent opp en sak")
     @GetMapping("{saksnummer}")
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<SakDto> {
        sakService.findBySaksnummer(saksnummer)?.let {
