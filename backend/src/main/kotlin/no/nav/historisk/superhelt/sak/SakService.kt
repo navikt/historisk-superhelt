@@ -15,17 +15,12 @@ class SakService(private val sakRepository: SakRepository) {
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.person)")
     fun createSak(req: SakCreateRequestDto): SakEntity {
-        val sakEntity = SakEntity(
-            type = req.type,
-            person = req.person,
-            tittel = req.tittel,
-            begrunnelse = req.begrunnelse
-        )
+        val sakEntity = req.toEntity()
         return sakRepository.save(sakEntity)
     }
 
     @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
-    fun findSakForPerson(fnr: Fnr): List<SakDto> {
+    fun findSakerForPerson(fnr: Fnr): List<SakDto> {
         return sakRepository.findAll().map { it.toResponseDto() }
     }
 
@@ -35,17 +30,7 @@ class SakService(private val sakRepository: SakRepository) {
         return sakRepository.findByIdOrNull(saksnummer.toId())?.toResponseDto()
     }
 
-//    private fun generateSaknummer(type : StonadsType ): Saksnummer{
-//        val prefix = when(type) {
-//            StonadsType.PARYKK -> "PAR"
-//            StonadsType.ORTOSE -> "ORT"
-//            StonadsType.PROTESE -> "PRO"
-//            StonadsType.FOTTOY -> "FOT"
-//            StonadsType.REISEUTGIFTER -> "RUT"
-//        }
-//        val nextNumber = sakRepository.hentNesteSaksnummer()
-//        return "$prefix${nextNumber.toString().padStart(6, '0')}"
-//    }
+    fun updateSak(sak: Any) {}
 
 
 }

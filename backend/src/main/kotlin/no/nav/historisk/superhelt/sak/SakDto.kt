@@ -1,12 +1,14 @@
 package no.nav.historisk.superhelt.sak
 
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import no.nav.historisk.superhelt.sak.model.*
+import no.nav.person.Fnr
 
 data class SakDto(
     val saksnummer: Saksnummer,
-    val type: StonadsType,
-    val person: String,
+    val type: SaksType,
+    val person: Fnr,
     val tittel: String?,
     val begrunnelse: String?,
     val status: SakStatus,
@@ -14,9 +16,10 @@ data class SakDto(
 )
 
 data class SakCreateRequestDto(
-    val type: StonadsType,
-    @Size(min = 11, max = 11)
-    val person: Personident,
+    val type: SaksType,
+    @field:Size(min = 11, max = 11)
+    @field:Pattern(regexp = "[0-9]*", message = "Fødselsnummer må kun inneholde tall")
+    val person: Fnr,
     val tittel: String? = null,
     val begrunnelse: String? = null
 )
@@ -44,7 +47,7 @@ fun SakEntity.toResponseDto(): SakDto {
 fun SakCreateRequestDto.toEntity(): SakEntity {
     return SakEntity(
         type = this.type,
-        person = this.person,
+        person = this.person, //Fnr(this.person),
         tittel = this.tittel,
         begrunnelse = this.begrunnelse
     )

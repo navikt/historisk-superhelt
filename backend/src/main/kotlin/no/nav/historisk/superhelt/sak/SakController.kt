@@ -23,7 +23,7 @@ class SakController(
     @GetMapping()
     fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<SakDto>> {
         val fnr= maskertPersonId.toFnr()
-        val saker = sakService.findSakForPerson(fnr)
+        val saker = sakService.findSakerForPerson(fnr)
         return ResponseEntity.ok(saker)
     }
     @PostMapping
@@ -31,6 +31,12 @@ class SakController(
         val createdSak = sakService.createSak(sak)
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSak.toResponseDto())
     }
+
+//    @PostMapping("{saksnummer}")
+//    fun oppdaterSak(@PathVariable saksnummer: Saksnummer, @RequestBody @Valid req: SakUpdateRequestDto): ResponseEntity<SakDto> {
+//        val createdSak = sakService.updateSak(sak)
+//        return ResponseEntity.ok(createdSak.toResponseDto())
+//    }
 
     @GetMapping("{saksnummer}")
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<SakDto> {

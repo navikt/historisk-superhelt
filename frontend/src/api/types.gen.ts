@@ -24,7 +24,7 @@ export type SakDto = {
     person: string;
     tittel?: string;
     begrunnelse?: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_BEHANDLET';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     vedtak?: 'INNVILGET' | 'AVSLATT' | 'DELVIS_INNVILGET' | 'HENLAGT';
 };
 
@@ -48,7 +48,13 @@ export type User = {
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
 };
 
-export type FindSakerData = {
+export type SaksTypeDto = {
+    type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
+    navn: string;
+    beskrivelse: string;
+};
+
+export type FindSakerMp0V444Data = {
     body?: never;
     path?: never;
     query: {
@@ -57,7 +63,7 @@ export type FindSakerData = {
     url: '/api/sak';
 };
 
-export type FindSakerErrors = {
+export type FindSakerMp0V444Errors = {
     /**
      * Forbidden
      */
@@ -68,16 +74,16 @@ export type FindSakerErrors = {
     500: ProblemDetail;
 };
 
-export type FindSakerError = FindSakerErrors[keyof FindSakerErrors];
+export type FindSakerMp0V444Error = FindSakerMp0V444Errors[keyof FindSakerMp0V444Errors];
 
-export type FindSakerResponses = {
+export type FindSakerMp0V444Responses = {
     /**
      * OK
      */
     200: Array<SakDto>;
 };
 
-export type FindSakerResponse = FindSakerResponses[keyof FindSakerResponses];
+export type FindSakerMp0V444Response = FindSakerMp0V444Responses[keyof FindSakerMp0V444Responses];
 
 export type CreateSakData = {
     body: SakCreateRequestDto;
@@ -197,16 +203,14 @@ export type GetSakBySaksnummerResponses = {
 
 export type GetSakBySaksnummerResponse = GetSakBySaksnummerResponses[keyof GetSakBySaksnummerResponses];
 
-export type GetPersonData = {
+export type TypeKodeverkData = {
     body?: never;
-    path: {
-        maskertPersonident: string;
-    };
+    path?: never;
     query?: never;
-    url: '/api/person/{maskertPersonident}';
+    url: '/api/sak/kodeverk/typer';
 };
 
-export type GetPersonErrors = {
+export type TypeKodeverkErrors = {
     /**
      * Forbidden
      */
@@ -217,16 +221,47 @@ export type GetPersonErrors = {
     500: ProblemDetail;
 };
 
-export type GetPersonError = GetPersonErrors[keyof GetPersonErrors];
+export type TypeKodeverkError = TypeKodeverkErrors[keyof TypeKodeverkErrors];
 
-export type GetPersonResponses = {
+export type TypeKodeverkResponses = {
+    /**
+     * OK
+     */
+    200: Array<SaksTypeDto>;
+};
+
+export type TypeKodeverkResponse = TypeKodeverkResponses[keyof TypeKodeverkResponses];
+
+export type GetPersonMp0V444Data = {
+    body?: never;
+    path: {
+        maskertPersonident: string;
+    };
+    query?: never;
+    url: '/api/person/{maskertPersonident}';
+};
+
+export type GetPersonMp0V444Errors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetPersonMp0V444Error = GetPersonMp0V444Errors[keyof GetPersonMp0V444Errors];
+
+export type GetPersonMp0V444Responses = {
     /**
      * OK
      */
     200: Person;
 };
 
-export type GetPersonResponse = GetPersonResponses[keyof GetPersonResponses];
+export type GetPersonMp0V444Response = GetPersonMp0V444Responses[keyof GetPersonMp0V444Responses];
 
 export type ClientOptions = {
     baseUrl: 'http://localhost:8080' | (string & {});
