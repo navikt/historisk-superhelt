@@ -19,9 +19,10 @@ function SakLayout() {
     // TODO loading and error states
     return (
         <VStack gap="6">
-            <Heading size="xlarge">Sakside</Heading>
-
             <PersonHeader maskertPersonId={data.maskertPersonIdent}/>
+            <Heading size="large">Sak {saksnummer}</Heading>
+
+
             <Outlet/>
         </VStack>
     )

@@ -39,10 +39,7 @@ function EditSakPage() {
     }
 
     return (
-        <VStack gap="6">
 
-
-            Rediger sak {data?.saksnummer}
             <Box padding="6" borderWidth="1" borderRadius="medium">
                 <form onSubmit={handleSubmit}>
                     <VStack gap="6">
@@ -98,6 +95,5 @@ function EditSakPage() {
                     </VStack>
                 </form>
             </Box>
-        </VStack>
     )
 }

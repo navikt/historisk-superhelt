@@ -38,10 +38,8 @@ function PersonPage() {
 
     return (
         <VStack gap="6">
-            <Heading size="xlarge">Personside</Heading>
-
             <PersonHeader maskertPersonId={personid}/>
-
+            <Heading size="xlarge">Personside</Heading>
             <RfcErrorBoundary>
                 <Tabs defaultValue="saker">
                     <Tabs.List>
