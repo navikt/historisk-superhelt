@@ -1,6 +1,6 @@
-import {Alert, BodyShort, Box, Heading, HStack, Tag, VStack} from "@navikt/ds-react";
+import {Alert, BodyShort, Box, Heading, HStack, Tag, VStack, Link} from "@navikt/ds-react";
 import {PersonIcon} from "@navikt/aksel-icons";
-import {Link} from "@tanstack/react-router";
+import {Link as RouterLink} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 import {getPersonByMaskertIdentOptions} from "@api/@tanstack/react-query.gen";
 
@@ -21,7 +21,7 @@ export function PersonHeader({maskertPersonId}: Props) {
       <HStack gap="4" align="start">
        <PersonIcon fontSize="3rem"/>
         <VStack gap="4">
-          <Link to={"/person/" + person?.maskertPersonident}><Heading size="medium">{person?.navn}</Heading></Link>
+          <Link as={RouterLink} to={"/person/" + person?.maskertPersonident} underline={false} variant={"neutral"}><Heading size="medium">{person?.navn}</Heading></Link>
           <HStack gap="8">
             <VStack gap="1">
               <BodyShort size="small"><strong>Fødselsnummer:</strong> {person?.fnr}</BodyShort>

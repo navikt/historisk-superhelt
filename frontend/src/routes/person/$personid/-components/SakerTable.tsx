@@ -71,7 +71,7 @@ export function SakerTable({person}: SakerTableProps) {
                         <Table.DataCell>{sak.opprettetDato}</Table.DataCell>
                         <Table.DataCell>{sak.saksbehandler}</Table.DataCell>
                         <Table.DataCell>
-                            <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}/edit`}>
+                            <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
                                 Åpne sak
                             </Button>
                         </Table.DataCell>

@@ -13,6 +13,6 @@ function SakIndex() {
     const {data, isPending, error} = useSuspenseQuery(getSakOptions(saksnummer))
     const navigate = useNavigate();
 
-    navigate({to:"/sak/$saksnummer/edit", params: {saksnummer}, search:{"status":data.status} , replace:true});
+    navigate({to:"/sak/$saksnummer/soknad", params: {saksnummer}, search:{"status":data.status} , replace:true});
 
 }

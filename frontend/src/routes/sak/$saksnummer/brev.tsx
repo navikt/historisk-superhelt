@@ -15,7 +15,7 @@ import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
 import {PersonHeader} from "~/components/PersonHeader";
 
-export const Route = createFileRoute('/brev')({
+export const Route = createFileRoute('/sak/$saksnummer/brev')({
   component: BrevPage,
 })
 

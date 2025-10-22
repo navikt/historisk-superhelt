@@ -6,7 +6,7 @@ import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
 
 
-export const Route = createFileRoute('/sak/$saksnummer/edit')({
+export const Route = createFileRoute('/sak/$saksnummer/soknad')({
     component: EditSakPage,
 })
 

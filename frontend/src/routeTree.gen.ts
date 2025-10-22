@@ -9,31 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as XsakRouteImport } from './routes/xsak'
-import { Route as BrevRouteImport } from './routes/brev'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SakSaksnummerRouteRouteImport } from './routes/sak/$saksnummer/route'
 import { Route as SakSaksnummerIndexRouteImport } from './routes/sak/$saksnummer/index'
 import { Route as PersonPersonidIndexRouteImport } from './routes/person/$personid/index'
-import { Route as SakSaksnummerEditRouteImport } from './routes/sak/$saksnummer/edit'
+import { Route as SakSaksnummerXsakRouteImport } from './routes/sak/$saksnummer/xsak'
+import { Route as SakSaksnummerSoknadRouteImport } from './routes/sak/$saksnummer/soknad'
+import { Route as SakSaksnummerBrevRouteImport } from './routes/sak/$saksnummer/brev'
 import { Route as PersonPersonidNySakRouteImport } from './routes/person/$personid/ny-sak'
 
-const XsakRoute = XsakRouteImport.update({
-  id: '/xsak',
-  path: '/xsak',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BrevRoute = BrevRouteImport.update({
-  id: '/brev',
-  path: '/brev',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -54,9 +38,19 @@ const PersonPersonidIndexRoute = PersonPersonidIndexRouteImport.update({
   path: '/person/$personid/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SakSaksnummerEditRoute = SakSaksnummerEditRouteImport.update({
-  id: '/edit',
-  path: '/edit',
+const SakSaksnummerXsakRoute = SakSaksnummerXsakRouteImport.update({
+  id: '/xsak',
+  path: '/xsak',
+  getParentRoute: () => SakSaksnummerRouteRoute,
+} as any)
+const SakSaksnummerSoknadRoute = SakSaksnummerSoknadRouteImport.update({
+  id: '/soknad',
+  path: '/soknad',
+  getParentRoute: () => SakSaksnummerRouteRoute,
+} as any)
+const SakSaksnummerBrevRoute = SakSaksnummerBrevRouteImport.update({
+  id: '/brev',
+  path: '/brev',
   getParentRoute: () => SakSaksnummerRouteRoute,
 } as any)
 const PersonPersonidNySakRoute = PersonPersonidNySakRouteImport.update({
@@ -67,34 +61,31 @@ const PersonPersonidNySakRoute = PersonPersonidNySakRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/brev': typeof BrevRoute
-  '/xsak': typeof XsakRoute
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/person/$personid/ny-sak': typeof PersonPersonidNySakRoute
-  '/sak/$saksnummer/edit': typeof SakSaksnummerEditRoute
+  '/sak/$saksnummer/brev': typeof SakSaksnummerBrevRoute
+  '/sak/$saksnummer/soknad': typeof SakSaksnummerSoknadRoute
+  '/sak/$saksnummer/xsak': typeof SakSaksnummerXsakRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/brev': typeof BrevRoute
-  '/xsak': typeof XsakRoute
   '/person/$personid/ny-sak': typeof PersonPersonidNySakRoute
-  '/sak/$saksnummer/edit': typeof SakSaksnummerEditRoute
+  '/sak/$saksnummer/brev': typeof SakSaksnummerBrevRoute
+  '/sak/$saksnummer/soknad': typeof SakSaksnummerSoknadRoute
+  '/sak/$saksnummer/xsak': typeof SakSaksnummerXsakRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer': typeof SakSaksnummerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/brev': typeof BrevRoute
-  '/xsak': typeof XsakRoute
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/person/$personid/ny-sak': typeof PersonPersonidNySakRoute
-  '/sak/$saksnummer/edit': typeof SakSaksnummerEditRoute
+  '/sak/$saksnummer/brev': typeof SakSaksnummerBrevRoute
+  '/sak/$saksnummer/soknad': typeof SakSaksnummerSoknadRoute
+  '/sak/$saksnummer/xsak': typeof SakSaksnummerXsakRoute
   '/person/$personid/': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
@@ -102,42 +93,36 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
-    | '/brev'
-    | '/xsak'
     | '/sak/$saksnummer'
     | '/person/$personid/ny-sak'
-    | '/sak/$saksnummer/edit'
+    | '/sak/$saksnummer/brev'
+    | '/sak/$saksnummer/soknad'
+    | '/sak/$saksnummer/xsak'
     | '/person/$personid'
     | '/sak/$saksnummer/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
-    | '/brev'
-    | '/xsak'
     | '/person/$personid/ny-sak'
-    | '/sak/$saksnummer/edit'
+    | '/sak/$saksnummer/brev'
+    | '/sak/$saksnummer/soknad'
+    | '/sak/$saksnummer/xsak'
     | '/person/$personid'
     | '/sak/$saksnummer'
   id:
     | '__root__'
     | '/'
-    | '/about'
-    | '/brev'
-    | '/xsak'
     | '/sak/$saksnummer'
     | '/person/$personid/ny-sak'
-    | '/sak/$saksnummer/edit'
+    | '/sak/$saksnummer/brev'
+    | '/sak/$saksnummer/soknad'
+    | '/sak/$saksnummer/xsak'
     | '/person/$personid/'
     | '/sak/$saksnummer/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  BrevRoute: typeof BrevRoute
-  XsakRoute: typeof XsakRoute
   SakSaksnummerRouteRoute: typeof SakSaksnummerRouteRouteWithChildren
   PersonPersonidNySakRoute: typeof PersonPersonidNySakRoute
   PersonPersonidIndexRoute: typeof PersonPersonidIndexRoute
@@ -145,27 +130,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/xsak': {
-      id: '/xsak'
-      path: '/xsak'
-      fullPath: '/xsak'
-      preLoaderRoute: typeof XsakRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/brev': {
-      id: '/brev'
-      path: '/brev'
-      fullPath: '/brev'
-      preLoaderRoute: typeof BrevRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -194,11 +158,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonPersonidIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sak/$saksnummer/edit': {
-      id: '/sak/$saksnummer/edit'
-      path: '/edit'
-      fullPath: '/sak/$saksnummer/edit'
-      preLoaderRoute: typeof SakSaksnummerEditRouteImport
+    '/sak/$saksnummer/xsak': {
+      id: '/sak/$saksnummer/xsak'
+      path: '/xsak'
+      fullPath: '/sak/$saksnummer/xsak'
+      preLoaderRoute: typeof SakSaksnummerXsakRouteImport
+      parentRoute: typeof SakSaksnummerRouteRoute
+    }
+    '/sak/$saksnummer/soknad': {
+      id: '/sak/$saksnummer/soknad'
+      path: '/soknad'
+      fullPath: '/sak/$saksnummer/soknad'
+      preLoaderRoute: typeof SakSaksnummerSoknadRouteImport
+      parentRoute: typeof SakSaksnummerRouteRoute
+    }
+    '/sak/$saksnummer/brev': {
+      id: '/sak/$saksnummer/brev'
+      path: '/brev'
+      fullPath: '/sak/$saksnummer/brev'
+      preLoaderRoute: typeof SakSaksnummerBrevRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
     '/person/$personid/ny-sak': {
@@ -212,12 +190,16 @@ declare module '@tanstack/react-router' {
 }
 
 interface SakSaksnummerRouteRouteChildren {
-  SakSaksnummerEditRoute: typeof SakSaksnummerEditRoute
+  SakSaksnummerBrevRoute: typeof SakSaksnummerBrevRoute
+  SakSaksnummerSoknadRoute: typeof SakSaksnummerSoknadRoute
+  SakSaksnummerXsakRoute: typeof SakSaksnummerXsakRoute
   SakSaksnummerIndexRoute: typeof SakSaksnummerIndexRoute
 }
 
 const SakSaksnummerRouteRouteChildren: SakSaksnummerRouteRouteChildren = {
-  SakSaksnummerEditRoute: SakSaksnummerEditRoute,
+  SakSaksnummerBrevRoute: SakSaksnummerBrevRoute,
+  SakSaksnummerSoknadRoute: SakSaksnummerSoknadRoute,
+  SakSaksnummerXsakRoute: SakSaksnummerXsakRoute,
   SakSaksnummerIndexRoute: SakSaksnummerIndexRoute,
 }
 
@@ -226,9 +208,6 @@ const SakSaksnummerRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  BrevRoute: BrevRoute,
-  XsakRoute: XsakRoute,
   SakSaksnummerRouteRoute: SakSaksnummerRouteRouteWithChildren,
   PersonPersonidNySakRoute: PersonPersonidNySakRoute,
   PersonPersonidIndexRoute: PersonPersonidIndexRoute,
