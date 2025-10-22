@@ -1,4 +1,4 @@
-import {createRootRoute, Outlet} from '@tanstack/react-router'
+import {createRootRoute, createRootRouteWithContext, Outlet} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from '@tanstack/react-router-devtools'
 import "@navikt/ds-css/darkside";
 import {Theme} from "@navikt/ds-react/Theme";
@@ -6,8 +6,9 @@ import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import {Page} from "@navikt/ds-react";
 import {Header} from "~/components/Header";
 import {RfcErrorBoundary} from "~/components/error/RfcErrorBoundary";
+import {RouterContext} from "~/main";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => (
         <Theme theme={"light"}>
             <Page footer={<Footer />} >

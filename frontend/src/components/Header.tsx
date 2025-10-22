@@ -29,7 +29,6 @@ export function Header() {
         if(error){
             setSearchError("Noe gikk galt "+ error)
         }
-        console.log(data)
         await navigate({to:"/person/$personid", params:{ personid: data?.maskertPersonident!}})
         setSearch("")
         setSearchError(undefined)

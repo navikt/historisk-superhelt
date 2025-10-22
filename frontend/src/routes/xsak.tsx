@@ -16,7 +16,7 @@ import {ClockIcon, FileTextIcon} from '@navikt/aksel-icons'
 import {useState} from 'react'
 import {PersonHeader} from "~/components/PersonHeader";
 
-export const Route = createFileRoute('/sak')({
+export const Route = createFileRoute('/xsak')({
     component: SakPage,
 })
 

@@ -1,11 +1,11 @@
-import {createFileRoute} from '@tanstack/react-router'
+import {createFileRoute, Link} from '@tanstack/react-router'
 import {Box, Button, Heading, HStack, Table, Tabs, Tag, VStack} from '@navikt/ds-react'
-import {ExternalLinkIcon, FileTextIcon} from '@navikt/aksel-icons'
-import {PersonHeader} from "~/components/PersonHeader";
+import {ExternalLinkIcon, FileTextIcon, PlusIcon} from '@navikt/aksel-icons'
 import {RfcErrorBoundary} from "~/components/error/RfcErrorBoundary";
-import {SakerTable} from "~/components/SakerTable";
+import {SakerTable} from "./-components/SakerTable";
+import {PersonHeader} from "~/components/PersonHeader";
 
-export const Route = createFileRoute('/person/$personid')({
+export const Route = createFileRoute('/person/$personid/')({
     component: PersonPage,
 })
 
@@ -52,7 +52,14 @@ function PersonPage() {
                     <Tabs.Panel value="saker">
                         <Box padding="4" borderWidth="1" borderRadius="small">
                             <VStack gap="4">
-                                <Heading size="medium">Relevante saker</Heading>
+                                <HStack justify="space-between" align="center">
+                                    <Heading size="medium">Relevante saker</Heading>
+                                    <Link to="/person/$personid/ny-sak" params={{personid}}>
+                                        <Button size="small" variant="primary" icon={<PlusIcon/>}>
+                                            Opprett ny sak
+                                        </Button>
+                                    </Link>
+                                </HStack>
 
                                 <SakerTable person={personid}/>
                             </VStack>

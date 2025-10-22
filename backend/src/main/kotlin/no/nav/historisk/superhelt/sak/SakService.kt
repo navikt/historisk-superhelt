@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class SakService(private val sakRepository: SakRepository) {
 
-    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.person)")
+    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
     fun createSak(req: SakCreateRequestDto): SakEntity {
         val sakEntity = req.toEntity()
         return sakRepository.save(sakEntity)
@@ -21,11 +21,11 @@ class SakService(private val sakRepository: SakRepository) {
 
     @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
     fun findSakerForPerson(fnr: Fnr): List<SakDto> {
-        return sakRepository.findAll().map { it.toResponseDto() }
+        return sakRepository.findSakEntitiesByFnr(fnr).map { it.toResponseDto() }
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject?.person)")
+    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject?.fnr)")
     fun findBySaksnummer(saksnummer: Saksnummer): SakDto? {
         return sakRepository.findByIdOrNull(saksnummer.toId())?.toResponseDto()
     }

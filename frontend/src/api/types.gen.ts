@@ -17,7 +17,7 @@ export type ProblemDetail = {
 
 export type SakCreateRequestDto = {
     type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
-    person: string;
+    fnr: string;
     tittel?: string;
     begrunnelse?: string;
 };
@@ -25,11 +25,13 @@ export type SakCreateRequestDto = {
 export type SakDto = {
     saksnummer: string;
     type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
-    person: string;
+    fnr: string;
+    maskertPersonIdent: string;
     tittel?: string;
     begrunnelse?: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
-    vedtak?: 'INNVILGET' | 'AVSLATT' | 'DELVIS_INNVILGET' | 'HENLAGT';
+    opprettetDato: string;
+    saksbehandler: string;
 };
 
 export type PersonRequest = {

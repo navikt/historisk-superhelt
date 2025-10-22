@@ -2,24 +2,30 @@ package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
+import no.nav.historisk.superhelt.person.MaskertPersonIdent
+import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.model.*
 import no.nav.person.Fnr
+import java.time.LocalDate
 
 data class SakDto(
     val saksnummer: Saksnummer,
     val type: SaksType,
-    val person: Fnr,
+    val fnr: Fnr,
+    val maskertPersonIdent: MaskertPersonIdent,
     val tittel: String?,
     val begrunnelse: String?,
     val status: SakStatus,
-    val vedtak: VedtakType?
+    val opprettetDato: LocalDate,
+    val saksbehandler: String,
 )
 
 data class SakCreateRequestDto(
     val type: SaksType,
     @field:Size(min = 11, max = 11)
     @field:Pattern(regexp = "[0-9]*", message = "Fødselsnummer må kun inneholde tall")
-    val person: Fnr,
+    val fnr: Fnr,
     val tittel: String? = null,
     val begrunnelse: String? = null
 )
@@ -36,20 +42,25 @@ fun SakEntity.toResponseDto(): SakDto {
     return SakDto(
         saksnummer = this.saksnummer,
         type = this.type,
-        person = this.person,
+        fnr = this.fnr,
+        maskertPersonIdent = this.fnr.toMaskertPersonIdent(),
         tittel = this.tittel,
         begrunnelse = this.begrunnelse,
         status = this.status,
-        vedtak = this.vedtak
+        opprettetDato = this.opprettet.toLocalDate(),
+        saksbehandler = this.saksBehandler,
     )
 }
 
+// Todo flytte inn i service
 fun SakCreateRequestDto.toEntity(): SakEntity {
     return SakEntity(
         type = this.type,
-        person = this.person, //Fnr(this.person),
+        fnr = this.fnr,
         tittel = this.tittel,
-        begrunnelse = this.begrunnelse
+        begrunnelse = this.begrunnelse,
+        status = SakStatus.UNDER_BEHANDLING,
+        saksBehandler = getCurrentNavIdent() ?: "ukjent"
     )
 }
 
@@ -57,7 +68,6 @@ fun SakUpdateRequestDto.updateEntity(entity: SakEntity): SakEntity {
     this.tittel?.let { entity.tittel = it }
     this.begrunnelse?.let { entity.begrunnelse = it }
     this.status?.let { entity.status = it }
-    this.vedtak?.let { entity.vedtak = it }
     return entity
 }
 
