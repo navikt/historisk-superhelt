@@ -1,7 +1,10 @@
 package no.nav.historisk.superhelt.sak
 
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.historisk.superhelt.sak.model.SakEntity
 import no.nav.historisk.superhelt.sak.model.SakRepository
+import no.nav.historisk.superhelt.sak.model.SakStatus
 import no.nav.historisk.superhelt.sak.model.Saksnummer
 import no.nav.historisk.superhelt.sak.model.toId
 import no.nav.person.Fnr
@@ -15,7 +18,14 @@ class SakService(private val sakRepository: SakRepository) {
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
     fun createSak(req: SakCreateRequestDto): SakEntity {
-        val sakEntity = req.toEntity()
+        val sakEntity = SakEntity(
+            type = req.type,
+            fnr = req.fnr,
+            tittel = req.tittel,
+            begrunnelse = req.begrunnelse,
+            status = SakStatus.UNDER_BEHANDLING,
+            saksBehandler = getCurrentNavIdent() ?: "ukjent"
+        )
         return sakRepository.save(sakEntity)
     }
 
@@ -26,11 +36,23 @@ class SakService(private val sakRepository: SakRepository) {
 
     @PreAuthorize("hasAuthority('READ')")
     @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject?.fnr)")
-    fun findBySaksnummer(saksnummer: Saksnummer): SakDto? {
-        return sakRepository.findByIdOrNull(saksnummer.toId())?.toResponseDto()
+    fun getSak(saksnummer: Saksnummer): SakDto {
+        return getSakOrThrow(saksnummer).toResponseDto()
     }
 
-    fun updateSak(sak: Any) {}
+    private fun getSakOrThrow(saksnummer: Saksnummer): SakEntity {
+        return sakRepository.findByIdOrNull(saksnummer.toId())
+            ?: throw IkkeFunnetException("Fant ikke sak med saksnummer $saksnummer")
+    }
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    fun updateSak(saksNummer: Saksnummer, req: SakUpdateRequestDto): SakDto {
+        val sak = getSakOrThrow(saksNummer)
+        req.tittel?.let { sak.tittel = it }
+        req.begrunnelse?.let { sak.begrunnelse = it }
+        req.type?.let { sak.type = it }
+        return sakRepository.save(sak).toResponseDto()
+    }
 
 
 }

@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, findPersonByFnr, findSakerForPerson, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, type Options, typeKodeverk } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, TypeKodeverkData } from '../types.gen';
+import { createSak, findPersonByFnr, findSakerForPerson, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, oppdaterSak, type Options, typeKodeverk } from '../sdk.gen';
+import type { CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, TypeKodeverkData } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -39,6 +39,40 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [
         params
     ];
+};
+
+export const getSakBySaksnummerQueryKey = (options: Options<GetSakBySaksnummerData>) => createQueryKey('getSakBySaksnummer', options);
+
+/**
+ * Hent opp en sak
+ */
+export const getSakBySaksnummerOptions = (options: Options<GetSakBySaksnummerData>) => {
+    return queryOptions({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getSakBySaksnummer({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: getSakBySaksnummerQueryKey(options)
+    });
+};
+
+export const oppdaterSakMutation = (options?: Partial<Options<OppdaterSakData>>): UseMutationOptions<OppdaterSakResponse, OppdaterSakError, Options<OppdaterSakData>> => {
+    const mutationOptions: UseMutationOptions<OppdaterSakResponse, OppdaterSakError, Options<OppdaterSakData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await oppdaterSak({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
 };
 
 export const findSakerForPersonQueryKey = (options: Options<FindSakerForPersonData>) => createQueryKey('findSakerForPerson', options);
@@ -109,26 +143,6 @@ export const getUserInfoOptions = (options?: Options<GetUserInfoData>) => {
             return data;
         },
         queryKey: getUserInfoQueryKey(options)
-    });
-};
-
-export const getSakBySaksnummerQueryKey = (options: Options<GetSakBySaksnummerData>) => createQueryKey('getSakBySaksnummer', options);
-
-/**
- * Hent opp en sak
- */
-export const getSakBySaksnummerOptions = (options: Options<GetSakBySaksnummerData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getSakBySaksnummer({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getSakBySaksnummerQueryKey(options)
     });
 };
 

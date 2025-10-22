@@ -15,9 +15,8 @@ export type ProblemDetail = {
     };
 };
 
-export type SakCreateRequestDto = {
-    type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
-    fnr: string;
+export type SakUpdateRequestDto = {
+    type?: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     tittel?: string;
     begrunnelse?: string;
 };
@@ -32,6 +31,13 @@ export type SakDto = {
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     saksbehandler: string;
+};
+
+export type SakCreateRequestDto = {
+    type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
+    fnr: string;
+    tittel?: string;
+    begrunnelse?: string;
 };
 
 export type PersonRequest = {
@@ -59,6 +65,68 @@ export type SaksTypeDto = {
     navn: string;
     beskrivelse: string;
 };
+
+export type GetSakBySaksnummerData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}';
+};
+
+export type GetSakBySaksnummerErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetSakBySaksnummerError = GetSakBySaksnummerErrors[keyof GetSakBySaksnummerErrors];
+
+export type GetSakBySaksnummerResponses = {
+    /**
+     * OK
+     */
+    200: SakDto;
+};
+
+export type GetSakBySaksnummerResponse = GetSakBySaksnummerResponses[keyof GetSakBySaksnummerResponses];
+
+export type OppdaterSakData = {
+    body: SakUpdateRequestDto;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}';
+};
+
+export type OppdaterSakErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type OppdaterSakError = OppdaterSakErrors[keyof OppdaterSakErrors];
+
+export type OppdaterSakResponses = {
+    /**
+     * OK
+     */
+    200: SakDto;
+};
+
+export type OppdaterSakResponse = OppdaterSakResponses[keyof OppdaterSakResponses];
 
 export type FindSakerForPersonData = {
     body?: never;
@@ -177,37 +245,6 @@ export type GetUserInfoResponses = {
 };
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
-
-export type GetSakBySaksnummerData = {
-    body?: never;
-    path: {
-        saksnummer: string;
-    };
-    query?: never;
-    url: '/api/sak/{saksnummer}';
-};
-
-export type GetSakBySaksnummerErrors = {
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type GetSakBySaksnummerError = GetSakBySaksnummerErrors[keyof GetSakBySaksnummerErrors];
-
-export type GetSakBySaksnummerResponses = {
-    /**
-     * OK
-     */
-    200: SakDto;
-};
-
-export type GetSakBySaksnummerResponse = GetSakBySaksnummerResponses[keyof GetSakBySaksnummerResponses];
 
 export type TypeKodeverkData = {
     body?: never;

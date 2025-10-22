@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateSakData, CreateSakErrors, CreateSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, TypeKodeverkData, TypeKodeverkErrors, TypeKodeverkResponses } from './types.gen';
+import type { CreateSakData, CreateSakErrors, CreateSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, TypeKodeverkData, TypeKodeverkErrors, TypeKodeverkResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -16,6 +16,39 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      * used to access values that aren't defined as part of the SDK function.
      */
     meta?: Record<string, unknown>;
+};
+
+/**
+ * Hent opp en sak
+ */
+export const getSakBySaksnummer = <ThrowOnError extends boolean = false>(options: Options<GetSakBySaksnummerData, ThrowOnError>) => {
+    return (options.client ?? client).get<GetSakBySaksnummerResponses, GetSakBySaksnummerErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/sak/{saksnummer}',
+        ...options
+    });
+};
+
+export const oppdaterSak = <ThrowOnError extends boolean = false>(options: Options<OppdaterSakData, ThrowOnError>) => {
+    return (options.client ?? client).put<OppdaterSakResponses, OppdaterSakErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/sak/{saksnummer}',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    });
 };
 
 /**
@@ -83,22 +116,6 @@ export const getUserInfo = <ThrowOnError extends boolean = false>(options?: Opti
             }
         ],
         url: '/api/user',
-        ...options
-    });
-};
-
-/**
- * Hent opp en sak
- */
-export const getSakBySaksnummer = <ThrowOnError extends boolean = false>(options: Options<GetSakBySaksnummerData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetSakBySaksnummerResponses, GetSakBySaksnummerErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/{saksnummer}',
         ...options
     });
 };

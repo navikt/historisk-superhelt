@@ -1,7 +1,7 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
-import {Heading, VStack} from '@navikt/ds-react'
+import {Box, Heading, HGrid, Skeleton, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
-import {useQuery, useSuspenseQuery} from "@tanstack/react-query";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
@@ -18,12 +18,25 @@ function SakLayout() {
     // if (!data) return null;
     // TODO loading and error states
     return (
-        <VStack gap="6">
+        <>
             <PersonHeader maskertPersonId={data.maskertPersonIdent}/>
-            <Heading size="large">Sak {saksnummer}</Heading>
+            <HGrid gap="space-24" columns={{lg: 1, xl: 2}}>
+                <VStack gap="space-16">
+                    <Heading size="large">Sak {saksnummer}</Heading>
+                    <Outlet/>
+                </VStack>
+                <VStack gap="space-16">
+                    <Heading size="small">Viser pdf</Heading>
+                    <embed
+                        src="/logo.svg"
+                        width="100%"
+                        height="1200px"
+                        type="application/pdf"
+                        title="Embedded PDF Viewer"
+                    />
+                </VStack>
 
-
-            <Outlet/>
-        </VStack>
+            </HGrid>
+        </>
     )
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -35,20 +36,19 @@ class SakController(
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSak.toResponseDto())
     }
 
-//    @PostMapping("{saksnummer}")
-//    fun oppdaterSak(@PathVariable saksnummer: Saksnummer, @RequestBody @Valid req: SakUpdateRequestDto): ResponseEntity<SakDto> {
-//        val createdSak = sakService.updateSak(sak)
-//        return ResponseEntity.ok(createdSak.toResponseDto())
-//    }
+    @Operation(operationId = "oppdaterSak")
+    @PutMapping("{saksnummer}")
+    fun oppdaterSak(@PathVariable saksnummer: Saksnummer, @RequestBody @Valid req: SakUpdateRequestDto): ResponseEntity<SakDto> {
+        val updated = sakService.updateSak(saksnummer, req)
+        return ResponseEntity.ok(updated)
+    }
 
     @Operation(operationId = "getSakBySaksnummer", summary = "Hent opp en sak")
     @GetMapping("{saksnummer}")
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<SakDto> {
-       sakService.findBySaksnummer(saksnummer)?.let {
+       sakService.getSak(saksnummer).let {
             return ResponseEntity.ok(it)
         }
-        return ResponseEntity.notFound().build()
-
     }
 
 }

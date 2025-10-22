@@ -31,10 +31,9 @@ data class SakCreateRequestDto(
 )
 
 data class SakUpdateRequestDto(
+    val type: SaksType?= null,
     val tittel: String? = null,
     val begrunnelse: String? = null,
-    val status: SakStatus? = null,
-    val vedtak: VedtakType? = null
 )
 
 // Extension functions for mapping between Entity and DTO
@@ -50,24 +49,5 @@ fun SakEntity.toResponseDto(): SakDto {
         opprettetDato = this.opprettet.toLocalDate(),
         saksbehandler = this.saksBehandler,
     )
-}
-
-// Todo flytte inn i service
-fun SakCreateRequestDto.toEntity(): SakEntity {
-    return SakEntity(
-        type = this.type,
-        fnr = this.fnr,
-        tittel = this.tittel,
-        begrunnelse = this.begrunnelse,
-        status = SakStatus.UNDER_BEHANDLING,
-        saksBehandler = getCurrentNavIdent() ?: "ukjent"
-    )
-}
-
-fun SakUpdateRequestDto.updateEntity(entity: SakEntity): SakEntity {
-    this.tittel?.let { entity.tittel = it }
-    this.begrunnelse?.let { entity.begrunnelse = it }
-    this.status?.let { entity.status = it }
-    return entity
 }
 
