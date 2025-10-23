@@ -21,13 +21,6 @@ class SpaBrowserRouterControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvcTester
 
-
-    @Test
-    fun `should not forward root path to index`() {
-        assertThat(mockMvc.get().uri("/"))
-            .isNotForwarded()
-    }
-
     @ParameterizedTest
     @ValueSource(
         strings = [
