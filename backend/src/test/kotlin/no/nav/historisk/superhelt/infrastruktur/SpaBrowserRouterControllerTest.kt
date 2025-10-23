@@ -75,6 +75,7 @@ class SpaBrowserRouterControllerTest {
         assertThat(mockMvc.get().uri(file))
             .isNotForwarded()
     }
+
     @ParameterizedTest
     @ValueSource(
         strings = [
@@ -89,7 +90,7 @@ class SpaBrowserRouterControllerTest {
 }
 
 private fun MvcTestResultAssert.isForwarded(): MvcTestResultAssert {
-    viewName().describedAs { "viewName" }.isEqualTo("forward:/");
+    viewName().describedAs { "viewName" }.isEqualTo("forward:/")
     forwardedUrl().describedAs { "forwardedUrl" }.isEqualTo("/")
     return this
 }
@@ -98,4 +99,5 @@ private fun MvcTestResultAssert.isNotForwarded(): MvcTestResultAssert {
     forwardedUrl().describedAs { "forwardedUrl" }.isNullOrEmpty()
     return this
 }
+
 

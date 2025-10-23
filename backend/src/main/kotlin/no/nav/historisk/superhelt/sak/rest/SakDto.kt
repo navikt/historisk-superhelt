@@ -1,11 +1,13 @@
-package no.nav.historisk.superhelt.sak
+package no.nav.historisk.superhelt.sak.rest
 
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
-import no.nav.historisk.superhelt.sak.model.*
+import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakStatus
+import no.nav.historisk.superhelt.sak.SaksType
+import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.person.Fnr
 import java.time.LocalDate
 
@@ -31,23 +33,23 @@ data class SakCreateRequestDto(
 )
 
 data class SakUpdateRequestDto(
-    val type: SaksType?= null,
+    val type: SaksType? = null,
     val tittel: String? = null,
     val begrunnelse: String? = null,
 )
 
-// Extension functions for mapping between Entity and DTO
-fun SakEntity.toResponseDto(): SakDto {
+// Extension functions for mapping between Domain and DTO
+fun Sak.toResponseDto(): SakDto {
     return SakDto(
-        saksnummer = this.saksnummer,
+        saksnummer = this.saksnummer ?: Saksnummer("Ukjent"),
         type = this.type,
         fnr = this.fnr,
         maskertPersonIdent = this.fnr.toMaskertPersonIdent(),
         tittel = this.tittel,
         begrunnelse = this.begrunnelse,
         status = this.status,
-        opprettetDato = this.opprettet.toLocalDate(),
-        saksbehandler = this.saksBehandler,
+        opprettetDato = this.opprettetDato,
+        saksbehandler = this.saksbehandler,
     )
 }
 

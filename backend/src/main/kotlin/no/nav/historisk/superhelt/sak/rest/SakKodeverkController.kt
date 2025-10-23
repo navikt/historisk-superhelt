@@ -1,6 +1,6 @@
-package no.nav.historisk.superhelt.sak
+package no.nav.historisk.superhelt.sak.rest
 
-import no.nav.historisk.superhelt.sak.model.SaksType
+import no.nav.historisk.superhelt.sak.SaksType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -21,4 +21,3 @@ class SakKodeverkController {
     }
 
 }
-

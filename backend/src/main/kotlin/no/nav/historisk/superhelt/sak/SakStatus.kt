@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.sak.model
+package no.nav.historisk.superhelt.sak
 
 
 enum class SakStatus(val finalState: Boolean) {

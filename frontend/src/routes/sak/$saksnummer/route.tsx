@@ -1,5 +1,5 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
-import {Box, Heading, HGrid, Skeleton, VStack} from '@navikt/ds-react'
+import {Heading, HGrid, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";

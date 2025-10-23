@@ -1,31 +1,29 @@
-package no.nav.historisk.superhelt.sak
+package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
-import no.nav.historisk.superhelt.sak.model.Saksnummer
+import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.Saksnummer
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/sak")
 class SakController(
     private val sakService: SakService,
-
+    private val sakRepository: SakRepository
 ) {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     @Operation(operationId = "findSakerForPerson", summary = "Finn saker for en person")
     @GetMapping()
     fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<SakDto>> {
-        val fnr= maskertPersonId.toFnr()
-        val saker = sakService.findSakerForPerson(fnr)
+        val fnr = maskertPersonId.toFnr()
+        val saker = sakRepository.findSaker(fnr).map { it.toResponseDto() }
         return ResponseEntity.ok(saker)
     }
 
@@ -33,21 +31,26 @@ class SakController(
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<SakDto> {
         val createdSak = sakService.createSak(sak)
+        logger.info("Opprettet sak med saksnummer=${createdSak.saksnummer}")
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSak.toResponseDto())
     }
 
     @Operation(operationId = "oppdaterSak")
     @PutMapping("{saksnummer}")
-    fun oppdaterSak(@PathVariable saksnummer: Saksnummer, @RequestBody @Valid req: SakUpdateRequestDto): ResponseEntity<SakDto> {
-        val updated = sakService.updateSak(saksnummer, req)
+    fun oppdaterSak(
+        @PathVariable saksnummer: Saksnummer,
+        @RequestBody @Valid req: SakUpdateRequestDto
+    ): ResponseEntity<SakDto> {
+        val updated = sakService.updateSak(saksnummer, req).toResponseDto()
+        logger.debug("Oppdaterte sak med saksnummer=${updated.saksnummer}")
         return ResponseEntity.ok(updated)
     }
 
     @Operation(operationId = "getSakBySaksnummer", summary = "Hent opp en sak")
     @GetMapping("{saksnummer}")
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<SakDto> {
-       sakService.getSak(saksnummer).let {
-            return ResponseEntity.ok(it)
+        sakRepository.getSakOrThrow(saksnummer).let {
+            return ResponseEntity.ok(it.toResponseDto())
         }
     }
 

@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.sak.model
+package no.nav.historisk.superhelt.sak
 
 enum class SaksType(val navn: String, val beskrivelse: String) {
     PARYKK("Parykk", "Dekker kostnader til parykk"),
