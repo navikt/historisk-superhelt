@@ -3,7 +3,6 @@ package no.nav.historisk.superhelt.person
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Size
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.springframework.http.ResponseEntity
@@ -23,7 +22,7 @@ class PersonController(
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
         val maskertPersonident = request.fnr.toMaskertPersonIdent()
         if (persondata == null) {
-            throw IkkeFunnetException("Ingen person funnet med ident $request.fnr",)
+            throw IkkeFunnetException("Ingen person funnet med ident $request.fnr")
         }
         return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang))
     }

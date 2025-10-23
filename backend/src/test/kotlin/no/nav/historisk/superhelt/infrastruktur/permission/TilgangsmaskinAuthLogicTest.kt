@@ -14,14 +14,12 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.stereotype.Service
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 @MockedSpringBootTest
@@ -120,7 +118,7 @@ class TilgangsmaskinAuthLogicTest {
             .thenReturn(TilgangsmaskinClient.TilgangResult(false))
 
         testService.testPostFilter().also {
-            assertThat(it).containsExactlyInAnyOrder("111",  "333")
+            assertThat(it).containsExactlyInAnyOrder("111", "333")
         }
 
         verify(tilgangsmaskinService, times(3)).sjekkKomplettTilgang(any())
