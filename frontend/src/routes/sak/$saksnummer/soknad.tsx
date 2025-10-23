@@ -3,7 +3,7 @@ import {Box, Button, Heading, HStack, Select, Textarea, TextField, VStack} from 
 import {useState} from "react";
 import {SakCreateRequestDto} from "@api";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
-import {getSakOptions} from "./-api/sak.query";
+import {getKodeverkSakTypeOptions, getSakOptions} from "./-api/sak.query";
 import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 
 
@@ -11,26 +11,19 @@ export const Route = createFileRoute('/sak/$saksnummer/soknad')({
     component: EditSakPage,
 })
 
-const saksTyper = [
-    {value: 'PARYKK', label: 'Parykk'},
-    {value: 'ORTOSE', label: 'Ortose'},
-    {value: 'PROTESE', label: 'Protese'},
-    {value: 'FOTTOY', label: 'Fottøy'},
-    {value: 'REISEUTGIFTER', label: 'Reiseutgifter'},
-] as const
 
 function EditSakPage() {
     const {saksnummer} = Route.useParams()
     const {data, isPending} = useSuspenseQuery(getSakOptions(saksnummer))
+    const {data: saksTyper} = useSuspenseQuery(getKodeverkSakTypeOptions())
     const navigate = useNavigate()
-    const oppdaterSak=useMutation({
+    const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
     })
 
     const [type, setType] = useState(data?.type)
     const [tittel, setTittel] = useState(data?.tittel)
     const [begrunnelse, setBegrunnelse] = useState(data?.begrunnelse)
-
 
 
     function handleSubmit() {
@@ -46,7 +39,7 @@ function EditSakPage() {
         })
     }
 
-    const error= oppdaterSak?.error?.detail
+    const error = oppdaterSak?.error?.detail
     return (
 
         <Box padding="6" borderWidth="1" borderRadius="medium">
@@ -60,8 +53,8 @@ function EditSakPage() {
                         onChange={(e) => setType(e.target.value as SakCreateRequestDto['type'])}
                     >
                         {saksTyper.map((st) => (
-                            <option key={st.value} value={st.value}>
-                                {st.label}
+                            <option key={st.type} value={st.type}>
+                                {st.navn}
                             </option>
                         ))}
                     </Select>
@@ -93,9 +86,9 @@ function EditSakPage() {
                             Oppdater sak
                         </Button>
                         <Button as={Link}
-                            type="button"
-                            variant="secondary"
-                            to={`/person/${data?.maskertPersonIdent}`}
+                                type="button"
+                                variant="secondary"
+                                to={`/person/${data?.maskertPersonIdent}`}
                         >
                             Avbryt
                         </Button>

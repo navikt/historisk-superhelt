@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, findPersonByFnr, findSakerForPerson, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, oppdaterSak, type Options, typeKodeverk } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, TypeKodeverkData } from '../types.gen';
+import { createSak, findPersonByFnr, findSakerForPerson, getKodeverkSaksType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, oppdaterSak, type Options } from '../sdk.gen';
+import type { CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkSaksTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, OppdaterSakData, OppdaterSakError, OppdaterSakResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -146,12 +146,12 @@ export const getUserInfoOptions = (options?: Options<GetUserInfoData>) => {
     });
 };
 
-export const typeKodeverkQueryKey = (options?: Options<TypeKodeverkData>) => createQueryKey('typeKodeverk', options);
+export const getKodeverkSaksTypeQueryKey = (options?: Options<GetKodeverkSaksTypeData>) => createQueryKey('getKodeverkSaksType', options);
 
-export const typeKodeverkOptions = (options?: Options<TypeKodeverkData>) => {
+export const getKodeverkSaksTypeOptions = (options?: Options<GetKodeverkSaksTypeData>) => {
     return queryOptions({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await typeKodeverk({
+            const { data } = await getKodeverkSaksType({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -159,7 +159,7 @@ export const typeKodeverkOptions = (options?: Options<TypeKodeverkData>) => {
             });
             return data;
         },
-        queryKey: typeKodeverkQueryKey(options)
+        queryKey: getKodeverkSaksTypeQueryKey(options)
     });
 };
 

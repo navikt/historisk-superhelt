@@ -246,14 +246,14 @@ export type GetUserInfoResponses = {
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
 
-export type TypeKodeverkData = {
+export type GetKodeverkSaksTypeData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/api/sak/kodeverk/typer';
 };
 
-export type TypeKodeverkErrors = {
+export type GetKodeverkSaksTypeErrors = {
     /**
      * Forbidden
      */
@@ -264,16 +264,16 @@ export type TypeKodeverkErrors = {
     500: ProblemDetail;
 };
 
-export type TypeKodeverkError = TypeKodeverkErrors[keyof TypeKodeverkErrors];
+export type GetKodeverkSaksTypeError = GetKodeverkSaksTypeErrors[keyof GetKodeverkSaksTypeErrors];
 
-export type TypeKodeverkResponses = {
+export type GetKodeverkSaksTypeResponses = {
     /**
      * OK
      */
     200: Array<SaksTypeDto>;
 };
 
-export type TypeKodeverkResponse = TypeKodeverkResponses[keyof TypeKodeverkResponses];
+export type GetKodeverkSaksTypeResponse = GetKodeverkSaksTypeResponses[keyof GetKodeverkSaksTypeResponses];
 
 export type GetPersonByMaskertIdentData = {
     body?: never;

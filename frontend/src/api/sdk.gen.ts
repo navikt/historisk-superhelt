@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateSakData, CreateSakErrors, CreateSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, TypeKodeverkData, TypeKodeverkErrors, TypeKodeverkResponses } from './types.gen';
+import type { CreateSakData, CreateSakErrors, CreateSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetKodeverkSaksTypeData, GetKodeverkSaksTypeErrors, GetKodeverkSaksTypeResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -120,8 +120,8 @@ export const getUserInfo = <ThrowOnError extends boolean = false>(options?: Opti
     });
 };
 
-export const typeKodeverk = <ThrowOnError extends boolean = false>(options?: Options<TypeKodeverkData, ThrowOnError>) => {
-    return (options?.client ?? client).get<TypeKodeverkResponses, TypeKodeverkErrors, ThrowOnError>({
+export const getKodeverkSaksType = <ThrowOnError extends boolean = false>(options?: Options<GetKodeverkSaksTypeData, ThrowOnError>) => {
+    return (options?.client ?? client).get<GetKodeverkSaksTypeResponses, GetKodeverkSaksTypeErrors, ThrowOnError>({
         security: [
             {
                 scheme: 'bearer',
