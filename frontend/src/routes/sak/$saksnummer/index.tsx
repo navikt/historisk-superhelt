@@ -1,8 +1,5 @@
-import {createFileRoute, Outlet, useNavigate} from '@tanstack/react-router'
-import {Heading, VStack} from '@navikt/ds-react'
-import {PersonHeader} from "~/components/PersonHeader";
-import {useQuery, useSuspenseQuery} from "@tanstack/react-query";
-import {getSakOptions} from "./-api/sak.query";
+import {createFileRoute, useNavigate} from '@tanstack/react-router'
+import {useEffect} from "react";
 
 export const Route = createFileRoute('/sak/$saksnummer/')({
     component: SakIndex,
@@ -10,9 +7,10 @@ export const Route = createFileRoute('/sak/$saksnummer/')({
 
 function SakIndex() {
     const {saksnummer} = Route.useParams()
-    const {data, isPending, error} = useSuspenseQuery(getSakOptions(saksnummer))
     const navigate = useNavigate();
 
-    navigate({to:"/sak/$saksnummer/soknad", params: {saksnummer}, search:{"status":data.status} , replace:true});
+    useEffect(() => {
+        navigate({to: "/sak/$saksnummer/soknad", params: {saksnummer}, replace: true});
+    }, [saksnummer])
 
 }

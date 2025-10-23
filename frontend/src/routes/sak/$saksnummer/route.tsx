@@ -15,7 +15,6 @@ function SakLayout() {
     const {saksnummer} = Route.useParams()
     const {data, isPending, error} = useSuspenseQuery(getSakOptions(saksnummer))
 
-    // if (!data) return null;
     // TODO loading and error states
     return (
         <>

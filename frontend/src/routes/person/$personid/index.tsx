@@ -30,7 +30,7 @@ function PersonPage() {
         const {data, error: apiError} = await createSak({
             body: {
                 type: "PARYKK",
-                fnr: person?.fnr!,
+                fnr: person.fnr,
             }
         })
         navigate({to: `/sak/${data?.saksnummer}`})

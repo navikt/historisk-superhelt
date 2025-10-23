@@ -43,7 +43,7 @@ function EditSakPage() {
     return (
 
         <Box padding="6" borderWidth="1" borderRadius="medium">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 <VStack gap="6">
                     <Heading size="medium">Saksdetaljer</Heading>
 
