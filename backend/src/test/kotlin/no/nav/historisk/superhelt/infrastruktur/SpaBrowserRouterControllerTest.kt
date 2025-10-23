@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.infrastruktur
 
 
+import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -14,8 +15,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester
 import org.springframework.test.web.servlet.assertj.MvcTestResultAssert
 
 
-@ActiveProfiles("junit")
-@SpringBootTest
+@MockedSpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = ["READ"])
 class SpaBrowserRouterControllerTest {
@@ -25,9 +25,9 @@ class SpaBrowserRouterControllerTest {
 
 
     @Test
-    fun `should forward root path to index`() {
+    fun `should not forward root path to index`() {
         assertThat(mockMvc.get().uri("/"))
-            .hasStatusOk()
+            .isNotForwarded()
     }
 
     @ParameterizedTest

@@ -6,5 +6,5 @@
         <appender-ref ref="CONSOLE" />
     </root>
     <logger name="no.nav" level="DEBUG"/>
-<!--    <logger name="org.springframework.jdbc" level="debug"/>-->
+    <logger name="org.springframework.security" level="debug"/>
 </configuration>

@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.infrastruktur.permission
 
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
+import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.person.Fnr
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
@@ -23,8 +24,7 @@ import org.springframework.stereotype.Service
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 
-@ActiveProfiles("junit")
-@SpringBootTest()
+@MockedSpringBootTest
 @Import(TilgangsmaskinAuthLogicTest.TestService::class)
 class TilgangsmaskinAuthLogicTest {
 

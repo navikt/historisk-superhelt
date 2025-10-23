@@ -192,7 +192,7 @@ export type FindPersonByFnrData = {
     body: PersonRequest;
     path?: never;
     query?: never;
-    url: '/api/person/';
+    url: '/api/person';
 };
 
 export type FindPersonByFnrErrors = {

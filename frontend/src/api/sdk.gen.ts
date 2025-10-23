@@ -98,7 +98,7 @@ export const findPersonByFnr = <ThrowOnError extends boolean = false>(options: O
                 type: 'http'
             }
         ],
-        url: '/api/person/',
+        url: '/api/person',
         ...options,
         headers: {
             'Content-Type': 'application/json',
