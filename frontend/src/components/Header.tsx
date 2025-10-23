@@ -1,10 +1,10 @@
-import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Search, Spacer} from "@navikt/ds-react";
-import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
+import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Search, Spacer, Link} from "@navikt/ds-react";
+import { Link as RouterLink, useNavigate} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
 import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
 import {useState} from "react";
-import {findPerson} from "@api";
+import {findPersonByFnr as findPerson} from "@api";
 
 export function Header() {
     const [search, setSearch] = useState<string>();
@@ -29,7 +29,6 @@ export function Header() {
         if(error){
             setSearchError("Noe gikk galt "+ error)
         }
-        console.log(data)
         await navigate({to:"/person/$personid", params:{ personid: data?.maskertPersonident!}})
         setSearch("")
         setSearchError(undefined)
@@ -38,8 +37,7 @@ export function Header() {
 
     return <InternalHeader>
         <InternalHeader.Title as="h1">
-            <RouterLink to={"/"}><img src="/logo.svg" height="35rem" alt={""}/>Superhelt</RouterLink>
-
+            <Link as={RouterLink} to={"/"} underline={false} variant={"neutral"}><img src="/logo.svg" height="35rem" alt={""}/>Superhelt</Link>
         </InternalHeader.Title>
         <HStack
             as="form"

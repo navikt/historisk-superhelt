@@ -1,6 +1,5 @@
-package no.nav.historisk.superhelt
+package no.nav.historisk.superhelt.config
 
-//import io.swagger.v3.oas.annotations.security.SecurityScheme
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.security.SecurityRequirement
@@ -19,11 +18,10 @@ class OpenApiConfig{
                 Components()
                     .addSecuritySchemes(
                         "bearer-key", SecurityScheme()
-                            .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
+                            .type(SecurityScheme.Type.HTTP)
                             .scheme("bearer")
                             .bearerFormat("JWT")
                     )
             )
     }
 }
-

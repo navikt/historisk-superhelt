@@ -1,42 +1,43 @@
-import {Alert, BodyShort, Box, Heading, HStack, Tag, VStack} from "@navikt/ds-react";
+import {Alert, BodyShort, Box, CopyButton, HStack, Link, Tag} from "@navikt/ds-react";
 import {PersonIcon} from "@navikt/aksel-icons";
-import {Link} from "@tanstack/react-router";
-import {useQuery} from "@tanstack/react-query";
-import {getPersonOptions} from "@api/@tanstack/react-query.gen";
+import {Link as RouterLink} from "@tanstack/react-router";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getPersonByMaskertIdentOptions} from "@api/@tanstack/react-query.gen";
 
 interface Props {
-    maskertPersonId: string
+    maskertPersonId: string,
 }
 
 export function PersonHeader({maskertPersonId}: Props) {
-  const {data: person} = useQuery(
-      {...getPersonOptions({
-          path:{
-            maskertPersonident: maskertPersonId
-          }
-      })
-  })
+    const {data: person} = useSuspenseQuery(
+        {
+            ...getPersonByMaskertIdentOptions({
+                path: {
+                    maskertPersonident: maskertPersonId
+                }
+            })
+        })
 
-  return <Box padding="4" borderWidth="1" borderRadius="small">
-      <HStack gap="4" align="start">
-       <PersonIcon fontSize="3rem"/>
-        <VStack gap="4">
-          <Link to={"/person/" + person?.maskertPersonident}><Heading size="medium">{person?.navn}</Heading></Link>
-          <HStack gap="8">
-            <VStack gap="1">
-              <BodyShort size="small"><strong>Fødselsnummer:</strong> {person?.fnr}</BodyShort>
-              <BodyShort size="small"><strong>Adressegradering:</strong>  {person?.adressebeskyttelseGradering && <Tag variant={"info"} >{person?.adressebeskyttelseGradering}</Tag>}</BodyShort>
-                <BodyShort size="small"><strong>Verge:</strong> {person?.verge}</BodyShort>
+    return <Box.New background="neutral-moderate"  padding="space-4">
+        <HStack justify={"space-between"}>
 
-            </VStack>
-            <VStack gap="1">
-                {person?.avvisningsBegrunnelse && <Alert variant={"error"} size={"small"}>{person?.avvisningsBegrunnelse}</Alert>}
-              {/*<BodyShort size="small"><strong>E-post:</strong> {person.epost}</BodyShort>*/}
-              {/*<BodyShort size="small"><strong>Sivilstand:</strong> {person.sivilstand}</BodyShort>*/}
-              {/*<BodyShort size="small"><strong>Antall barn:</strong> {person.barn}</BodyShort>*/}
-            </VStack>
-          </HStack>
-        </VStack>
-      </HStack>
-    </Box>
+            <HStack gap="space-4" align="center" justify={"space-between"}>
+                <PersonIcon fontSize="1.5rem"  />
+                <Link as={RouterLink} to={"/person/" + person.maskertPersonident} underline={false}> <BodyShort
+                    size={"large"}>{person?.navn}</BodyShort></Link>
+                <BodyShort size={"small"}>{person.fnr}</BodyShort>
+                <CopyButton copyText={person.fnr}/>
+            </HStack>
+            {person.avvisningsBegrunnelse &&
+                <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
+            <HStack gap="space-16" align="center">
+                {/*TODO Her kommer mer info om person,*/}
+
+                {person.adressebeskyttelseGradering &&
+                    <Tag variant={"warning"}>Adressebeskyttelse: {person.adressebeskyttelseGradering}</Tag>}
+                {person.verge && <Tag variant={"info"}>Verge: {person.verge}</Tag>}
+            </HStack>
+
+        </HStack>
+    </Box.New>
 }

@@ -15,7 +15,7 @@ import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { useState } from 'react'
 import {PersonHeader} from "~/components/PersonHeader";
 
-export const Route = createFileRoute('/brev')({
+export const Route = createFileRoute('/sak/$saksnummer/brev')({
   component: BrevPage,
 })
 
@@ -124,7 +124,6 @@ Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
   return (
     <VStack gap="6">
       <Heading size="xlarge">Skriv brev</Heading>
-      <PersonHeader maskertPersonId={"todo"}/>
 
       <Panel border>
         <VStack gap="6">

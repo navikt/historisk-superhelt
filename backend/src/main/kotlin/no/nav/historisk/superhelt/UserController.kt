@@ -18,6 +18,7 @@ class UserController {
         val roles = getCurrentUserRoles()
         return User(name=auth.name, roles= roles )
     }
+    
+    data class User(val name: String, val roles: List<Role>)
 }
 
-data class User(val name: String, val roles: List<Role>)

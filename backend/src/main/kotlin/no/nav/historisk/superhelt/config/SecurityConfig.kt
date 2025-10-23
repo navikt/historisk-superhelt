@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt
+package no.nav.historisk.superhelt.config
 
 import no.nav.historisk.superhelt.infrastruktur.NavJwtAuthenticationConverter
 import org.springframework.context.annotation.Bean
@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-
 
 @Configuration
 @EnableWebSecurity
