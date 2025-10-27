@@ -1,9 +1,19 @@
 package no.nav.historisk.superhelt.sak
 
-enum class SaksType(val navn: String, val beskrivelse: String) {
+enum class SaksType(val navn: String, val beskrivelse: String?= null) {
     PARYKK("Parykk", "Dekker kostnader til parykk"),
-    ORTOSE("Ortose", "Dekker kostnader til ortopediske hjelpemidler"),
-    PROTESE("Protese", "Dekker kostnader til proteser"),
-    FOTTOY("Fottøy", "Dekker kostnader til ortopedisk fottøy"),
-    REISEUTGIFTER("Reiseutgifter", "Dekker kostnader til reise i forbindelse med behandling")
+    HODEPLAGG("Hodeplagg", ),
+    ANSIKT_PROTESE("Ansiktdefektprotese", ),
+    OYE_PROTESE("Øyeprotese", ),
+    BRYSTPROTESE("Brystprotese/spesialbh"),
+    FOTTOY("Allminnelig fottøy i ulik størrelse"),
+    REISEUTGIFTER("Reiseutgifter"),
+    FOLKEHOYSKOLE("Folkehøyskole"),
+    GRUNNMONSTER("Grunnmønster"),
+    HUND("Førerhund/servicehund"),
+    FUNKSJONSASSISTENT("Funksjonsassistent"),
+    DATAHJELPEMIDDEL("Tilskudd datahjelpemiddel"),
+    BIL("Bil"),
+    REP_SPES_UTSTYR("Reprasjon spesialutstyr"),
+    TOLK("Tolk"),
 }

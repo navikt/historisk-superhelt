@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SakSaksnummerRouteRouteImport } from './routes/sak/$saksnummer/route'
 import { Route as SakSaksnummerIndexRouteImport } from './routes/sak/$saksnummer/index'
 import { Route as PersonPersonidIndexRouteImport } from './routes/person/$personid/index'
-import { Route as SakSaksnummerXsakRouteImport } from './routes/sak/$saksnummer/xsak'
 import { Route as SakSaksnummerSoknadRouteImport } from './routes/sak/$saksnummer/soknad'
 import { Route as SakSaksnummerBrevRouteImport } from './routes/sak/$saksnummer/brev'
 
@@ -37,11 +36,6 @@ const PersonPersonidIndexRoute = PersonPersonidIndexRouteImport.update({
   path: '/person/$personid/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SakSaksnummerXsakRoute = SakSaksnummerXsakRouteImport.update({
-  id: '/xsak',
-  path: '/xsak',
-  getParentRoute: () => SakSaksnummerRouteRoute,
-} as any)
 const SakSaksnummerSoknadRoute = SakSaksnummerSoknadRouteImport.update({
   id: '/soknad',
   path: '/soknad',
@@ -58,7 +52,6 @@ export interface FileRoutesByFullPath {
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/sak/$saksnummer/brev': typeof SakSaksnummerBrevRoute
   '/sak/$saksnummer/soknad': typeof SakSaksnummerSoknadRoute
-  '/sak/$saksnummer/xsak': typeof SakSaksnummerXsakRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
@@ -66,7 +59,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sak/$saksnummer/brev': typeof SakSaksnummerBrevRoute
   '/sak/$saksnummer/soknad': typeof SakSaksnummerSoknadRoute
-  '/sak/$saksnummer/xsak': typeof SakSaksnummerXsakRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer': typeof SakSaksnummerIndexRoute
 }
@@ -76,7 +68,6 @@ export interface FileRoutesById {
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/sak/$saksnummer/brev': typeof SakSaksnummerBrevRoute
   '/sak/$saksnummer/soknad': typeof SakSaksnummerSoknadRoute
-  '/sak/$saksnummer/xsak': typeof SakSaksnummerXsakRoute
   '/person/$personid/': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
@@ -87,7 +78,6 @@ export interface FileRouteTypes {
     | '/sak/$saksnummer'
     | '/sak/$saksnummer/brev'
     | '/sak/$saksnummer/soknad'
-    | '/sak/$saksnummer/xsak'
     | '/person/$personid'
     | '/sak/$saksnummer/'
   fileRoutesByTo: FileRoutesByTo
@@ -95,7 +85,6 @@ export interface FileRouteTypes {
     | '/'
     | '/sak/$saksnummer/brev'
     | '/sak/$saksnummer/soknad'
-    | '/sak/$saksnummer/xsak'
     | '/person/$personid'
     | '/sak/$saksnummer'
   id:
@@ -104,7 +93,6 @@ export interface FileRouteTypes {
     | '/sak/$saksnummer'
     | '/sak/$saksnummer/brev'
     | '/sak/$saksnummer/soknad'
-    | '/sak/$saksnummer/xsak'
     | '/person/$personid/'
     | '/sak/$saksnummer/'
   fileRoutesById: FileRoutesById
@@ -145,13 +133,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonPersonidIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sak/$saksnummer/xsak': {
-      id: '/sak/$saksnummer/xsak'
-      path: '/xsak'
-      fullPath: '/sak/$saksnummer/xsak'
-      preLoaderRoute: typeof SakSaksnummerXsakRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
-    }
     '/sak/$saksnummer/soknad': {
       id: '/sak/$saksnummer/soknad'
       path: '/soknad'
@@ -172,14 +153,12 @@ declare module '@tanstack/react-router' {
 interface SakSaksnummerRouteRouteChildren {
   SakSaksnummerBrevRoute: typeof SakSaksnummerBrevRoute
   SakSaksnummerSoknadRoute: typeof SakSaksnummerSoknadRoute
-  SakSaksnummerXsakRoute: typeof SakSaksnummerXsakRoute
   SakSaksnummerIndexRoute: typeof SakSaksnummerIndexRoute
 }
 
 const SakSaksnummerRouteRouteChildren: SakSaksnummerRouteRouteChildren = {
   SakSaksnummerBrevRoute: SakSaksnummerBrevRoute,
   SakSaksnummerSoknadRoute: SakSaksnummerSoknadRoute,
-  SakSaksnummerXsakRoute: SakSaksnummerXsakRoute,
   SakSaksnummerIndexRoute: SakSaksnummerIndexRoute,
 }
 
