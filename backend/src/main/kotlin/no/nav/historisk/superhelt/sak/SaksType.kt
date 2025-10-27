@@ -14,6 +14,6 @@ enum class SaksType(val navn: String, val beskrivelse: String?= null) {
     FUNKSJONSASSISTENT("Funksjonsassistent"),
     DATAHJELPEMIDDEL("Tilskudd datahjelpemiddel"),
     BIL("Bil"),
-    REP_SPES_UTSTYR("Reprasjon spesialutstyr"),
+    REP_SPES_UTSTYR("Reparasjon spesialutstyr"),
     TOLK("Tolk"),
 }

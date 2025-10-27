@@ -19,7 +19,7 @@ class SakKodeverkController {
 
     data class SaksTypeDto(val type: SaksType) {
         val navn: String = type.navn
-        val beskrivelse: String = type.beskrivelse
+        val beskrivelse: String? = type.beskrivelse
     }
 
 }
