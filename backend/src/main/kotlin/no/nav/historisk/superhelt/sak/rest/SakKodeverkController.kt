@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
-import no.nav.historisk.superhelt.sak.SaksType
+import no.nav.historisk.superhelt.sak.StonadsType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -12,12 +12,12 @@ class SakKodeverkController {
 
     @Operation(operationId = "getKodeverkSaksType",)
     @GetMapping("typer")
-    fun typeKodeverk(): List<SaksTypeDto> {
-       return SaksType.entries.map { SaksTypeDto(it) }
+    fun typeKodeverk(): List<StonadsTypeDto> {
+       return StonadsType.entries.map { StonadsTypeDto(it) }
     }
 
 
-    data class SaksTypeDto(val type: SaksType) {
+    data class StonadsTypeDto(val type: StonadsType) {
         val navn: String = type.navn
         val beskrivelse: String? = type.beskrivelse
     }

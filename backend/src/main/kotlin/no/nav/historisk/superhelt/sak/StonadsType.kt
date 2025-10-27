@@ -1,8 +1,9 @@
 package no.nav.historisk.superhelt.sak
 
-enum class SaksType(val navn: String, val beskrivelse: String?= null) {
+enum class StonadsType(val navn: String, val beskrivelse: String?= null) {
     PARYKK("Parykk", "Dekker kostnader til parykk"),
     HODEPLAGG("Hodeplagg", ),
+    ORTOPEDI("Ortopedi", "Støtte til ortopedi med utbetalinger" ),
     ANSIKT_PROTESE("Ansiktdefektprotese", ),
     OYE_PROTESE("Øyeprotese", ),
     BRYSTPROTESE("Brystprotese/spesialbh"),

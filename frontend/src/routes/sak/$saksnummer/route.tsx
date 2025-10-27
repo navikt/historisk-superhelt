@@ -3,7 +3,7 @@ import {Box, Heading, HGrid, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
-import {FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
+import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -31,12 +31,17 @@ function SakLayout() {
                             <Tabs.Tab
                                 value="soknad"
                                 label="Søknad"
-                                icon={<FilesIcon aria-hidden/>}
+                                icon={<FilePdfIcon aria-hidden/>}
                             />
                             <Tabs.Tab
                                 value="inbox"
                                 label="Historikk"
                                 icon={<TasklistIcon aria-hidden/>}
+                            />
+                            <Tabs.Tab
+                                value="dokumenter"
+                                label="Dokumenter"
+                                icon={<FilesIcon aria-hidden/>}
                             />
                         </Tabs.List>
                         <Tabs.Panel value="soknad">
@@ -53,6 +58,11 @@ function SakLayout() {
                         <Tabs.Panel value="inbox">
                             <Box width="100%" height="6rem" padding="space-16">
                                 Her kommer det kanskje litt historikk på tidligere saker?
+                            </Box>
+                        </Tabs.Panel>
+                        <Tabs.Panel value="dokumenter">
+                            <Box width="100%" height="6rem" padding="space-16">
+                                Her kommer det kanskje dokumenter fra joark?
                             </Box>
                         </Tabs.Panel>
                     </Tabs>
