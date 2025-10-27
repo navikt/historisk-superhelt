@@ -8,6 +8,7 @@ import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
+import no.nav.historisk.superhelt.sak.VedtakType
 import no.nav.person.Fnr
 import java.time.LocalDate
 
@@ -19,6 +20,7 @@ data class SakDto(
     val tittel: String?,
     val begrunnelse: String?,
     val status: SakStatus,
+    val vedtak: VedtakType?,
     val opprettetDato: LocalDate,
     val soknadsDato: LocalDate?,
     val saksbehandler: String,
@@ -38,7 +40,7 @@ data class SakUpdateRequestDto(
     val tittel: String? = null,
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
-    val status: SakStatus? = null,
+    val vedtak: VedtakType? = null,
 )
 
 // Extension functions for mapping between Domain and DTO
@@ -53,7 +55,8 @@ fun Sak.toResponseDto(): SakDto {
         status = this.status,
         opprettetDato = this.opprettetDato,
         saksbehandler = this.saksbehandler,
-        soknadsDato = this.soknadsDato
+        soknadsDato = this.soknadsDato,
+        vedtak = this.vedtak,
     )
 }
 

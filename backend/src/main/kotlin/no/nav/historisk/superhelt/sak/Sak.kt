@@ -12,6 +12,7 @@ data class Sak(
     val soknadsDato: LocalDate? = null,
     val begrunnelse: String? = null,
     val status: SakStatus,
+    val vedtak: VedtakType? = null,
     val opprettetDato: LocalDate = LocalDate.now(),
     val saksbehandler: String,
 )

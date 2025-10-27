@@ -35,21 +35,13 @@ class SakService(private val sakRepository: SakRepository) {
             begrunnelse = req.begrunnelse ?: sak.begrunnelse,
             type = req.type ?: sak.type,
             soknadsDato = req.soknadsDato ?: sak.soknadsDato,
-            status = req.status?.let { endreStatus(it, sak.status) } ?: sak.status
-
+            vedtak = req.vedtak ?: sak.vedtak
         )
 
 
         return sakRepository.save(oppdatertSak)
     }
 
-    private fun endreStatus(to: SakStatus?, from: SakStatus): SakStatus {
-        if (to != null && to != from) {
-            logger.info("Endrer status fra $from til $to")
-            return to
-        }
-        return from
-    }
 
 
 }

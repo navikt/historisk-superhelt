@@ -14,11 +14,12 @@ import {
     VStack
 } from '@navikt/ds-react'
 import {useState} from "react";
-import {SakCreateRequestDto, SakDto} from "@api";
+import { SakDto} from "@api";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
-import {getKodeverkSakTypeOptions, getSakOptions} from "./-api/sak.query";
+import {getKodeverkStonadsTypeOptions, getSakOptions} from "./-api/sak.query";
 import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
+import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 
 export const Route = createFileRoute('/sak/$saksnummer/soknad')({
@@ -29,7 +30,7 @@ export const Route = createFileRoute('/sak/$saksnummer/soknad')({
 function EditSakPage() {
     const {saksnummer} = Route.useParams()
     const {data, isPending} = useSuspenseQuery(getSakOptions(saksnummer))
-    const {data: saksTyper} = useSuspenseQuery(getKodeverkSakTypeOptions())
+    const {data: saksTyper} = useSuspenseQuery(getKodeverkStonadsTypeOptions())
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
     })
@@ -67,11 +68,10 @@ function EditSakPage() {
             <Box padding="6" borderWidth="1" borderRadius="medium">
 
                 <VStack gap="6">
-
                     <Select
                         label="Stønadstype"
                         value={sak.type}
-                        onChange={(e) => patchSak({type: e.target.value as SakCreateRequestDto['type']})}
+                        onChange={(e) => patchSak({type: e.target.value as StonadType})}
                     >
                         {saksTyper.map((st) => (
                             <option key={st.type} value={st.type}>
@@ -95,14 +95,14 @@ function EditSakPage() {
 
                     <HStack gap="8" align="start">
                         <VStack style={{flex: 1}}>
-                            <RadioGroup legend="Vedtak" value={sak.status}
-                                        onChange={value => patchSak({status: value as SakDto['status']})}>
+                            <RadioGroup legend="Vedtak" value={sak.vedtak}
+                                        onChange={value => patchSak({vedtak: value as SakVedtakType})}>
                                 <Radio value="INNVILGET">Innvilget</Radio>
                                 <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
                                 <Radio value="AVSLATT">Avslått</Radio>
                             </RadioGroup>
                         </VStack>
-                        {sak.status !== 'AVSLATT' && (
+                        {sak.vedtak !== 'AVSLATT' && (
                             <VStack style={{flex: 1}}>
                                 <RadioGroup
                                     legend="Utbetaling"
@@ -142,7 +142,7 @@ function EditSakPage() {
                             as={Link}
                             to="/sak/$saksnummer/brev"
                             variant="primary"
-                            disabled={sak.status == "UNDER_BEHANDLING"}
+                            disabled={!sak.vedtak}
                         >
                             Fatte vedtak
                         </Button>

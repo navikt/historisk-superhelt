@@ -30,6 +30,7 @@ private fun SakJpaEntity.toDomain(): Sak {
         tittel = this.tittel,
         begrunnelse = this.begrunnelse,
         status = this.status,
+        vedtak = this.vedtak,
         saksbehandler = this.saksbehandler,
         opprettetDato = this.opprettet.toLocalDate(),
         soknadsDato = this.soknadsDato
@@ -44,6 +45,7 @@ private fun Sak.toEntity(): SakJpaEntity {
         tittel = this.tittel,
         begrunnelse = this.begrunnelse,
         status = this.status,
+        vedtak = this.vedtak,
         saksbehandler = this.saksbehandler,
         soknadsDato = this.soknadsDato
     )

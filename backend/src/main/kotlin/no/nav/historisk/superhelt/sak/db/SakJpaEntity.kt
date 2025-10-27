@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.sak.db
 import jakarta.persistence.*
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.StonadsType
+import no.nav.historisk.superhelt.sak.VedtakType
 import no.nav.person.Fnr
 import org.hibernate.Hibernate
 import java.time.LocalDate
@@ -21,7 +22,10 @@ class SakJpaEntity(
     var tittel: String? = null,
 
     @Enumerated(EnumType.STRING)
-    var status: SakStatus = SakStatus.UNDER_BEHANDLING,
+    var status: SakStatus,
+
+    @Enumerated(EnumType.STRING)
+    var vedtak: VedtakType ? = null,
 
     var begrunnelse: String? = null,
 

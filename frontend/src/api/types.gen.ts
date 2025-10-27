@@ -20,7 +20,7 @@ export type SakUpdateRequestDto = {
     tittel?: string;
     begrunnelse?: string;
     soknadsDato?: string;
-    status?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
 };
 
 export type SakDto = {
@@ -30,7 +30,8 @@ export type SakDto = {
     maskertPersonIdent: string;
     tittel?: string;
     begrunnelse?: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     soknadsDato?: string;
     saksbehandler: string;
@@ -249,14 +250,14 @@ export type GetUserInfoResponses = {
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
 
-export type GetKodeverkSaksTypeData = {
+export type GetKodeverkStonadTypeData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/sak/kodeverk/typer';
+    url: '/api/sak/kodeverk/stonadtyper';
 };
 
-export type GetKodeverkSaksTypeErrors = {
+export type GetKodeverkStonadTypeErrors = {
     /**
      * Forbidden
      */
@@ -267,16 +268,16 @@ export type GetKodeverkSaksTypeErrors = {
     500: ProblemDetail;
 };
 
-export type GetKodeverkSaksTypeError = GetKodeverkSaksTypeErrors[keyof GetKodeverkSaksTypeErrors];
+export type GetKodeverkStonadTypeError = GetKodeverkStonadTypeErrors[keyof GetKodeverkStonadTypeErrors];
 
-export type GetKodeverkSaksTypeResponses = {
+export type GetKodeverkStonadTypeResponses = {
     /**
      * OK
      */
     200: Array<StonadsTypeDto>;
 };
 
-export type GetKodeverkSaksTypeResponse = GetKodeverkSaksTypeResponses[keyof GetKodeverkSaksTypeResponses];
+export type GetKodeverkStonadTypeResponse = GetKodeverkStonadTypeResponses[keyof GetKodeverkStonadTypeResponses];
 
 export type GetPersonByMaskertIdentData = {
     body?: never;

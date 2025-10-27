@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, findPersonByFnr, findSakerForPerson, getKodeverkSaksType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, oppdaterSak, type Options } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkSaksTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, OppdaterSakData, OppdaterSakError, OppdaterSakResponse } from '../types.gen';
+import { createSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, oppdaterSak, type Options } from '../sdk.gen';
+import type { CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkStonadTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, OppdaterSakData, OppdaterSakError, OppdaterSakResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -146,12 +146,12 @@ export const getUserInfoOptions = (options?: Options<GetUserInfoData>) => {
     });
 };
 
-export const getKodeverkSaksTypeQueryKey = (options?: Options<GetKodeverkSaksTypeData>) => createQueryKey('getKodeverkSaksType', options);
+export const getKodeverkStonadTypeQueryKey = (options?: Options<GetKodeverkStonadTypeData>) => createQueryKey('getKodeverkStonadType', options);
 
-export const getKodeverkSaksTypeOptions = (options?: Options<GetKodeverkSaksTypeData>) => {
+export const getKodeverkStonadTypeOptions = (options?: Options<GetKodeverkStonadTypeData>) => {
     return queryOptions({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getKodeverkSaksType({
+            const { data } = await getKodeverkStonadType({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -159,7 +159,7 @@ export const getKodeverkSaksTypeOptions = (options?: Options<GetKodeverkSaksType
             });
             return data;
         },
-        queryKey: getKodeverkSaksTypeQueryKey(options)
+        queryKey: getKodeverkStonadTypeQueryKey(options)
     });
 };
 
