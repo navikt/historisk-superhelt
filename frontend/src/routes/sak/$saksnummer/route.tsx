@@ -1,9 +1,10 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
-import {Box, Heading, HGrid, Tabs, VStack} from '@navikt/ds-react'
+import {Box, Heading, HGrid, HStack, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
 import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
+import SakMeny from "~/routes/sak/$saksnummer/-components/SakMeny";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -20,9 +21,12 @@ function SakLayout() {
     return (
         <>
             <PersonHeader maskertPersonId={data.maskertPersonIdent}/>
-            <HGrid gap="space-24" columns={{lg: 1, xl: 2}}>
+            <HGrid gap="space-24" columns={{lg: 1, xl: 2}} marginBlock={"space-16"}>
                 <VStack gap="space-16">
-                    <Heading size="large">Sak {saksnummer}</Heading>
+                    <HStack justify="space-between">
+                        <Heading size="large">Sak {saksnummer}</Heading>
+                        <SakMeny/>
+                    </HStack>
                     <Outlet/>
                 </VStack>
                 <VStack gap="space-16">
