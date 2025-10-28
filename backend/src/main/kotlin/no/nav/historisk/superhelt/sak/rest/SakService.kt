@@ -5,11 +5,13 @@ import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.Saksnummer
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class SakService(private val sakRepository: SakRepository) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
 
     @Transactional
@@ -18,23 +20,28 @@ class SakService(private val sakRepository: SakRepository) {
             type = req.type,
             fnr = req.fnr,
             tittel = req.tittel,
-            begrunnelse = req.begrunnelse,
             status = SakStatus.UNDER_BEHANDLING,
+            soknadsDato = req.soknadsDato,
             saksbehandler = getCurrentNavIdent() ?: "ukjent"
         )
         return sakRepository.save(sakEntity)
     }
 
- @Transactional
+    @Transactional
     fun updateSak(saksNummer: Saksnummer, req: SakUpdateRequestDto): Sak {
         val sak = sakRepository.getSakOrThrow(saksNummer)
         val oppdatertSak = sak.copy(
             tittel = req.tittel ?: sak.tittel,
             begrunnelse = req.begrunnelse ?: sak.begrunnelse,
-            type = req.type ?: sak.type
+            type = req.type ?: sak.type,
+            soknadsDato = req.soknadsDato ?: sak.soknadsDato,
+            vedtak = req.vedtak ?: sak.vedtak
         )
+
+
         return sakRepository.save(oppdatertSak)
     }
+
 
 
 }

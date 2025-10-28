@@ -6,11 +6,13 @@ import java.time.LocalDate
 /** Domeneobjektet */
 data class Sak(
     val saksnummer: Saksnummer? = null,
-    val type: SaksType,
+    val type: StonadsType,
     val fnr: Fnr,
     val tittel: String? = null,
+    val soknadsDato: LocalDate? = null,
     val begrunnelse: String? = null,
     val status: SakStatus,
+    val vedtak: VedtakType? = null,
     val opprettetDato: LocalDate = LocalDate.now(),
     val saksbehandler: String,
 )

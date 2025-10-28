@@ -1,16 +1,12 @@
 package no.nav.historisk.superhelt.sak.db
 
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.SaksType
+import no.nav.historisk.superhelt.sak.StonadsType
+import no.nav.historisk.superhelt.sak.VedtakType
 import no.nav.person.Fnr
 import org.hibernate.Hibernate
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -18,20 +14,24 @@ import java.time.LocalDateTime
 class SakJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long?=null,
+    var id: Long? = null,
 
     @Enumerated(EnumType.STRING)
-    var type: SaksType,
+    var type: StonadsType,
     var fnr: Fnr,
     var tittel: String? = null,
 
     @Enumerated(EnumType.STRING)
-    var status: SakStatus = SakStatus.UNDER_BEHANDLING,
+    var status: SakStatus,
 
-    var begrunnelse: String?= null,
+    @Enumerated(EnumType.STRING)
+    var vedtak: VedtakType ? = null,
+
+    var begrunnelse: String? = null,
 
     var saksbehandler: String,
     var opprettet: LocalDateTime = LocalDateTime.now(),
+    var soknadsDato: LocalDate? = null,
     // Utbetaling
     // Oppgaver
     // Brev
@@ -43,6 +43,7 @@ class SakJpaEntity(
 
         return id != null && id == other.id
     }
+
     override fun hashCode(): Int = javaClass.hashCode()
 
 }

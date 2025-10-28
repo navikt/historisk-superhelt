@@ -16,28 +16,32 @@ export type ProblemDetail = {
 };
 
 export type SakUpdateRequestDto = {
-    type?: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
+    type?: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     tittel?: string;
     begrunnelse?: string;
+    soknadsDato?: string;
+    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
 };
 
 export type SakDto = {
     saksnummer: string;
-    type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
+    type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     maskertPersonIdent: string;
     tittel?: string;
     begrunnelse?: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
+    soknadsDato?: string;
     saksbehandler: string;
 };
 
 export type SakCreateRequestDto = {
-    type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
+    type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     tittel?: string;
-    begrunnelse?: string;
+    soknadsDato?: string;
 };
 
 export type PersonRequest = {
@@ -60,10 +64,10 @@ export type User = {
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
 };
 
-export type SaksTypeDto = {
-    type: 'PARYKK' | 'ORTOSE' | 'PROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
+export type StonadsTypeDto = {
+    type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     navn: string;
-    beskrivelse: string;
+    beskrivelse?: string;
 };
 
 export type GetSakBySaksnummerData = {
@@ -246,14 +250,14 @@ export type GetUserInfoResponses = {
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
 
-export type GetKodeverkSaksTypeData = {
+export type GetKodeverkStonadTypeData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/sak/kodeverk/typer';
+    url: '/api/sak/kodeverk/stonadtyper';
 };
 
-export type GetKodeverkSaksTypeErrors = {
+export type GetKodeverkStonadTypeErrors = {
     /**
      * Forbidden
      */
@@ -264,16 +268,16 @@ export type GetKodeverkSaksTypeErrors = {
     500: ProblemDetail;
 };
 
-export type GetKodeverkSaksTypeError = GetKodeverkSaksTypeErrors[keyof GetKodeverkSaksTypeErrors];
+export type GetKodeverkStonadTypeError = GetKodeverkStonadTypeErrors[keyof GetKodeverkStonadTypeErrors];
 
-export type GetKodeverkSaksTypeResponses = {
+export type GetKodeverkStonadTypeResponses = {
     /**
      * OK
      */
-    200: Array<SaksTypeDto>;
+    200: Array<StonadsTypeDto>;
 };
 
-export type GetKodeverkSaksTypeResponse = GetKodeverkSaksTypeResponses[keyof GetKodeverkSaksTypeResponses];
+export type GetKodeverkStonadTypeResponse = GetKodeverkStonadTypeResponses[keyof GetKodeverkStonadTypeResponses];
 
 export type GetPersonByMaskertIdentData = {
     body?: never;

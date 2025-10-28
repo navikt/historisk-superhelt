@@ -1,6 +1,5 @@
 import {
-    findSakerForPersonOptions,
-    getKodeverkSaksTypeOptions,
+    getKodeverkStonadTypeOptions,
     getSakBySaksnummerOptions
 } from "@api/@tanstack/react-query.gen";
 
@@ -9,8 +8,8 @@ export const getSakOptions = (sakId: string) => ({
     retry: false,
 });
 
-export const getKodeverkSakTypeOptions = () => ({
-    ...getKodeverkSaksTypeOptions(),
+export const getKodeverkStonadsTypeOptions = () => ({
+    ...getKodeverkStonadTypeOptions(),
     staleTime: Infinity,
 });
 
