@@ -21,6 +21,8 @@ export type SakUpdateRequestDto = {
     begrunnelse?: string;
     soknadsDato?: string;
     vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    belop?: number;
+    utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakDto = {
@@ -35,6 +37,13 @@ export type SakDto = {
     opprettetDato: string;
     soknadsDato?: string;
     saksbehandler: string;
+    utbetaling?: UtbetalingDto;
+    forhandstilsagn?: boolean;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+};
+
+export type UtbetalingDto = {
+    belop: number;
 };
 
 export type SakCreateRequestDto = {

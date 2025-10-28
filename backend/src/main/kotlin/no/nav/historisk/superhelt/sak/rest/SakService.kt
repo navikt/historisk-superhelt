@@ -5,6 +5,8 @@ import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.Saksnummer
+import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
+import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,13 +37,32 @@ class SakService(private val sakRepository: SakRepository) {
             begrunnelse = req.begrunnelse ?: sak.begrunnelse,
             type = req.type ?: sak.type,
             soknadsDato = req.soknadsDato ?: sak.soknadsDato,
-            vedtak = req.vedtak ?: sak.vedtak
+            vedtak = req.vedtak ?: sak.vedtak,
+            utbetaling = toUtbetaling(req.utbetalingsType, req.belop, sak),
+            forhandstilsagn = toForhandstilsagn(req),
         )
-
 
         return sakRepository.save(oppdatertSak)
     }
 
+    private fun toForhandstilsagn(req: SakUpdateRequestDto): Forhandstilsagn? {
+        if (req.utbetalingsType == UtbetalingsType.FORHANDSTILSAGN) {
+            return Forhandstilsagn()
+        }
+        return null
+    }
 
+    private fun toUtbetaling(type: UtbetalingsType?, belop: Double?, sak: Sak): Utbetaling? {
+        if (type == UtbetalingsType.BRUKER) {
+            return belop?.let {
+                Utbetaling(
+                    bruker = sak.fnr,
+                    belop = it
+                )
+            }
+        }
+        return null
+
+    }
 
 }

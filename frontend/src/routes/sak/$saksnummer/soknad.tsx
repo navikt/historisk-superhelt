@@ -14,12 +14,13 @@ import {
     VStack
 } from '@navikt/ds-react'
 import {useState} from "react";
-import { SakDto} from "@api";
+import {SakDto, SakUpdateRequestDto} from "@api";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, getSakOptions} from "./-api/sak.query";
 import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
-import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {SakVedtakType, StonadType, UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {NumericInput} from "~/components/NumericInput";
 
 
 export const Route = createFileRoute('/sak/$saksnummer/soknad')({
@@ -35,10 +36,7 @@ function EditSakPage() {
         ...oppdaterSakMutation()
     })
 
-    const [payoutType, setPayoutType] = useState<'bruker' | 'faktura' | 'ingen'>('ingen')
-    const [payoutAmount, setPayoutAmount] = useState('')
-
-    const [sak, setSak] = useState<SakDto>(data)
+    const [sak, setSak] = useState<SakUpdateRequestDto>({...data, belop: data?.utbetaling?.belop})
 
     const {datepickerProps, inputProps, selectedDay} = useDatepicker({
         toDate: new Date(),
@@ -46,7 +44,7 @@ function EditSakPage() {
         defaultSelected: data.soknadsDato ? new Date(data.soknadsDato) : new Date()
     });
 
-    const patchSak = (s: Partial<SakDto>) => {
+    const patchSak = (s: Partial<SakUpdateRequestDto>) => {
         setSak(prev => ({...prev, ...s}))
     }
 
@@ -106,24 +104,17 @@ function EditSakPage() {
                             <VStack style={{flex: 1}}>
                                 <RadioGroup
                                     legend="Utbetaling"
-                                    value={payoutType}
-                                    onChange={v => setPayoutType(v as 'bruker' | 'faktura')}
+                                    value={sak.utbetalingsType}
+                                    onChange={v => patchSak({utbetalingsType: v as UtbetalingsType})}
                                 >
-                                    <Radio value="bruker">Utbetaling til bruker</Radio>
-                                    {payoutType === 'bruker' && (
-                                        <div style={{marginLeft: 32, marginTop: 4}}>
-                                            <input
-                                                type="number"
-                                                min="0"
-                                                step="1"
-                                                placeholder="Beløp (kr)"
-                                                value={payoutAmount}
-                                                onChange={e => setPayoutAmount(e.target.value)}
-                                                style={{width: 120}}
-                                            />
-                                        </div>
+                                    <Radio value="BRUKER">Utbetaling til bruker</Radio>
+                                    {sak.utbetalingsType === 'BRUKER' && (
+                                            <NumericInput
+                                                value={sak.belop}
+                                                onChange={belop => patchSak({belop: belop})}
+                                                label="Beløp (kr)"  />
                                     )}
-                                    <Radio value="faktura">Forhåndstilsagn (faktura kommer)</Radio>
+                                    <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
                                 </RadioGroup>
                             </VStack>
                         )}

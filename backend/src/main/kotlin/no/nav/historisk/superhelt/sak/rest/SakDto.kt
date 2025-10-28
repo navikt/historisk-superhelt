@@ -4,13 +4,16 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
-import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.Saksnummer
-import no.nav.historisk.superhelt.sak.StonadsType
-import no.nav.historisk.superhelt.sak.VedtakType
+import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
 import no.nav.person.Fnr
 import java.time.LocalDate
+
+enum class UtbetalingsType {
+    BRUKER,
+    FORHANDSTILSAGN,
+    INGEN
+}
 
 data class SakDto(
     val saksnummer: Saksnummer,
@@ -24,7 +27,19 @@ data class SakDto(
     val opprettetDato: LocalDate,
     val soknadsDato: LocalDate?,
     val saksbehandler: String,
-)
+    val utbetaling: UtbetalingDto? = null,
+    val forhandstilsagn: Boolean? = null
+) {
+
+    val utbetalingsType: UtbetalingsType
+        get() = when {
+            forhandstilsagn == true -> UtbetalingsType.FORHANDSTILSAGN
+            utbetaling != null -> UtbetalingsType.BRUKER
+            else -> UtbetalingsType.INGEN
+
+        }
+
+}
 
 data class SakCreateRequestDto(
     val type: StonadsType,
@@ -41,22 +56,24 @@ data class SakUpdateRequestDto(
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
     val vedtak: VedtakType? = null,
+    val belop: Double? = null,
+    val utbetalingsType: UtbetalingsType? = null
 )
 
-// Extension functions for mapping between Domain and DTO
-fun Sak.toResponseDto(): SakDto {
-    return SakDto(
-        saksnummer = this.saksnummer ?: Saksnummer("Ukjent"),
-        type = this.type,
-        fnr = this.fnr,
-        maskertPersonIdent = this.fnr.toMaskertPersonIdent(),
-        tittel = this.tittel,
-        begrunnelse = this.begrunnelse,
-        status = this.status,
-        opprettetDato = this.opprettetDato,
-        saksbehandler = this.saksbehandler,
-        soknadsDato = this.soknadsDato,
-        vedtak = this.vedtak,
-    )
-}
+fun Sak.toResponseDto() = SakDto(
+    saksnummer = this.saksnummer ?: Saksnummer("Ukjent"),
+    type = this.type,
+    fnr = this.fnr,
+    maskertPersonIdent = this.fnr.toMaskertPersonIdent(),
+    tittel = this.tittel,
+    begrunnelse = this.begrunnelse,
+    status = this.status,
+    opprettetDato = this.opprettetDato,
+    saksbehandler = this.saksbehandler,
+    soknadsDato = this.soknadsDato,
+    vedtak = this.vedtak,
+    utbetaling = this.utbetaling.toResponseDto(),
+    forhandstilsagn = this.forhandstilsagn != null
+)
+
 

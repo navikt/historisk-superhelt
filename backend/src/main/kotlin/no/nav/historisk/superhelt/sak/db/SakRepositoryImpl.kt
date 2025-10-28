@@ -22,31 +22,4 @@ class SakRepositoryImpl(private val jpaRepository: SakJpaRepository) : SakReposi
     }
 }
 
-private fun SakJpaEntity.toDomain(): Sak {
-    return Sak(
-        saksnummer = this.id?.let { Saksnummer(it) },
-        type = this.type,
-        fnr = this.fnr,
-        tittel = this.tittel,
-        begrunnelse = this.begrunnelse,
-        status = this.status,
-        vedtak = this.vedtak,
-        saksbehandler = this.saksbehandler,
-        opprettetDato = this.opprettet.toLocalDate(),
-        soknadsDato = this.soknadsDato
-    )
-}
 
-private fun Sak.toEntity(): SakJpaEntity {
-    return SakJpaEntity(
-        id = this.saksnummer?.id,
-        type = this.type,
-        fnr = this.fnr,
-        tittel = this.tittel,
-        begrunnelse = this.begrunnelse,
-        status = this.status,
-        vedtak = this.vedtak,
-        saksbehandler = this.saksbehandler,
-        soknadsDato = this.soknadsDato
-    )
-}

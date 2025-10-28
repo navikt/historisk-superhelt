@@ -1,5 +1,9 @@
 package no.nav.historisk.superhelt.sak
 
+import no.nav.historisk.superhelt.sak.db.UtbetalingJpaEntity
+import no.nav.historisk.superhelt.sak.rest.UtbetalingDto
+import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
+import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.person.Fnr
 import java.time.LocalDate
 
@@ -15,4 +19,9 @@ data class Sak(
     val vedtak: VedtakType? = null,
     val opprettetDato: LocalDate = LocalDate.now(),
     val saksbehandler: String,
+    val utbetaling: Utbetaling? = null,
+    val forhandstilsagn: Forhandstilsagn? = null,
 )
+
+
+
