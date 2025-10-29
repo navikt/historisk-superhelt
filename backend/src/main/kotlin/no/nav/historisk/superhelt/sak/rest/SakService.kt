@@ -53,16 +53,9 @@ class SakService(private val sakRepository: SakRepository) {
     }
 
     private fun toUtbetaling(type: UtbetalingsType?, belop: Double?, sak: Sak): Utbetaling? {
-        if (type == UtbetalingsType.BRUKER) {
-            return belop?.let {
-                Utbetaling(
-                    bruker = sak.fnr,
-                    belop = it
-                )
-            }
-        }
-        return null
-
+        return if (type == UtbetalingsType.BRUKER && belop != null) {
+            sak.utbetaling?.copy(belop = belop) ?: Utbetaling(bruker = sak.fnr, belop = belop)
+        } else null
     }
 
 }
