@@ -33,7 +33,6 @@ class SakController(
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
         val createdSak = sakService.createSak(sak)
-        logger.info("Opprettet sak med saksnummer=${createdSak.saksnummer}")
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSak)
     }
 
@@ -44,7 +43,6 @@ class SakController(
         @RequestBody @Valid req: SakUpdateRequestDto
     ): ResponseEntity<Sak> {
         val updated = sakService.updateSak(saksnummer, req)
-        logger.debug("Oppdaterte sak med saksnummer=${updated.saksnummer}")
         return ResponseEntity.ok(updated)
     }
 

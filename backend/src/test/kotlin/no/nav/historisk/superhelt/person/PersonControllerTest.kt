@@ -41,7 +41,7 @@ class PersonControllerTest {
         val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
         mockPerson(fnr, testPerson)
 
-        assertThat(mockMvc.get().uri("/api/person/{maskertPersonident}", fnr.toMaskertPersonIdent().value))
+        assertThat(getPersonByMaskertId(fnr))
             .hasStatusOk()
             .bodyJson()
             .convertTo(Person::class.java)
@@ -66,12 +66,7 @@ class PersonControllerTest {
         val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
         mockPerson(fnr, testPerson)
 
-        assertThat(
-            mockMvc.post().uri("/api/person")
-                .with(csrf())
-                .contentType("application/json")
-                .content("""{"fnr": "${fnr.value}"}""")
-        )
+        assertThat(findPersonByFnr(fnr))
             .hasStatusOk()
             .bodyJson()
             .convertTo(Person::class.java)
@@ -90,12 +85,7 @@ class PersonControllerTest {
         val testPerson = PersonTestData.testPerson.copy(fnr = fnr, navn = "***", harTilgang = false)
         mockPerson(fnr, testPerson, Avvisningskode.AVVIST_HABILITET)
 
-        assertThat(
-            mockMvc.post().uri("/api/person")
-                .with(csrf())
-                .contentType("application/json")
-                .content("""{"fnr": "${fnr.value}"}""")
-        )
+        assertThat(findPersonByFnr(fnr))
             .hasStatusOk()
             .bodyJson()
             .convertTo(Person::class.java)
@@ -112,12 +102,7 @@ class PersonControllerTest {
         val fnr = Fnr("12345678901")
         mockPerson(fnr, null, Avvisningskode.UKJENT_PERSON)
 
-        assertThat(
-            mockMvc.post().uri("/api/person")
-                .with(csrf())
-                .contentType("application/json")
-                .content("""{"fnr": "${fnr.value}"}""")
-        )
+        assertThat(findPersonByFnr(fnr))
             .hasStatus(HttpStatus.NOT_FOUND)
     }
 
@@ -125,22 +110,33 @@ class PersonControllerTest {
     @Test
     fun `Må ha lese rettighet for å gjøre kall til get `() {
         val fnr = Fnr("12345678901")
-        assertThat(mockMvc.get().uri("/api/person/{maskertPersonident}", fnr.toMaskertPersonIdent().value))
+        assertThat(getPersonByMaskertId(fnr))
             .hasStatus(HttpStatus.FORBIDDEN)
     }
+
+    private fun getPersonByMaskertId(fnr: Fnr): MockMvcTester.MockMvcRequestBuilder =
+        mockMvc.get().uri("/api/person/{maskertPersonident}", fnr.toMaskertPersonIdent().value)
 
     @WithMockUser()
     @Test
     fun `Må ha lese rettighet for å gjøre kall til post`() {
         val fnr = Fnr("12345678901")
-
-        assertThat(
-            mockMvc.post().uri("/api/person")
-                .with(csrf())
-                .contentType("application/json")
-                .content("""{"fnr": "${fnr.value}"}""")
-        )
+        assertThat(findPersonByFnr(fnr))
             .hasStatus(HttpStatus.FORBIDDEN)
+    }
+
+    private fun findPersonByFnr(fnr: Fnr): MockMvcTester.MockMvcRequestBuilder = mockMvc.post().uri("/api/person")
+        .with(csrf())
+        .contentType("application/json")
+        .content("""{"fnr": "${fnr.value}"}""")
+
+    @Test
+    fun `Validering av fnr`() {
+        val fnr = Fnr("1234")
+        assertThat(findPersonByFnr(fnr))
+            .hasStatus(HttpStatus.BAD_REQUEST)
+            .bodyText()
+            .contains("Fødselsnummer må være 11 tegn")
     }
 
 

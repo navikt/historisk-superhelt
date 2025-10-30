@@ -9,8 +9,8 @@ import no.nav.tilgangsmaskin.Avvisningskode
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 
 data class PersonRequest(
-    @field:Size(min = 11, max = 11)
-    @field:Pattern(regexp = "[0-9]*")
+    @field:Size(min = 11, max = 11, message = "Fødselsnummer må være 11 tegn")
+    @field:Pattern(regexp = "[0-9]*", message = "Fødselsnummer må kun inneholde tall")
     val fnr: Fnr
 )
 

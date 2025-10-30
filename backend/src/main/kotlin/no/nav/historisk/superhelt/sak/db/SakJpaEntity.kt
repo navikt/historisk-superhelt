@@ -23,7 +23,7 @@ class SakJpaEntity(
     var tittel: String? = null,
 
     @Enumerated(EnumType.STRING)
-    var status: SakStatus,
+    var status: SakStatus= SakStatus.UNDER_BEHANDLING,
 
     @Enumerated(EnumType.STRING)
     var vedtak: VedtakType? = null,

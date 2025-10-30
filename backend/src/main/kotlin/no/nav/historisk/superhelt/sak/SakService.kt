@@ -1,11 +1,13 @@
 package no.nav.historisk.superhelt.sak
 
+import jakarta.validation.Valid
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto
 import no.nav.historisk.superhelt.sak.rest.SakUpdateRequestDto
 import no.nav.historisk.superhelt.sak.rest.UtbetalingsType
 import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional
 class SakService(private val sakRepository: SakRepository) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-
+    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
     @Transactional
-    fun createSak(req: SakCreateRequestDto): Sak {
+    fun createSak(@Valid req: SakCreateRequestDto): Sak {
+
         val sak = SakJpaEntity(
             type = req.type,
             fnr = req.fnr,
@@ -24,13 +27,15 @@ class SakService(private val sakRepository: SakRepository) {
             soknadsDato = req.soknadsDato,
             saksbehandler = getCurrentNavIdent() ?: "ukjent"
         )
-        return sakRepository.save(sak)
+        val saved = sakRepository.save(sak)
+        logger.info("Opprettet ny sak med saksnummer {}", saved.saksnummer)
+        return saved
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
-    fun updateSak(saksNummer: Saksnummer, req: SakUpdateRequestDto): Sak {
+    fun updateSak(saksNummer: Saksnummer, @Valid req: SakUpdateRequestDto): Sak {
         val sak = sakRepository.getSakEntityOrThrow(saksNummer)
-
         req.type?.let { sak.type = it }
         req.tittel?.let { sak.tittel = it }
         req.begrunnelse?.let { sak.begrunnelse = it }
@@ -54,7 +59,7 @@ class SakService(private val sakRepository: SakRepository) {
             }
 
         }
-
+        logger.info("Oppdaterer sak med saksnummer {}", saksNummer)
         return sakRepository.save(sak)
     }
 
