@@ -121,6 +121,14 @@ function EditSakPage() {
                         )}
                     </HStack>
 
+                    <Textarea
+                        label="Saksbehandlers vurderinger"
+                        value={sak.begrunnelse}
+                        onChange={(e) => patchSak({begrunnelse: e.target.value})}
+                        description="Valgfri - vurderinger som er gjort i saken. Kommer ikke med i vedtaksbrev."
+                        minRows={4}
+                    />
+
 
                     {error && (
                         <Box padding="4" borderRadius="medium"
@@ -151,13 +159,7 @@ function EditSakPage() {
                         </Button>
                     </HStack>
 
-                    <Textarea
-                        label="Notat"
-                        value={sak.begrunnelse}
-                        onChange={(e) => patchSak({begrunnelse: e.target.value})}
-                        description="Valgfri - vurderinger som er gjort i saken. Kommer ikke med i vedtaksbrev."
-                        minRows={4}
-                    />
+
 
                 </VStack>
             </Box>
