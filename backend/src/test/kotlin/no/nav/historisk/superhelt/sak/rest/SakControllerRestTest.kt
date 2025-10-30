@@ -3,10 +3,12 @@ package no.nav.historisk.superhelt.sak.rest
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
+import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
+import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.historisk.superhelt.test.withMockedUser
@@ -52,9 +54,9 @@ class SakControllerRestTest() {
         )
     }
 
-    fun lagreNySak(): Sak {
+    fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum): Sak {
         return withMockedUser {
-            repository.save(SakTestData.sakEntityMinimum)
+            repository.save(sak)
         }
     }
 
@@ -238,7 +240,55 @@ class SakControllerRestTest() {
         private fun hentSak(saksnummer: Saksnummer?): MockMvcTester.MockMvcRequestBuilder =
             mockMvc.get().uri("/api/sak/{saksnummer}", saksnummer)
     }
+
+    @WithMockUser(authorities = ["READ"])
+    @Nested
+    inner class `finn saker for person` {
+
+
+        @Test
+        fun `finn saker for person ok`() {
+            val fnr = Fnr("12345678901")
+            lagreNySak(SakTestData.sakMinumum(fnr))
+            lagreNySak(SakTestData.sakMinumum(fnr))
+            lagreNySak(SakTestData.sakMinumum(Fnr("98765432101")))
+
+            assertThat(finnSakerForPerson(fnr))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(List::class.java)
+                .satisfies({
+                    assertThat(it).hasSize(2)
+                })
+
+            verify(tilgangsmaskinService).sjekkKomplettTilgang(fnr)
+        }
+
+        @WithMockUser()
+        @Test
+        fun `finn saker for person uten lesetilgang skal gi feil`() {
+            val fnr = Fnr("22345678901")
+            lagreNySak(SakTestData.sakMinumum(fnr))
+            assertThat(finnSakerForPerson(fnr))
+                .hasStatus(HttpStatus.FORBIDDEN)
+
+        }
+
+        @Test
+        fun `finn saker for person uten rettighet for person skal gi feil`() {
+            val fnr = Fnr("32345678901")
+            lagreNySak(SakTestData.sakMinumum(fnr))
+            whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr)) doReturn TilgangsmaskinClient.TilgangResult(
+                harTilgang = false,
+                TilgangsmaskinTestData.problemDetailResponse,
+            )
+            assertThat(finnSakerForPerson(fnr))
+                .hasStatus(HttpStatus.FORBIDDEN)
+                .bodyAsProblemDetail()
+        }
+
+        private fun finnSakerForPerson(fnr: Fnr): MockMvcTester.MockMvcRequestBuilder =
+            mockMvc.get().uri("/api/sak")
+                .queryParam("maskertPersonId", fnr.toMaskertPersonIdent().value)
+    }
 }
-
-
-

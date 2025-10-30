@@ -10,10 +10,14 @@ object SakTestData {
 
     val faker: Faker = Faker()
 
-    val sakEntityMinimum = SakJpaEntity(
-        type = faker.options().option(StonadsType::class.java),
-        fnr = Fnr(faker.numerify("###########")),
-        status = SakStatus.UNDER_BEHANDLING,
-        saksbehandler = faker.greekPhilosopher().name()
-    )
+    val sakEntityMinimum = sakMinumum(Fnr(faker.numerify("###########")))
+
+    fun sakMinumum(fnr: Fnr): SakJpaEntity {
+       return SakJpaEntity(
+            type = faker.options().option(StonadsType::class.java),
+            fnr = fnr,
+            status = SakStatus.UNDER_BEHANDLING,
+            saksbehandler = faker.greekPhilosopher().name()
+        )
+    }
 }
