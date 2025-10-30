@@ -17,18 +17,18 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         return jpaRepository.save(sak).toDomain()
     }
 
-    @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
-    fun getSakEntity(saksnummer: Saksnummer): SakJpaEntity? {
+    private fun getSakEntity(saksnummer: Saksnummer): SakJpaEntity? {
         return jpaRepository.findByIdOrNull(saksnummer.id)
     }
 
-
+    @PreAuthorize("hasAuthority('READ')")
+    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
     fun getSakEntityOrThrow(saksnummer: Saksnummer): SakJpaEntity {
         return getSakEntity(saksnummer)
             ?: throw IkkeFunnetException("Sak med saksnummer $saksnummer ikke funnet")
     }
-
+    @PreAuthorize("hasAuthority('READ')")
+    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
     fun getSakOrThrow(saksnummer: Saksnummer): Sak {
         return getSakEntityOrThrow(saksnummer).toDomain()
     }

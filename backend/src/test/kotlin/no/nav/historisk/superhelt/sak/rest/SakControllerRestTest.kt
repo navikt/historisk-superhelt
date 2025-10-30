@@ -9,19 +9,23 @@ import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
+import no.nav.historisk.superhelt.test.withMockedUser
 import no.nav.person.Fnr
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
 
 @MockedSpringBootTest
@@ -38,8 +42,22 @@ class SakControllerRestTest() {
     @Autowired
     private lateinit var repository: SakRepository
 
-    @Autowired
+    @MockitoBean
     private lateinit var tilgangsmaskinService: TilgangsmaskinService
+
+    @BeforeEach
+    fun setup() {
+        whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
+            harTilgang = true
+        )
+    }
+
+    fun lagreNySak(): Sak {
+        return withMockedUser {
+            repository.save(SakTestData.sakEntityMinimum)
+        }
+    }
+
 
     @WithMockUser(authorities = ["READ", "WRITE"])
     @Nested
@@ -56,6 +74,7 @@ class SakControllerRestTest() {
                     assertThat(it.type).isEqualTo(StonadsType.BRYSTPROTESE)
                     assertThat(it.saksnummer).isNotNull
                 })
+            verify(tilgangsmaskinService).sjekkKomplettTilgang(fnr)
         }
 
         @WithMockUser(authorities = ["READ"])
@@ -94,19 +113,21 @@ class SakControllerRestTest() {
                 )
             )
     }
+
     @WithMockUser(authorities = ["READ", "WRITE"])
     @Nested
     inner class `oppdater sak` {
 
         @Test
         fun `oppdater sak ok`() {
-            val  opprettetSak = repository.save(SakTestData.sakEntityMinimum).saksnummer
+            val opprettetSak = lagreNySak()
+            val saksnummer = opprettetSak.saksnummer
             val oppdatertTittel = "Ny tittel"
             val oppdatertBegrunnelse = "Ny begrunnelse"
 
             assertThat(
                 oppdaterSak(
-                    opprettetSak, SakUpdateRequestDto(
+                    saksnummer, SakUpdateRequestDto(
                         tittel = oppdatertTittel,
                         begrunnelse = oppdatertBegrunnelse
                     )
@@ -116,17 +137,18 @@ class SakControllerRestTest() {
                 .bodyJson()
                 .convertTo(Sak::class.java)
                 .satisfies({
-                    assertThat(it.saksnummer).isEqualTo(opprettetSak)
+                    assertThat(it.saksnummer).isEqualTo(saksnummer)
                     assertThat(it.tittel).isEqualTo(oppdatertTittel)
                     assertThat(it.begrunnelse).isEqualTo(oppdatertBegrunnelse)
                     assertThat(it.fnr).isNotNull
                 })
+            verify(tilgangsmaskinService).sjekkKomplettTilgang(opprettetSak.fnr)
         }
 
         @WithMockUser(authorities = ["READ"])
         @Test
         fun `oppdater sak uten skrivetilgang skal gi feil`() {
-            val  opprettetSak = Saksnummer("SUPER-000001")
+            val opprettetSak = lagreNySak().saksnummer
             assertThat(
                 oppdaterSak(
                     opprettetSak, SakUpdateRequestDto(
@@ -167,6 +189,54 @@ class SakControllerRestTest() {
             .content(
                 objectMapper.writeValueAsString(dto)
             )
+    }
+
+
+    @WithMockUser(authorities = ["READ"])
+    @Nested
+    inner class `hent sak` {
+
+        @Test
+        fun `hent sak ok`() {
+            val opprettetSak = lagreNySak()
+
+            assertThat(hentSak(opprettetSak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.saksnummer).isEqualTo(opprettetSak.saksnummer)
+                    assertThat(it.fnr).isEqualTo(opprettetSak.fnr)
+                    assertThat(it.type).isEqualTo(opprettetSak.type)
+                })
+
+            verify(tilgangsmaskinService).sjekkKomplettTilgang(opprettetSak.fnr)
+        }
+
+        @Test
+        fun `hent sak som ikke finnes skal gi feil`() {
+            val ikkeFinnsSaksnummer = Saksnummer("SUPER-999999")
+
+            assertThat(hentSak(ikkeFinnsSaksnummer))
+                .hasStatus(HttpStatus.NOT_FOUND)
+                .bodyAsProblemDetail()
+        }
+
+        @Test
+        fun `hent sak uten tilgang til person skal gi feil`() {
+            val opprettetSak = lagreNySak()
+            whenever(tilgangsmaskinService.sjekkKomplettTilgang(opprettetSak.fnr)) doReturn TilgangsmaskinClient.TilgangResult(
+                harTilgang = false,
+                TilgangsmaskinTestData.problemDetailResponse,
+            )
+
+            assertThat(hentSak(opprettetSak.saksnummer))
+                .hasStatus(HttpStatus.FORBIDDEN)
+                .bodyAsProblemDetail()
+        }
+
+        private fun hentSak(saksnummer: Saksnummer?): MockMvcTester.MockMvcRequestBuilder =
+            mockMvc.get().uri("/api/sak/{saksnummer}", saksnummer)
     }
 }
 
