@@ -5,12 +5,14 @@ import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.person.Fnr
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
@@ -24,7 +26,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(authorities = ["READ", "WRITE"])
+
 class SakControllerRestTest() {
 
     @Autowired
@@ -39,6 +41,7 @@ class SakControllerRestTest() {
     @Autowired
     private lateinit var tilgangsmaskinService: TilgangsmaskinService
 
+    @WithMockUser(authorities = ["READ", "WRITE"])
     @Nested
     inner class `opprett sak` {
         @Test
@@ -89,6 +92,80 @@ class SakControllerRestTest() {
                         fnr = fnr
                     )
                 )
+            )
+    }
+    @WithMockUser(authorities = ["READ", "WRITE"])
+    @Nested
+    inner class `oppdater sak` {
+
+        @Test
+        fun `oppdater sak ok`() {
+            val  opprettetSak = repository.save(SakTestData.sakEntityMinimum).saksnummer
+            val oppdatertTittel = "Ny tittel"
+            val oppdatertBegrunnelse = "Ny begrunnelse"
+
+            assertThat(
+                oppdaterSak(
+                    opprettetSak, SakUpdateRequestDto(
+                        tittel = oppdatertTittel,
+                        begrunnelse = oppdatertBegrunnelse
+                    )
+                )
+            )
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.saksnummer).isEqualTo(opprettetSak)
+                    assertThat(it.tittel).isEqualTo(oppdatertTittel)
+                    assertThat(it.begrunnelse).isEqualTo(oppdatertBegrunnelse)
+                    assertThat(it.fnr).isNotNull
+                })
+        }
+
+        @WithMockUser(authorities = ["READ"])
+        @Test
+        fun `oppdater sak uten skrivetilgang skal gi feil`() {
+            val  opprettetSak = Saksnummer("SUPER-000001")
+            assertThat(
+                oppdaterSak(
+                    opprettetSak, SakUpdateRequestDto(
+                        tittel = "Ny tittel",
+                        begrunnelse = "Ny begrunnelse"
+                    )
+                )
+            )
+                .hasStatus(HttpStatus.FORBIDDEN)
+                .bodyAsProblemDetail()
+                .satisfies({
+                    assertThat(it?.detail).isNotBlank
+                })
+        }
+
+        @Test
+        fun `oppdater sak som ikke finnes skal gi feil`() {
+            val ikkeFinnsSaksnummer = Saksnummer("SUPER-999999")
+
+            assertThat(
+                oppdaterSak(
+                    ikkeFinnsSaksnummer, SakUpdateRequestDto(
+                        tittel = "Ny tittel",
+                        begrunnelse = "Ny begrunnelse"
+                    )
+                )
+            )
+                .hasStatus(HttpStatus.NOT_FOUND)
+                .bodyAsProblemDetail()
+        }
+
+        private fun oppdaterSak(
+            saksnummer: Saksnummer?,
+            dto: SakUpdateRequestDto
+        ): MockMvcTester.MockMvcRequestBuilder = mockMvc.put().uri("/api/sak/{saksnummer}", saksnummer)
+            .with(csrf())
+            .contentType("application/json")
+            .content(
+                objectMapper.writeValueAsString(dto)
             )
     }
 }

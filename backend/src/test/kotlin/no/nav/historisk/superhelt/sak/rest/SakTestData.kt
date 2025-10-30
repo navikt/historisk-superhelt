@@ -5,14 +5,13 @@ import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.person.Fnr
-import no.nav.person.Persondata
 
 object SakTestData {
 
     val faker: Faker = Faker()
 
     val sakEntityMinimum = SakJpaEntity(
-        type = faker.options().option(StonadsType::class.java) ,
+        type = faker.options().option(StonadsType::class.java),
         fnr = Fnr(faker.numerify("###########")),
         status = SakStatus.UNDER_BEHANDLING,
         saksbehandler = faker.greekPhilosopher().name()
