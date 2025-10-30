@@ -15,35 +15,40 @@ export type ProblemDetail = {
     };
 };
 
+export type Forhandstilsagn = {
+    dummy: boolean;
+};
+
 export type SakUpdateRequestDto = {
     type?: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     tittel?: string;
     begrunnelse?: string;
     soknadsDato?: string;
     vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
-    belop?: number;
     utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    utbetaling?: Utbetaling;
+    forhandstilsagn?: Forhandstilsagn;
 };
 
-export type SakDto = {
-    saksnummer: string;
+export type Utbetaling = {
+    belop: number;
+};
+
+export type Sak = {
+    saksnummer?: string;
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
-    maskertPersonIdent: string;
     tittel?: string;
+    soknadsDato?: string;
     begrunnelse?: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
-    soknadsDato?: string;
     saksbehandler: string;
-    utbetaling?: UtbetalingDto;
-    forhandstilsagn?: boolean;
+    utbetaling?: Utbetaling;
+    forhandstilsagn?: Forhandstilsagn;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-};
-
-export type UtbetalingDto = {
-    belop: number;
+    maskertPersonIdent: string;
 };
 
 export type SakCreateRequestDto = {
@@ -105,7 +110,7 @@ export type GetSakBySaksnummerResponses = {
     /**
      * OK
      */
-    200: SakDto;
+    200: Sak;
 };
 
 export type GetSakBySaksnummerResponse = GetSakBySaksnummerResponses[keyof GetSakBySaksnummerResponses];
@@ -136,7 +141,7 @@ export type OppdaterSakResponses = {
     /**
      * OK
      */
-    200: SakDto;
+    200: Sak;
 };
 
 export type OppdaterSakResponse = OppdaterSakResponses[keyof OppdaterSakResponses];
@@ -167,7 +172,7 @@ export type FindSakerForPersonResponses = {
     /**
      * OK
      */
-    200: Array<SakDto>;
+    200: Array<Sak>;
 };
 
 export type FindSakerForPersonResponse = FindSakerForPersonResponses[keyof FindSakerForPersonResponses];
@@ -196,7 +201,7 @@ export type CreateSakResponses = {
     /**
      * OK
      */
-    200: SakDto;
+    200: Sak;
 };
 
 export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];

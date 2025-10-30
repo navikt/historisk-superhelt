@@ -1,4 +1,4 @@
-import {SakDto} from "@api";
+import {Sak as SakDto} from "@api";
 
 export type SakStatusType= SakDto['status']
 export type SakVedtakType= SakDto['vedtak']

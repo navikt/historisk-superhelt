@@ -1,12 +1,9 @@
 package no.nav.historisk.superhelt.sak.db
 
 import jakarta.persistence.*
-import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.Saksnummer
-import no.nav.historisk.superhelt.sak.StonadsType
-import no.nav.historisk.superhelt.sak.VedtakType
-import no.nav.historisk.superhelt.utbetaling.Utbetaling
+import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.Forhandstilsagn
+import no.nav.historisk.superhelt.sak.Utbetaling
 import no.nav.person.Fnr
 import org.hibernate.Hibernate
 import java.time.LocalDate
@@ -37,8 +34,11 @@ class SakJpaEntity(
     var opprettet: LocalDateTime = LocalDateTime.now(),
     var soknadsDato: LocalDate? = null,
 
-    @OneToOne( cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var utbetaling: UtbetalingJpaEntity? = null,
+
+    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    var forhandstilsagn: ForhandsTilsagnJpaEntity? = null,
 
 //    @CreatedDate
 //    var createdDate: Instant? = null,
@@ -68,40 +68,39 @@ class SakJpaEntity(
             this.utbetaling = null
             return
         }
-        val entity = this.utbetaling?: UtbetalingJpaEntity(sak= this, belop=0.0)
-        entity.belop= utbetalingDomain.belop
-        this.utbetaling= entity
+        val entity = this.utbetaling ?: UtbetalingJpaEntity(sak = this, belop = 0.0)
+        entity.belop = utbetalingDomain.belop
+        this.utbetaling = entity
     }
+
+    fun setOrUpdateForhandsTilsagn(forhandsTilsagnDomain: Forhandstilsagn?) {
+        if (forhandsTilsagnDomain == null) {
+            this.forhandstilsagn = null
+            return
+        }
+        val entity = this.forhandstilsagn ?: ForhandsTilsagnJpaEntity(sak = this)
+        this.forhandstilsagn = entity
+    }
+
+
+    internal fun toDomain(): Sak {
+        return Sak(
+            saksnummer = this.id?.let { Saksnummer(it) },
+            type = this.type,
+            fnr = this.fnr,
+            tittel = this.tittel,
+            begrunnelse = this.begrunnelse,
+            status = this.status,
+            vedtak = this.vedtak,
+            saksbehandler = this.saksbehandler,
+            opprettetDato = this.opprettet.toLocalDate(),
+            soknadsDato = this.soknadsDato,
+            utbetaling = this.utbetaling?.toDomain(),
+            forhandstilsagn = this.forhandstilsagn?.toDomain(),
+        )
+    }
+
+
 }
 
-internal fun SakJpaEntity.toDomain(): Sak {
-    return Sak(
-        saksnummer = this.id?.let { Saksnummer(it) },
-        type = this.type,
-        fnr = this.fnr,
-        tittel = this.tittel,
-        begrunnelse = this.begrunnelse,
-        status = this.status,
-        vedtak = this.vedtak,
-        saksbehandler = this.saksbehandler,
-        opprettetDato = this.opprettet.toLocalDate(),
-        soknadsDato = this.soknadsDato,
-        utbetaling = this.utbetaling.toDomain()
-    )
-}
 
-internal fun Sak.toEntity(): SakJpaEntity {
-    val sakJpaEntity = SakJpaEntity(
-        id = this.saksnummer?.id,
-        type = this.type,
-        fnr = this.fnr,
-        tittel = this.tittel,
-        begrunnelse = this.begrunnelse,
-        status = this.status,
-        vedtak = this.vedtak,
-        saksbehandler = this.saksbehandler,
-        soknadsDato = this.soknadsDato,
-    )
-    sakJpaEntity.setOrUpdateUtbetaling(this.utbetaling)
-    return sakJpaEntity
-}

@@ -1,33 +1,23 @@
 package no.nav.historisk.superhelt.sak.db
 
 import jakarta.persistence.*
-import no.nav.historisk.superhelt.sak.Utbetaling
+import no.nav.historisk.superhelt.sak.Forhandstilsagn
 import org.hibernate.Hibernate
+import java.time.Instant
 
 @Entity
-@Table(name = "utbetaling")
+@Table(name = "forhanstilsagn")
 //@EntityListeners(AuditingEntityListener::class)
-class UtbetalingJpaEntity(
+class ForhandsTilsagnJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-//
+
 //    @CreatedDate
-//    var createdDate: Instant? = null,
-//
-//    @CreatedBy
-//    var createdBy: String? = null,
-//
-//    @LastModifiedDate
-//    var lastModifiedDate: Instant? = null,
-//
-//    @LastModifiedBy
-//    var lastModifiedBy: String? = null,
+    val createdDate: Instant = Instant.now(),
 
-    @OneToOne(mappedBy = "utbetaling")
+    @OneToOne(mappedBy = "forhandstilsagn")
     val sak: SakJpaEntity,
-
-    var belop: Double,
 
     ) {
     override fun equals(other: Any?): Boolean {
@@ -40,11 +30,11 @@ class UtbetalingJpaEntity(
 
     override fun hashCode(): Int = javaClass.hashCode()
 
-    internal fun toDomain(): Utbetaling? {
-        return Utbetaling(
-            belop = this.belop,
+    internal fun toDomain(): Forhandstilsagn ? {
+        return Forhandstilsagn(
         )
     }
+
 }
 
 

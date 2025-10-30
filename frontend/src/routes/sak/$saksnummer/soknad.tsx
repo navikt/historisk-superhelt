@@ -14,7 +14,7 @@ import {
     VStack
 } from '@navikt/ds-react'
 import {useState} from "react";
-import {SakDto, SakUpdateRequestDto} from "@api";
+import {SakUpdateRequestDto} from "@api";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, getSakOptions} from "./-api/sak.query";
 import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
@@ -36,7 +36,7 @@ function EditSakPage() {
         ...oppdaterSakMutation()
     })
 
-    const [sak, setSak] = useState<SakUpdateRequestDto>({...data, belop: data?.utbetaling?.belop})
+    const [sak, setSak] = useState<SakUpdateRequestDto>({...data})
 
     const {datepickerProps, inputProps, selectedDay} = useDatepicker({
         toDate: new Date(),
@@ -109,12 +109,13 @@ function EditSakPage() {
                                 >
                                     <Radio value="BRUKER">Utbetaling til bruker</Radio>
                                     {sak.utbetalingsType === 'BRUKER' && (
-                                            <NumericInput
-                                                value={sak.belop}
-                                                onChange={belop => patchSak({belop: belop})}
-                                                label="Beløp (kr)"  />
+                                        <NumericInput
+                                            value={sak.utbetaling?.belop}
+                                            onChange={belop => patchSak({utbetaling: {belop: belop} })}
+                                            label="Beløp (kr)"/>
                                     )}
-                                    <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
+                                    <Radio value="FORHANDSTILSAGN" onClick={()=> patchSak({forhandstilsagn:{dummy: true}})}>Forhåndstilsagn (faktura kommer)</Radio>
+
                                 </RadioGroup>
                             </VStack>
                         )}

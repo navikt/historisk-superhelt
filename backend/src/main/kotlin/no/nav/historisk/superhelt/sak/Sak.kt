@@ -1,13 +1,12 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.sak.db.UtbetalingJpaEntity
-import no.nav.historisk.superhelt.sak.rest.UtbetalingDto
-import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
-import no.nav.historisk.superhelt.utbetaling.Utbetaling
+import no.nav.historisk.superhelt.person.MaskertPersonIdent
+import no.nav.historisk.superhelt.person.toMaskertPersonIdent
+import no.nav.historisk.superhelt.sak.rest.UtbetalingsType
 import no.nav.person.Fnr
 import java.time.LocalDate
 
-/** Domeneobjektet */
+/** DTO */
 data class Sak(
     val saksnummer: Saksnummer? = null,
     val type: StonadsType,
@@ -21,7 +20,16 @@ data class Sak(
     val saksbehandler: String,
     val utbetaling: Utbetaling? = null,
     val forhandstilsagn: Forhandstilsagn? = null,
-)
+) {
+    val utbetalingsType: UtbetalingsType
+        get() = when {
+            forhandstilsagn != null -> UtbetalingsType.FORHANDSTILSAGN
+            utbetaling != null -> UtbetalingsType.BRUKER
+            else -> UtbetalingsType.INGEN
+        }
+    val maskertPersonIdent: MaskertPersonIdent
+        get() = fnr.toMaskertPersonIdent()
+}
 
 
 
