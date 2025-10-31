@@ -14,7 +14,7 @@ fun getCurrentUserRoles(): List<Role> {
         ?.mapNotNull { Role.valueOf(it) } ?: emptyList()
 
 }
-
+// TODO Navident som type
 fun getCurrentNavIdent(): String? {
     val authentication = getJwtAuthentication()
     return authentication?.name

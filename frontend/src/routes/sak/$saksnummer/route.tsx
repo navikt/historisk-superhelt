@@ -5,19 +5,22 @@ import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
 import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
 import SakMeny from "~/routes/sak/$saksnummer/-components/SakMeny";
+import {ErrorAlert} from "~/components/error/ErrorAlert";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
     loader: ({params: {saksnummer}, context}) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer))
+    },
+    errorComponent: ({error}) => {
+        return <ErrorAlert error={error}/>
     }
 })
 
 function SakLayout() {
     const {saksnummer} = Route.useParams()
-    const {data, isPending, error} = useSuspenseQuery(getSakOptions(saksnummer))
+    const {data} = useSuspenseQuery(getSakOptions(saksnummer))
 
-    // TODO loading and error states
     return (
         <>
             <PersonHeader maskertPersonId={data.maskertPersonIdent}/>

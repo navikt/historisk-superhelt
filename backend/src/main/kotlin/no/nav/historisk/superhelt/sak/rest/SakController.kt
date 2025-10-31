@@ -3,7 +3,9 @@ package no.nav.historisk.superhelt.sak.rest
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
+import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakService
 import no.nav.historisk.superhelt.sak.Saksnummer
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -21,18 +23,17 @@ class SakController(
 
     @Operation(operationId = "findSakerForPerson", summary = "Finn saker for en person")
     @GetMapping()
-    fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<SakDto>> {
+    fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<Sak>> {
         val fnr = maskertPersonId.toFnr()
-        val saker = sakRepository.findSaker(fnr).map { it.toResponseDto() }
+        val saker = sakRepository.findSaker(fnr)
         return ResponseEntity.ok(saker)
     }
 
     @Operation(operationId = "createSak", summary = "opprett en ny sak")
     @PostMapping
-    fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<SakDto> {
+    fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
         val createdSak = sakService.createSak(sak)
-        logger.info("Opprettet sak med saksnummer=${createdSak.saksnummer}")
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdSak.toResponseDto())
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdSak)
     }
 
     @Operation(operationId = "oppdaterSak")
@@ -40,17 +41,16 @@ class SakController(
     fun oppdaterSak(
         @PathVariable saksnummer: Saksnummer,
         @RequestBody @Valid req: SakUpdateRequestDto
-    ): ResponseEntity<SakDto> {
-        val updated = sakService.updateSak(saksnummer, req).toResponseDto()
-        logger.debug("Oppdaterte sak med saksnummer=${updated.saksnummer}")
+    ): ResponseEntity<Sak> {
+        val updated = sakService.updateSak(saksnummer, req)
         return ResponseEntity.ok(updated)
     }
 
     @Operation(operationId = "getSakBySaksnummer", summary = "Hent opp en sak")
     @GetMapping("{saksnummer}")
-    fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<SakDto> {
+    fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<Sak> {
         sakRepository.getSakOrThrow(saksnummer).let {
-            return ResponseEntity.ok(it.toResponseDto())
+            return ResponseEntity.ok(it)
         }
     }
 
