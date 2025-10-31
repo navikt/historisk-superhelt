@@ -62,6 +62,17 @@ function EditSakPage() {
     }
 
     const error = oppdaterSak?.error?.detail
+    const changeUtbetalingsType = (v: UtbetalingsType) => {
+        patchSak({utbetalingsType: v});
+        if (v === 'FORHANDSTILSAGN') {
+            patchSak({utbetaling: undefined})
+            patchSak({forhandstilsagn: {dummy: true}})
+        }
+        if (v === 'BRUKER') {
+            patchSak({forhandstilsagn: undefined})
+        }
+
+    }
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
@@ -109,18 +120,16 @@ function EditSakPage() {
                                 <RadioGroup
                                     legend="Utbetaling"
                                     value={sak.utbetalingsType}
-                                    onChange={v => patchSak({utbetalingsType: v as UtbetalingsType})}
+                                    onChange={changeUtbetalingsType}
                                 >
                                     <Radio value="BRUKER">Utbetaling til bruker</Radio>
                                     {sak.utbetalingsType === 'BRUKER' && (
                                         <NumericInput
                                             value={sak.utbetaling?.belop}
-                                            onChange={belop => patchSak({utbetaling: {belop: belop}})}
+                                            onChange={belop => patchSak({utbetaling: {belop: belop ?? 0}})}
                                             label="Beløp (kr)"/>
                                     )}
-                                    <Radio value="FORHANDSTILSAGN"
-                                           onClick={() => patchSak({forhandstilsagn: {dummy: true}})}>Forhåndstilsagn
-                                        (faktura kommer)</Radio>
+                                    <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
 
                                 </RadioGroup>
                             </VStack>
@@ -129,7 +138,7 @@ function EditSakPage() {
 
                     <Textarea
                         label="Saksbehandlers vurderinger"
-                        value={sak.begrunnelse}
+                        value={sak.begrunnelse?? ''}
                         onChange={(e) => patchSak({begrunnelse: e.target.value})}
                         description="Valgfri - vurderinger som er gjort i saken. Kommer ikke med i vedtaksbrev."
                         minRows={4}

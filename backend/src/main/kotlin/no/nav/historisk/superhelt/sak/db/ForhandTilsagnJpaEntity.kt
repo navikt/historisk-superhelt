@@ -6,7 +6,7 @@ import org.hibernate.Hibernate
 import java.time.Instant
 
 @Entity
-@Table(name = "forhanstilsagn")
+@Table(name = "forhandstilsagn")
 //@EntityListeners(AuditingEntityListener::class)
 class ForhandsTilsagnJpaEntity(
     @Id
