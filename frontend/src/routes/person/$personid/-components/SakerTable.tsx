@@ -1,8 +1,7 @@
 import {Button, Heading, Skeleton, Table, Tag, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
-import {useQuery} from "@tanstack/react-query";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
-import {ProblemDetail} from "@api";
 import {finnSakerForPersonOptions} from "~/routes/person/$personid/-api/person.query";
 
 
@@ -26,10 +25,10 @@ const getStatusVariant = (status: string) => {
 
 export function SakerTable({person}: SakerTableProps) {
 
-    const {data, isPending, error} = useQuery(finnSakerForPersonOptions(person))
+    const {data, isPending, error} = useSuspenseQuery(finnSakerForPersonOptions(person))
 
     if (error) {
-        return <ErrorAlert error={error} problemDetails={error as ProblemDetail}/>
+        return <ErrorAlert error={error}/>
     }
     if (isPending) {
         return <VStack gap="space-8">

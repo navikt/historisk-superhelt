@@ -21,10 +21,14 @@ import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType, UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {NumericInput} from "~/components/NumericInput";
+import {ErrorAlert} from "~/components/error/ErrorAlert";
 
 
 export const Route = createFileRoute('/sak/$saksnummer/soknad')({
     component: EditSakPage,
+    errorComponent: ({error}) => {
+        return <ErrorAlert error={error}/>
+    }
 })
 
 
@@ -111,10 +115,12 @@ function EditSakPage() {
                                     {sak.utbetalingsType === 'BRUKER' && (
                                         <NumericInput
                                             value={sak.utbetaling?.belop}
-                                            onChange={belop => patchSak({utbetaling: {belop: belop} })}
+                                            onChange={belop => patchSak({utbetaling: {belop: belop}})}
                                             label="Beløp (kr)"/>
                                     )}
-                                    <Radio value="FORHANDSTILSAGN" onClick={()=> patchSak({forhandstilsagn:{dummy: true}})}>Forhåndstilsagn (faktura kommer)</Radio>
+                                    <Radio value="FORHANDSTILSAGN"
+                                           onClick={() => patchSak({forhandstilsagn: {dummy: true}})}>Forhåndstilsagn
+                                        (faktura kommer)</Radio>
 
                                 </RadioGroup>
                             </VStack>
@@ -158,7 +164,6 @@ function EditSakPage() {
                             Avbryt
                         </Button>
                     </HStack>
-
 
 
                 </VStack>
