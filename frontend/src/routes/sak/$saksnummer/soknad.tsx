@@ -15,9 +15,9 @@ import {
 } from '@navikt/ds-react'
 import {useEffect, useState} from "react";
 import {SakUpdateRequestDto} from "@api";
-import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
-import {getKodeverkStonadsTypeOptions, getSakOptions} from "./-api/sak.query";
-import {ferdigstillSakMutation, oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
+import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
+import {getKodeverkStonadsTypeOptions, getSakOptions, sakQueryKey} from "./-api/sak.query";
+import {ferdigstillSakMutation, getSakBySaksnummerQueryKey, oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType, UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {NumericInput} from "~/components/NumericInput";
@@ -37,11 +37,15 @@ function EditSakPage() {
     const {saksnummer} = Route.useParams()
     const {data, isPending} = useSuspenseQuery(getSakOptions(saksnummer))
     const {data: saksTyper} = useSuspenseQuery(getKodeverkStonadsTypeOptions())
+    const queryClient = useQueryClient();
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
     })
     const ferdigStillSak = useMutation({
         ...ferdigstillSakMutation()
+        , onSettled: () => {
+            queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+        }
     })
 
     const [sak, setSak] = useState<SakUpdateRequestDto>({...data})
@@ -98,7 +102,8 @@ function EditSakPage() {
             path: {
                 saksnummer: saksnummer
             }
-        })
+        }
+        )
     }
 
     return (

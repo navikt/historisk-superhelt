@@ -3,6 +3,7 @@ import {Link} from '@tanstack/react-router'
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
 import {finnSakerForPersonOptions} from "~/routes/person/$personid/-api/person.query";
+import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
 
 interface SakerTableProps {
@@ -63,9 +64,7 @@ export function SakerTable({person}: SakerTableProps) {
                         <Table.DataCell>{sak.type}</Table.DataCell>
                         <Table.DataCell>{sak.tittel}</Table.DataCell>
                         <Table.DataCell>
-                            <Tag variant={getStatusVariant(sak.status)} size="small">
-                                {sak.status}
-                            </Tag>
+                           <SakStatus sak={sak}/>
                         </Table.DataCell>
                         <Table.DataCell>{sak.opprettetDato}</Table.DataCell>
                         <Table.DataCell>{sak.saksbehandler}</Table.DataCell>

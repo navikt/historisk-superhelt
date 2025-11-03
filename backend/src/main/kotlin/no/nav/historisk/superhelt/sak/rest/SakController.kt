@@ -59,7 +59,7 @@ class SakController(
     fun ferdigstill(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
         val sak = sakRepository.getSakOrThrow(saksnummer)
         SakValidator(sak)
-            .validateStatusTransition(SakStatus.FERDIG)
+//            .validateStatusTransition(SakStatus.FERDIG)
             .validateCompleted()
 //            .validateSaksbehandlerErIkkeAttestant()
 
