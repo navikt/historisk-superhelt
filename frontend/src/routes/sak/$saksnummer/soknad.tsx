@@ -13,15 +13,16 @@ import {
     useDatepicker,
     VStack
 } from '@navikt/ds-react'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {SakUpdateRequestDto} from "@api";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, getSakOptions} from "./-api/sak.query";
-import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
+import {ferdigstillSakMutation, oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType, UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {NumericInput} from "~/components/NumericInput";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
+import useDebounce from "~/components/useDebounce";
 
 
 export const Route = createFileRoute('/sak/$saksnummer/soknad')({
@@ -39,8 +40,13 @@ function EditSakPage() {
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
     })
+    const ferdigStillSak = useMutation({
+        ...ferdigstillSakMutation()
+    })
 
     const [sak, setSak] = useState<SakUpdateRequestDto>({...data})
+    const debouncedSak = useDebounce(sak, 2000)
+
 
     const {datepickerProps, inputProps, selectedDay} = useDatepicker({
         toDate: new Date(),
@@ -48,11 +54,19 @@ function EditSakPage() {
         defaultSelected: data.soknadsDato ? new Date(data.soknadsDato) : new Date()
     });
 
+    useEffect(() => {
+        // Lagrer etter siste endring
+        if (debouncedSak) {
+            lagreSak()
+        }
+    }, [debouncedSak]); // Only re-run when debouncedSearchTerm changes
+
+
     const patchSak = (s: Partial<SakUpdateRequestDto>) => {
         setSak(prev => ({...prev, ...s}))
     }
 
-    function handleSubmit() {
+    function lagreSak() {
         oppdaterSak.mutate({
             path: {
                 saksnummer: saksnummer
@@ -73,10 +87,24 @@ function EditSakPage() {
         }
 
     }
+
+    async function fatteVedtak() {
+        await oppdaterSak.mutateAsync({
+            path: {saksnummer: saksnummer}
+            , body: sak
+        })
+        //TODO Validering
+        ferdigStillSak.mutate({
+            path: {
+                saksnummer: saksnummer
+            }
+        })
+    }
+
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            handleSubmit();
+            lagreSak();
         }}>
             <Box padding="6" borderWidth="1" borderRadius="medium">
 
@@ -138,7 +166,7 @@ function EditSakPage() {
 
                     <Textarea
                         label="Saksbehandlers vurderinger"
-                        value={sak.begrunnelse?? ''}
+                        value={sak.begrunnelse ?? ''}
                         onChange={(e) => patchSak({begrunnelse: e.target.value})}
                         description="Valgfri - vurderinger som er gjort i saken. Kommer ikke med i vedtaksbrev."
                         minRows={4}
@@ -154,24 +182,14 @@ function EditSakPage() {
 
                     <HStack gap="4">
                         <Button
-                            as={Link}
-                            to="/sak/$saksnummer/brev"
                             variant="primary"
                             disabled={!sak.vedtak}
+                            onClick={fatteVedtak}
+                            loading={ferdigStillSak?.status === 'pending' || oppdaterSak?.status === 'pending'}
                         >
                             Fatte vedtak
                         </Button>
 
-                        <Button type="submit" loading={oppdaterSak?.status === 'pending'} variant="secondary">
-                            Lagre kladd
-                        </Button>
-                        <Button as={Link}
-                                type="button"
-                                variant="secondary"
-                                to={`/person/${data?.maskertPersonIdent}`}
-                        >
-                            Avbryt
-                        </Button>
                     </HStack>
 
 

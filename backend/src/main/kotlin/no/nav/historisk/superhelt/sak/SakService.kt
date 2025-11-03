@@ -48,10 +48,12 @@ class SakService(private val sakRepository: SakRepository) {
                     sak.setOrUpdateUtbetaling(req.utbetaling)
                     sak.forhandstilsagn = null
                 }
+
                 UtbetalingsType.FORHANDSTILSAGN -> {
                     sak.utbetaling = null
                     sak.setOrUpdateForhandsTilsagn(req.forhandstilsagn)
                 }
+
                 UtbetalingsType.INGEN -> {
                     sak.utbetaling = null
                     sak.forhandstilsagn = null
@@ -62,6 +64,21 @@ class SakService(private val sakRepository: SakRepository) {
         logger.info("Oppdaterer sak med saksnummer {}", saksNummer)
         return sakRepository.save(sak)
     }
+
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun changeStatus(saksnummer: Saksnummer, status: SakStatus) {
+        val sak = sakRepository.getSakEntityOrThrow(saksnummer)
+        if (status === sak.status) {
+            logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
+            return
+        }
+        sak.status = status
+        sakRepository.save(sak)
+        logger.debug("Sak {} endret statsu til {}", saksnummer, status)
+    }
+
 
 
 }

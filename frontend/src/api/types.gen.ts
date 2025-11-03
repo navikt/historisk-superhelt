@@ -35,7 +35,7 @@ export type Utbetaling = {
 };
 
 export type Sak = {
-    saksnummer?: string;
+    saksnummer: string;
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     tittel?: string;
@@ -145,6 +145,93 @@ export type OppdaterSakResponses = {
 };
 
 export type OppdaterSakResponse = OppdaterSakResponses[keyof OppdaterSakResponses];
+
+export type SendTilAttesteringData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/tilattestering';
+};
+
+export type SendTilAttesteringErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type SendTilAttesteringError = SendTilAttesteringErrors[keyof SendTilAttesteringErrors];
+
+export type SendTilAttesteringResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type GjenapneSakData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/gjenapne';
+};
+
+export type GjenapneSakErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GjenapneSakError = GjenapneSakErrors[keyof GjenapneSakErrors];
+
+export type GjenapneSakResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type FerdigstillSakData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/ferdigstill';
+};
+
+export type FerdigstillSakErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FerdigstillSakError = FerdigstillSakErrors[keyof FerdigstillSakErrors];
+
+export type FerdigstillSakResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
 
 export type FindSakerForPersonData = {
     body?: never;

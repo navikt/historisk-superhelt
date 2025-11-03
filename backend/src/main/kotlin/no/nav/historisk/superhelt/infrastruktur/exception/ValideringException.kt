@@ -3,10 +3,10 @@ package no.nav.historisk.superhelt.infrastruktur.exception
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
-class IkkeFunnetException(
+class ValideringException(
     reason: String?,
     cause: Throwable? = null,
-    messageDetailCode: String? = "ikke funnet",
+    messageDetailCode: String? = "valideringsfeil",
     messageDetailArguments: Array<Any>? = null
-) : ResponseStatusException(HttpStatus.NOT_FOUND, reason, cause, messageDetailCode, messageDetailArguments) {
+) : ResponseStatusException(HttpStatus.BAD_REQUEST, reason, cause, messageDetailCode, messageDetailArguments) {
 }
