@@ -1,5 +1,5 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
-import {Box, Heading, HGrid, HStack, Tabs, VStack} from '@navikt/ds-react'
+import {Box, HGrid, HStack, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
@@ -28,7 +28,7 @@ function SakLayout() {
             <HGrid gap="space-24" columns={{lg: 1, xl: 2}} marginBlock={"space-16"}>
                 <VStack gap="space-16">
                     <HStack justify="space-between">
-                        <SakHeading sak={data} />
+                        <SakHeading sak={data}/>
                         <SakMeny/>
                     </HStack>
                     <Outlet/>

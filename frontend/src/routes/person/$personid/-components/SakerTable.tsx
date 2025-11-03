@@ -1,4 +1,4 @@
-import {Button, Heading, Skeleton, Table, Tag, VStack} from '@navikt/ds-react'
+import {Button, Heading, Skeleton, Table, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
@@ -9,20 +9,6 @@ import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 interface SakerTableProps {
     person: string
 }
-
-const getStatusVariant = (status: string) => {
-    switch (status) {
-        case 'Under behandling':
-            return 'warning'
-        case 'Avsluttet':
-            return 'success'
-        case 'Venter på bruker':
-            return 'neutral'
-        default:
-            return 'neutral'
-    }
-}
-
 
 export function SakerTable({person}: SakerTableProps) {
 
@@ -64,7 +50,7 @@ export function SakerTable({person}: SakerTableProps) {
                         <Table.DataCell>{sak.type}</Table.DataCell>
                         <Table.DataCell>{sak.tittel}</Table.DataCell>
                         <Table.DataCell>
-                           <SakStatus sak={sak}/>
+                            <SakStatus sak={sak}/>
                         </Table.DataCell>
                         <Table.DataCell>{sak.opprettetDato}</Table.DataCell>
                         <Table.DataCell>{sak.saksbehandler}</Table.DataCell>

@@ -1,4 +1,4 @@
-import {createFileRoute, Link} from '@tanstack/react-router'
+import {createFileRoute} from '@tanstack/react-router'
 import {
     Box,
     Button,
@@ -17,7 +17,7 @@ import {useEffect, useState} from "react";
 import {SakUpdateRequestDto} from "@api";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, getSakOptions, sakQueryKey} from "./-api/sak.query";
-import {ferdigstillSakMutation, getSakBySaksnummerQueryKey, oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
+import {ferdigstillSakMutation, oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType, UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {NumericInput} from "~/components/NumericInput";
@@ -99,10 +99,10 @@ function EditSakPage() {
         })
         //TODO Validering
         ferdigStillSak.mutate({
-            path: {
-                saksnummer: saksnummer
+                path: {
+                    saksnummer: saksnummer
+                }
             }
-        }
         )
     }
 
