@@ -37,6 +37,12 @@ spring:
       key-store-password: ${KAFKA_CREDSTORE_PASSWORD}
       trust-store-location: ${KAFKA_TRUSTSTORE_PATH}
       trust-store-password: ${KAFKA_CREDSTORE_PASSWORD}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
 
 app:
   pdl:

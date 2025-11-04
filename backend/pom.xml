@@ -31,6 +31,11 @@
             <artifactId>tilgangsmaskin</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>helved</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Spring boot dependencies -->
         <dependency>

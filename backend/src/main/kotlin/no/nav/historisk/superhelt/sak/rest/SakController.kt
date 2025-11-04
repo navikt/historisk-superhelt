@@ -69,7 +69,7 @@ class SakController(
         //TODO lage jobb for sende brev, utbetale, lukke saker..
         sakService.changeStatus(saksnummer, SakStatus.FERDIG)
         sakChangelog.logChange(saksnummer, "Sak $saksnummer ferdigstilt")
-        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(it) }
+        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
         return ResponseEntity.ok().build()
     }
 

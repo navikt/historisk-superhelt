@@ -15,6 +15,7 @@
         <module>oppgave</module>
         <module>tilgangsmaskin</module>
         <module>pdl</module>
+        <module>helved</module>
     </modules>
 
     <dependencies>
