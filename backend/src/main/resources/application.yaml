@@ -28,6 +28,16 @@ spring:
   mvc:
     problemdetails:
       enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    security:
+      protocol: SSL
+    ssl:
+      key-store-location: ${KAFKA_KEYSTORE_PATH}
+      key-store-password: ${KAFKA_CREDSTORE_PASSWORD}
+      trust-store-location: ${KAFKA_TRUSTSTORE_PATH}
+      trust-store-password: ${KAFKA_CREDSTORE_PASSWORD}
+
 app:
   pdl:
     behandlingsnummer: B986

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.*
 class SakController(
     private val sakService: SakService,
     private val sakRepository: SakRepository,
-    private val sakChangelog: SakChangelog
+    private val sakChangelog: SakChangelog,
+    private val utbetalingService: UtbetalingService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -66,7 +68,8 @@ class SakController(
 
         //TODO lage jobb for sende brev, utbetale, lukke saker..
         sakService.changeStatus(saksnummer, SakStatus.FERDIG)
-        sakChangelog.logChange(saksnummer,"Sak $saksnummer ferdigstilt")
+        sakChangelog.logChange(saksnummer, "Sak $saksnummer ferdigstilt")
+        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(it) }
         return ResponseEntity.ok().build()
     }
 
@@ -80,7 +83,7 @@ class SakController(
             .validateCompleted()
         sakService.changeStatus(saksnummer, SakStatus.TIL_ATTESTERING)
         // håndtere saker mm
-        sakChangelog.logChange(saksnummer,"Sak $saksnummer sendt til totrinnskontroll")
+        sakChangelog.logChange(saksnummer, "Sak $saksnummer sendt til totrinnskontroll")
         return ResponseEntity.ok().build()
     }
 
@@ -94,7 +97,7 @@ class SakController(
 
         // Håntere saker mm
         sakService.changeStatus(saksnummer, SakStatus.UNDER_BEHANDLING)
-        sakChangelog.logChange(saksnummer,"Sak $saksnummer er gjenåpnet")
+        sakChangelog.logChange(saksnummer, "Sak $saksnummer er gjenåpnet")
         return ResponseEntity.ok().build()
     }
 

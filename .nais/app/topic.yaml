@@ -1,0 +1,16 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: superhelt-utbetaling
+  namespace: historisk
+  labels:
+    team: historisk
+spec:
+  pool: nav-{{env}}
+  acl:
+    - team: helved
+      application: abetal
+      access: read
+    - team: helved
+      application: peisschtappern
+      access: read
