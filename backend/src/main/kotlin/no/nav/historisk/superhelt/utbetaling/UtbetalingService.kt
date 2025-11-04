@@ -6,6 +6,7 @@ import no.nav.helved.UtbetalingMelding
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.Utbetaling
 import no.nav.historisk.superhelt.sak.db.UtbetalingJpaEntity
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -13,14 +14,18 @@ import java.time.LocalDate
 import java.util.UUID
 
 @Service
-class UtbetalingService(private val kafkaTemplate: KafkaTemplate<String, UtbetalingMelding>) {
+class UtbetalingService(
+    private val kafkaTemplate: KafkaTemplate<String, UtbetalingMelding>,
+     private  val properties: UtbetalingConfigProperties
+) {
+
 
     fun sendTilUtbetaling(sak: Sak) {
         val melding = UtbetalingMelding(
             id = UUID.randomUUID().toString(),
             sakId = sak.saksnummer.value,
             behandlingId = "behandlingId",
-            personident = "123456789012",
+            personident = sak.fnr.value,
             stønad = "stønad",
             vedtakstidspunkt = Instant.now(),
             periodetype = Periodetype.DAG,
@@ -35,9 +40,9 @@ class UtbetalingService(private val kafkaTemplate: KafkaTemplate<String, Utbetal
             saksbehandler = sak.saksbehandler,
             beslutter = sak.saksbehandler
         )
-        val key= UUID.randomUUID().toString()
+
         val result = kafkaTemplate.send(
-            "superhelt-utbetalinger", key,  melding)
+            properties.utbetalingTopic,   melding)
             .get()
         println("Melding sendt til topic superhelt-utbetalinger ${result}")
     }

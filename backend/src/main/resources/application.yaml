@@ -1,3 +1,10 @@
+app:
+  pdl:
+    behandlingsnummer: B986
+  utbetaling:
+    utbetaling-topic: superhelt.utbetaling.v0
+    status-topic: helved.status.v1
+
 spring:
   application:
     name: super
@@ -39,11 +46,19 @@ spring:
       trust-store-password: ${KAFKA_CREDSTORE_PASSWORD}
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: all
+        enable.idempotence: true
+        
     consumer:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
 
-app:
-  pdl:
-    behandlingsnummer: B986
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+

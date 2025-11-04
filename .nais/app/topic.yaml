@@ -1,7 +1,8 @@
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-  name: superhelt-utbetaling
+#  TODO sette rett navn på topic når det funker som det skal
+  name: superhelt.utbetaling.v0
   namespace: historisk
   labels:
     team: historisk
