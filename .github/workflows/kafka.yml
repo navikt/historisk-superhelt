@@ -10,6 +10,9 @@ on:
 
 jobs:
   create-kafka-topics-dev:
+    permissions:
+      contents: read
+      id-token: write
     name: Create or update Kafka topics in dev
     runs-on: ubuntu-latest
     steps:
