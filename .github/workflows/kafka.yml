@@ -2,22 +2,20 @@ name: Create or update Kafka topics
 
 on:
   push:
-#    branches:
-#      - main
+    #    branches:
+    #      - main
     paths:
-      - '.nais/topics.yml'
+      - '.nais/app/topics.yml'
       - '.github/workflows/kafka.yml'
 
 jobs:
-  deploy-kafka-topics-dev:
+  create-kafka-topics-dev:
     name: Create or update Kafka topics in dev
-    if: startsWith(github.ref, 'refs/heads/master')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          VAR: kafka-pool=nav-dev
-          RESOURCE: nais/topics.yml
+          RESOURCE: .nais/app/topics.yaml
+          VARS: .nais/dev.json
