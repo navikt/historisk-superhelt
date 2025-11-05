@@ -76,7 +76,7 @@ class SakService(private val sakRepository: SakRepository) {
         }
         sak.status = status
         sakRepository.save(sak)
-        logger.debug("Sak {} endret statsu til {}", saksnummer, status)
+        logger.debug("Sak {} endret status til {}", saksnummer, status)
     }
 
 

@@ -17,7 +17,7 @@ class SakValidator(private val sak: Sak) {
             SakStatus.TIL_ATTESTERING -> listOf(SakStatus.FERDIG)
             SakStatus.FERDIG -> listOf(SakStatus.UNDER_BEHANDLING)
         }
-        validate(newStatus !in validTransitions, "Ugyldig statusovergang fra) ${sak.status} til $newStatus")
+        validate(newStatus !in validTransitions, "Ugyldig statusovergang fra ${sak.status} til $newStatus")
 
         return this
     }

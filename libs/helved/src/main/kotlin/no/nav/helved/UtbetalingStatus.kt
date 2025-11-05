@@ -30,9 +30,10 @@ data class Linje(
     val klassekode: String
 )
 
-class StatusError(
+data class StatusError(
     val statusCode: Int,
     val msg: String,
-    val doc: String) {
+    val doc: String
+) {
 
 }

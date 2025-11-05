@@ -95,14 +95,13 @@ class SakController(
         SakValidator(sak)
             .validateStatusTransition(SakStatus.UNDER_BEHANDLING)
 
-        // Håntere saker mm
+        // Håndtere saker mm
         sakService.changeStatus(saksnummer, SakStatus.UNDER_BEHANDLING)
         sakChangelog.logChange(saksnummer, "Sak $saksnummer er gjenåpnet")
         return ResponseEntity.ok().build()
     }
 
 
-    // Gjenåpne sak
     // Henlegg
     // Avvis
 
