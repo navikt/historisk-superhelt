@@ -1,3 +1,10 @@
+app:
+  pdl:
+    behandlingsnummer: B986
+  utbetaling:
+    utbetaling-topic: historisk.utbetaling.test
+    status-topic: helved.status.v1
+
 spring:
   application:
     name: super
@@ -10,7 +17,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-#          audiences: ${AZURE_APP_CLIENT_ID}
+  #          audiences: ${AZURE_APP_CLIENT_ID}
   web:
     resources:
       static-locations:
@@ -28,6 +35,32 @@ spring:
   mvc:
     problemdetails:
       enabled: true
-app:
-  pdl:
-    behandlingsnummer: B986
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    security:
+      protocol: SSL
+    ssl:
+      trust-store-type: JKS
+      trust-store-location: file:${KAFKA_TRUSTSTORE_PATH}
+      trust-store-password: ${KAFKA_CREDSTORE_PASSWORD}
+      key-store-type: PKCS12
+      key-store-location: file:${KAFKA_KEYSTORE_PATH}
+      key-store-password: ${KAFKA_CREDSTORE_PASSWORD}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: all
+        enable.idempotence: true
+
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+

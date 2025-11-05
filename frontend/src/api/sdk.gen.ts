@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateSakData, CreateSakErrors, CreateSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses } from './types.gen';
+import type { CreateSakData, CreateSakErrors, CreateSakResponses, FerdigstillSakData, FerdigstillSakErrors, FerdigstillSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -48,6 +48,45 @@ export const oppdaterSak = <ThrowOnError extends boolean = false>(options: Optio
             'Content-Type': 'application/json',
             ...options.headers
         }
+    });
+};
+
+export const sendTilAttestering = <ThrowOnError extends boolean = false>(options: Options<SendTilAttesteringData, ThrowOnError>) => {
+    return (options.client ?? client).put<SendTilAttesteringResponses, SendTilAttesteringErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/sak/{saksnummer}/status/tilattestering',
+        ...options
+    });
+};
+
+export const gjenapneSak = <ThrowOnError extends boolean = false>(options: Options<GjenapneSakData, ThrowOnError>) => {
+    return (options.client ?? client).put<GjenapneSakResponses, GjenapneSakErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/sak/{saksnummer}/status/gjenapne',
+        ...options
+    });
+};
+
+export const ferdigstillSak = <ThrowOnError extends boolean = false>(options: Options<FerdigstillSakData, ThrowOnError>) => {
+    return (options.client ?? client).put<FerdigstillSakResponses, FerdigstillSakErrors, ThrowOnError>({
+        security: [
+            {
+                scheme: 'bearer',
+                type: 'http'
+            }
+        ],
+        url: '/api/sak/{saksnummer}/status/ferdigstill',
+        ...options
     });
 };
 

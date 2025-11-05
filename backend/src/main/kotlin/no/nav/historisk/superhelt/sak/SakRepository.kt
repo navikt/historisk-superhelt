@@ -23,7 +23,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
 
     @PreAuthorize("hasAuthority('READ')")
     @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
-    fun getSakEntityOrThrow(saksnummer: Saksnummer): SakJpaEntity {
+    internal fun getSakEntityOrThrow(saksnummer: Saksnummer): SakJpaEntity {
         return getSakEntity(saksnummer)
             ?: throw IkkeFunnetException("Sak med saksnummer $saksnummer ikke funnet")
     }

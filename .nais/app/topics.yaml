@@ -1,0 +1,20 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  #  TODO sette rett navn på topic når det funker som det skal
+  name: utbetaling.test
+  namespace: historisk
+  labels:
+    team: historisk
+spec:
+  pool: nav-{{env}}
+  acl:
+    - team: historisk
+      application: superhelt
+      access: write
+    - team: helved
+      application: abetal
+      access: read
+    - team: helved
+      application: peisschtappern
+      access: read

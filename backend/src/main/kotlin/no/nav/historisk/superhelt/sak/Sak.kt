@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 /** DTO */
 data class Sak(
-    val saksnummer: Saksnummer? = null,
+    val saksnummer: Saksnummer,
     val type: StonadsType,
     val fnr: Fnr,
     val tittel: String? = null,

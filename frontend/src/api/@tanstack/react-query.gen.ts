@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, oppdaterSak, type Options } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkStonadTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, OppdaterSakData, OppdaterSakError, OppdaterSakResponse } from '../types.gen';
+import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, oppdaterSak, type Options, sendTilAttestering } from '../sdk.gen';
+import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkStonadTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, GjenapneSakData, GjenapneSakError, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -65,6 +65,48 @@ export const oppdaterSakMutation = (options?: Partial<Options<OppdaterSakData>>)
     const mutationOptions: UseMutationOptions<OppdaterSakResponse, OppdaterSakError, Options<OppdaterSakData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await oppdaterSak({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const sendTilAttesteringMutation = (options?: Partial<Options<SendTilAttesteringData>>): UseMutationOptions<unknown, SendTilAttesteringError, Options<SendTilAttesteringData>> => {
+    const mutationOptions: UseMutationOptions<unknown, SendTilAttesteringError, Options<SendTilAttesteringData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await sendTilAttestering({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const gjenapneSakMutation = (options?: Partial<Options<GjenapneSakData>>): UseMutationOptions<unknown, GjenapneSakError, Options<GjenapneSakData>> => {
+    const mutationOptions: UseMutationOptions<unknown, GjenapneSakError, Options<GjenapneSakData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await gjenapneSak({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const ferdigstillSakMutation = (options?: Partial<Options<FerdigstillSakData>>): UseMutationOptions<unknown, FerdigstillSakError, Options<FerdigstillSakData>> => {
+    const mutationOptions: UseMutationOptions<unknown, FerdigstillSakError, Options<FerdigstillSakData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await ferdigstillSak({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

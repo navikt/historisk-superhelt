@@ -40,6 +40,8 @@ class SakJpaEntity(
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var forhandstilsagn: ForhandsTilsagnJpaEntity? = null,
 
+    var erheltferdigMedAlleting: Boolean = false,
+
 //    @CreatedDate
 //    var createdDate: Instant? = null,
 //
@@ -85,7 +87,7 @@ class SakJpaEntity(
 
     internal fun toDomain(): Sak {
         return Sak(
-            saksnummer = this.id?.let { Saksnummer(it) },
+            saksnummer = this.id?.let { Saksnummer(it) } ?: throw IllegalStateException("SakJpaEntity id kan ikke være null ved mapping til domain"),
             type = this.type,
             fnr = this.fnr,
             tittel = this.tittel,
