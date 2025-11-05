@@ -4,6 +4,7 @@ import no.nav.helved.Periode
 import no.nav.helved.Periodetype
 import no.nav.helved.UtbetalingMelding
 import no.nav.historisk.superhelt.sak.Sak
+import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -15,7 +16,10 @@ class UtbetalingService(
     private val kafkaTemplate: KafkaTemplate<String, UtbetalingMelding>,
     private val properties: UtbetalingConfigProperties
 ) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
+
+    private val utbetalingTopic = properties.utbetalingTopic
 
     fun sendTilUtbetaling(sak: Sak) {
         val melding = UtbetalingMelding(
@@ -38,11 +42,13 @@ class UtbetalingService(
             beslutter = sak.saksbehandler
         )
 
+        logger.debug("Sender til utbetaling {}", utbetalingTopic)
+        val utbetalingTopic = utbetalingTopic
         val result = kafkaTemplate.send(
-            properties.utbetalingTopic, melding
+            utbetalingTopic, melding
         )
             .get()
-        println("Melding sendt til topic superhelt-utbetalinger ${result}")
+        logger.info("Melding sendt til topic {}, {}", utbetalingTopic, result)
     }
 
 }
