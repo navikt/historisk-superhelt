@@ -2,8 +2,8 @@ name: Create or update Kafka topics
 
 on:
   push:
-    branches:
-      - main
+    #    branches:
+    #      - main
     paths:
       - '.nais/app/topics.yml'
       - '.github/workflows/kafka.yml'
