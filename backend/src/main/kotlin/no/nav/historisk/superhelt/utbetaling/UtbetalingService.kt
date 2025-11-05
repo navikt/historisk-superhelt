@@ -4,19 +4,16 @@ import no.nav.helved.Periode
 import no.nav.helved.Periodetype
 import no.nav.helved.UtbetalingMelding
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.Utbetaling
-import no.nav.historisk.superhelt.sak.db.UtbetalingJpaEntity
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @Service
 class UtbetalingService(
     private val kafkaTemplate: KafkaTemplate<String, UtbetalingMelding>,
-     private  val properties: UtbetalingConfigProperties
+    private val properties: UtbetalingConfigProperties
 ) {
 
 
@@ -42,7 +39,8 @@ class UtbetalingService(
         )
 
         val result = kafkaTemplate.send(
-            properties.utbetalingTopic,   melding)
+            properties.utbetalingTopic, melding
+        )
             .get()
         println("Melding sendt til topic superhelt-utbetalinger ${result}")
     }

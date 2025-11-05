@@ -2,7 +2,7 @@ app:
   pdl:
     behandlingsnummer: B986
   utbetaling:
-    utbetaling-topic: superhelt.utbetaling.v0
+    utbetaling-topic: superhelt.utbetaling.test
     status-topic: helved.status.v1
 
 spring:
