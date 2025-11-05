@@ -1,7 +1,7 @@
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-#  TODO sette rett navn på topic når det funker som det skal
+  #  TODO sette rett navn på topic når det funker som det skal
   name: superhelt.utbetaling.test
   namespace: historisk
   labels:
@@ -9,6 +9,9 @@ metadata:
 spec:
   pool: nav-{{env}}
   acl:
+    - team: historisk
+      application: superhelt
+      access: readwrite
     - team: helved
       application: abetal
       access: read
