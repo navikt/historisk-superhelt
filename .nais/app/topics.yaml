@@ -11,7 +11,7 @@ spec:
   acl:
     - team: historisk
       application: superhelt
-      access: write
+      access: readwrite
     - team: helved
       application: abetal
       access: read

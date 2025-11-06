@@ -2,12 +2,14 @@ app:
   pdl:
     behandlingsnummer: B986
   utbetaling:
+    #    TODO Sette rett navn på topic
     utbetaling-topic: historisk.utbetaling.test
-    status-topic: helved.status.v1
+    status-topic: historisk.utbetaling.test
+#    status-topic: helved.status.v1
 
 spring:
   application:
-    name: super
+    name: superhelt
   http:
     client:
       connect-timeout: 1s
@@ -53,9 +55,9 @@ spring:
         enable.idempotence: true
 
     consumer:
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
+      group-id: ${spring.application.name}
+
+
 
 
 management:

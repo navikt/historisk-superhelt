@@ -13,3 +13,5 @@ local.env
 
 
 /frontend/node/
+
+.DS_Store
