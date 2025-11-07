@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 class SakService(private val sakRepository: SakRepository) {
@@ -26,7 +27,7 @@ class SakService(private val sakRepository: SakRepository) {
                 fnr = req.fnr,
                 tittel = req.tittel,
                 status = SakStatus.UNDER_BEHANDLING,
-                soknadsDato = req.soknadsDato,
+                soknadsDato = req.soknadsDato ?: LocalDate.now(),
                 saksbehandler = getCurrentNavIdent() ?: "ukjent",
             )
         val saved = sakRepository.save(sak)

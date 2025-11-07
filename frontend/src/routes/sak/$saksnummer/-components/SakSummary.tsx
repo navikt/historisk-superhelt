@@ -32,14 +32,25 @@ export default function SakSummary({sak}: SakSummaryProps) {
                     <FormSummary.Value>{sak.status} / {sak.vedtak}</FormSummary.Value>
                 </FormSummary.Answer>
 
-                <FormSummary.Answer>
-                    <FormSummary.Label>Utbetaling</FormSummary.Label>
-                    <FormSummary.Value>{sak.utbetalingsType}</FormSummary.Value>
+                {sak.utbetaling && <FormSummary.Answer>
+                    <FormSummary.Label>Utbetaling til bruker</FormSummary.Label>
                     <FormSummary.Value>{sak.utbetaling?.belop} kr</FormSummary.Value>
+                    <FormSummary.Value>{sak.utbetaling.utbetalingStatus.toLowerCase()} - {sak.utbetaling.utbetalingTidspunkt}</FormSummary.Value>
                 </FormSummary.Answer>
+                }
+                {sak.forhandstilsagn && <FormSummary.Answer>
+                    <FormSummary.Label>Forhåndstilsagn</FormSummary.Label>
+                    <FormSummary.Value>Det er gitt forhåndstilsagn til å sende inn faktura</FormSummary.Value>
+                    <FormSummary.Value>{sak.forhandstilsagn?.belop} kr</FormSummary.Value>
+                </FormSummary.Answer>
+                }
                 <FormSummary.Answer>
                     <FormSummary.Label>Begrunnelse</FormSummary.Label>
                     <FormSummary.Value>{sak.begrunnelse || 'Ingen'}</FormSummary.Value>
+                </FormSummary.Answer>
+                <FormSummary.Answer>
+                    <FormSummary.Label>Saksbehandler</FormSummary.Label>
+                    <FormSummary.Value>{sak.saksbehandler}</FormSummary.Value>
                 </FormSummary.Answer>
             </FormSummary.Answers>
         </FormSummary>

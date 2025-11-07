@@ -47,7 +47,7 @@ export type Sak = {
 export type Utbetaling = {
     belop: number;
     uuid: string;
-    utbetalingStatus: 'UTKAST' | 'SENDT_TIL_UTBETALING' | 'UTBETALT' | 'FEILET';
+    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
 };
 
