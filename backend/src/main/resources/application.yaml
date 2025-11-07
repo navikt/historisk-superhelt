@@ -50,15 +50,11 @@ spring:
       key-store-password: ${KAFKA_CREDSTORE_PASSWORD}
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        acks: all
-        enable.idempotence: true
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      transaction-id-prefix: tx-
 
     consumer:
       group-id: ${spring.application.name}
-
-
-
 
 management:
   endpoints:

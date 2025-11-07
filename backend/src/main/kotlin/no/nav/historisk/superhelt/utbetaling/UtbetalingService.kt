@@ -4,7 +4,6 @@ import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UtbetalingService(
@@ -14,17 +13,18 @@ class UtbetalingService(
 
 
     @PreAuthorize("hasAuthority('WRITE')")
-    @Transactional
     fun sendTilUtbetaling(sak: Sak) {
         val utbetaling = sak.utbetaling
         utbetaling?.let { utbetaling ->
-            if (utbetaling.utbetalingStatus != UtbetalingStatus.UTKAST) {
-                throw IllegalStateException("Utbetaling med uuid ${utbetaling.uuid} er ikke i status Utkast og kan derfor ikke sendes til utbetaling")
+
+            if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST)) {
+                throw IllegalStateException("Utbetaling med uuid ${utbetaling.uuid} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke sendes til utbetaling")
             }
-            utbetalingRepository.oppdaterUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
-            // Synkron for nå kan vurdere å gjøre asynkront senere
+            // Setter først status i egen transaksjon
+            utbetalingRepository.setUtbetalingStatusKlar(utbetaling.uuid)
+            //Ny transaksjon for å sende til kafka og oppdatere databasen med ny status
             utbetalingKafkaProducer.sendTilUtbetaling(sak, utbetaling)
-            utbetalingRepository.oppdaterUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.SENDT_TIL_UTBETALING)
+
         }
     }
 

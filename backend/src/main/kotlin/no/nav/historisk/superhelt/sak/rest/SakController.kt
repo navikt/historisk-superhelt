@@ -70,14 +70,13 @@ class SakController(
     fun ferdigstill(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
         val sak = sakRepository.getSakOrThrow(saksnummer)
         SakValidator(sak)
-            //            .validateStatusTransition(SakStatus.FERDIG)
+            .validateStatusTransition(SakStatus.FERDIG)
             .validateCompleted()
         //            .validateSaksbehandlerErIkkeAttestant()
 
-        // TODO lage jobb for sende brev, utbetale, lukke saker..
+        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
         sakService.changeStatus(saksnummer, SakStatus.FERDIG)
         sakChangelog.logChange(saksnummer, "Sak $saksnummer ferdigstilt")
-        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
         return ResponseEntity.ok().build()
     }
 

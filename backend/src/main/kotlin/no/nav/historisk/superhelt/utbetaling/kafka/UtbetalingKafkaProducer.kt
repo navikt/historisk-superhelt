@@ -5,29 +5,34 @@ import no.nav.helved.Periodetype
 import no.nav.helved.UtbetalingMelding
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
+import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.LocalDate
 
 @Service
 class UtbetalingKafkaProducer(
     private val kafkaTemplate: KafkaTemplate<String, UtbetalingMelding>,
+    private val utbetalingRepository: UtbetalingRepository,
     properties: UtbetalingConfigProperties,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val utbetalingTopic = properties.utbetalingTopic
 
+    @Transactional
     fun sendTilUtbetaling(sak: Sak, utbetaling: Utbetaling) {
+        val id = utbetaling.uuid.toString()
         val melding =
             UtbetalingMelding(
-                id = utbetaling.uuid.toString(),
+                id = id,
                 sakId = sak.saksnummer.value,
-                behandlingId = utbetaling.uuid.toString(),
+                behandlingId = id,
                 personident = sak.fnr.value,
-                stønad = "stønad",
+                stønad = "KLASSEKODE",
                 vedtakstidspunkt = Instant.now(),
                 periodetype = Periodetype.DAG,
                 perioder =
@@ -42,9 +47,10 @@ class UtbetalingKafkaProducer(
                 beslutter = sak.saksbehandler,
             )
 
-        logger.debug("Sender til utbetaling {}", utbetalingTopic)
-        val result = kafkaTemplate.send(utbetalingTopic, melding).get()
+        logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, id)
+        val result = kafkaTemplate.send(utbetalingTopic, id, melding).get()
         //TODO håndter feilsituasjoner
+        utbetalingRepository.setUtbetalingStatusSendt(utbetaling.uuid)
 
     }
 }
