@@ -7,10 +7,10 @@ enum class UtbetalingStatus {
     /** Klar til å sendes, men enda ikke sendt */
     KLAR_TIL_UTBETALING,
 
-    /** Sendt til utbetaling */
+    /** Sendt til utbetaling hos helved */
     SENDT_TIL_UTBETALING,
 
-    /** Ferdig utbetalt */
+    /** Ferdig utbetalt og kvittert */
     UTBETALT,
-    FEILET
+//    FEILET
 }

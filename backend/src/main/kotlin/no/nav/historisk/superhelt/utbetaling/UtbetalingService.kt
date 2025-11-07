@@ -17,7 +17,7 @@ class UtbetalingService(
         val utbetaling = sak.utbetaling
         utbetaling?.let { utbetaling ->
 
-            if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST)) {
+            if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
                 throw IllegalStateException("Utbetaling med uuid ${utbetaling.uuid} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke sendes til utbetaling")
             }
             // Setter først status i egen transaksjon
