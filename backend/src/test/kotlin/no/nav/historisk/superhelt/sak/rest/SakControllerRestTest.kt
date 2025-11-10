@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
-import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.Saksnummer
-import no.nav.historisk.superhelt.sak.StonadsType
+import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
@@ -54,7 +51,7 @@ class SakControllerRestTest() {
         )
     }
 
-    fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum): Sak {
+    fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum()): Sak {
         return withMockedUser {
             repository.save(sak)
         }
@@ -249,9 +246,9 @@ class SakControllerRestTest() {
         @Test
         fun `finn saker for person ok`() {
             val fnr = Fnr("12345678901")
-            lagreNySak(SakTestData.sakMinumum(fnr))
-            lagreNySak(SakTestData.sakMinumum(fnr))
-            lagreNySak(SakTestData.sakMinumum(Fnr("98765432101")))
+            lagreNySak(SakTestData.sakEntityMinimum(fnr))
+            lagreNySak(SakTestData.sakEntityMinimum(fnr))
+            lagreNySak(SakTestData.sakEntityMinimum(Fnr("98765432101")))
 
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.OK)
@@ -268,7 +265,7 @@ class SakControllerRestTest() {
         @Test
         fun `finn saker for person uten lesetilgang skal gi feil`() {
             val fnr = Fnr("22345678901")
-            lagreNySak(SakTestData.sakMinumum(fnr))
+            lagreNySak(SakTestData.sakEntityMinimum(fnr))
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.FORBIDDEN)
 
@@ -277,7 +274,7 @@ class SakControllerRestTest() {
         @Test
         fun `finn saker for person uten rettighet for person skal gi feil`() {
             val fnr = Fnr("32345678901")
-            lagreNySak(SakTestData.sakMinumum(fnr))
+            lagreNySak(SakTestData.sakEntityMinimum(fnr))
             whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr)) doReturn TilgangsmaskinClient.TilgangResult(
                 harTilgang = false,
                 TilgangsmaskinTestData.problemDetailResponse,

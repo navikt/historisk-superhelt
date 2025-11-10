@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, oppdaterSak, type Options, sendTilAttestering } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkStonadTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, GjenapneSakData, GjenapneSakError, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
+import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, oppdaterSak, oppdaterUtbetaling, type Options, sendTilAttestering } from '../sdk.gen';
+import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkStonadTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, GjenapneSakData, GjenapneSakError, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -65,6 +65,20 @@ export const oppdaterSakMutation = (options?: Partial<Options<OppdaterSakData>>)
     const mutationOptions: UseMutationOptions<OppdaterSakResponse, OppdaterSakError, Options<OppdaterSakData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await oppdaterSak({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const oppdaterUtbetalingMutation = (options?: Partial<Options<OppdaterUtbetalingData>>): UseMutationOptions<OppdaterUtbetalingResponse, OppdaterUtbetalingError, Options<OppdaterUtbetalingData>> => {
+    const mutationOptions: UseMutationOptions<OppdaterUtbetalingResponse, OppdaterUtbetalingError, Options<OppdaterUtbetalingData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await oppdaterUtbetaling({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

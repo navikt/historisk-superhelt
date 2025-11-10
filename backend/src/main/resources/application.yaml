@@ -2,12 +2,14 @@ app:
   pdl:
     behandlingsnummer: B986
   utbetaling:
+    #    TODO Sette rett navn på topic
     utbetaling-topic: historisk.utbetaling.test
-    status-topic: helved.status.v1
+    status-topic: historisk.utbetaling.test
+#    status-topic: helved.status.v1
 
 spring:
   application:
-    name: super
+    name: superhelt
   http:
     client:
       connect-timeout: 1s
@@ -48,15 +50,11 @@ spring:
       key-store-password: ${KAFKA_CREDSTORE_PASSWORD}
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        acks: all
-        enable.idempotence: true
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      transaction-id-prefix: tx-
 
     consumer:
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-
+      group-id: ${spring.application.name}
 
 management:
   endpoints:

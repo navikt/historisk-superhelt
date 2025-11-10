@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 
 interface NumericInputProps extends Omit<TextFieldProps, "value" | "onChange"> {
     value: number | undefined;
-    onChange: (value: number| null) => void;
+    onChange: (value: number | undefined) => void;
 }
 
 export function NumericInput(props: NumericInputProps) {
@@ -21,9 +21,9 @@ export function NumericInput(props: NumericInputProps) {
     const changeStringValue = (inputValue: string) => {
         const trimmedInput = inputValue.trim();
         setStringValue(trimmedInput)
-        if (trimmedInput ==="") {
+        if (trimmedInput === "") {
             setError(undefined);
-            onChange(null)
+            onChange(undefined)
         }
         const numericValue = Number(trimmedInput);
         if (!isNaN(numericValue)) {
@@ -38,7 +38,7 @@ export function NumericInput(props: NumericInputProps) {
     return <TextField
         {...props}
         inputMode="numeric"
-        value={stringValue}
+        value={stringValue ?? ""}
         onChange={e => changeStringValue(e.target.value)}
         error={error}
     />

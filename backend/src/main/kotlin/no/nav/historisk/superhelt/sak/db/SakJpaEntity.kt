@@ -2,58 +2,30 @@ package no.nav.historisk.superhelt.sak.db
 
 import jakarta.persistence.*
 import no.nav.historisk.superhelt.sak.*
-import no.nav.historisk.superhelt.sak.Forhandstilsagn
-import no.nav.historisk.superhelt.sak.Utbetaling
+import no.nav.historisk.superhelt.utbetaling.db.ForhandTilsagnJpaEntity
+import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
 import no.nav.person.Fnr
 import org.hibernate.Hibernate
+import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "sak")
-//@EntityListeners(AuditingEntityListener::class)
 class SakJpaEntity(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
-
-    @Enumerated(EnumType.STRING)
-    var type: StonadsType,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
+    @Enumerated(EnumType.STRING) var type: StonadsType,
     var fnr: Fnr,
     var tittel: String? = null,
-
-    @Enumerated(EnumType.STRING)
-    var status: SakStatus= SakStatus.UNDER_BEHANDLING,
-
-    @Enumerated(EnumType.STRING)
-    var vedtak: VedtakType? = null,
-
+    @Enumerated(EnumType.STRING) var status: SakStatus = SakStatus.UNDER_BEHANDLING,
+    @Enumerated(EnumType.STRING) var vedtak: VedtakType? = null,
     var begrunnelse: String? = null,
-
     var saksbehandler: String,
-    var opprettet: LocalDateTime = LocalDateTime.now(),
+    var opprettet: Instant = Instant.now(),
     var soknadsDato: LocalDate? = null,
-
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var utbetaling: UtbetalingJpaEntity? = null,
-
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
-    var forhandstilsagn: ForhandsTilsagnJpaEntity? = null,
-
-    var erheltferdigMedAlleting: Boolean = false,
-
-//    @CreatedDate
-//    var createdDate: Instant? = null,
-//
-//    @CreatedBy
-//    var createdBy: String? = null,
-//
-//    @LastModifiedDate
-//    var lastModifiedDate: Instant? = null,
-//
-//    @LastModifiedBy
-//    var lastModifiedBy: String? = null
-
+    var forhandstilsagn: ForhandTilsagnJpaEntity? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -65,29 +37,25 @@ class SakJpaEntity(
 
     override fun hashCode(): Int = javaClass.hashCode()
 
-    fun setOrUpdateUtbetaling(utbetalingDomain: Utbetaling?) {
-        if (utbetalingDomain == null) {
-            this.utbetaling = null
-            return
-        }
-        val entity = this.utbetaling ?: UtbetalingJpaEntity(sak = this, belop = 0.0)
-        entity.belop = utbetalingDomain.belop
+    fun setOrUpdateUtbetaling(belop: Int) {
+        val entity = this.utbetaling ?: UtbetalingJpaEntity(sak = this, belop = 0)
+        entity.belop = belop
         this.utbetaling = entity
     }
 
-    fun setOrUpdateForhandsTilsagn(forhandsTilsagnDomain: Forhandstilsagn?) {
-        if (forhandsTilsagnDomain == null) {
-            this.forhandstilsagn = null
-            return
-        }
-        val entity = this.forhandstilsagn ?: ForhandsTilsagnJpaEntity(sak = this)
+    fun setOrUpdateForhandsTilsagn(belop: Int) {
+        val entity = this.forhandstilsagn ?: ForhandTilsagnJpaEntity(sak = this, belop = 0)
+        entity.belop = belop
         this.forhandstilsagn = entity
     }
 
-
     internal fun toDomain(): Sak {
         return Sak(
-            saksnummer = this.id?.let { Saksnummer(it) } ?: throw IllegalStateException("SakJpaEntity id kan ikke være null ved mapping til domain"),
+            saksnummer =
+                this.id?.let { Saksnummer(it) }
+                    ?: throw IllegalStateException(
+                        "SakJpaEntity id kan ikke være null ved mapping til domain"
+                    ),
             type = this.type,
             fnr = this.fnr,
             tittel = this.tittel,
@@ -95,14 +63,10 @@ class SakJpaEntity(
             status = this.status,
             vedtak = this.vedtak,
             saksbehandler = this.saksbehandler,
-            opprettetDato = this.opprettet.toLocalDate(),
+            opprettetDato = this.opprettet,
             soknadsDato = this.soknadsDato,
             utbetaling = this.utbetaling?.toDomain(),
             forhandstilsagn = this.forhandstilsagn?.toDomain(),
         )
     }
-
-
 }
-
-

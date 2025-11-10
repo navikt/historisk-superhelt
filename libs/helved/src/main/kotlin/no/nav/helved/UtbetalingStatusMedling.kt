@@ -3,7 +3,7 @@ package no.nav.helved
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
 
-data class UtbetalingStatus(
+data class UtbetalingStatusMelding(
     val status: StatusType,
     val detaljer: Detaljer?,
     val error: StatusError?

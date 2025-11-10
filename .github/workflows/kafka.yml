@@ -5,7 +5,7 @@ on:
     #    branches:
     #      - main
     paths:
-      - '.nais/app/topics.yml'
+      - '.nais/app/topics.yaml'
       - '.github/workflows/kafka.yml'
 
 jobs:

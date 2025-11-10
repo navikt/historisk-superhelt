@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
-import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,7 +15,6 @@ class SakController(
     private val sakService: SakService,
     private val sakRepository: SakRepository,
     private val sakChangelog: SakChangelog,
-    private val utbetalingService: UtbetalingService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -29,6 +27,7 @@ class SakController(
         return ResponseEntity.ok(saker)
     }
 
+    //TODO Fjnerne denne og opprette fra oppgave
     @Operation(operationId = "createSak", summary = "opprett en ny sak")
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
@@ -41,9 +40,19 @@ class SakController(
     @PutMapping("{saksnummer}")
     fun oppdaterSak(
         @PathVariable saksnummer: Saksnummer,
-        @RequestBody @Valid req: SakUpdateRequestDto
+        @RequestBody @Valid req: SakUpdateRequestDto,
     ): ResponseEntity<Sak> {
         val updated = sakService.updateSak(saksnummer, req)
+        return ResponseEntity.ok(updated)
+    }
+
+    @Operation(operationId = "oppdaterUtbetaling")
+    @PutMapping("{saksnummer}/utbetaling")
+    fun oppdaterUtbetaling(
+        @PathVariable saksnummer: Saksnummer,
+        @RequestBody @Valid req: UtbetalingRequestDto,
+    ): ResponseEntity<Sak> {
+        val updated = sakService.updateUtbetaling(saksnummer, req)
         return ResponseEntity.ok(updated)
     }
 
@@ -54,56 +63,6 @@ class SakController(
             return ResponseEntity.ok(it)
         }
     }
-
-
-    @Operation(operationId = "ferdigstillSak")
-    @PutMapping("{saksnummer}/status/ferdigstill")
-    fun ferdigstill(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
-        SakValidator(sak)
-//            .validateStatusTransition(SakStatus.FERDIG)
-            .validateCompleted()
-//            .validateSaksbehandlerErIkkeAttestant()
-
-
-        //TODO lage jobb for sende brev, utbetale, lukke saker..
-        sakService.changeStatus(saksnummer, SakStatus.FERDIG)
-        sakChangelog.logChange(saksnummer, "Sak $saksnummer ferdigstilt")
-        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
-        return ResponseEntity.ok().build()
-    }
-
-    @Operation(operationId = "sendTilAttestering")
-    @PutMapping("{saksnummer}/status/tilattestering")
-    fun tilAttestering(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        // ikke endre om status allerede er er tilattestering
-        val sak = sakRepository.getSakOrThrow(saksnummer)
-        SakValidator(sak)
-            .validateStatusTransition(SakStatus.TIL_ATTESTERING)
-            .validateCompleted()
-        sakService.changeStatus(saksnummer, SakStatus.TIL_ATTESTERING)
-        // håndtere saker mm
-        sakChangelog.logChange(saksnummer, "Sak $saksnummer sendt til totrinnskontroll")
-        return ResponseEntity.ok().build()
-    }
-
-    @Operation(operationId = "gjenapneSak")
-    @PutMapping("{saksnummer}/status/gjenapne")
-    fun gjenapne(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        //TODO årsak
-        val sak = sakRepository.getSakOrThrow(saksnummer)
-        SakValidator(sak)
-            .validateStatusTransition(SakStatus.UNDER_BEHANDLING)
-
-        // Håndtere saker mm
-        sakService.changeStatus(saksnummer, SakStatus.UNDER_BEHANDLING)
-        sakChangelog.logChange(saksnummer, "Sak $saksnummer er gjenåpnet")
-        return ResponseEntity.ok().build()
-    }
-
-
-    // Henlegg
-    // Avvis
 
 
 }

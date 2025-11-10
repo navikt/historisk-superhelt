@@ -12,30 +12,30 @@ import org.springframework.stereotype.Repository
 @Repository
 class SakRepository(private val jpaRepository: SakJpaRepository) {
 
-    @PreAuthorize("hasAuthority('WRITE')")
-    fun save(sak: SakJpaEntity): Sak {
-        return jpaRepository.save(sak).toDomain()
-    }
+  @PreAuthorize("hasAuthority('WRITE')")
+  internal fun save(sak: SakJpaEntity): Sak {
+    return jpaRepository.save(sak).toDomain()
+  }
 
-    private fun getSakEntity(saksnummer: Saksnummer): SakJpaEntity? {
-        return jpaRepository.findByIdOrNull(saksnummer.id)
-    }
+  private fun getSakEntity(saksnummer: Saksnummer): SakJpaEntity? {
+    return jpaRepository.findByIdOrNull(saksnummer.id)
+  }
 
-    @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
-    internal fun getSakEntityOrThrow(saksnummer: Saksnummer): SakJpaEntity {
-        return getSakEntity(saksnummer)
-            ?: throw IkkeFunnetException("Sak med saksnummer $saksnummer ikke funnet")
-    }
-    @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
-    fun getSakOrThrow(saksnummer: Saksnummer): Sak {
-        return getSakEntityOrThrow(saksnummer).toDomain()
-    }
+  @PreAuthorize("hasAuthority('READ')")
+  @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
+  internal fun getSakEntityOrThrow(saksnummer: Saksnummer): SakJpaEntity {
+    return getSakEntity(saksnummer)
+      ?: throw IkkeFunnetException("Sak med saksnummer $saksnummer ikke funnet")
+  }
 
-    @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
-    fun findSaker(fnr: Fnr): List<Sak> {
-        return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
-    }
+  @PreAuthorize("hasAuthority('READ')")
+  @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
+  fun getSakOrThrow(saksnummer: Saksnummer): Sak {
+    return getSakEntityOrThrow(saksnummer).toDomain()
+  }
+
+  @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
+  fun findSaker(fnr: Fnr): List<Sak> {
+    return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
+  }
 }
-

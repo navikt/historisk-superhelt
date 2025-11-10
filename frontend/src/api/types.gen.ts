@@ -15,23 +15,16 @@ export type ProblemDetail = {
     };
 };
 
-export type Forhandstilsagn = {
-    dummy: boolean;
-};
-
 export type SakUpdateRequestDto = {
     type?: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     tittel?: string;
     begrunnelse?: string;
     soknadsDato?: string;
     vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
-    utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    utbetaling?: Utbetaling;
-    forhandstilsagn?: Forhandstilsagn;
 };
 
-export type Utbetaling = {
-    belop: number;
+export type Forhandstilsagn = {
+    belop?: number;
 };
 
 export type Sak = {
@@ -47,8 +40,20 @@ export type Sak = {
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+};
+
+export type Utbetaling = {
+    belop: number;
+    uuid: string;
+    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT' | 'FEILET';
+    utbetalingTidspunkt?: string;
+};
+
+export type UtbetalingRequestDto = {
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    belop?: number;
 };
 
 export type SakCreateRequestDto = {
@@ -145,6 +150,37 @@ export type OppdaterSakResponses = {
 };
 
 export type OppdaterSakResponse = OppdaterSakResponses[keyof OppdaterSakResponses];
+
+export type OppdaterUtbetalingData = {
+    body: UtbetalingRequestDto;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/utbetaling';
+};
+
+export type OppdaterUtbetalingErrors = {
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type OppdaterUtbetalingError = OppdaterUtbetalingErrors[keyof OppdaterUtbetalingErrors];
+
+export type OppdaterUtbetalingResponses = {
+    /**
+     * OK
+     */
+    200: Sak;
+};
+
+export type OppdaterUtbetalingResponse = OppdaterUtbetalingResponses[keyof OppdaterUtbetalingResponses];
 
 export type SendTilAttesteringData = {
     body?: never;

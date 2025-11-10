@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component
 
 /** Lager en Kafka-topic for utbetalinger i superhelt-systemet. for test only */
 @Component
-class KafkaUtbetalingTopic(utbetalingConfigProperties: UtbetalingConfigProperties) :
-  NewTopic(utbetalingConfigProperties.utbetalingTopic, 1, 1.toShort()) {
+class KafkaUtbetalingStatusTopic(utbetalingConfigProperties: UtbetalingConfigProperties) :
+  NewTopic(utbetalingConfigProperties.statusTopic, 1, 1.toShort()) {
   private val logger = LoggerFactory.getLogger(this::class.java)
 
   init {
-    logger.info("Kafka topic initiated " + utbetalingConfigProperties.utbetalingTopic)
+    logger.info("Kafka topic initiated " + utbetalingConfigProperties.statusTopic)
   }
 }

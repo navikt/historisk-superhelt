@@ -26,11 +26,11 @@ export default function SakStatus({sak}: Props) {
 
     switch (sak.status) {
         case "UNDER_BEHANDLING":
-            return <Tag variant="success" size="small">Under behandling</Tag>
+            return <Tag variant="warning" size="small">Under behandling</Tag>
         case "TIL_ATTESTERING":
             return <Tag variant="info" size="small">Til attestering</Tag>
         case "FERDIG":
-            return <Tag variant="neutral" size="small">{ferdigText(sak.vedtak)}</Tag>
+            return <Tag variant="success" size="small">{ferdigText(sak.vedtak)}</Tag>
     }
 
 }
