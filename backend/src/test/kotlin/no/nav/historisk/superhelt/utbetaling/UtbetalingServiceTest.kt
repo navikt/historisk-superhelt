@@ -158,7 +158,7 @@ class UtbetalingServiceTest {
     }
 
     @Test
-    fun `skal sende når staus er Klar til utbetaling`() {
+    fun `skal sende når status er Klar til utbetaling`() {
         mockKafkaSuccess()
         val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.KLAR_TIL_UTBETALING)
         val utbetalingUuid = sak.utbetaling!!.uuid

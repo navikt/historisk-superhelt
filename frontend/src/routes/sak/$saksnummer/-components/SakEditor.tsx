@@ -46,7 +46,7 @@ export default function SakEditor({sak}: Props) {
     const debouncedSak = useDebounce(updateSakData, 2000)
 
 
-    const {datepickerProps, inputProps, selectedDay} = useDatepicker({
+    const {datepickerProps, inputProps} = useDatepicker({
         toDate: new Date(),
         onDateChange: (day) => patchSak({soknadsDato: dateTilIsoDato(day)}),
         defaultSelected: sak.soknadsDato ? new Date(sak.soknadsDato) : new Date()

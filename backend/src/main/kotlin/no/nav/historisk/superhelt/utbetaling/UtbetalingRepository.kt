@@ -22,7 +22,7 @@ class UtbetalingRepository(private val utbetalingJpaRepository: UtbetalingJpaRep
         utbetalingJpaRepository.findByUuid(uuid)?.let {
             it.utbetalingStatus = status
             if (tidspunkt != null) {
-                it.utbetalingTidspunkt = Instant.now()
+                it.utbetalingTidspunkt = tidspunkt
             }
             utbetalingJpaRepository.save(it)
         }
