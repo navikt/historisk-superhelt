@@ -51,7 +51,7 @@ class SakControllerRestTest() {
         )
     }
 
-    fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum): Sak {
+    fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum()): Sak {
         return withMockedUser {
             repository.save(sak)
         }

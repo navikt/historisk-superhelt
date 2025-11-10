@@ -8,10 +8,8 @@ import java.util.concurrent.TimeUnit
 
 object SakTestData {
 
-    val faker: Faker = Faker()
-
-    val sakEntityMinimum = sakEntityMinimum(Fnr(faker.numerify("###########")))
-
+    private val faker: Faker = Faker()
+    
     fun sakUtenUtbetaling() = Sak(
         saksnummer = Saksnummer(faker.numerify("Mock-#####")),
         type = faker.options().option(StonadsType::class.java),
@@ -29,7 +27,7 @@ object SakTestData {
         forhandstilsagn = null
     )
 
-    fun sakEntityMinimum(fnr: Fnr): SakJpaEntity {
+    fun sakEntityMinimum(fnr: Fnr = Fnr(faker.numerify("###########"))): SakJpaEntity {
         return SakJpaEntity(
             type = faker.options().option(StonadsType::class.java),
             fnr = fnr,

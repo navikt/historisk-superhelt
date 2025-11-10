@@ -42,7 +42,7 @@ class UtbetalingServiceTest {
         belop: Int = 5000
     ): Sak {
         return withMockedUser {
-            val sakEntity = SakTestData.sakEntityMinimum
+            val sakEntity = SakTestData.sakEntityMinimum()
             val utbetalingEntity = UtbetalingJpaEntity(
                 sak = sakEntity,
                 belop = belop,
