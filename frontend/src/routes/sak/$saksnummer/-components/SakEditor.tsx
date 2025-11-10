@@ -1,6 +1,5 @@
 import {
     Box,
-    Button,
     DatePicker,
     Heading,
     HStack,
@@ -16,7 +15,7 @@ import {useEffect, useState} from "react";
 import {Sak, SakUpdateRequestDto} from "@api";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
-import {ferdigstillSakMutation, oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
+import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import useDebounce from "~/components/useDebounce";
@@ -34,10 +33,7 @@ export default function SakEditor({sak}: Props) {
 
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
-    })
-    const ferdigStillSak = useMutation({
-        ...ferdigstillSakMutation()
-        , onSettled: () => {
+        , onSuccess: () => {
             queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
         }
     })
@@ -75,20 +71,6 @@ export default function SakEditor({sak}: Props) {
 
     const error = oppdaterSak?.error?.detail
 
-
-    async function fatteVedtak() {
-        await oppdaterSak.mutateAsync({
-            path: {saksnummer: saksnummer}
-            , body: updateSakData
-        })
-        //TODO Validering
-        ferdigStillSak.mutate({
-                path: {
-                    saksnummer: saksnummer
-                }
-            }
-        )
-    }
 
     return (
         <Box padding="6" borderWidth="1" borderRadius="medium">
@@ -148,17 +130,6 @@ export default function SakEditor({sak}: Props) {
                         {error}
                     </Box>
                 )}
-                <HStack gap="4">
-                    <Button
-                        variant="primary"
-                        disabled={!updateSakData.vedtak}
-                        onClick={fatteVedtak}
-                        loading={ferdigStillSak?.status === 'pending' || oppdaterSak?.status === 'pending'}
-                    >
-                        Fatte vedtak
-                    </Button>
-
-                </HStack>
 
             </VStack>
 
