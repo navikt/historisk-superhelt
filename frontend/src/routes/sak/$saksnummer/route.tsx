@@ -1,12 +1,12 @@
-import {createFileRoute, Outlet} from '@tanstack/react-router'
+import {createFileRoute, Outlet, useNavigate} from '@tanstack/react-router'
 import {Box, HGrid, HStack, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
-import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
-import SakMeny from "~/routes/sak/$saksnummer/-components/SakMeny";
+import {DocPencilIcon, FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
+import SakActionButton from "~/routes/sak/$saksnummer/-components/SakActionButton";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -20,17 +20,40 @@ export const Route = createFileRoute('/sak/$saksnummer')({
 
 function SakLayout() {
     const {saksnummer} = Route.useParams()
-    const {data} = useSuspenseQuery(getSakOptions(saksnummer))
+    const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
+    const navigate = useNavigate();
 
     return (
         <>
-            <PersonHeader maskertPersonId={data.maskertPersonIdent}/>
+            <PersonHeader maskertPersonId={sak.maskertPersonIdent}/>
             <HGrid gap="space-24" columns={{lg: 1, xl: 2}} marginBlock={"space-16"}>
                 <VStack gap="space-16">
                     <HStack justify="space-between">
-                        <SakHeading sak={data}/>
-                        <SakMeny/>
+                        <Tabs defaultValue="soknad" onChange={(value) => navigate({to: value})}>
+                            <Tabs.List>
+                                <Tabs.Tab
+                                    value="soknad"
+                                    label="Opplysninger"
+                                    icon={<TasklistIcon aria-hidden/>}
+                                />
+                                <Tabs.Tab
+                                    value="brev"
+                                    label="Vedtaksbrev"
+                                    icon={<DocPencilIcon aria-hidden/>}
+                                />
+
+                            </Tabs.List>
+                            <Tabs.Panel value="soknad">
+                                <span/>
+                            </Tabs.Panel>
+                            <Tabs.Panel value="brev">
+                                <span/>
+                            </Tabs.Panel>
+                        </Tabs>
+                        <SakActionButton sak={sak}/>
+
                     </HStack>
+                    <SakHeading sak={sak}/>
                     <Outlet/>
                 </VStack>
                 <VStack gap="space-16">
