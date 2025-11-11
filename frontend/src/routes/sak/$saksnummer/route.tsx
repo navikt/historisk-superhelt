@@ -46,7 +46,7 @@ function SakLayout() {
                             <Tabs.Panel value="soknad">
                                 <span/>
                             </Tabs.Panel>
-                            <Tabs.Panel value="inbox">
+                            <Tabs.Panel value="brev">
                                 <span/>
                             </Tabs.Panel>
                         </Tabs>
