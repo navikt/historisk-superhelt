@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
+import no.nav.historisk.superhelt.infrastruktur.*
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.rest.UtbetalingsType
@@ -34,4 +35,38 @@ data class Sak(
 
     val maskertPersonIdent: MaskertPersonIdent
         get() = fnr.toMaskertPersonIdent()
+
+    val rettigheter: List<SakRettighet>
+        get() {
+            val rettigheter = mutableListOf<SakRettighet>()
+            val permissions = getCurrentUserPermissions()
+            val roller = getCurrentUserRoles()
+            val navIdent = getCurrentNavIdent()
+
+            if (permissions.contains(Permission.READ)) {
+                rettigheter.add(SakRettighet.LES)
+            }
+            when (status) {
+                SakStatus.UNDER_BEHANDLING -> {
+                    if (roller.contains(Role.SAKSBEHANDLER)) {
+                        rettigheter.add(SakRettighet.SAKSBEHANDLE)
+                    }
+                }
+
+                SakStatus.TIL_ATTESTERING -> {
+                    if (roller.contains(Role.ATTESTANT) && navIdent != saksbehandler) {
+                        rettigheter.add(SakRettighet.ATTESTERE)
+                    }
+                }
+
+                SakStatus.FERDIG -> {
+                    if (roller.contains(Role.SAKSBEHANDLER)) {
+                        rettigheter.add(SakRettighet.GJENOPNE)
+                    }
+                }
+            }
+
+            return rettigheter.toList()
+        }
+
 }
