@@ -9,8 +9,24 @@ data class UtbetalingStatusMelding(
     val error: StatusError?
 )
 
+/** Status fra hel ved.
+ *
+ * Opptrer som en slags tilstandsmaskin
+ *
+ * MOTTATT -> HOS_OPPDRAG -> OK / FEILET
+ * */
 enum class StatusType {
-    OK, FEILET, MOTTATT, HOS_OPPDRAG
+    /** 3 endelig Ferdig*/
+    OK,
+
+    /** endelig Valideringsfeil, ett eller annet  kan oppstå når som helst i prosessen*/
+    FEILET,
+
+    /** 1 hos hel ved*/
+    MOTTATT,
+
+    /** 2 Sendt til oppdrag*/
+    HOS_OPPDRAG
 }
 
 data class Detaljer(
