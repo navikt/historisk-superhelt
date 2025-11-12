@@ -30,7 +30,8 @@ enum class UtbetalingStatus(private val level: Int) {
         return this == UTBETALT || this == FEILET
     }
 
-    fun isAfter(other: UtbetalingStatus): Boolean {
-        return this.level > other.level
+    /** Sjekker om denne statusen er "eldre" enn den andre, og dermed bør oppdateres */
+    fun shouldBeUpdatedTo(other: UtbetalingStatus): Boolean {
+        return this.level < other.level
     }
 }

@@ -47,7 +47,7 @@ class UtbetalingService(
             return
         }
 
-        if (!currentStatus.isAfter(newStatus)) {
+        if (!currentStatus.shouldBeUpdatedTo(newStatus)) {
             logger.debug(
                 "Utbetaling {} er allerede i samme eller nyere status {}, {}. Ignoring update",
                 utbetalingsId,

@@ -1,8 +1,24 @@
+app:
+  helved:
+    utbetaling-topic: historisk.utbetaling.test
+    status-topic: helved.status.v1
+
 spring:
   application:
     name: historisk-mock-server
+  kafka:
+    bootstrap-servers: localhost:9092
+    security:
+      protocol: PLAINTEXT
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: ${spring.application.name}
+
 server:
   port: 9080
+
 
 springdoc:
   swaggerUi:

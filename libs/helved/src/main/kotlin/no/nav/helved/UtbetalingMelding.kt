@@ -34,6 +34,5 @@ enum class KlasseKode {
 }
 
 enum class Periodetype {
-    DAG,
     EN_GANG
 }
