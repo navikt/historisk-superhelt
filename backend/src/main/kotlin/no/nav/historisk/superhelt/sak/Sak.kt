@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
+import com.fasterxml.jackson.annotation.JsonGetter
+import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.historisk.superhelt.infrastruktur.*
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
@@ -25,6 +27,7 @@ data class Sak(
     val utbetaling: Utbetaling? = null,
     val forhandstilsagn: Forhandstilsagn? = null,
 ) {
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val utbetalingsType: UtbetalingsType
         get() =
             when {
@@ -33,40 +36,46 @@ data class Sak(
                 else -> UtbetalingsType.INGEN
             }
 
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent
         get() = fnr.toMaskertPersonIdent()
 
-    val rettigheter: List<SakRettighet>
-        get() {
-            val rettigheter = mutableListOf<SakRettighet>()
-            val permissions = getCurrentUserPermissions()
-            val roller = getCurrentUserRoles()
-            val navIdent = getCurrentNavIdent()
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonGetter
+    fun rettigheter(): List<SakRettighet> {
+        val rettigheter = mutableListOf<SakRettighet>()
+        val permissions = getCurrentUserPermissions()
+        val roller = getCurrentUserRoles()
+        val navIdent = getCurrentNavIdent()
 
-            if (permissions.contains(Permission.READ)) {
-                rettigheter.add(SakRettighet.LES)
-            }
-            when (status) {
-                SakStatus.UNDER_BEHANDLING -> {
-                    if (roller.contains(Role.SAKSBEHANDLER)) {
-                        rettigheter.add(SakRettighet.SAKSBEHANDLE)
-                    }
-                }
-
-                SakStatus.TIL_ATTESTERING -> {
-                    if (roller.contains(Role.ATTESTANT) && navIdent != saksbehandler) {
-                        rettigheter.add(SakRettighet.ATTESTERE)
-                    }
-                }
-
-                SakStatus.FERDIG -> {
-                    if (roller.contains(Role.SAKSBEHANDLER)) {
-                        rettigheter.add(SakRettighet.GJENOPNE)
-                    }
-                }
-            }
-
-            return rettigheter.toList()
+        if (permissions.contains(Permission.READ)) {
+            rettigheter.add(SakRettighet.LES)
         }
+        when (status) {
+            SakStatus.UNDER_BEHANDLING -> {
+                if (roller.contains(Role.SAKSBEHANDLER)) {
+                    rettigheter.add(SakRettighet.SAKSBEHANDLE)
+                }
+            }
+
+            SakStatus.TIL_ATTESTERING -> {
+                if (roller.contains(Role.ATTESTANT) && navIdent != saksbehandler) {
+                    rettigheter.add(SakRettighet.ATTESTERE)
+                }
+            }
+
+            SakStatus.FERDIG -> {
+                if (roller.contains(Role.SAKSBEHANDLER)) {
+                    rettigheter.add(SakRettighet.GJENAPNE)
+                }
+            }
+        }
+
+        return rettigheter.toList()
+    }
+
+    fun hasRettighet(rettighet: SakRettighet): Boolean {
+        return rettigheter().contains(rettighet)
+    }
 
 }

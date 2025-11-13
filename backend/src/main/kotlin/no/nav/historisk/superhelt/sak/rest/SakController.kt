@@ -27,7 +27,7 @@ class SakController(
         return ResponseEntity.ok(saker)
     }
 
-    //TODO Fjnerne denne og opprette fra oppgave
+    //TODO Fjerne denne og opprette fra oppgave
     @Operation(operationId = "createSak", summary = "opprett en ny sak")
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
@@ -42,6 +42,9 @@ class SakController(
         @PathVariable saksnummer: Saksnummer,
         @RequestBody @Valid req: SakUpdateRequestDto,
     ): ResponseEntity<Sak> {
+        val sak = sakRepository.getSakOrThrow(saksnummer)
+        SakValidator(sak)
+            .validateRettighet(SakRettighet.SAKSBEHANDLE)
         val updated = sakService.updateSak(saksnummer, req)
         return ResponseEntity.ok(updated)
     }
@@ -52,6 +55,9 @@ class SakController(
         @PathVariable saksnummer: Saksnummer,
         @RequestBody @Valid req: UtbetalingRequestDto,
     ): ResponseEntity<Sak> {
+        val sak = sakRepository.getSakOrThrow(saksnummer)
+        SakValidator(sak)
+            .validateRettighet(SakRettighet.SAKSBEHANDLE)
         val updated = sakService.updateUtbetaling(saksnummer, req)
         return ResponseEntity.ok(updated)
     }
@@ -59,9 +65,11 @@ class SakController(
     @Operation(operationId = "getSakBySaksnummer", summary = "Hent opp en sak")
     @GetMapping("{saksnummer}")
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<Sak> {
-        sakRepository.getSakOrThrow(saksnummer).let {
-            return ResponseEntity.ok(it)
-        }
+        val sak = sakRepository.getSakOrThrow(saksnummer)
+        SakValidator(sak)
+            .validateRettighet(SakRettighet.LES)
+        return ResponseEntity.ok(sak)
+
     }
 
 

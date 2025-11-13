@@ -5,5 +5,5 @@ enum class SakRettighet {
     ATTESTERE,
     SAKSBEHANDLE,
     FERDIGSTILLE,
-    GJENOPNE,
+    GJENAPNE,
 }

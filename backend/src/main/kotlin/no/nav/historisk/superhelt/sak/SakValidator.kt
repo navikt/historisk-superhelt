@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 
 class SakValidator(private val sak: Sak) {
 
@@ -23,7 +22,7 @@ class SakValidator(private val sak: Sak) {
     }
 
     fun validateCompleted(): SakValidator {
-        with(sak){
+        with(sak) {
             validate(vedtak == null, "Vedtak må være satt før sak kan ferdigstilles")
             validate(tittel == null, "Tittel må være satt før sak kan ferdigstilles")
             //TODO flere valideringer? Evt bruke noen annotasjoner på Sak-klassen
@@ -32,9 +31,8 @@ class SakValidator(private val sak: Sak) {
         return this
     }
 
-    fun validateSaksbehandlerErIkkeAttestant(): SakValidator {
-        val user = getCurrentNavIdent()
-        validate(sak.saksbehandler == user, "Saksbehandler kan ikke attestere egen sak")
+    fun validateRettighet(rettighet: SakRettighet): SakValidator {
+        validate(!sak.hasRettighet(rettighet), "Manglende rettighet i sak: $rettighet")
         return this
     }
 

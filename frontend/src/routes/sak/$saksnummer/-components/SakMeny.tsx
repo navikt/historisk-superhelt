@@ -1,6 +1,7 @@
 import {ActionMenu, Button} from "@navikt/ds-react";
 import {ChevronDownIcon} from "@navikt/aksel-icons";
 import {Sak} from "@api";
+import {RettighetType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 
 interface SakMenyProps {
@@ -8,9 +9,12 @@ interface SakMenyProps {
 }
 
 export default function SakMeny({sak}: SakMenyProps) {
-    const {status} = sak
-    const underBehandling = status === "UNDER_BEHANDLING"
-    const ferdig = !underBehandling
+
+    const hasRettighet = (rettighet: RettighetType) => {
+        return sak.rettigheter.includes(rettighet)
+    }
+    const notSaksbehandler = !hasRettighet("SAKSBEHANDLE")
+
     return <ActionMenu>
         <ActionMenu.Trigger>
             <Button
@@ -24,13 +28,16 @@ export default function SakMeny({sak}: SakMenyProps) {
         </ActionMenu.Trigger>
         <ActionMenu.Content>
             <ActionMenu.Group label={`Sak ${sak.saksnummer}`}>
-                <ActionMenu.Item onSelect={console.info} disabled={ferdig}>Avvis sak</ActionMenu.Item>
-                <ActionMenu.Item onSelect={console.info} disabled={ferdig}>Henlegg sak</ActionMenu.Item>
-                <ActionMenu.Item onSelect={console.info} disabled={status !== "FERDIG"}>Gjenåpne sak</ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Avvis sak</ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Henlegg sak</ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info} disabled={!hasRettighet("GJENAPNE")}>Gjenåpne
+                    sak</ActionMenu.Item>
             </ActionMenu.Group>
             <ActionMenu.Group label={"Brev"}>
-                <ActionMenu.Item onSelect={console.info} disabled={ferdig}>Send informasjonsbrev</ActionMenu.Item>
-                <ActionMenu.Item onSelect={console.info} disabled={ferdig}>Send innhentingsbrev</ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Send
+                    informasjonsbrev</ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Send
+                    innhentingsbrev</ActionMenu.Item>
             </ActionMenu.Group>
         </ActionMenu.Content>
     </ActionMenu>

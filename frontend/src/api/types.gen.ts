@@ -40,6 +40,7 @@ export type Sak = {
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+    rettigheter: Array<'LES' | 'ATTESTERE' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
     maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
@@ -47,7 +48,7 @@ export type Sak = {
 export type Utbetaling = {
     belop: number;
     uuid: string;
-    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT' | 'FEILET';
+    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT';
     utbetalingTidspunkt?: string;
 };
 
