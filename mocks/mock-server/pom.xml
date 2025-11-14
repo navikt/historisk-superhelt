@@ -28,6 +28,11 @@
         </dependency>
         <dependency>
             <groupId>no.nav.historisk</groupId>
+            <artifactId>helved</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.historisk</groupId>
             <artifactId>pdl</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -40,9 +45,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.5.0</version>
+            <version>${springdoc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>

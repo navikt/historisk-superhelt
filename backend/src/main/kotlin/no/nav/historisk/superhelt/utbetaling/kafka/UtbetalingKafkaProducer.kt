@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.utbetaling.kafka
 
+import no.nav.helved.KlasseKode
 import no.nav.helved.Periode
 import no.nav.helved.Periodetype
 import no.nav.helved.UtbetalingMelding
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneOffset
 
 @Service
 class UtbetalingKafkaProducer(
@@ -26,24 +28,28 @@ class UtbetalingKafkaProducer(
     @Transactional
     fun sendTilUtbetaling(sak: Sak, utbetaling: Utbetaling) {
         val id = utbetaling.uuid.toString()
+        // TODO vedtakstidspunkt fra sak/utbetaling når vi har det
+        val vedtaksTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now()
         val melding =
             UtbetalingMelding(
                 id = id,
                 sakId = sak.saksnummer.value,
                 behandlingId = id,
                 personident = sak.fnr.value,
-                stønad = "KLASSEKODE",
-                vedtakstidspunkt = Instant.now(),
-                periodetype = Periodetype.DAG,
+                stønad = KlasseKode.HJRIM,
+
+                vedtakstidspunkt = vedtaksTidspunkt,
+                periodetype = Periodetype.EN_GANG,
                 perioder =
                     listOf(
                         Periode(
-                            fom = LocalDate.now(),
-                            tom = LocalDate.now(),
+                            fom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
+                            tom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
                             beløp = utbetaling.belop
                         )
                     ),
                 saksbehandler = sak.saksbehandler,
+                //TODO bruke beslutter når vi har det i sak
                 beslutter = sak.saksbehandler,
             )
 

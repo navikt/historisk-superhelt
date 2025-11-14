@@ -9,9 +9,13 @@ import java.util.*
 @Repository
 class UtbetalingRepository(private val utbetalingJpaRepository: UtbetalingJpaRepository) {
 
+    fun getUtbetalingByUuid(uuid: UUID): Utbetaling? {
+        return utbetalingJpaRepository.findByUuid(uuid)?.toDomain()
+    }
+
     @Transactional
-    internal fun setUtbetalingStatusKlar(uuid: UUID) {
-        updateUtbetalingStatus(uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
+    internal fun setUtbetalingStatus(uuid: UUID, status: UtbetalingStatus) {
+        updateUtbetalingStatus(uuid, status)
     }
 
     internal fun setUtbetalingStatusSendt(uuid: UUID) {
@@ -27,4 +31,5 @@ class UtbetalingRepository(private val utbetalingJpaRepository: UtbetalingJpaRep
             utbetalingJpaRepository.save(it)
         }
     }
+
 }
