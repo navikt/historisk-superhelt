@@ -5,13 +5,16 @@ import no.nav.helved.StatusType
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.scheduling.TaskScheduler
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 
 @Service
 class MockUtbetalingKafkaConsumer(
     private val statusKafkaProducer: MockUtbetalingStatusKafkaProducer,
     private val objectMapper: ObjectMapper,
+    private val taskScheduler: TaskScheduler
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -25,16 +28,16 @@ class MockUtbetalingKafkaConsumer(
         logger.info("Mottatt melding på topic: ${record.topic()} med key: $key og value: ${record.value()}")
 
         statusKafkaProducer.sendStatusMessage(key, StatusType.MOTTATT)
-        logger.debug("Sendt MOTTATT status for utbetaling: $key")
 
-        Thread.sleep(2000)
-        statusKafkaProducer.sendStatusMessage(key, StatusType.HOS_OPPDRAG)
-        logger.debug("Sendt HOS_OPPDRAG status for utbetaling: $key")
+        taskScheduler.schedule(
+            { statusKafkaProducer.sendStatusMessage(key, StatusType.HOS_OPPDRAG) },
+            Instant.now().plusSeconds(2)
+        )
 
-        Thread.sleep(10_000)
-        statusKafkaProducer.sendStatusMessage(key, StatusType.OK)
-        logger.debug("Sendt OK status for utbetaling: $key")
+        taskScheduler.schedule(
+            { statusKafkaProducer.sendStatusMessage(key, StatusType.OK) },
+            Instant.now().plusSeconds(30)
+        )
     }
-
 
 }

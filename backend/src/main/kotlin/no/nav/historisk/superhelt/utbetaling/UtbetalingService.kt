@@ -13,7 +13,7 @@ class UtbetalingService(
     private val utbetalingKafkaProducer: UtbetalingKafkaProducer
 ) {
 
-    private final val logger = LoggerFactory.getLogger(javaClass)
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun sendTilUtbetaling(sak: Sak) {

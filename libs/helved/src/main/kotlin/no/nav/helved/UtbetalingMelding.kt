@@ -6,11 +6,11 @@ import java.time.LocalDate
 
 // key i kafka er key på tilbakemedlinger
 data class UtbetalingMelding(
-    val id: String, // unik id for utbetalingmelding, brukes som transaksjonsid hos hel ved
+    val id: String, // unik id for utbetalingmelding, brukes som transaksjonsid hos helved
     val sakId: String,
     val behandlingId: String, // alla journalpost
     val personident: String,
-    val stønad: KlasseKode, // klassekode enum koordiereres med oppdrag /hel ved
+    val stønad: KlasseKode, // klassekode enum koordineres med oppdrag /helved
 
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     val vedtakstidspunkt: Instant,
@@ -20,7 +20,7 @@ data class UtbetalingMelding(
     val beslutter: String
 )
 
-// Samme dag som det
+// Samme dag som det utbetales
 data class Periode(
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val fom: LocalDate,
