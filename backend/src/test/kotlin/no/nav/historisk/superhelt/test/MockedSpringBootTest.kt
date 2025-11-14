@@ -7,6 +7,6 @@ import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("junit")
 @SpringBootTest
-@EmbeddedKafka
+@EmbeddedKafka(kraft = true, topics = ["\${app.utbetaling.status-topic}", "\${app.utbetaling.utbetaling-topic}"])
 @Import(ExternalMockTestConfig::class)
 annotation class MockedSpringBootTest()

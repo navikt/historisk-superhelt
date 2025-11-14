@@ -23,6 +23,7 @@ function SakLayout() {
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
     const navigate = useNavigate();
 
+
     return (
         <>
             <PersonHeader maskertPersonId={sak.maskertPersonIdent}/>

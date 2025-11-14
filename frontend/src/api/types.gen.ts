@@ -40,14 +40,15 @@ export type Sak = {
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    maskertPersonIdent: string;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
+    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type Utbetaling = {
     belop: number;
     uuid: string;
-    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT' | 'FEILET';
+    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT';
     utbetalingTidspunkt?: string;
 };
 
@@ -87,6 +88,21 @@ export type StonadsTypeDto = {
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     navn: string;
     beskrivelse?: string;
+};
+
+export type SakWritable = {
+    saksnummer: string;
+    type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
+    fnr: string;
+    tittel?: string;
+    soknadsDato?: string;
+    begrunnelse?: string;
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    opprettetDato: string;
+    saksbehandler: string;
+    utbetaling?: Utbetaling;
+    forhandstilsagn?: Forhandstilsagn;
 };
 
 export type GetSakBySaksnummerData = {

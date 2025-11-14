@@ -1,5 +1,5 @@
-import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Search, Spacer, Link} from "@navikt/ds-react";
-import { Link as RouterLink, useNavigate} from "@tanstack/react-router";
+import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
+import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
 import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
@@ -9,7 +9,7 @@ import {findPersonByFnr as findPerson} from "@api";
 export function Header() {
     const [search, setSearch] = useState<string>();
     const [searchError, setSearchError] = useState<string>();
-    const navigate= useNavigate()
+    const navigate = useNavigate()
 
     // const {  data: username}  = useQuery({ queryKey: ['user'], queryFn: fetchUser })
     const {data: user} = useQuery({
@@ -26,10 +26,10 @@ export function Header() {
                 body: {fnr: search!}
             }
         )
-        if(error){
-            setSearchError("Noe gikk galt "+ error)
+        if (error) {
+            setSearchError("Noe gikk galt " + error)
         }
-        await navigate({to:"/person/$personid", params:{ personid: data?.maskertPersonident!}})
+        await navigate({to: "/person/$personid", params: {personid: data?.maskertPersonident!}})
         setSearch("")
         setSearchError(undefined)
 
@@ -37,7 +37,8 @@ export function Header() {
 
     return <InternalHeader>
         <InternalHeader.Title as="h1">
-            <Link as={RouterLink} to={"/"} underline={false} variant={"neutral"}><img src="/logo.svg" height="35rem" alt={""}/>Superhelt</Link>
+            <Link as={RouterLink} to={"/"} underline={false} variant={"neutral"}><img src="/logo.svg" height="35rem"
+                                                                                      alt={""}/>Superhelt</Link>
         </InternalHeader.Title>
         <HStack
             as="form"
@@ -71,11 +72,11 @@ export function Header() {
                     <BodyShort as="dt" size="small">
                         {user?.name}
                     </BodyShort>
-                    <Detail as="dd">123123</Detail>
+                    <Detail as="dd">Roller: {user?.roles}</Detail>
                 </dl>
                 <Dropdown.Menu.Divider/>
                 <Dropdown.Menu.List>
-                    <Dropdown.Menu.List.Item>
+                    <Dropdown.Menu.List.Item as="a" href="/oauth2/logout">
                         Logg ut <Spacer/> <LeaveIcon aria-hidden fontSize="1.5rem"/>
                     </Dropdown.Menu.List.Item>
                 </Dropdown.Menu.List>

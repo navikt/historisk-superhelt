@@ -27,8 +27,8 @@ class SakActionController(
         val sak = sakRepository.getSakOrThrow(saksnummer)
         SakValidator(sak)
             .validateStatusTransition(SakStatus.FERDIG)
+            .validateRettighet(SakRettighet.FERDIGSTILLE)
             .validateCompleted()
-        //            .validateSaksbehandlerErIkkeAttestant()
 
         sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
         sakService.changeStatus(saksnummer, SakStatus.FERDIG)
@@ -39,9 +39,10 @@ class SakActionController(
     @Operation(operationId = "sendTilAttestering")
     @PutMapping("status/tilattestering")
     fun tilAttestering(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        // ikke endre om status allerede er er tilattestering
         val sak = sakRepository.getSakOrThrow(saksnummer)
-        SakValidator(sak).validateStatusTransition(SakStatus.TIL_ATTESTERING).validateCompleted()
+        SakValidator(sak).validateStatusTransition(SakStatus.TIL_ATTESTERING)
+            .validateCompleted()
+            .validateRettighet(SakRettighet.SAKSBEHANDLE)
         sakService.changeStatus(saksnummer, SakStatus.TIL_ATTESTERING)
         // håndtere saker mm
         sakChangelog.logChange(saksnummer, "Sak $saksnummer sendt til totrinnskontroll")
@@ -51,9 +52,11 @@ class SakActionController(
     @Operation(operationId = "gjenapneSak")
     @PutMapping("status/gjenapne")
     fun gjenapne(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        // TODO årsak
+        // TODO årsak mm
         val sak = sakRepository.getSakOrThrow(saksnummer)
-        SakValidator(sak).validateStatusTransition(SakStatus.UNDER_BEHANDLING)
+        SakValidator(sak)
+            .validateStatusTransition(SakStatus.UNDER_BEHANDLING)
+            .validateRettighet(SakRettighet.GJENAPNE)
 
         // Håndtere saker mm
         sakService.changeStatus(saksnummer, SakStatus.UNDER_BEHANDLING)

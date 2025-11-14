@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties(GruppeConfigProperties::class)
 class GruppeRoleConfig {
     private val logger = LoggerFactory.getLogger(javaClass)
+
     @Bean
     fun gruppeRoleMapping(props: GruppeConfigProperties): Map<String, Role> {
         val gruppeRoller = mapOf(
@@ -25,13 +26,12 @@ class GruppeRoleConfig {
 enum class Permission {
     READ,
     WRITE,
-    DELETE,
 }
 
 enum class Role(private vararg val _permissions: Permission) {
     LES(Permission.READ),
     SAKSBEHANDLER(Permission.READ, Permission.WRITE),
-    ATTESTANT(Permission.READ);
+    ATTESTANT(Permission.READ), ;
 
     val permissions: List<Permission>
         get() = _permissions.toList()
@@ -43,4 +43,4 @@ class GruppeConfigProperties(
     val saksbehandler: String,
     val attestant: String,
 
-) {}
+    ) {}
