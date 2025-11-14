@@ -14,6 +14,14 @@ fun getCurrentUserRoles(): List<Role> {
         ?.map { Role.valueOf(it) } ?: emptyList()
 }
 
+fun hasRole(role: Role): Boolean {
+    return getCurrentUserRoles().contains(role)
+}
+
+fun hasPermission(permission: Permission): Boolean {
+    return getCurrentUserPermissions().contains(permission)
+}
+
 private val permissionStringValues = Permission.entries.map { it.name }
 
 fun getCurrentUserPermissions(): List<Permission> {

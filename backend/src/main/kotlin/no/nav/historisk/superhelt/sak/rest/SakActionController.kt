@@ -42,7 +42,7 @@ class SakActionController(
         val sak = sakRepository.getSakOrThrow(saksnummer)
         SakValidator(sak).validateStatusTransition(SakStatus.TIL_ATTESTERING)
             .validateCompleted()
-            .validateRettighet(SakRettighet.ATTESTERE)
+            .validateRettighet(SakRettighet.SAKSBEHANDLE)
         sakService.changeStatus(saksnummer, SakStatus.TIL_ATTESTERING)
         // håndtere saker mm
         sakChangelog.logChange(saksnummer, "Sak $saksnummer sendt til totrinnskontroll")
