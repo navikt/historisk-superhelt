@@ -11,7 +11,7 @@ fun getCurrentUserRoles(): List<Role> {
     return authentication?.authorities
         ?.filter { it.authority.startsWith(rolePrefix) }
         ?.map { it.authority.removePrefix(rolePrefix) }
-        ?.map { Role.valueOf(it) } ?: emptyList()
+        ?.mapNotNull { Role.valueOf(it) } ?: emptyList()
 }
 
 fun hasRole(role: Role): Boolean {

@@ -43,17 +43,19 @@ class SakRettigheterTest {
         @Test
         fun `får LES og SAKSBEHANDLE når sak er under behandling`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
-                status = SakStatus.UNDER_BEHANDLING,
-                saksbehandler = "annen-saksbehandler"
+                status = SakStatus.UNDER_BEHANDLING
             )
-            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES, SakRettighet.SAKSBEHANDLE)
+            assertThat(sak.rettigheter).containsExactlyInAnyOrder(
+                SakRettighet.LES,
+                SakRettighet.SAKSBEHANDLE,
+                SakRettighet.FERDIGSTILLE
+            )
         }
 
         @Test
         fun `får kun LES når sak er til attestering`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
-                status = SakStatus.TIL_ATTESTERING,
-                saksbehandler = "annen-saksbehandler"
+                status = SakStatus.TIL_ATTESTERING
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }
@@ -61,8 +63,7 @@ class SakRettigheterTest {
         @Test
         fun `får LES og GJENAPNE når sak er ferdig`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
-                status = SakStatus.FERDIG,
-                saksbehandler = "annen-saksbehandler"
+                status = SakStatus.FERDIG
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES, SakRettighet.GJENAPNE)
         }
@@ -82,7 +83,7 @@ class SakRettigheterTest {
         }
 
         @Test
-        fun `får FERDIGSTILL når sak er til attestering og attestant er ikke saksbehandler`() {
+        fun `får FERDIGSTILLE når sak er til attestering og attestant er ikke saksbehandler`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.TIL_ATTESTERING,
                 saksbehandler = "saks-1"

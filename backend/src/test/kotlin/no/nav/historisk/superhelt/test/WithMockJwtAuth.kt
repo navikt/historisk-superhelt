@@ -38,9 +38,9 @@ annotation class WithMockJwtAuth(
                 .claims { it.putAll(claimsMap) }
                 .build()
 
-            val roleAuthoroties = annotation.roles.map { SimpleGrantedAuthority("ROLE_${it.name}") }
+            val roleAuthorities = annotation.roles.map { SimpleGrantedAuthority("ROLE_${it.name}") }
             val permissionAuthorities = annotation.permissions.map { SimpleGrantedAuthority(it.name) }
-            val allAuthorities = roleAuthoroties + permissionAuthorities
+            val allAuthorities = roleAuthorities + permissionAuthorities
             val authentication = JwtAuthenticationToken(jwt, allAuthorities, navIdent)
 
             context.authentication = authentication
