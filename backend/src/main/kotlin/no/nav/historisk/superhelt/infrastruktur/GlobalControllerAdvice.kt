@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.*
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authorization.AuthorizationDeniedException
+import org.springframework.web.ErrorResponseException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -27,6 +28,15 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
             title = ex.javaClass.simpleName
         }
         return super.handleExceptionInternal(ex, problemDetail, headers, HttpStatus.BAD_REQUEST, request)
+    }
+
+    override fun handleErrorResponseException(
+        ex: ErrorResponseException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest): ResponseEntity<in Any>? {
+        log.info("Error: {} returning:  {}", ex.javaClass.simpleName, ex.message)
+        return super.handleErrorResponseException(ex, headers, status, request)
     }
 
 

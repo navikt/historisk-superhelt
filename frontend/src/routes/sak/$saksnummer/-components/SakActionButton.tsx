@@ -32,7 +32,7 @@ export default function SakActionButton({sak}: Props) {
 
     return <Button
         variant="primary"
-        disabled={sak.status !== "UNDER_BEHANDLING"}
+        disabled={!sak.rettigheter.includes("FERDIGSTILLE")}
         onClick={fatteVedtak}
         loading={ferdigStillSak?.status === 'pending'}
     >

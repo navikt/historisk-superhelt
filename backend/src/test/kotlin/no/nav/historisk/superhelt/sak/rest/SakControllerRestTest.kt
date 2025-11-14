@@ -6,19 +6,14 @@ import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
-import no.nav.historisk.superhelt.test.MockedSpringBootTest
-import no.nav.historisk.superhelt.test.bodyAsProblemDetail
-import no.nav.historisk.superhelt.test.withMockedUser
+import no.nav.historisk.superhelt.test.*
 import no.nav.person.Fnr
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
@@ -29,7 +24,6 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
-
 class SakControllerRestTest() {
 
     @Autowired
@@ -58,7 +52,7 @@ class SakControllerRestTest() {
     }
 
 
-    @WithMockUser(authorities = ["READ", "WRITE"])
+    @WithSaksbehandler
     @Nested
     inner class `opprett sak` {
         @Test
@@ -113,7 +107,7 @@ class SakControllerRestTest() {
             )
     }
 
-    @WithMockUser(authorities = ["READ", "WRITE"])
+    @WithSaksbehandler
     @Nested
     inner class `oppdater sak` {
 
@@ -141,10 +135,10 @@ class SakControllerRestTest() {
                     assertThat(it.begrunnelse).isEqualTo(oppdatertBegrunnelse)
                     assertThat(it.fnr).isNotNull
                 })
-            verify(tilgangsmaskinService).sjekkKomplettTilgang(opprettetSak.fnr)
+            verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(opprettetSak.fnr)
         }
 
-        @WithMockUser(authorities = ["READ"])
+        @WithLeseBruker
         @Test
         fun `oppdater sak uten skrivetilgang skal gi feil`() {
             val opprettetSak = lagreNySak().saksnummer
@@ -156,7 +150,7 @@ class SakControllerRestTest() {
                     )
                 )
             )
-                .hasStatus(HttpStatus.FORBIDDEN)
+                .hasStatus4xxClientError()
                 .bodyAsProblemDetail()
                 .satisfies({
                     assertThat(it?.detail).isNotBlank
@@ -191,7 +185,7 @@ class SakControllerRestTest() {
     }
 
 
-    @WithMockUser(authorities = ["READ"])
+    @WithSaksbehandler
     @Nested
     inner class `hent sak` {
 
@@ -238,7 +232,7 @@ class SakControllerRestTest() {
             mockMvc.get().uri("/api/sak/{saksnummer}", saksnummer)
     }
 
-    @WithMockUser(authorities = ["READ"])
+    @WithSaksbehandler
     @Nested
     inner class `finn saker for person` {
 

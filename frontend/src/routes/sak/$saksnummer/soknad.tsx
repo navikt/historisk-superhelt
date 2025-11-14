@@ -17,7 +17,7 @@ export const Route = createFileRoute('/sak/$saksnummer/soknad')({
 function EditSakPage() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
-    if (sak?.status == "UNDER_BEHANDLING") {
+    if (sak?.rettigheter.includes("SAKSBEHANDLE")) {
         return <SakEditor sak={sak}/>
     }
     return (
