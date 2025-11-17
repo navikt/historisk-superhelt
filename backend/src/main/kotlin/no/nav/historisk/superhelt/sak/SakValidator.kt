@@ -1,8 +1,19 @@
 package no.nav.historisk.superhelt.sak
 
+import jakarta.validation.ConstraintViolationException
+import jakarta.validation.Validation
+import jakarta.validation.Validator
+import jakarta.validation.ValidatorFactory
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 
 class SakValidator(private val sak: Sak) {
+    private val validator: Validator
+
+    init {
+        val factory: ValidatorFactory = Validation.buildDefaultValidatorFactory()
+        validator = factory.validator
+    }
+
 
     private fun validate(condition: Boolean, message: String) {
         if (condition) {
@@ -22,10 +33,17 @@ class SakValidator(private val sak: Sak) {
     }
 
     fun validateCompleted(): SakValidator {
+        // Sjekker annoteringer på Sak-klassen
+        val violations = validator.validate(sak)
+        if (violations.isNotEmpty()) {
+            throw ConstraintViolationException(violations)
+        }
+
         with(sak) {
-            validate(vedtak == null, "Vedtak må være satt før sak kan ferdigstilles")
-            validate(tittel == null, "Tittel må være satt før sak kan ferdigstilles")
-            //TODO flere valideringer? Evt bruke noen annotasjoner på Sak-klassen
+            validate(
+                utbetaling == null && forhandstilsagn == null,
+                "Det må settes enten utbetaling eller forhandstilsagn før sak kan ferdigstilles"
+            )
         }
 
         return this

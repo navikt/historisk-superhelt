@@ -29,7 +29,7 @@ class SakActionController(
             .validateStatusTransition(SakStatus.FERDIG)
             .validateRettighet(SakRettighet.FERDIGSTILLE)
             .validateCompleted()
-
+        
         sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
         sakService.changeStatus(saksnummer, SakStatus.FERDIG)
         sakChangelog.logChange(saksnummer, "Sak $saksnummer ferdigstilt")
