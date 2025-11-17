@@ -1,6 +1,7 @@
 import {
     Box,
     DatePicker,
+    ErrorSummary,
     Heading,
     HStack,
     Radio,
@@ -69,7 +70,7 @@ export default function SakEditor({sak}: Props) {
         })
     }
 
-    const error = oppdaterSak?.error?.detail
+    const error = oppdaterSak?.error
 
 
     return (
@@ -124,12 +125,10 @@ export default function SakEditor({sak}: Props) {
                 />
 
 
-                {error && (
-                    <Box padding="4" borderRadius="medium"
-                         style={{backgroundColor: 'var(--a-surface-danger-subtle)'}}>
-                        {error}
-                    </Box>
-                )}
+                {error && <ErrorSummary>
+                    <ErrorSummary.Item>{error.detail}</ErrorSummary.Item>
+
+                </ErrorSummary>}
 
             </VStack>
 
