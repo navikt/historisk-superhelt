@@ -34,7 +34,7 @@ class UtbetalingKafkaProducer(
             UtbetalingMelding(
                 id = id,
                 sakId = sak.saksnummer.value,
-                behandlingId = id,
+                behandlingId = id.take(30), // max 30 tegn
                 personident = sak.fnr.value,
                 stønad = KlasseKode.TILSKUDD_SMÅHJELPEMIDLER,
 
