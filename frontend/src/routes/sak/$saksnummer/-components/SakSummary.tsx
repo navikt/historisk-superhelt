@@ -1,5 +1,5 @@
 import {FormSummary} from '@navikt/ds-react';
-import {Sak} from '@api';
+import {Sak} from '@generated';
 
 interface SakSummaryProps {
     sak: Sak;

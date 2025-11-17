@@ -1,7 +1,7 @@
 import {Button} from "@navikt/ds-react";
-import {Sak} from "@api";
+import {Sak} from "@generated";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {ferdigstillSakMutation} from "@api/@tanstack/react-query.gen";
+import {ferdigstillSakMutation} from "@generated/@tanstack/react-query.gen";
 import {sakQueryKey} from "~/routes/sak/$saksnummer/-api/sak.query";
 
 interface Props {

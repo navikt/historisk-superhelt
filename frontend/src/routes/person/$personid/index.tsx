@@ -6,8 +6,8 @@ import {SakerTable} from "./-components/SakerTable";
 import {PersonHeader} from "~/components/PersonHeader";
 import {DokumenterTable} from "~/routes/person/$personid/-components/DokumenterTable";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getPersonByMaskertIdentOptions} from "@api/@tanstack/react-query.gen";
-import {createSak} from "@api";
+import {getPersonByMaskertIdentOptions} from "@generated/@tanstack/react-query.gen";
+import {createSak} from "@generated";
 
 export const Route = createFileRoute('/person/$personid/')({
     component: PersonPage,

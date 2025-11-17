@@ -1,6 +1,6 @@
 import {Alert} from "@navikt/ds-react";
 import React from "react";
-import {ProblemDetail} from "@api";
+import {ProblemDetail} from "@generated";
 
 type ErrorAlertType = Error | ProblemDetail;
 

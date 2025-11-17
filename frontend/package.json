@@ -20,7 +20,8 @@
     "@tanstack/react-router": "^1.131.27",
     "@tanstack/react-router-devtools": "^1.131.27",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "0.86.1",

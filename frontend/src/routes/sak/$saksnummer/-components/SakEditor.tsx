@@ -12,10 +12,10 @@ import {
     VStack
 } from '@navikt/ds-react'
 import {useEffect, useState} from "react";
-import {Sak, SakUpdateRequestDto} from "@api";
+import {Sak, SakUpdateRequestDto} from "@generated";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
-import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
+import {oppdaterSakMutation} from "@generated/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import useDebounce from "~/components/useDebounce";

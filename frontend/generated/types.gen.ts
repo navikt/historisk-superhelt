@@ -40,9 +40,9 @@ export type Sak = {
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type Utbetaling = {

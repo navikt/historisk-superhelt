@@ -2,9 +2,9 @@ import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Space
 import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
 import {useQuery} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
-import {getUserInfoOptions} from "@api/@tanstack/react-query.gen";
+import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 import {useState} from "react";
-import {findPersonByFnr as findPerson} from "@api";
+import {findPersonByFnr as findPerson} from "@generated";
 
 export function Header() {
     const [search, setSearch] = useState<string>();

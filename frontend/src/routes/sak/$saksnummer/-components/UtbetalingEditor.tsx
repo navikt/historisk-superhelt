@@ -1,10 +1,10 @@
 import {Radio, RadioGroup, VStack} from '@navikt/ds-react'
 import {useState} from "react";
-import {Sak, UtbetalingRequestDto} from "@api";
+import {Sak, UtbetalingRequestDto} from "@generated";
 import {UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {NumericInput} from "~/components/NumericInput";
 import {useMutation} from "@tanstack/react-query";
-import {oppdaterUtbetalingMutation} from "@api/@tanstack/react-query.gen";
+import {oppdaterUtbetalingMutation} from "@generated/@tanstack/react-query.gen";
 
 
 interface Props {

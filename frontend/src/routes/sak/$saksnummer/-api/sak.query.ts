@@ -1,7 +1,8 @@
 import {
     getKodeverkStonadTypeOptions,
-    getSakBySaksnummerOptions, getSakBySaksnummerQueryKey
-} from "@api/@tanstack/react-query.gen";
+    getSakBySaksnummerOptions,
+    getSakBySaksnummerQueryKey
+} from "@generated/@tanstack/react-query.gen";
 
 export const getSakOptions = (saksnummer: string) => ({
     ...getSakBySaksnummerOptions({path: {saksnummer: saksnummer}}),
