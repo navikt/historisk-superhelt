@@ -3,7 +3,7 @@ app:
     behandlingsnummer: B986
   utbetaling:
     #    TODO Sette rett navn på topic
-    utbetaling-topic: historisk.utbetaling.test
+    utbetaling-topic: historisk.utbetaling.v1
     status-topic: helved.status.v1
 
 spring:

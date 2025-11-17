@@ -25,7 +25,7 @@ object HelvedTestdata {
                         tom = LocalDate.now(),
                         vedtakssats = 100,
                         beløp = faker.number().numberBetween(1, 9999),
-                        klassekode = KlasseKode.HJRIM.name
+                        klassekode = KlasseKode.TILSKUDD_SMÅHJELPEMIDLER.name
                     )
                 )
             ),

@@ -30,7 +30,7 @@ data class Periode(
 )
 
 enum class KlasseKode {
-    HJRIM
+    TILSKUDD_SMÅHJELPEMIDLER // HJRIM
 }
 
 enum class Periodetype {
