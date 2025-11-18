@@ -27,7 +27,8 @@ class MockUtbetalingStatusKafkaProducer(
 
     fun sendStatusMessage(
         id: String,
-        melding: UtbetalingStatusMelding) {
+        melding: UtbetalingStatusMelding
+    ) {
         logger.debug(
             "Sender statusmelding til {} for utbetaling med id {} og status {}",
             statusTopic,

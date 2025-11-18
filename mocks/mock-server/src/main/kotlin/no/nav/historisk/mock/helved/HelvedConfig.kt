@@ -25,4 +25,4 @@ class UtbetalingConfig(private val config: HelvedConfigProperties) {
 }
 
 @ConfigurationProperties(prefix = "app.helved")
-class HelvedConfigProperties(val utbetalingTopic: String, val statusTopic: String) {}
+class HelvedConfigProperties(val utbetalingTopic: String, val statusTopic: String)
