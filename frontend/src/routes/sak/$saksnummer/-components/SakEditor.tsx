@@ -127,7 +127,7 @@ export default function SakEditor({sak}: Props) {
 
 
                 {error && <ErrorSummary>
-                    <ErrorSummary.Item>{error.detail}</ErrorSummary.Item>
+                    <ErrorSummary.Item>{error?.detail}</ErrorSummary.Item>
 
                 </ErrorSummary>}
                 <HStack gap="8" align="start">

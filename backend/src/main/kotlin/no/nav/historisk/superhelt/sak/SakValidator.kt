@@ -7,14 +7,15 @@ import jakarta.validation.ValidatorFactory
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 
 class SakValidator(private val sak: Sak) {
-    private val validator: Validator
 
-    init {
-        val factory: ValidatorFactory = Validation.buildDefaultValidatorFactory()
-        validator = factory.validator
+
+    private val validator: Validator = Companion.validator
+
+    companion object {
+        private val factory: ValidatorFactory = Validation.buildDefaultValidatorFactory()
+        val validator: Validator = factory.validator
     }
-
-
+    
     private fun validate(condition: Boolean, message: String) {
         if (condition) {
             throw ValideringException(message)
