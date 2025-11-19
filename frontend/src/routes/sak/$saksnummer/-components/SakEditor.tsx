@@ -22,6 +22,7 @@ import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import useDebounce from "~/components/useDebounce";
 import UtbetalingEditor from "~/routes/sak/$saksnummer/-components/UtbetalingEditor";
+import {useNavigate} from "@tanstack/react-router";
 
 
 interface Props {
@@ -31,6 +32,8 @@ interface Props {
 export default function SakEditor({sak}: Props) {
     const {data: saksTyper} = useSuspenseQuery(getKodeverkStonadsTypeOptions())
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
     const saksnummer = sak.saksnummer
 
     const oppdaterSak = useMutation({
@@ -69,6 +72,12 @@ export default function SakEditor({sak}: Props) {
             },
             body: updateSakData
         })
+    }
+
+    function completedSoknad() {
+        lagreSak()
+        // TODO Validate
+        navigate({to: "/sak/$saksnummer/brev", params: {saksnummer}})
     }
 
     const error = oppdaterSak?.error
@@ -131,7 +140,7 @@ export default function SakEditor({sak}: Props) {
 
                 </ErrorSummary>}
                 <HStack gap="8" align="start">
-                    <Button type="submit" variant="primary">Ferdig her</Button>
+                    <Button type="submit" variant="secondary" onClick={completedSoknad}>Gå til brev</Button>
                 </HStack>
 
             </VStack>
