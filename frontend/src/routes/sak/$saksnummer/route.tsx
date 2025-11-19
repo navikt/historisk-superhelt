@@ -9,6 +9,7 @@ import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
 import {StepType} from "~/components/ProcessMenu/StepType";
 import {ProcessMenuItem} from "~/components/ProcessMenu/ProcessMenuItem";
 import {ProcessMenu} from "~/components/ProcessMenu/ProcessMenu";
+import {TilstandResultat} from "@generated";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -24,6 +25,20 @@ function SakLayout() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
 
+
+    const calculateStepType = (tilstandResultat: TilstandResultat): StepType => {
+        switch (tilstandResultat.tilstand) {
+            case "IKKE_STARTET":
+                return StepType.default;
+            case "OK":
+                return StepType.success;
+            case "VALIDERING_FEILET":
+                return StepType.warning;
+            default:
+                return StepType.default;
+        }
+    }
+
     return (
         <>
             <PersonHeader maskertPersonId={sak.maskertPersonIdent}/>
@@ -31,9 +46,9 @@ function SakLayout() {
                 <VStack gap="space-16">
 
                     <ProcessMenu>
-                        <ProcessMenuItem label={"Opplysninger"} stepType={StepType.success}
+                        <ProcessMenuItem label={"Opplysninger"} stepType={calculateStepType(sak?.tilstand.soknad)}
                                          to={"/sak/$saksnummer/soknad"}/>
-                        <ProcessMenuItem label={"Vedtaksbrev"} stepType={StepType.warning}
+                        <ProcessMenuItem label={"Vedtaksbrev"} stepType={calculateStepType(sak?.tilstand.vedtaksbrev)}
                                          to={"/sak/$saksnummer/brev"}/>
                         <ProcessMenuItem label={"Brev til samhandler"} stepType={StepType.default}
                                          to={"/sak/$saksnummer/brev"}/>

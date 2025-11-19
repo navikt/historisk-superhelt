@@ -53,9 +53,31 @@ export const zUtbetaling = z.object({
         'UTKAST',
         'KLAR_TIL_UTBETALING',
         'SENDT_TIL_UTBETALING',
-        'UTBETALT'
+        'MOTTATT_AV_UTBETALING',
+        'BEHANDLET_AV_UTBETALING',
+        'UTBETALT',
+        'FEILET'
     ]),
     utbetalingTidspunkt: z.optional(z.iso.datetime())
+});
+
+export const zValidationFieldError = z.object({
+    field: z.string(),
+    message: z.optional(z.string())
+});
+
+export const zTilstandResultat = z.object({
+    tilstand: z.enum([
+        'IKKE_STARTET',
+        'OK',
+        'VALIDERING_FEILET'
+    ]),
+    valideringsfeil: z.array(zValidationFieldError)
+});
+
+export const zSakTilstand = z.object({
+    soknad: zTilstandResultat,
+    vedtaksbrev: zTilstandResultat
 });
 
 export const zSak = z.object({
@@ -98,18 +120,19 @@ export const zSak = z.object({
     saksbehandler: z.string(),
     utbetaling: z.optional(zUtbetaling),
     forhandstilsagn: z.optional(zForhandstilsagn),
+    maskertPersonIdent: z.string().readonly(),
     utbetalingsType: z.enum([
         'BRUKER',
         'FORHANDSTILSAGN',
         'INGEN'
     ]),
-    maskertPersonIdent: z.string().readonly(),
     rettigheter: z.array(z.enum([
         'LES',
         'SAKSBEHANDLE',
         'FERDIGSTILLE',
         'GJENAPNE'
-    ])).readonly()
+    ])).readonly(),
+    tilstand: zSakTilstand
 });
 
 export const zUtbetalingRequestDto = z.object({
@@ -248,6 +271,12 @@ export const zSakWritable = z.object({
     saksbehandler: z.string(),
     utbetaling: z.optional(zUtbetaling),
     forhandstilsagn: z.optional(zForhandstilsagn)
+});
+
+export const zSakTilstandWritable = z.object({
+    sak: z.optional(z.unknown()),
+    soknad: zTilstandResultat,
+    vedtaksbrev: zTilstandResultat
 });
 
 export const zGetSakBySaksnummerData = z.object({

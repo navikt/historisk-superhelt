@@ -40,16 +40,32 @@ export type Sak = {
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
+    tilstand: SakTilstand;
+};
+
+export type SakTilstand = {
+    soknad: TilstandResultat;
+    vedtaksbrev: TilstandResultat;
+};
+
+export type TilstandResultat = {
+    tilstand: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type Utbetaling = {
     belop: number;
     uuid: string;
-    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT';
+    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
+};
+
+export type ValidationFieldError = {
+    field: string;
+    message?: string;
 };
 
 export type UtbetalingRequestDto = {
@@ -103,6 +119,12 @@ export type SakWritable = {
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+};
+
+export type SakTilstandWritable = {
+    sak?: unknown;
+    soknad: TilstandResultat;
+    vedtaksbrev: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {

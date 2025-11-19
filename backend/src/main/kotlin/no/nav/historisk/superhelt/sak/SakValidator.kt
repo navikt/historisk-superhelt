@@ -8,9 +8,12 @@ import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 
 class SakValidator(private val sak: Sak) {
 
-    private val validationErrors = mutableListOf<ValidationFieldError>()
-        get() = field
+    private val _validationErrors = mutableListOf<ValidationFieldError>()
+    val validationErrors: List<ValidationFieldError>
+        get() = _validationErrors.toList()
+
     private val validator: Validator = Companion.validator
+
 
     companion object {
         private val factory: ValidatorFactory = Validation.buildDefaultValidatorFactory()
@@ -19,7 +22,7 @@ class SakValidator(private val sak: Sak) {
 
     private fun check(condition: Boolean, property: String, message: String) {
         if (condition) {
-            validationErrors.add(ValidationFieldError(property, message))
+            _validationErrors.add(ValidationFieldError(property, message))
         }
     }
 
@@ -35,10 +38,16 @@ class SakValidator(private val sak: Sak) {
     }
 
     fun checkCompleted(): SakValidator {
+        checkSoknad()
+        //checkBrev()
+        return this
+    }
+
+    fun checkSoknad(): SakValidator {
         // Sjekker annoteringer på Sak-klassen
         val violations = validator.validate(sak)
         violations.forEach {
-            validationErrors.add(ValidationFieldError(it.propertyPath.toString(), it.message))
+            _validationErrors.add(ValidationFieldError(it.propertyPath.toString(), it.message))
         }
 
         with(sak) {
@@ -48,20 +57,19 @@ class SakValidator(private val sak: Sak) {
                 "Det må settes enten utbetaling eller forhandstilsagn før sak kan ferdigstilles"
             )
         }
-
         return this
     }
 
     fun checkRettighet(rettighet: SakRettighet): SakValidator {
-        check(!sak.hasRettighet(rettighet), "rettighet", "Manglende rettighet i sak: $rettighet")
+        check(!sak.rettigheter.contains(rettighet), "rettighet", "Manglende rettighet i sak: $rettighet")
         return this
     }
 
-    /** Sjekker valideringog kaster ValideringException hvis feil */
+    /** Sjekker validering og kaster ValideringException hvis feil */
     @Throws(ValideringException::class)
     fun validate() {
-        if (validationErrors.isNotEmpty()) {
-            throw ValideringException(reason = "Validering av sak feilet", validationErrors = validationErrors)
+        if (_validationErrors.isNotEmpty()) {
+            throw ValideringException(reason = "Validering av sak feilet", validationErrors = _validationErrors)
         }
     }
 
