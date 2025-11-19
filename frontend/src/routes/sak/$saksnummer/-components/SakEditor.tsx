@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     DatePicker,
     ErrorSummary,
     Heading,
@@ -129,6 +130,9 @@ export default function SakEditor({sak}: Props) {
                     <ErrorSummary.Item>{error.detail}</ErrorSummary.Item>
 
                 </ErrorSummary>}
+                <HStack gap="8" align="start">
+                    <Button type="submit" variant="primary">Ferdig her</Button>
+                </HStack>
 
             </VStack>
 
