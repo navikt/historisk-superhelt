@@ -35,8 +35,8 @@ function SakLayout() {
                                          to={"/sak/$saksnummer/soknad"}/>
                         <ProcessMenuItem label={"Vedtaksbrev"} stepType={StepType.warning}
                                          to={"/sak/$saksnummer/brev"}/>
-                        {/*<ProcessMenuItem label={"Brev til samhandler"} stepType={StepType.default}*/}
-                        {/*               to={"/sak/$saksnummer/brev"}/>*/}
+                        <ProcessMenuItem label={"Brev til samhandler"} stepType={StepType.default}
+                                         to={"/sak/$saksnummer/brev"}/>
 
                     </ProcessMenu>
 

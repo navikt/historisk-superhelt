@@ -6,7 +6,12 @@ import org.springframework.web.server.ResponseStatusException
 class ValideringException(
     reason: String?,
     cause: Throwable? = null,
-    messageDetailCode: String? = "valideringsfeil",
-    messageDetailArguments: Array<Any>? = null
-) : ResponseStatusException(HttpStatus.BAD_REQUEST, reason, cause, messageDetailCode, messageDetailArguments) {
+    messageDetailCode: String? = "Valideringsfeil",
+    messageDetailArguments: Array<Any>? = null,
+    val validationErrors: MutableList<ValidationFieldError>) :
+    ResponseStatusException(HttpStatus.BAD_REQUEST, reason, cause, messageDetailCode, messageDetailArguments) {
+
+
+    override val message: String
+        get() = (reason ?: "Valideringsfeil") + validationErrors.joinToString(", ") { "${it.field}: ${it.message}" }
 }

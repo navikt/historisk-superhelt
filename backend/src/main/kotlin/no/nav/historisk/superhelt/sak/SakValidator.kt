@@ -1,48 +1,50 @@
 package no.nav.historisk.superhelt.sak
 
-import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validation
 import jakarta.validation.Validator
 import jakarta.validation.ValidatorFactory
+import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 
 class SakValidator(private val sak: Sak) {
 
-
+    private val validationErrors = mutableListOf<ValidationFieldError>()
+        get() = field
     private val validator: Validator = Companion.validator
 
     companion object {
         private val factory: ValidatorFactory = Validation.buildDefaultValidatorFactory()
         val validator: Validator = factory.validator
     }
-    
-    private fun validate(condition: Boolean, message: String) {
+
+    private fun check(condition: Boolean, property: String, message: String) {
         if (condition) {
-            throw ValideringException(message)
+            validationErrors.add(ValidationFieldError(property, message))
         }
     }
 
-    fun validateStatusTransition(newStatus: SakStatus): SakValidator {
+    fun checkStatusTransition(newStatus: SakStatus): SakValidator {
         val validTransitions = when (sak.status) {
             SakStatus.UNDER_BEHANDLING -> listOf(SakStatus.FERDIG, SakStatus.TIL_ATTESTERING)
             SakStatus.TIL_ATTESTERING -> listOf(SakStatus.FERDIG)
             SakStatus.FERDIG -> listOf(SakStatus.UNDER_BEHANDLING)
         }
-        validate(newStatus !in validTransitions, "Ugyldig statusovergang fra ${sak.status} til $newStatus")
+        check(newStatus !in validTransitions, "status", "Ugyldig statusovergang fra ${sak.status} til $newStatus")
 
         return this
     }
 
-    fun validateCompleted(): SakValidator {
+    fun checkCompleted(): SakValidator {
         // Sjekker annoteringer på Sak-klassen
         val violations = validator.validate(sak)
-        if (violations.isNotEmpty()) {
-            throw ConstraintViolationException(violations)
+        violations.forEach {
+            validationErrors.add(ValidationFieldError(it.propertyPath.toString(), it.message))
         }
 
         with(sak) {
-            validate(
+            check(
                 utbetaling == null && forhandstilsagn == null,
+                "utbetaling",
                 "Det må settes enten utbetaling eller forhandstilsagn før sak kan ferdigstilles"
             )
         }
@@ -50,9 +52,17 @@ class SakValidator(private val sak: Sak) {
         return this
     }
 
-    fun validateRettighet(rettighet: SakRettighet): SakValidator {
-        validate(!sak.hasRettighet(rettighet), "Manglende rettighet i sak: $rettighet")
+    fun checkRettighet(rettighet: SakRettighet): SakValidator {
+        check(!sak.hasRettighet(rettighet), "rettighet", "Manglende rettighet i sak: $rettighet")
         return this
+    }
+
+    /** Sjekker valideringog kaster ValideringException hvis feil */
+    @Throws(ValideringException::class)
+    fun validate() {
+        if (validationErrors.isNotEmpty()) {
+            throw ValideringException(reason = "Validering av sak feilet", validationErrors = validationErrors)
+        }
     }
 
 

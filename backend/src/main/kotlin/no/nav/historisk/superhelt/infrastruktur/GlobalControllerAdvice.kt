@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.infrastruktur
 
 import jakarta.validation.ConstraintViolationException
 import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
+import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 import no.nav.historisk.superhelt.infrastruktur.exception.createValidationErrorMessage
 import org.slf4j.LoggerFactory
 import org.springframework.http.*
@@ -43,7 +44,7 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
     @ExceptionHandler(ConstraintViolationException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleValidationError(ex: ConstraintViolationException): ProblemDetail {
-        val detail: String? = ex.message
+        val detail = ex.message
         log.info("Validation failed. {} Return 400", detail)
         val fieldErrors = ex.constraintViolations.map {
             ValidationFieldError(
@@ -51,6 +52,17 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
                 field = it.propertyPath.toString(),
             )
         }
+        val problemDetail = createValidationErrorMessage(ex.javaClass.simpleName, fieldErrors, detail)
+        return problemDetail
+    }
+
+    /** Validation errors from programmatic validation */
+    @ExceptionHandler(ValideringException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleValideringException(ex: ValideringException): ProblemDetail {
+        val detail = ex.message
+        log.info("Validation failed. {} Return 400", detail)
+        val fieldErrors = ex.validationErrors
         val problemDetail = createValidationErrorMessage(ex.javaClass.simpleName, fieldErrors, detail)
         return problemDetail
     }
