@@ -1,6 +1,6 @@
 import {BodyShort, Box, Button, Heading, HStack, Table, Tag, VStack} from '@navikt/ds-react'
 import {useNavigate} from '@tanstack/react-router'
-import {findPersonByFnr as findPerson} from "@api";
+import {findPersonByFnr as findPerson} from "@generated";
 
 export function OppgaveTabell() {
     const navigate = useNavigate()

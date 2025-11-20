@@ -1,5 +1,5 @@
 import {Tag} from "@navikt/ds-react";
-import {Sak} from "@api";
+import {Sak} from "@generated";
 import {SakVedtakType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 interface Props {

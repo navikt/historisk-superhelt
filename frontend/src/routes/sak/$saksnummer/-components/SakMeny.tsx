@@ -1,6 +1,6 @@
 import {ActionMenu, Button} from "@navikt/ds-react";
 import {ChevronDownIcon} from "@navikt/aksel-icons";
-import {Sak} from "@api";
+import {Sak} from "@generated";
 import {RettighetType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 

@@ -44,7 +44,8 @@ class SakController(
     ): ResponseEntity<Sak> {
         val sak = sakRepository.getSakOrThrow(saksnummer)
         SakValidator(sak)
-            .validateRettighet(SakRettighet.SAKSBEHANDLE)
+            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .validate()
         val updated = sakService.updateSak(saksnummer, req)
         return ResponseEntity.ok(updated)
     }
@@ -57,7 +58,8 @@ class SakController(
     ): ResponseEntity<Sak> {
         val sak = sakRepository.getSakOrThrow(saksnummer)
         SakValidator(sak)
-            .validateRettighet(SakRettighet.SAKSBEHANDLE)
+            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .validate()
         val updated = sakService.updateUtbetaling(saksnummer, req)
         return ResponseEntity.ok(updated)
     }
@@ -67,7 +69,8 @@ class SakController(
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<Sak> {
         val sak = sakRepository.getSakOrThrow(saksnummer)
         SakValidator(sak)
-            .validateRettighet(SakRettighet.LES)
+            .checkRettighet(SakRettighet.LES)
+            .validate()
         return ResponseEntity.ok(sak)
 
     }

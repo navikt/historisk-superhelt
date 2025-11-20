@@ -1,5 +1,4 @@
-import {findSakerForPersonOptions, getSakBySaksnummerOptions} from "@api/@tanstack/react-query.gen";
-
+import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
 
 
 export const finnSakerForPersonOptions = (maskertPersonId: string) => ({

@@ -190,18 +190,21 @@ class SakControllerRestTest() {
     inner class `hent sak` {
 
         @Test
-        fun `hent sak ok`() {
+        fun `hent sak ok sjekk json`() {
             val opprettetSak = lagreNySak()
 
             assertThat(hentSak(opprettetSak.saksnummer))
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(Sak::class.java)
-                .satisfies({
-                    assertThat(it.saksnummer).isEqualTo(opprettetSak.saksnummer)
-                    assertThat(it.fnr).isEqualTo(opprettetSak.fnr)
-                    assertThat(it.type).isEqualTo(opprettetSak.type)
-                })
+                .hasPathSatisfying("$.saksnummer") { assertThat(it).isEqualTo(opprettetSak.saksnummer.value) }
+                .hasPathSatisfying("$.fnr") { assertThat(it).isEqualTo(opprettetSak.fnr.value) }
+                .hasPathSatisfying("$.type") { assertThat(it).isEqualTo(opprettetSak.type.name) }
+                .hasPathSatisfying("$.tittel") { assertThat(it).isEqualTo(opprettetSak.tittel) }
+                // Genererte verdie
+                .hasPathSatisfying("$.maskertPersonIdent") { assertThat(it).isEqualTo(opprettetSak.fnr.toMaskertPersonIdent().value) }
+                .hasPathSatisfying("$.rettigheter") { assertThat(it).isNotEmpty }
+                .hasPathSatisfying("$.tilstand") { assertThat(it).isNotEmpty }
+
 
             verify(tilgangsmaskinService).sjekkKomplettTilgang(opprettetSak.fnr)
         }

@@ -2,7 +2,7 @@ import {Alert, BodyShort, Box, CopyButton, HStack, Link, Tag} from "@navikt/ds-r
 import {PersonIcon} from "@navikt/aksel-icons";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getPersonByMaskertIdentOptions} from "@api/@tanstack/react-query.gen";
+import {getPersonByMaskertIdentOptions} from "@generated/@tanstack/react-query.gen";
 
 interface Props {
     maskertPersonId: string,
@@ -18,11 +18,11 @@ export function PersonHeader({maskertPersonId}: Props) {
             })
         })
 
-    return <Box.New background="neutral-moderate"  padding="space-4">
+    return <Box.New background="neutral-moderate" padding="space-4">
         <HStack justify={"space-between"}>
 
             <HStack gap="space-4" align="center" justify={"space-between"}>
-                <PersonIcon fontSize="1.5rem"  />
+                <PersonIcon fontSize="1.5rem"/>
                 <Link as={RouterLink} to={"/person/" + person.maskertPersonident} underline={false}> <BodyShort
                     size={"large"}>{person?.navn}</BodyShort></Link>
                 <BodyShort size={"small"}>{person.fnr}</BodyShort>

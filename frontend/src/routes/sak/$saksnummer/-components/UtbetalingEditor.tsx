@@ -1,17 +1,19 @@
 import {Radio, RadioGroup, VStack} from '@navikt/ds-react'
 import {useState} from "react";
-import {Sak, UtbetalingRequestDto} from "@api";
+import {Sak, UtbetalingRequestDto} from "@generated";
 import {UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {NumericInput} from "~/components/NumericInput";
 import {useMutation} from "@tanstack/react-query";
-import {oppdaterUtbetalingMutation} from "@api/@tanstack/react-query.gen";
+import {oppdaterUtbetalingMutation} from "@generated/@tanstack/react-query.gen";
 
 
 interface Props {
     sak: Sak,
+    errorUtbetaling?: string | undefined
+    errorBelop?: string | undefined
 }
 
-export default function UtbetalingEditor({sak}: Props) {
+export default function UtbetalingEditor({sak, errorUtbetaling, errorBelop}: Props) {
     const saksnummer = sak.saksnummer
 
 
@@ -66,6 +68,7 @@ export default function UtbetalingEditor({sak}: Props) {
                 legend="Utbetaling"
                 value={utbetalingData.utbetalingsType}
                 onChange={changeUtbetalingsType}
+                error={errorUtbetaling}
             >
                 <Radio value="BRUKER">Utbetaling til bruker</Radio>
                 <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
@@ -73,6 +76,7 @@ export default function UtbetalingEditor({sak}: Props) {
             </RadioGroup>
             <NumericInput
                 value={utbetalingData.belop}
+                error={errorBelop}
                 onChange={belop => changeBelop(belop)}
                 label="Beløp (kr)"
                 onBlur={() => lagreUtbetaling()}

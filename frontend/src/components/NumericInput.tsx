@@ -4,13 +4,14 @@ import {useEffect, useState} from "react";
 interface NumericInputProps extends Omit<TextFieldProps, "value" | "onChange"> {
     value: number | undefined;
     onChange: (value: number | undefined) => void;
+    error?: string | undefined;
 }
 
 export function NumericInput(props: NumericInputProps) {
 
-    const {value, onChange} = props;
+    const {value, onChange, error} = props;
     const [stringValue, setStringValue] = useState<string | undefined>(value ? value.toString() : undefined);
-    const [error, setError] = useState<string | undefined>();
+    const [numericError, setNumericError] = useState<string | undefined>();
 
     // Sync stringValue with value prop changes
     useEffect(() => {
@@ -22,15 +23,15 @@ export function NumericInput(props: NumericInputProps) {
         const trimmedInput = inputValue.trim();
         setStringValue(trimmedInput)
         if (trimmedInput === "") {
-            setError(undefined);
+            setNumericError(undefined);
             onChange(undefined)
         }
         const numericValue = Number(trimmedInput);
         if (!isNaN(numericValue)) {
-            setError(undefined);
+            setNumericError(undefined);
             onChange(numericValue);
         } else {
-            setError("Vennligst oppgi et gyldig tall");
+            setNumericError("Vennligst oppgi et gyldig tall");
         }
 
     };
@@ -40,6 +41,6 @@ export function NumericInput(props: NumericInputProps) {
         inputMode="numeric"
         value={stringValue ?? ""}
         onChange={e => changeStringValue(e.target.value)}
-        error={error}
+        error={numericError || error}
     />
 }

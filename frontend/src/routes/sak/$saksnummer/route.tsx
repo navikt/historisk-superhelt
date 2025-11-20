@@ -1,12 +1,15 @@
-import {createFileRoute, Outlet, useNavigate} from '@tanstack/react-router'
-import {Box, HGrid, HStack, Tabs, VStack} from '@navikt/ds-react'
+import {createFileRoute, Outlet} from '@tanstack/react-router'
+import {Box, HGrid, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
-import {DocPencilIcon, FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
+import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
-import SakActionButton from "~/routes/sak/$saksnummer/-components/SakActionButton";
+import {StepType} from "~/components/ProcessMenu/StepType";
+import {ProcessMenuItem} from "~/components/ProcessMenu/ProcessMenuItem";
+import {ProcessMenu} from "~/components/ProcessMenu/ProcessMenu";
+import {TilstandResultat} from "@generated";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -21,43 +24,42 @@ export const Route = createFileRoute('/sak/$saksnummer')({
 function SakLayout() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
-    const navigate = useNavigate();
 
+
+    const calculateStepType = (tilstandResultat: TilstandResultat): StepType => {
+        switch (tilstandResultat?.tilstand) {
+            case "IKKE_STARTET":
+                return StepType.default;
+            case "OK":
+                return StepType.success;
+            case "VALIDERING_FEILET":
+                return StepType.warning;
+            default:
+                return StepType.default;
+        }
+    }
 
     return (
         <>
             <PersonHeader maskertPersonId={sak.maskertPersonIdent}/>
             <HGrid gap="space-24" columns={{lg: 1, xl: 2}} marginBlock={"space-16"}>
                 <VStack gap="space-16">
-                    <HStack justify="space-between">
-                        <Tabs defaultValue="soknad" onChange={(value) => navigate({to: value})}>
-                            <Tabs.List>
-                                <Tabs.Tab
-                                    value="soknad"
-                                    label="Opplysninger"
-                                    icon={<TasklistIcon aria-hidden/>}
-                                />
-                                <Tabs.Tab
-                                    value="brev"
-                                    label="Vedtaksbrev"
-                                    icon={<DocPencilIcon aria-hidden/>}
-                                />
 
-                            </Tabs.List>
-                            <Tabs.Panel value="soknad">
-                                <span/>
-                            </Tabs.Panel>
-                            <Tabs.Panel value="brev">
-                                <span/>
-                            </Tabs.Panel>
-                        </Tabs>
-                        <SakActionButton sak={sak}/>
+                    <ProcessMenu>
+                        <ProcessMenuItem label={"Opplysninger"} stepType={calculateStepType(sak?.tilstand.soknad)}
+                                         to={"/sak/$saksnummer/soknad"}/>
+                        <ProcessMenuItem label={"Vedtaksbrev"} stepType={calculateStepType(sak?.tilstand.vedtaksbrev)}
+                                         to={"/sak/$saksnummer/brev"}/>
+                        <ProcessMenuItem label={"Brev til samhandler"} stepType={StepType.default}
+                                         to={"/sak/$saksnummer/brev"} disabled={true}/>
 
-                    </HStack>
-                    <SakHeading sak={sak}/>
+                    </ProcessMenu>
+
                     <Outlet/>
+
                 </VStack>
                 <VStack gap="space-16">
+                    <SakHeading sak={sak}/>
                     <Tabs defaultValue="soknad">
                         <Tabs.List>
                             <Tabs.Tab

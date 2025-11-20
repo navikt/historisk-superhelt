@@ -31,25 +31,41 @@ export type Sak = {
     saksnummer: string;
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
-    tittel?: string;
-    soknadsDato?: string;
-    begrunnelse?: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
-    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    tittel: string;
+    soknadsDato: string;
+    begrunnelse?: string;
+    vedtak: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
     readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
+    tilstand: SakTilstand;
+};
+
+export type SakTilstand = {
+    soknad: TilstandResultat;
+    vedtaksbrev: TilstandResultat;
+};
+
+export type TilstandResultat = {
+    tilstand: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type Utbetaling = {
     belop: number;
     uuid: string;
-    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'UTBETALT';
+    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
+};
+
+export type ValidationFieldError = {
+    field: string;
+    message?: string;
 };
 
 export type UtbetalingRequestDto = {
@@ -94,15 +110,21 @@ export type SakWritable = {
     saksnummer: string;
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
-    tittel?: string;
-    soknadsDato?: string;
-    begrunnelse?: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
-    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    tittel: string;
+    soknadsDato: string;
+    begrunnelse?: string;
+    vedtak: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     saksbehandler: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+};
+
+export type SakTilstandWritable = {
+    sak?: unknown;
+    soknad: TilstandResultat;
+    vedtaksbrev: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {
@@ -115,6 +137,10 @@ export type GetSakBySaksnummerData = {
 };
 
 export type GetSakBySaksnummerErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
     /**
      * Forbidden
      */
@@ -147,6 +173,10 @@ export type OppdaterSakData = {
 
 export type OppdaterSakErrors = {
     /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
      * Forbidden
      */
     403: ProblemDetail;
@@ -177,6 +207,10 @@ export type OppdaterUtbetalingData = {
 };
 
 export type OppdaterUtbetalingErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
     /**
      * Forbidden
      */
@@ -209,6 +243,10 @@ export type SendTilAttesteringData = {
 
 export type SendTilAttesteringErrors = {
     /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
      * Forbidden
      */
     403: ProblemDetail;
@@ -237,6 +275,10 @@ export type GjenapneSakData = {
 };
 
 export type GjenapneSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
     /**
      * Forbidden
      */
@@ -267,6 +309,10 @@ export type FerdigstillSakData = {
 
 export type FerdigstillSakErrors = {
     /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
      * Forbidden
      */
     403: ProblemDetail;
@@ -295,6 +341,10 @@ export type FindSakerForPersonData = {
 };
 
 export type FindSakerForPersonErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
     /**
      * Forbidden
      */
@@ -325,6 +375,10 @@ export type CreateSakData = {
 
 export type CreateSakErrors = {
     /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
      * Forbidden
      */
     403: ProblemDetail;
@@ -353,6 +407,10 @@ export type FindPersonByFnrData = {
 };
 
 export type FindPersonByFnrErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
     /**
      * Forbidden
      */
@@ -383,6 +441,10 @@ export type GetUserInfoData = {
 
 export type GetUserInfoErrors = {
     /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
      * Forbidden
      */
     403: ProblemDetail;
@@ -411,6 +473,10 @@ export type GetKodeverkStonadTypeData = {
 };
 
 export type GetKodeverkStonadTypeErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
     /**
      * Forbidden
      */
@@ -442,6 +508,10 @@ export type GetPersonByMaskertIdentData = {
 };
 
 export type GetPersonByMaskertIdentErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
     /**
      * Forbidden
      */

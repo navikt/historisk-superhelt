@@ -1,6 +1,8 @@
 import {
     Box,
+    Button,
     DatePicker,
+    ErrorSummary,
     Heading,
     HStack,
     Radio,
@@ -12,14 +14,15 @@ import {
     VStack
 } from '@navikt/ds-react'
 import {useEffect, useState} from "react";
-import {Sak, SakUpdateRequestDto} from "@api";
+import {Sak, SakUpdateRequestDto} from "@generated";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
-import {oppdaterSakMutation} from "@api/@tanstack/react-query.gen";
+import {oppdaterSakMutation} from "@generated/@tanstack/react-query.gen";
 import {dateTilIsoDato} from "~/components/dato.utils";
 import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import useDebounce from "~/components/useDebounce";
 import UtbetalingEditor from "~/routes/sak/$saksnummer/-components/UtbetalingEditor";
+import {useNavigate} from "@tanstack/react-router";
 
 
 interface Props {
@@ -29,7 +32,15 @@ interface Props {
 export default function SakEditor({sak}: Props) {
     const {data: saksTyper} = useSuspenseQuery(getKodeverkStonadsTypeOptions())
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const [showValidation, setShowValidation] = useState(false)
+    const [hasChanged, setHasChanged] = useState(false)
+
     const saksnummer = sak.saksnummer
+
+    const validationErrors = sak.tilstand.soknad.valideringsfeil || []
+    const hasValidationErrors = validationErrors.length > 0
+
 
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
@@ -50,14 +61,16 @@ export default function SakEditor({sak}: Props) {
 
     useEffect(() => {
         // Lagrer etter siste endring
-        if (debouncedSak) {
+        if (debouncedSak && hasChanged) {
             lagreSak()
+            setHasChanged(false)
         }
     }, [debouncedSak]);
 
 
     const patchSak = (s: Partial<SakUpdateRequestDto>) => {
         setUpdateSakData(prev => ({...prev, ...s}))
+        setHasChanged(true)
     }
 
     function lagreSak() {
@@ -69,8 +82,25 @@ export default function SakEditor({sak}: Props) {
         })
     }
 
-    const error = oppdaterSak?.error?.detail
+    function completedSoknad() {
+        lagreSak()
+        setShowValidation(true)
+        if (!hasValidationErrors) {
+            navigate({to: "/sak/$saksnummer/brev", params: {saksnummer}})
+        }
 
+    }
+
+    const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
+
+
+    function getErrorMessage(field: "tittel" | "vedtak" | "soknadsDato" | "begrunnelse" | string): string | undefined {
+        if (!showValidation || !hasValidationErrors) {
+            return undefined
+        }
+        return validationErrors.find(feil => feil.field === field)?.message || undefined
+
+    }
 
     return (
         <Box padding="6" borderWidth="1" borderRadius="medium">
@@ -89,11 +119,15 @@ export default function SakEditor({sak}: Props) {
                 </Select>
 
                 <DatePicker {...datepickerProps} >
-                    <DatePicker.Input {...inputProps} label="Søknadsdato"/>
+                    <DatePicker.Input {...inputProps}
+                                      label="Søknadsdato"
+                                      error={getErrorMessage("soknadsDato")}
+                    />
                 </DatePicker>
 
                 <TextField
                     label="Tittel"
+                    error={getErrorMessage("tittel")}
                     value={updateSakData.tittel ?? ''}
                     onChange={(e) => patchSak({tittel: e.target.value})}
                 />
@@ -104,19 +138,24 @@ export default function SakEditor({sak}: Props) {
                 <HStack gap="8" align="start">
                     <VStack style={{flex: 1}}>
                         <RadioGroup legend="Vedtak" value={updateSakData.vedtak}
-                                    onChange={value => patchSak({vedtak: value as SakVedtakType})}>
+                                    onChange={value => patchSak({vedtak: value as SakVedtakType})}
+                                    error={getErrorMessage("vedtak")}>
                             <Radio value="INNVILGET">Innvilget</Radio>
                             <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
                             <Radio value="AVSLATT">Avslått</Radio>
                         </RadioGroup>
                     </VStack>
                     {updateSakData.vedtak !== 'AVSLATT' && (
-                        <UtbetalingEditor sak={sak}/>
+                        <UtbetalingEditor sak={sak}
+                                          errorUtbetaling={getErrorMessage("utbetaling")}
+                                          errorBelop={getErrorMessage("utbetaling.belop")}
+                        />
                     )}
                 </HStack>
 
                 <Textarea
                     label="Saksbehandlers vurderinger"
+                    error={getErrorMessage("begrunnelse")}
                     value={updateSakData.begrunnelse ?? ''}
                     onChange={(e) => patchSak({begrunnelse: e.target.value})}
                     description="Valgfri - vurderinger som er gjort i saken. Kommer ikke med i vedtaksbrev."
@@ -124,12 +163,16 @@ export default function SakEditor({sak}: Props) {
                 />
 
 
-                {error && (
-                    <Box padding="4" borderRadius="medium"
-                         style={{backgroundColor: 'var(--a-surface-danger-subtle)'}}>
-                        {error}
-                    </Box>
-                )}
+                <HStack gap="8" align="start">
+                    <Button type="submit" variant="secondary" onClick={completedSoknad}>Gå til brev</Button>
+                </HStack>
+                {hasError && <ErrorSummary>
+                    {oppdaterSak.error && <ErrorSummary.Item>{oppdaterSak?.error?.detail}</ErrorSummary.Item>}
+                    {validationErrors.map((feil) => (
+                        <ErrorSummary.Item key={feil.field}>{feil.field}: {feil.message}</ErrorSummary.Item>
+                    ))}
+
+                </ErrorSummary>}
 
             </VStack>
 
