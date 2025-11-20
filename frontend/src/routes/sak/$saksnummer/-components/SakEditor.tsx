@@ -38,7 +38,7 @@ export default function SakEditor({sak}: Props) {
 
     const saksnummer = sak.saksnummer
 
-    const validationErrors = sak.tilstand.soknad.valideringsfeil
+    const validationErrors = sak.tilstand.soknad.valideringsfeil || []
     const hasValidationErrors = validationErrors.length > 0
 
 

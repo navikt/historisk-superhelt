@@ -16,7 +16,6 @@ class SakTilstand(private val sak: Sak) {
             }
             // Sjekk om det ikke er startet på saken i det hele tatt
             if (sak.tittel.isNullOrBlank()
-//                && sak.soknadsDato == null
                 && sak.begrunnelse.isNullOrBlank()
                 && sak.utbetaling == null
                 && sak.forhandstilsagn == null

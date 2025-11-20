@@ -27,7 +27,7 @@ function SakLayout() {
 
 
     const calculateStepType = (tilstandResultat: TilstandResultat): StepType => {
-        switch (tilstandResultat.tilstand) {
+        switch (tilstandResultat?.tilstand) {
             case "IKKE_STARTET":
                 return StepType.default;
             case "OK":

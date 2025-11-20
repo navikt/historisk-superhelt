@@ -8,7 +8,7 @@ class ValideringException(
     cause: Throwable? = null,
     messageDetailCode: String? = "Valideringsfeil",
     messageDetailArguments: Array<Any>? = null,
-    val validationErrors: MutableList<ValidationFieldError>) :
+    val validationErrors: List<ValidationFieldError>) :
     ResponseStatusException(HttpStatus.BAD_REQUEST, reason, cause, messageDetailCode, messageDetailArguments) {
 
 

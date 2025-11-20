@@ -28,7 +28,7 @@ data class Sak(
     @field:NotNull(message = "Søknadsdato må være satt")
     val soknadsDato: LocalDate? = null,
 
-    @field:Size(max = 1000)
+    @field:Size(max = 1000, message = "Begrunnelse kan ikke være lengre enn {max} tegn")
     val begrunnelse: String? = null,
 
     @field:NotNull(message = "Vedtak må være satt")
