@@ -34,6 +34,7 @@ export default function SakEditor({sak}: Props) {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const [showValidation, setShowValidation] = useState(false)
+    const [hasChanged, setHasChanged] = useState(false)
 
     const saksnummer = sak.saksnummer
 
@@ -60,14 +61,16 @@ export default function SakEditor({sak}: Props) {
 
     useEffect(() => {
         // Lagrer etter siste endring
-        if (debouncedSak) {
+        if (debouncedSak && hasChanged) {
             lagreSak()
+            setHasChanged(false)
         }
     }, [debouncedSak]);
 
 
     const patchSak = (s: Partial<SakUpdateRequestDto>) => {
         setUpdateSakData(prev => ({...prev, ...s}))
+        setHasChanged(true)
     }
 
     function lagreSak() {

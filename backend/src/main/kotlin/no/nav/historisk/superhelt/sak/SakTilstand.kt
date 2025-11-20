@@ -14,7 +14,20 @@ class SakTilstand(private val sak: Sak) {
                     valideringsfeil = validationErrors
                 )
             }
-            // TODO sjekk om det er gjort noe i det hele tatt
+            // Sjekk om det ikke er startet på saken i det hele tatt
+            if (sak.tittel.isNullOrBlank()
+//                && sak.soknadsDato == null
+                && sak.begrunnelse.isNullOrBlank()
+                && sak.utbetaling == null
+                && sak.forhandstilsagn == null
+                && sak.vedtak == null
+            ) {
+                return TilstandResultat(
+                    tilstand = TilstandStatus.IKKE_STARTET,
+                    valideringsfeil = validationErrors
+                )
+            }
+
             return TilstandResultat(
                 tilstand = TilstandStatus.VALIDERING_FEILET,
                 valideringsfeil = validationErrors

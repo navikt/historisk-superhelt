@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {BodyShort, Tooltip} from '@navikt/ds-react';
+import {BodyShort, Box, Tooltip} from '@navikt/ds-react';
 
 import {StepIcon} from './StepIcon';
 import {StepType} from './StepType';
@@ -42,11 +42,11 @@ export const ProcessMenuItem = (props: ProcessButtonProps) => {
         );
     }
 
-    return <li key={label} className={styles.step}>
-        <Link {...props}>
+    return <Box className={styles.step}>
+        <Link {...props} disabled={disabled}>
             {({isActive}) => {
                 return renderButton(isActive);
             }}
         </Link>
-    </li>
+    </Box>
 };

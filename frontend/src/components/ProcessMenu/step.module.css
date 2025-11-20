@@ -26,12 +26,7 @@
 }
 
 .step {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-width: 0;
     position: relative;
-    align-items: center;
 }
 
 .step__button {
@@ -43,8 +38,7 @@
     height: 38px;
     justify-content: center;
     overflow: hidden;
-    padding-bottom: 10px;
-    padding-top: 4px;
+    padding: 4px 1.5rem 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
 
