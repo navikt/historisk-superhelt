@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.sak
 
 import net.datafaker.Faker
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
+import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
 import no.nav.person.Fnr
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
@@ -9,7 +10,7 @@ import java.util.concurrent.TimeUnit
 object SakTestData {
 
     private val faker: Faker = Faker()
-    
+
     fun sakUtenUtbetaling() = Sak(
         saksnummer = Saksnummer(faker.numerify("Mock-#####")),
         type = faker.options().option(StonadsType::class.java),
@@ -20,11 +21,15 @@ object SakTestData {
             java.time.ZoneId.systemDefault()
         ),
         status = SakStatus.UNDER_BEHANDLING,
-        vedtak = null,
+        vedtak = faker.options().option(VedtakType::class.java),
         opprettetDato = faker.timeAndDate().past(1, TimeUnit.DAYS),
         saksbehandler = faker.bothify("???###"),
         utbetaling = null,
         forhandstilsagn = null
+    )
+
+    fun sakMedUtbetaling() = sakUtenUtbetaling().copy(
+        utbetaling = UtbetalingTestData.utbetalingMinimum()
     )
 
     fun sakEntityMinimum(fnr: Fnr = Fnr(faker.numerify("###########"))): SakJpaEntity {
