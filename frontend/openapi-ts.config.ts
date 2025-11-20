@@ -10,7 +10,6 @@ export default defineConfig({
             baseUrl: '',
         },
         '@tanstack/react-query',
-        "zod"
     ],
 
 });
