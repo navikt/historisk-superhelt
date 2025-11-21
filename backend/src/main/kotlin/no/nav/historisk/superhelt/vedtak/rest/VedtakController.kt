@@ -23,7 +23,7 @@ class VedtakController(
     @Operation(operationId = "hentVedtakForSak")
     @GetMapping
     fun hentVedtakForSak(@PathVariable saksnummer: Saksnummer): List<Vedtak> {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         logger.info("Henter vedtak for sak $saksnummer")
         return vedtakRepository.findBySak(sak.saksnummer)
     }

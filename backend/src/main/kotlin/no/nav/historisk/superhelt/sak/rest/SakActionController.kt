@@ -26,15 +26,15 @@ class SakActionController(
     @Operation(operationId = "ferdigstillSak")
     @PutMapping("status/ferdigstill")
     fun ferdigstill(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkStatusTransition(SakStatus.FERDIG)
             .checkRettighet(SakRettighet.FERDIGSTILLE)
             .checkCompleted()
             .validate()
-        //TODO idempoensens håndtering
+        //TODO  håndtere retry
         sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
-        sakService.changeStatus(saksnummer, SakStatus.FERDIG)
+        sakService.ferdigstill(saksnummer)
         // sende brev
 
         vedtakService.fattVedtak(saksnummer)
@@ -45,7 +45,7 @@ class SakActionController(
     @Operation(operationId = "sendTilAttestering")
     @PutMapping("status/tilattestering")
     fun tilAttestering(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkStatusTransition(SakStatus.TIL_ATTESTERING)
             .checkCompleted()
@@ -61,7 +61,7 @@ class SakActionController(
     @PutMapping("status/gjenapne")
     fun gjenapne(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
         // TODO årsak mm
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
             .checkRettighet(SakRettighet.GJENAPNE)

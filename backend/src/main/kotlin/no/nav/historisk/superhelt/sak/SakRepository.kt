@@ -30,7 +30,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
 
     @PreAuthorize("hasAuthority('READ')")
     @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
-    fun getSakOrThrow(saksnummer: Saksnummer): Sak {
+    fun getSak(saksnummer: Saksnummer): Sak {
         return getSakEntityOrThrow(saksnummer).toDomain()
     }
 

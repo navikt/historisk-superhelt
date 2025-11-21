@@ -8,6 +8,7 @@ import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
 object SakTestData {
@@ -24,7 +25,7 @@ object SakTestData {
             tittel = faker.greekPhilosopher().quote(),
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
-                java.time.ZoneId.systemDefault()
+                ZoneId.systemDefault()
             ),
             status = SakStatus.UNDER_BEHANDLING,
             vedtaksResultat = faker.options().option(VedtaksResultat::class.java),
@@ -48,5 +49,28 @@ object SakTestData {
             saksbehandler = NavIdent(faker.greekPhilosopher().name())
         )
     }
+
+    fun sakEntityCompleteUtbetaling(
+        fnr: Fnr = Fnr(faker.numerify("###########")),
+        sakStatus: SakStatus = SakStatus.UNDER_BEHANDLING
+    ): SakJpaEntity {
+        val sak = sakEntityMinimum(fnr)
+        with(sak) {
+            tittel = faker.harryPotter().quote()
+            soknadsDato = LocalDate.ofInstant(
+                faker.timeAndDate().past(30, TimeUnit.DAYS),
+                ZoneId.systemDefault()
+            )
+            begrunnelse = faker.yoda().quote()
+            status = sakStatus
+            vedtaksResultat = faker.options().option(VedtaksResultat::class.java)
+            saksbehandler = NavIdent(faker.bothify("s??###"))
+
+            setOrUpdateUtbetaling(faker.number().numberBetween(10, 99999))
+        }
+        return sak
+
+    }
+
 
 }

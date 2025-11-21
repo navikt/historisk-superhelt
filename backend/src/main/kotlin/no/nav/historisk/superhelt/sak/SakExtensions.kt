@@ -31,7 +31,7 @@ object SakExtensions {
             utbetalingsType = sak.utbetalingsType,
             belop = sak.getBelop(),
             saksbehandler = sak.saksbehandler,
-            attestant = sak.saksbehandler,
+            attestant = sak.attestant!!,
             soknadsDato = sak.soknadsDato!!,
             vedtaksTidspunkt = vedtaksTidspunkt,
         )

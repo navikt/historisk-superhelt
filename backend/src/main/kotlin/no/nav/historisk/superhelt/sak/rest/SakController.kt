@@ -42,7 +42,7 @@ class SakController(
         @PathVariable saksnummer: Saksnummer,
         @RequestBody @Valid req: SakUpdateRequestDto,
     ): ResponseEntity<Sak> {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
@@ -56,7 +56,7 @@ class SakController(
         @PathVariable saksnummer: Saksnummer,
         @RequestBody @Valid req: UtbetalingRequestDto,
     ): ResponseEntity<Sak> {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
@@ -67,7 +67,7 @@ class SakController(
     @Operation(operationId = "getSakBySaksnummer", summary = "Hent opp en sak")
     @GetMapping("{saksnummer}")
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<Sak> {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkRettighet(SakRettighet.LES)
             .validate()

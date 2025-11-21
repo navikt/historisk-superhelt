@@ -11,7 +11,7 @@ class VedtakService(
     private val sakRepository: SakRepository
 ) {
     fun fattVedtak(saksnummer: Saksnummer) {
-        val sak = sakRepository.getSakOrThrow(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
         val vedtak = sak.createVedtak()
 
         vedtakRepository.save(vedtak)

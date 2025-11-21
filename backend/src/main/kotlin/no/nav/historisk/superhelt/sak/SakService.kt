@@ -85,4 +85,20 @@ class SakService(private val sakRepository: SakRepository) {
         sakRepository.save(sak)
         logger.debug("Sak {} endret status til {}", saksnummer, status)
     }
+
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun ferdigstill(saksnummer: Saksnummer) {
+        val sak = sakRepository.getSakEntityOrThrow(saksnummer)
+        val status = SakStatus.FERDIG
+        if (status === sak.status) {
+            logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
+            return
+        }
+        sak.status = status
+        sak.attestant = getCurrentNavIdent()
+        sakRepository.save(sak)
+        logger.debug("Sak {} endret status til {}", saksnummer, status)
+    }
 }
