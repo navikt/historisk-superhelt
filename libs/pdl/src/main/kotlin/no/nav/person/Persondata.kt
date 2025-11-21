@@ -1,5 +1,6 @@
 package no.nav.person
 
+import no.nav.common.types.Fnr
 import no.nav.pdl.AdressebeskyttelseGradering
 
 data class Persondata(

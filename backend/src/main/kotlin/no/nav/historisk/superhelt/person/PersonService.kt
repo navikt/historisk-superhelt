@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.person
 
+import no.nav.common.types.Fnr
 import no.nav.pdl.PdlClient
-import no.nav.person.Fnr
 import no.nav.person.PdlPersondataParser
 import no.nav.person.Persondata
 import org.springframework.stereotype.Service

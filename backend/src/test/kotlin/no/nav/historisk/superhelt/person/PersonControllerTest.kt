@@ -1,9 +1,9 @@
 package no.nav.historisk.superhelt.person
 
 
+import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
-import no.nav.person.Fnr
 import no.nav.person.Persondata
 import no.nav.tilgangsmaskin.Avvisningskode
 import no.nav.tilgangsmaskin.TilgangsmaskinClient

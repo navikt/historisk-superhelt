@@ -2,8 +2,8 @@ package no.nav.historisk.superhelt.person
 
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import no.nav.common.types.Fnr
 import no.nav.pdl.AdressebeskyttelseGradering
-import no.nav.person.Fnr
 import no.nav.person.Persondata
 import no.nav.tilgangsmaskin.Avvisningskode
 import no.nav.tilgangsmaskin.TilgangsmaskinClient

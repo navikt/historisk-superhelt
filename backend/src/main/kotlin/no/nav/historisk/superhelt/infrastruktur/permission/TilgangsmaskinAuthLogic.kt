@@ -1,15 +1,15 @@
 package no.nav.historisk.superhelt.infrastruktur.permission
 
+import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
-import no.nav.person.Fnr
 import org.springframework.security.authorization.AuthorizationDecision
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.stereotype.Component
 
 @Component("tilgangsmaskin")
- class TilgangsmaskinAuthLogic(private val tilgangsmaskinService: TilgangsmaskinService) {
+class TilgangsmaskinAuthLogic(private val tilgangsmaskinService: TilgangsmaskinService) {
 
-     fun harTilgang(fnr: String?): Boolean? {
+    fun harTilgang(fnr: String?): Boolean? {
         if (fnr == null || fnr.isBlank()) {
             return null
         }
@@ -28,7 +28,8 @@ import org.springframework.stereotype.Component
 
     class Til
 
-    class TilgangsmaskinAuthorizationDecision(granted: Boolean, val reason: String? = null) : AuthorizationDecision(granted){
+    class TilgangsmaskinAuthorizationDecision(granted: Boolean, val reason: String? = null) :
+        AuthorizationDecision(granted) {
         override fun toString(): String {
             return "Tilgangsmaskin nekter tilgang fordi " + this.reason
 
