@@ -13,7 +13,7 @@ class UtbetalingMetrics(private val meterRegistry: MeterRegistry) {
     @Bean
     fun utbetalingStatusGaugeMetric(utbetalingRepository: UtbetalingJpaRepository): String {
         UtbetalingStatus.entries.forEach { status ->
-            Gauge.builder("utbetaling_count") {
+            Gauge.builder("db.utbetalinger.count") {
                 utbetalingRepository.countByUtbetalingStatus(status).toDouble()
             }
                 .description("Antall utbetalinger med status $status")

@@ -42,9 +42,9 @@ export type Sak = {
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
