@@ -6,6 +6,7 @@ import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
@@ -26,7 +27,7 @@ object SakTestData {
                 java.time.ZoneId.systemDefault()
             ),
             status = SakStatus.UNDER_BEHANDLING,
-            vedtak = faker.options().option(VedtakType::class.java),
+            vedtaksResultat = faker.options().option(VedtaksResultat::class.java),
             opprettetDato = faker.timeAndDate().past(1, TimeUnit.DAYS),
             saksbehandler = NavIdent(faker.bothify("???###")),
             attestant = null,

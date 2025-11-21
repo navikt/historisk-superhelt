@@ -4,9 +4,13 @@ import jakarta.persistence.*
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
-import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakStatus
+import no.nav.historisk.superhelt.sak.Saksnummer
+import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.utbetaling.db.ForhandTilsagnJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.hibernate.Hibernate
 import java.time.Instant
 import java.time.LocalDate
@@ -31,7 +35,7 @@ class SakJpaEntity(
     var status: SakStatus = SakStatus.UNDER_BEHANDLING,
 
     @Enumerated(EnumType.STRING)
-    var vedtak: VedtakType? = null,
+    var vedtaksResultat: VedtaksResultat? = null,
 
     var begrunnelse: String? = null,
 
@@ -88,7 +92,7 @@ class SakJpaEntity(
             tittel = this.tittel,
             begrunnelse = this.begrunnelse,
             status = this.status,
-            vedtak = this.vedtak,
+            vedtaksResultat = this.vedtaksResultat,
             saksbehandler = this.saksbehandler,
             attestant = this.attestant,
             opprettetDato = this.opprettet,

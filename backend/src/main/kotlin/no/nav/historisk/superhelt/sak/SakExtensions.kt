@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.NorskeKroner
+import no.nav.historisk.superhelt.vedtak.Vedtak
+import java.time.Instant
 
 object SakExtensions {
     fun Sak.getBelop(): NorskeKroner? {
@@ -11,4 +13,28 @@ object SakExtensions {
         }
 
     }
+
+    fun Sak.createVedtak(vedtaksTidspunkt: Instant = Instant.now()): Vedtak {
+        val sak = this
+        SakValidator(sak)
+            .checkCompleted()
+            .validate()
+
+        return Vedtak(
+            saksnummer = sak.saksnummer,
+            behandlingsnummer = sak.behandlingsnummer,
+            stonadstype = sak.type,
+            fnr = sak.fnr,
+            tittel = sak.tittel!!,
+            resultat = sak.vedtaksResultat!!,
+            begrunnelse = sak.begrunnelse,
+            utbetalingsType = sak.utbetalingsType,
+            belop = sak.getBelop(),
+            saksbehandler = sak.saksbehandler,
+            attestant = sak.saksbehandler,
+            soknadsDato = sak.soknadsDato!!,
+            vedtaksTidspunkt = vedtaksTidspunkt,
+        )
+    }
+
 }

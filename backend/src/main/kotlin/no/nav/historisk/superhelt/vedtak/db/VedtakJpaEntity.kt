@@ -7,9 +7,9 @@ import no.nav.common.types.NavIdent
 import no.nav.common.types.NorskeKroner
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
-import no.nav.historisk.superhelt.sak.VedtakType
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.vedtak.Vedtak
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.hibernate.Hibernate
 import java.time.Instant
 import java.time.LocalDate
@@ -34,7 +34,7 @@ class VedtakJpaEntity(
     val tittel: String,
 
     @Enumerated(EnumType.STRING)
-    val vedtak: VedtakType,
+    val resultat: VedtaksResultat,
     val begrunnelse: String?,
 
     @Enumerated(EnumType.STRING)
@@ -65,11 +65,11 @@ class VedtakJpaEntity(
         return Vedtak(
             saksnummer = this.sak.saksnummer,
             behandlingsnummer = this.behandlingsnummer,
-            type = this.type,
+            stonadstype = this.type,
             fnr = this.fnr,
             tittel = this.tittel,
             begrunnelse = this.begrunnelse,
-            vedtak = this.vedtak,
+            resultat = this.resultat,
             saksbehandler = this.saksbehandler,
             attestant = this.attestant,
             soknadsDato = this.soknadsDato,

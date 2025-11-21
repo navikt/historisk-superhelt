@@ -43,7 +43,7 @@ class SakService(private val sakRepository: SakRepository) {
         req.tittel?.let { sak.tittel = it }
         req.begrunnelse?.let { sak.begrunnelse = it }
         req.soknadsDato?.let { sak.soknadsDato = it }
-        req.vedtak?.let { sak.vedtak = it }
+        req.vedtaksResultat?.let { sak.vedtaksResultat = it }
         logger.debug("Oppdaterer sak med saksnummer {}", saksnummer)
         return sakRepository.save(sak)
     }

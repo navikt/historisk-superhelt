@@ -7,7 +7,6 @@ import no.nav.common.types.NorskeKroner
 import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
-import no.nav.historisk.superhelt.sak.VedtakType
 import java.time.Instant
 import java.time.LocalDate
 
@@ -15,12 +14,12 @@ import java.time.LocalDate
 data class Vedtak(
     val saksnummer: Saksnummer,
     val behandlingsnummer: Behandlingsnummer,
-    val type: StonadsType,
+    val stonadstype: StonadsType,
     val fnr: Fnr,
     val tittel: String, //??
     val soknadsDato: LocalDate,
     val begrunnelse: String? = null,
-    val vedtak: VedtakType,
+    val resultat: VedtaksResultat,
     val vedtaksTidspunkt: Instant,
     val saksbehandler: NavIdent,
     val attestant: NavIdent,

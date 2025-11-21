@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size
 import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
-import no.nav.historisk.superhelt.sak.VedtakType
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.LocalDate
 
 data class SakCreateRequestDto(
@@ -22,7 +22,7 @@ data class SakUpdateRequestDto(
     val tittel: String? = null,
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
-    val vedtak: VedtakType? = null,
+    val vedtaksResultat: VedtaksResultat? = null,
 )
 
 data class UtbetalingRequestDto(val utbetalingsType: UtbetalingsType, val belop: Int?)

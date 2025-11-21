@@ -4,6 +4,7 @@ import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.vedtak.db.VedtakJpaEntity
 import no.nav.historisk.superhelt.vedtak.db.VedtakJpaRepository
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -12,16 +13,17 @@ class VedtakRepository(
     private val vedtakJpaRepository: VedtakJpaRepository,
     private val sakRepository: SakRepository
 ) {
-    @Transactional
+
+    @PreAuthorize("hasAuthority('WRITE')")
     internal fun save(vedtak: Vedtak) {
         val sakEntity = sakRepository.getSakEntityOrThrow(vedtak.saksnummer)
         val vedtakJpaEntity = VedtakJpaEntity(
             sak = sakEntity,
             behandlingsnummer = vedtak.behandlingsnummer,
-            type = vedtak.type,
+            type = vedtak.stonadstype,
             fnr = vedtak.fnr,
             tittel = vedtak.tittel,
-            vedtak = vedtak.vedtak,
+            resultat = vedtak.resultat,
             begrunnelse = vedtak.begrunnelse,
             utbetalingsType = vedtak.utbetalingsType,
             belop = vedtak.belop?.value,

@@ -19,7 +19,7 @@ class SakTilstand(private val sak: Sak) {
                 && sak.begrunnelse.isNullOrBlank()
                 && sak.utbetaling == null
                 && sak.forhandstilsagn == null
-                && sak.vedtak == null
+                && sak.vedtaksResultat == null
             ) {
                 return TilstandResultat(
                     tilstand = TilstandStatus.IKKE_STARTET,

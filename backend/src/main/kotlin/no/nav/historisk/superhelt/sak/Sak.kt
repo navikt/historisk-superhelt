@@ -12,6 +12,7 @@ import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.Instant
 import java.time.LocalDate
 
@@ -45,7 +46,7 @@ data class Sak(
         message = "Begrunnelse kan ikke være lengre enn {max} tegn"
     ) val begrunnelse: String? = null,
 
-    @field:NotNull(message = "Vedtak må være satt") val vedtak: VedtakType? = null,
+    @field:NotNull(message = "Vedtak må være satt") val vedtaksResultat: VedtaksResultat? = null,
 
     val opprettetDato: Instant,
     val saksbehandler: NavIdent,

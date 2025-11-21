@@ -20,7 +20,7 @@ export type SakUpdateRequestDto = {
     tittel?: string;
     begrunnelse?: string;
     soknadsDato?: string;
-    vedtak?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
 };
 
 export type Forhandstilsagn = {
@@ -36,16 +36,16 @@ export type Sak = {
     tittel: string;
     soknadsDato: string;
     begrunnelse?: string;
-    vedtak: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     saksbehandler: string;
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    readonly maskertPersonIdent: string;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakTilstand = {
@@ -102,6 +102,22 @@ export type User = {
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
 };
 
+export type Vedtak = {
+    saksnummer: string;
+    behandlingsnummer: string;
+    stonadstype: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
+    fnr: string;
+    tittel: string;
+    soknadsDato: string;
+    begrunnelse?: string;
+    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksTidspunkt: string;
+    saksbehandler: string;
+    attestant: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    belop?: number;
+};
+
 export type StonadsTypeDto = {
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     navn: string;
@@ -117,7 +133,7 @@ export type SakWritable = {
     tittel: string;
     soknadsDato: string;
     begrunnelse?: string;
-    vedtak: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     saksbehandler: string;
     attestant?: string;
@@ -468,6 +484,41 @@ export type GetUserInfoResponses = {
 };
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
+
+export type HentVedtakForSakData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/vedtak';
+};
+
+export type HentVedtakForSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentVedtakForSakError = HentVedtakForSakErrors[keyof HentVedtakForSakErrors];
+
+export type HentVedtakForSakResponses = {
+    /**
+     * OK
+     */
+    200: Array<Vedtak>;
+};
+
+export type HentVedtakForSakResponse = HentVedtakForSakResponses[keyof HentVedtakForSakResponses];
 
 export type GetKodeverkStonadTypeData = {
     body?: never;

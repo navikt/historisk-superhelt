@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateSakData, CreateSakErrors, CreateSakResponses, FerdigstillSakData, FerdigstillSakErrors, FerdigstillSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
+import type { CreateSakData, CreateSakErrors, CreateSakResponses, FerdigstillSakData, FerdigstillSakErrors, FerdigstillSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, HentVedtakForSakData, HentVedtakForSakErrors, HentVedtakForSakResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -103,6 +103,12 @@ export const findPersonByFnr = <ThrowOnError extends boolean = false>(options: O
 export const getUserInfo = <ThrowOnError extends boolean = false>(options?: Options<GetUserInfoData, ThrowOnError>) => (options?.client ?? client).get<GetUserInfoResponses, GetUserInfoErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/user',
+    ...options
+});
+
+export const hentVedtakForSak = <ThrowOnError extends boolean = false>(options: Options<HentVedtakForSakData, ThrowOnError>) => (options.client ?? client).get<HentVedtakForSakResponses, HentVedtakForSakErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}/vedtak',
     ...options
 });
 
