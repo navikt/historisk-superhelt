@@ -4,14 +4,9 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.sak.StonadsType
+import no.nav.historisk.superhelt.sak.UtbetalingsType
 import no.nav.historisk.superhelt.sak.VedtakType
 import java.time.LocalDate
-
-enum class UtbetalingsType {
-    BRUKER,
-    FORHANDSTILSAGN,
-    INGEN,
-}
 
 data class SakCreateRequestDto(
     val type: StonadsType,

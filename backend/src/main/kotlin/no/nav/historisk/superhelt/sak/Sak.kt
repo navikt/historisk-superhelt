@@ -7,9 +7,9 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
-import no.nav.historisk.superhelt.sak.rest.UtbetalingsType
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import java.time.Instant
@@ -26,8 +26,8 @@ data class Sak(
     /** Saksnummer for å skille mellom ulike saker for samme person Unik */
     val saksnummer: Saksnummer,
 
-    /** BehandlingTeller for å skille mellom ulike behandlinger på samme sak */
-    val behandlingsTeller: Int = 1,
+    /** Generert behandlingsnummer for denne behandlingen av saken. Unik */
+    val behandlingsnummer: Behandlingsnummer,
 
     val type: StonadsType,
     val fnr: Fnr,
@@ -48,16 +48,12 @@ data class Sak(
     @field:NotNull(message = "Vedtak må være satt") val vedtak: VedtakType? = null,
 
     val opprettetDato: Instant,
-    val saksbehandler: String,
+    val saksbehandler: NavIdent,
+    val attestant: NavIdent? = null,
 
     @field:Valid val utbetaling: Utbetaling? = null,
     @field:Valid val forhandstilsagn: Forhandstilsagn? = null,
 ) {
-
-    /** Generert behandlingsnummer for denne behandlingen av saken. Unik */
-    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val behandlingsnummer: Behandlingsnummer
-        get() = Behandlingsnummer(saksnummer.value, behandlingsTeller)
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val utbetalingsType: UtbetalingsType
@@ -79,5 +75,5 @@ data class Sak(
     val tilstand: SakTilstand
         get() = SakTilstand(this)
 
-
 }
+

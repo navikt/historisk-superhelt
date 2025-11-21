@@ -1,7 +1,9 @@
 package no.nav.historisk.superhelt.sak
 
 import net.datafaker.Faker
+import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
 import java.time.LocalDate
@@ -15,6 +17,7 @@ object SakTestData {
         val saksnummer = faker.numerify("Mock-#####")
         return Sak(
             saksnummer = Saksnummer(saksnummer),
+            behandlingsnummer = Behandlingsnummer(saksnummer, 1),
             type = faker.options().option(StonadsType::class.java),
             fnr = Fnr(faker.numerify("###########")),
             tittel = faker.greekPhilosopher().quote(),
@@ -25,7 +28,8 @@ object SakTestData {
             status = SakStatus.UNDER_BEHANDLING,
             vedtak = faker.options().option(VedtakType::class.java),
             opprettetDato = faker.timeAndDate().past(1, TimeUnit.DAYS),
-            saksbehandler = faker.bothify("???###"),
+            saksbehandler = NavIdent(faker.bothify("???###")),
+            attestant = null,
             utbetaling = null,
             forhandstilsagn = null
         )
@@ -40,7 +44,7 @@ object SakTestData {
             type = faker.options().option(StonadsType::class.java),
             fnr = fnr,
             status = SakStatus.UNDER_BEHANDLING,
-            saksbehandler = faker.greekPhilosopher().name()
+            saksbehandler = NavIdent(faker.greekPhilosopher().name())
         )
     }
 

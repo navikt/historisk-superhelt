@@ -1,3 +1,5 @@
 package no.nav.historisk.superhelt.utbetaling
 
-data class Forhandstilsagn(val belop: Int?)
+import no.nav.common.types.NorskeKroner
+
+data class Forhandstilsagn(val belop: NorskeKroner? = null)

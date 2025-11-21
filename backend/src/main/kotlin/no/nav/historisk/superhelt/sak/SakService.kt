@@ -1,12 +1,12 @@
 package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto
 import no.nav.historisk.superhelt.sak.rest.SakUpdateRequestDto
 import no.nav.historisk.superhelt.sak.rest.UtbetalingRequestDto
-import no.nav.historisk.superhelt.sak.rest.UtbetalingsType
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -28,7 +28,7 @@ class SakService(private val sakRepository: SakRepository) {
                 tittel = req.tittel,
                 status = SakStatus.UNDER_BEHANDLING,
                 soknadsDato = req.soknadsDato ?: LocalDate.now(),
-                saksbehandler = getCurrentNavIdent() ?: "ukjent",
+                saksbehandler = getCurrentNavIdent() ?: NavIdent("unknown"),
             )
         val saved = sakRepository.save(sak)
         logger.info("Opprettet ny sak med saksnummer {}", saved.saksnummer)

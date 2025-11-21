@@ -29,6 +29,7 @@ export type Forhandstilsagn = {
 
 export type Sak = {
     saksnummer: string;
+    behandlingsnummer: string;
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
@@ -38,12 +39,13 @@ export type Sak = {
     vedtak: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     saksbehandler: string;
+    attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
-    tilstand: SakTilstand;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
@@ -108,6 +110,7 @@ export type StonadsTypeDto = {
 
 export type SakWritable = {
     saksnummer: string;
+    behandlingsnummer: string;
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
@@ -117,6 +120,7 @@ export type SakWritable = {
     vedtak: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
     saksbehandler: string;
+    attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
 };

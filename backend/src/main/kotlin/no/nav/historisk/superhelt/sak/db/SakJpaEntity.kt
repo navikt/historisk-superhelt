@@ -1,7 +1,9 @@
 package no.nav.historisk.superhelt.sak.db
 
 import jakarta.persistence.*
+import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.utbetaling.db.ForhandTilsagnJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
@@ -33,7 +35,8 @@ class SakJpaEntity(
 
     var begrunnelse: String? = null,
 
-    var saksbehandler: String,
+    var saksbehandler: NavIdent,
+    var attestant: NavIdent? = null,
 
     var opprettet: Instant = Instant.now(),
 
@@ -67,15 +70,19 @@ class SakJpaEntity(
         this.forhandstilsagn = entity
     }
 
+    val saksnummer: Saksnummer
+        get() = id?.let { Saksnummer(it) }
+            ?: throw IllegalStateException(
+                "SakJpaEntity id kan ikke være null ved henting av saksnummer"
+            )
+    val behandlingsnummer: Behandlingsnummer
+        get() = Behandlingsnummer(saksnummer.value, behandlingsTeller)
+
     internal fun toDomain(): Sak {
 
-        val saksnummer = (this.id?.let { Saksnummer(it) }
-            ?: throw IllegalStateException(
-                "SakJpaEntity id kan ikke være null ved mapping til domain"
-            ))
         return Sak(
             saksnummer = saksnummer,
-            behandlingsTeller = this.behandlingsTeller,
+            behandlingsnummer = behandlingsnummer,
             type = this.type,
             fnr = this.fnr,
             tittel = this.tittel,
@@ -83,6 +90,7 @@ class SakJpaEntity(
             status = this.status,
             vedtak = this.vedtak,
             saksbehandler = this.saksbehandler,
+            attestant = this.attestant,
             opprettetDato = this.opprettet,
             soknadsDato = this.soknadsDato,
             utbetaling = this.utbetaling?.toDomain(),

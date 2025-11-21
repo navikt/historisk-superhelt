@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface SakJpaRepository : JpaRepository<SakJpaEntity, Long> {
-
     fun findSakEntitiesByFnr(fnr: Fnr): List<SakJpaEntity>
-
 }
