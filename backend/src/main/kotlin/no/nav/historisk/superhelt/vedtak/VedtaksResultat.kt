@@ -1,7 +1,6 @@
-package no.nav.historisk.superhelt.sak
+package no.nav.historisk.superhelt.vedtak
 
-
-enum class VedtakType {
+enum class VedtaksResultat {
     INNVILGET,
     DELVIS_INNVILGET,
     AVSLATT,

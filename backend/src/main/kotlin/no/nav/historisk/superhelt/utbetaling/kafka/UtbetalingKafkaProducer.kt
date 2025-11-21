@@ -45,12 +45,11 @@ class UtbetalingKafkaProducer(
                         Periode(
                             fom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
                             tom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
-                            beløp = utbetaling.belop
+                            beløp = utbetaling.belop.value
                         )
                     ),
-                saksbehandler = sak.saksbehandler,
-                //TODO bruke beslutter når vi har det i sak
-                beslutter = sak.saksbehandler,
+                saksbehandler = sak.saksbehandler.value,
+                beslutter = sak.attestant?.value ?: sak.saksbehandler.value,
             )
 
         logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, id)

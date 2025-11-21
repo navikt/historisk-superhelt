@@ -16,6 +16,7 @@
         <module>tilgangsmaskin</module>
         <module>pdl</module>
         <module>helved</module>
+        <module>common-types</module>
     </modules>
 
     <dependencies>
@@ -72,7 +73,6 @@
             </plugin>
         </plugins>
     </build>
-
 
 
 </project>

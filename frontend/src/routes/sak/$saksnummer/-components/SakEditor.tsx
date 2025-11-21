@@ -94,7 +94,7 @@ export default function SakEditor({sak}: Props) {
     const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
 
 
-    function getErrorMessage(field: "tittel" | "vedtak" | "soknadsDato" | "begrunnelse" | string): string | undefined {
+    function getErrorMessage(field: "tittel" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling"): string | undefined {
         if (!showValidation || !hasValidationErrors) {
             return undefined
         }
@@ -137,15 +137,15 @@ export default function SakEditor({sak}: Props) {
 
                 <HStack gap="8" align="start">
                     <VStack style={{flex: 1}}>
-                        <RadioGroup legend="Vedtak" value={updateSakData.vedtak}
-                                    onChange={value => patchSak({vedtak: value as SakVedtakType})}
-                                    error={getErrorMessage("vedtak")}>
+                        <RadioGroup legend="Vedtak" value={updateSakData.vedtaksResultat}
+                                    onChange={value => patchSak({vedtaksResultat: value as SakVedtakType})}
+                                    error={getErrorMessage("vedtaksResultat")}>
                             <Radio value="INNVILGET">Innvilget</Radio>
                             <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
                             <Radio value="AVSLATT">Avslått</Radio>
                         </RadioGroup>
                     </VStack>
-                    {updateSakData.vedtak !== 'AVSLATT' && (
+                    {updateSakData.vedtaksResultat !== 'AVSLATT' && (
                         <UtbetalingEditor sak={sak}
                                           errorUtbetaling={getErrorMessage("utbetaling")}
                                           errorBelop={getErrorMessage("utbetaling.belop")}

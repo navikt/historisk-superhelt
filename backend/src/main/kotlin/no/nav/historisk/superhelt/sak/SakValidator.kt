@@ -28,6 +28,7 @@ class SakValidator(private val sak: Sak) {
 
     fun checkStatusTransition(newStatus: SakStatus): SakValidator {
         val validTransitions = when (sak.status) {
+            //TODO Fjerne UNDER_BEHANDLING -> FERDIG når totrinnskontroll er på plass
             SakStatus.UNDER_BEHANDLING -> listOf(SakStatus.FERDIG, SakStatus.TIL_ATTESTERING)
             SakStatus.TIL_ATTESTERING -> listOf(SakStatus.FERDIG)
             SakStatus.FERDIG -> listOf(SakStatus.UNDER_BEHANDLING)

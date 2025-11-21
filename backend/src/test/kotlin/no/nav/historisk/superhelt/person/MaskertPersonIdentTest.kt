@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.person
 
+import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
-import no.nav.person.Fnr
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

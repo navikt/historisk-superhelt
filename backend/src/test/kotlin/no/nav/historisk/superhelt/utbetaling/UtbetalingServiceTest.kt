@@ -150,7 +150,7 @@ class UtbetalingServiceTest {
                         melding.sakId == sak.saksnummer.value &&
                         melding.personident == sak.fnr.value &&
                         melding.perioder.first().beløp == belop &&
-                        melding.saksbehandler == sak.saksbehandler
+                        melding.saksbehandler == sak.saksbehandler.value
             }
         )
         val utbetaling = utbetalingJpaRepository.findByUuid(utbetalingUuid)

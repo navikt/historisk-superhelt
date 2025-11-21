@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.utbetaling.db
 
 import jakarta.persistence.*
+import no.nav.common.types.NorskeKroner
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
@@ -11,12 +12,15 @@ import java.util.*
 @Entity
 @Table(name = "utbetaling")
 class UtbetalingJpaEntity(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
 
     @Column(name = "uuid", nullable = false, unique = true)
     var uuid: UUID = UUID.randomUUID(),
 
-    @OneToOne(mappedBy = "utbetaling") val sak: SakJpaEntity,
+    @OneToOne(mappedBy = "utbetaling")
+    val sak: SakJpaEntity,
+
     var belop: Int,
 
     var utbetalingTidspunkt: Instant? = null,
@@ -36,7 +40,7 @@ class UtbetalingJpaEntity(
 
     internal fun toDomain(): Utbetaling? {
         return Utbetaling(
-            belop = this.belop,
+            belop = NorskeKroner(this.belop),
             uuid = this.uuid,
             utbetalingStatus = this.utbetalingStatus,
             utbetalingTidspunkt = this.utbetalingTidspunkt

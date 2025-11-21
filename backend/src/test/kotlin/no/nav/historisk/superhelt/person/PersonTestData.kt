@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.person
 
-import no.nav.person.Fnr
+import no.nav.common.types.Fnr
 import no.nav.person.Persondata
 
 object PersonTestData {

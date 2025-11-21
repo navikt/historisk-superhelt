@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.infrastruktur
 
+import no.nav.common.types.NavIdent
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -33,9 +34,9 @@ fun getCurrentUserPermissions(): List<Permission> {
 }
 
 // TODO Navident som type
-fun getCurrentNavIdent(): String? {
+fun getCurrentNavIdent(): NavIdent? {
     val authentication = getJwtAuthentication()
-    return authentication?.name
+    return authentication?.name?.let { NavIdent(it) }
 }
 
 fun getCurrentUserToken(): String? {
@@ -47,7 +48,7 @@ fun getCurrentUserName(): String? {
     val jwt = getCurrentJwt()
     return jwt?.getClaimAsString("name")
         ?: jwt?.getClaimAsString("given_name")
-        ?: getCurrentNavIdent()
+        ?: getCurrentNavIdent()?.value
 }
 
 fun getCurrentJwt(): Jwt? {

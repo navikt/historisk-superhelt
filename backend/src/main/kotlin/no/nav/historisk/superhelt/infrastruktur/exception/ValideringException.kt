@@ -13,5 +13,6 @@ class ValideringException(
 
 
     override val message: String
-        get() = (reason ?: "Valideringsfeil") + validationErrors.joinToString(", ") { "${it.field}: ${it.message}" }
+        get() = (reason
+            ?: "Valideringsfeil") + ": " + validationErrors.joinToString(", ") { "${it.field}: ${it.message}" }
 }
