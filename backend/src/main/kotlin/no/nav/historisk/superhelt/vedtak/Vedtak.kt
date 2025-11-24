@@ -18,6 +18,7 @@ data class Vedtak(
     val fnr: Fnr,
     val tittel: String, //?? Usikker på om denne skal være med
     val soknadsDato: LocalDate,
+    val tildelingsAar: String?,
     val begrunnelse: String? = null,
     val resultat: VedtaksResultat,
     val vedtaksTidspunkt: Instant,

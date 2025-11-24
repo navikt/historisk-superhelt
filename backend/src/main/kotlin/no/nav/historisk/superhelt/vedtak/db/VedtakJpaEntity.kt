@@ -45,6 +45,7 @@ class VedtakJpaEntity(
     val attestant: NavIdent,
 
     val soknadsDato: LocalDate,
+    val tildelingsAar: String?,
     val vedtaksTidspunkt: Instant
 
 ) {
@@ -73,6 +74,7 @@ class VedtakJpaEntity(
             saksbehandler = this.saksbehandler,
             attestant = this.attestant,
             soknadsDato = this.soknadsDato,
+            tildelingsAar = this.tildelingsAar,
             vedtaksTidspunkt = vedtaksTidspunkt,
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },

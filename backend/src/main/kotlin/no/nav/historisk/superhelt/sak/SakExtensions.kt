@@ -33,6 +33,7 @@ object SakExtensions {
             saksbehandler = sak.saksbehandler,
             attestant = sak.attestant!!,
             soknadsDato = sak.soknadsDato!!,
+            tildelingsAar = sak.tildelingsAar,
             vedtaksTidspunkt = vedtaksTidspunkt,
         )
     }
