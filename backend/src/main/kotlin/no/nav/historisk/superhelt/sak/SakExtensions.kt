@@ -1,11 +1,11 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.common.types.NorskeKroner
+import no.nav.common.types.Belop
 import no.nav.historisk.superhelt.vedtak.Vedtak
 import java.time.Instant
 
 object SakExtensions {
-    fun Sak.getBelop(): NorskeKroner? {
+    fun Sak.getBelop(): Belop? {
         return when (this.utbetalingsType) {
             UtbetalingsType.BRUKER -> this.utbetaling?.belop
             UtbetalingsType.FORHANDSTILSAGN -> this.forhandstilsagn?.belop

@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.utbetaling.db
 
 import jakarta.persistence.*
-import no.nav.common.types.NorskeKroner
+import no.nav.common.types.Belop
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
@@ -40,7 +40,7 @@ class UtbetalingJpaEntity(
 
     internal fun toDomain(): Utbetaling? {
         return Utbetaling(
-            belop = NorskeKroner(this.belop),
+            belop = Belop(this.belop),
             uuid = this.uuid,
             utbetalingStatus = this.utbetalingStatus,
             utbetalingTidspunkt = this.utbetalingTidspunkt

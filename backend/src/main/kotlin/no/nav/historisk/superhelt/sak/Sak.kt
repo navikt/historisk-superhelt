@@ -1,10 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.validation.Valid
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
@@ -34,26 +30,20 @@ data class Sak(
     val fnr: Fnr,
     val status: SakStatus,
 
-    @field:NotBlank(message = "Sakstittel må være satt") @field:Size(
-        max = 200,
-        message = "Sakstittel kan ikke være lengre enn {max} tegn"
-    ) val tittel: String? = null,
+    val tittel: String? = null,
 
-    @field:NotNull(message = "Søknadsdato må være satt") val soknadsDato: LocalDate? = null,
+    val soknadsDato: LocalDate? = null,
 
-    @field:Size(
-        max = 1000,
-        message = "Begrunnelse kan ikke være lengre enn {max} tegn"
-    ) val begrunnelse: String? = null,
+    val begrunnelse: String? = null,
 
-    @field:NotNull(message = "Vedtak må være satt") val vedtaksResultat: VedtaksResultat? = null,
+    val vedtaksResultat: VedtaksResultat? = null,
 
     val opprettetDato: Instant,
     val saksbehandler: NavIdent,
     val attestant: NavIdent? = null,
 
-    @field:Valid val utbetaling: Utbetaling? = null,
-    @field:Valid val forhandstilsagn: Forhandstilsagn? = null,
+    val utbetaling: Utbetaling? = null,
+    val forhandstilsagn: Forhandstilsagn? = null,
 ) {
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)

@@ -56,12 +56,12 @@ object SakTestData {
     ): SakJpaEntity {
         val sak = sakEntityMinimum(fnr)
         with(sak) {
-            tittel = faker.harryPotter().quote()
+            tittel = faker.harryPotter().spell()
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
                 ZoneId.systemDefault()
             )
-            begrunnelse = faker.yoda().quote()
+            begrunnelse = faker.yoda().quote().take(250)
             status = sakStatus
             vedtaksResultat = faker.options().option(VedtaksResultat::class.java)
             saksbehandler = NavIdent(faker.bothify("s??###"))

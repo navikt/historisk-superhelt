@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.utbetaling.db
 
 import jakarta.persistence.*
-import no.nav.common.types.NorskeKroner
+import no.nav.common.types.Belop
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
 import org.hibernate.Hibernate
@@ -28,6 +28,6 @@ class ForhandTilsagnJpaEntity(
     override fun hashCode(): Int = javaClass.hashCode()
 
     internal fun toDomain(): Forhandstilsagn? {
-        return Forhandstilsagn(belop = NorskeKroner(this.belop))
+        return Forhandstilsagn(belop = Belop(this.belop))
     }
 }

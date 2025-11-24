@@ -1,9 +1,9 @@
 package no.nav.historisk.superhelt.vedtak
 
 import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Belop
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
-import no.nav.common.types.NorskeKroner
 import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
@@ -24,6 +24,6 @@ data class Vedtak(
     val saksbehandler: NavIdent,
     val attestant: NavIdent,
     val utbetalingsType: UtbetalingsType,
-    val belop: NorskeKroner?,
+    val belop: Belop?,
 //    val vedtaksBrevBruker: JournalpostId,
 )

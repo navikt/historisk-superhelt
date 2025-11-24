@@ -2,9 +2,9 @@ package no.nav.historisk.superhelt.vedtak.db
 
 import jakarta.persistence.*
 import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Belop
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
-import no.nav.common.types.NorskeKroner
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
@@ -75,7 +75,7 @@ class VedtakJpaEntity(
             soknadsDato = this.soknadsDato,
             vedtaksTidspunkt = vedtaksTidspunkt,
             utbetalingsType = this.utbetalingsType,
-            belop = this.belop?.let { NorskeKroner(it) },
+            belop = this.belop?.let { Belop(it) },
         )
     }
 }
