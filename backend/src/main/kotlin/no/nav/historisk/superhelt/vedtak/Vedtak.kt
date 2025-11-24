@@ -16,7 +16,7 @@ data class Vedtak(
     val behandlingsnummer: Behandlingsnummer,
     val stonadstype: StonadsType,
     val fnr: Fnr,
-    val tittel: String, //??
+    val tittel: String, //?? Usikker på om denne skal være med
     val soknadsDato: LocalDate,
     val begrunnelse: String? = null,
     val resultat: VedtaksResultat,

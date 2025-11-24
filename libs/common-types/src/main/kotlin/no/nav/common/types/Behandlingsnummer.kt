@@ -10,8 +10,8 @@ value class Behandlingsnummer(val value: String) {
     constructor(prefix: String, id: Int) : this("${prefix}-${id}")
 
     val id: Int
-        get() = value.split("-").getOrNull(1)?.toIntOrNull()
-            ?: throw IllegalStateException("Ugyldig saksnummer: $value")
+        get() = value.split("-").last().toIntOrNull()
+            ?: throw IllegalStateException("Ugyldig behandlingsnummer: $value")
 
     override fun toString(): String {
         return value

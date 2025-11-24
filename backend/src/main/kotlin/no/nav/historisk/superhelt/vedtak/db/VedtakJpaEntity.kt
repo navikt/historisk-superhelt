@@ -20,7 +20,7 @@ class VedtakJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sak_id", nullable = false)
     val sak: SakJpaEntity,
 

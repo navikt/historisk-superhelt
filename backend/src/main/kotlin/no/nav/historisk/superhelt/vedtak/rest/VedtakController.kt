@@ -23,6 +23,7 @@ class VedtakController(
     @Operation(operationId = "hentVedtakForSak")
     @GetMapping
     fun hentVedtakForSak(@PathVariable saksnummer: Saksnummer): List<Vedtak> {
+        // Henter sak for å verifisere at den eksisterer og sjekke tilgang
         val sak = sakRepository.getSak(saksnummer)
         logger.info("Henter vedtak for sak $saksnummer")
         return vedtakRepository.findBySak(sak.saksnummer)
