@@ -33,6 +33,7 @@ data class Sak(
     val tittel: String? = null,
 
     val soknadsDato: LocalDate? = null,
+    val tildelingsAar: String? = null,
 
     val begrunnelse: String? = null,
 

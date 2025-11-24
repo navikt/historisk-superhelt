@@ -45,6 +45,7 @@ class SakJpaEntity(
     var opprettet: Instant = Instant.now(),
 
     var soknadsDato: LocalDate? = null,
+    var tildelingsAar: String? = null,
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var utbetaling: UtbetalingJpaEntity? = null,
@@ -97,6 +98,7 @@ class SakJpaEntity(
             attestant = this.attestant,
             opprettetDato = this.opprettet,
             soknadsDato = this.soknadsDato,
+            tildelingsAar = this.tildelingsAar,
             utbetaling = this.utbetaling?.toDomain(),
             forhandstilsagn = this.forhandstilsagn?.toDomain(),
         )

@@ -22,6 +22,7 @@ data class SakUpdateRequestDto(
     val tittel: String? = null,
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
+    val tildelingsAar: String? = null,
     val vedtaksResultat: VedtaksResultat? = null,
 )
 

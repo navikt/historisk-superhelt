@@ -94,7 +94,7 @@ export default function SakEditor({sak}: Props) {
     const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
 
 
-    function getErrorMessage(field: "tittel" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling"): string | undefined {
+    function getErrorMessage(field: "tittel" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling" | "tildelingsAar"): string | undefined {
         if (!showValidation || !hasValidationErrors) {
             return undefined
         }
@@ -118,12 +118,21 @@ export default function SakEditor({sak}: Props) {
                     ))}
                 </Select>
 
-                <DatePicker {...datepickerProps} >
-                    <DatePicker.Input {...inputProps}
-                                      label="Søknadsdato"
-                                      error={getErrorMessage("soknadsDato")}
+                <HStack gap="6">
+                    <DatePicker {...datepickerProps} >
+                        <DatePicker.Input {...inputProps}
+                                          label="Søknadsdato"
+                                          error={getErrorMessage("soknadsDato")}
+                        />
+                    </DatePicker>
+                    <TextField
+                        label="Tildelingsår"
+                        autoComplete="off"
+                        error={getErrorMessage("tildelingsAar")}
+                        value={updateSakData.tildelingsAar ?? ''}
+                        onChange={(e) => patchSak({tildelingsAar: e.target.value})}
                     />
-                </DatePicker>
+                </HStack>
 
                 <TextField
                     label="Tittel"
@@ -134,6 +143,7 @@ export default function SakEditor({sak}: Props) {
 
 
                 <Heading size="small">Fatte vedtak</Heading>
+
 
                 <HStack gap="8" align="start">
                     <VStack style={{flex: 1}}>
