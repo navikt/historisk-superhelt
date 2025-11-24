@@ -1,10 +1,14 @@
 services:
   mock-oidc:
-    build: .
+    image: ghcr.io/navikt/mock-oauth2-server:latest
     ports:
       - "8102:8102"
+    volumes:
+      - ./config.json:/app/config.json
+      - ./login.html:/app/login/login.html
     environment:
-      JSON_CONFIG_PATH: /config.json
+      JSON_CONFIG_PATH: /app/config.json
+      LOG_LEVEL: "debug"
       SERVER_PORT: "8102"
     restart: on-failure
     env_file:

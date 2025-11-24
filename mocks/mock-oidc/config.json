@@ -1,13 +1,12 @@
 {
   "interactiveLogin": true,
-  "loginPagePath": "login.html",
+  "loginPagePath": "/app/login/login.html",
   "httpServer": "NettyWrapper",
   "tokenCallbacks": [
     {
       "issuerId": "azure-mock",
       "tokenExpiry": 7200,
-      "requestMappings": [
-      ]
+      "requestMappings": []
     }
   ]
 }
