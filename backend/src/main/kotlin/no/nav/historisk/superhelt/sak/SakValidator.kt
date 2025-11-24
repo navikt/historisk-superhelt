@@ -63,7 +63,7 @@ class SakValidator(private val sak: Sak) {
                         check(
                             utbetaling != null && utbetaling.belop.value <= 0,
                             "utbetaling.belop",
-                            "Beløpet må settes og være positivt "
+                            "Beløpet må settes og være positivt"
                         )
                     }
 

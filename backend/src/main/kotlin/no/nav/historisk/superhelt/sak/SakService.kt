@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
-import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto
@@ -28,7 +27,7 @@ class SakService(private val sakRepository: SakRepository) {
                 tittel = req.tittel,
                 status = SakStatus.UNDER_BEHANDLING,
                 soknadsDato = req.soknadsDato ?: LocalDate.now(),
-                saksbehandler = getCurrentNavIdent() ?: NavIdent("unknown"),
+                saksbehandler = getCurrentNavIdent()
             )
         val saved = sakRepository.save(sak)
         logger.info("Opprettet ny sak med saksnummer {}", saved.saksnummer)
@@ -92,7 +91,7 @@ class SakService(private val sakRepository: SakRepository) {
     fun ferdigstill(saksnummer: Saksnummer) {
         val sak = sakRepository.getSakEntityOrThrow(saksnummer)
         val status = SakStatus.FERDIG
-        if (status === sak.status) {
+        if (status == sak.status) {
             logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
             return
         }

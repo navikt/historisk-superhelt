@@ -20,7 +20,6 @@ class SakValidatorTest {
 
             assertThat(validator.validationErrors).isEmpty()
         }
-        
 
         @Test
         fun `should reject invalid transition from TIL_ATTESTERING to UNDER_BEHANDLING`() {
@@ -33,7 +32,6 @@ class SakValidatorTest {
         }
     }
 
-
     @Nested
     inner class ValidateTests {
 
@@ -43,7 +41,6 @@ class SakValidatorTest {
             val validator = SakValidator(sak)
 
             validator.checkSoknad().validate()
-
             // No exception thrown
         }
 
@@ -59,5 +56,4 @@ class SakValidatorTest {
                 .hasMessageContaining("Validering av sak feilet")
         }
     }
-
 }

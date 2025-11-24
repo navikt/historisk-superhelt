@@ -33,10 +33,9 @@ fun getCurrentUserPermissions(): List<Permission> {
         ?: emptyList()
 }
 
-// TODO Navident som type
-fun getCurrentNavIdent(): NavIdent? {
+fun getCurrentNavIdent(): NavIdent {
     val authentication = getJwtAuthentication()
-    return authentication?.name?.let { NavIdent(it) }
+    return authentication?.name?.let { NavIdent(it) } ?: throw IllegalStateException("NavIdent ikke funnet i JWT")
 }
 
 fun getCurrentUserToken(): String? {
@@ -44,11 +43,11 @@ fun getCurrentUserToken(): String? {
     return authentication?.token?.tokenValue
 }
 
-fun getCurrentUserName(): String? {
+fun getCurrentUserName(): String {
     val jwt = getCurrentJwt()
     return jwt?.getClaimAsString("name")
         ?: jwt?.getClaimAsString("given_name")
-        ?: getCurrentNavIdent()?.value
+        ?: getCurrentNavIdent().value
 }
 
 fun getCurrentJwt(): Jwt? {
