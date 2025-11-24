@@ -18,7 +18,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-  #          audiences: ${AZURE_APP_CLIENT_ID}
+          audiences: ${AZURE_APP_CLIENT_ID}
   web:
     resources:
       static-locations:
