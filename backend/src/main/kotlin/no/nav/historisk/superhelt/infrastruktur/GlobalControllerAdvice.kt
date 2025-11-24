@@ -30,7 +30,7 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
         val fieldErrors = ex.bindingResult.fieldErrors.map {
             ValidationFieldError(
                 field = it.field,
-                message = it.defaultMessage
+                message = it.defaultMessage ?: "Ukjent valideringsfeil"
             )
         }
         val problemDetail = createValidationErrorMessage(

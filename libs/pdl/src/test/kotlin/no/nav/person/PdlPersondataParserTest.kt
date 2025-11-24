@@ -1,5 +1,6 @@
 package no.nav.person
 
+import no.nav.common.types.Fnr
 import no.nav.pdl.*
 import no.nav.pdl.Doedsfall
 import org.assertj.core.api.Assertions.assertThat

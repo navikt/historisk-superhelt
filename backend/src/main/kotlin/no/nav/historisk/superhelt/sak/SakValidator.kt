@@ -1,24 +1,14 @@
 package no.nav.historisk.superhelt.sak
 
-import jakarta.validation.Validation
-import jakarta.validation.Validator
-import jakarta.validation.ValidatorFactory
 import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 
 class SakValidator(private val sak: Sak) {
 
     private val _validationErrors = mutableListOf<ValidationFieldError>()
     val validationErrors: List<ValidationFieldError>
         get() = _validationErrors.toList()
-
-    private val validator: Validator = Companion.validator
-
-
-    companion object {
-        private val factory: ValidatorFactory = Validation.buildDefaultValidatorFactory()
-        val validator: Validator = factory.validator
-    }
 
     private fun check(condition: Boolean, property: String, message: String) {
         if (condition) {
@@ -28,6 +18,7 @@ class SakValidator(private val sak: Sak) {
 
     fun checkStatusTransition(newStatus: SakStatus): SakValidator {
         val validTransitions = when (sak.status) {
+            //TODO Fjerne UNDER_BEHANDLING -> FERDIG når totrinnskontroll er på plass
             SakStatus.UNDER_BEHANDLING -> listOf(SakStatus.FERDIG, SakStatus.TIL_ATTESTERING)
             SakStatus.TIL_ATTESTERING -> listOf(SakStatus.FERDIG)
             SakStatus.FERDIG -> listOf(SakStatus.UNDER_BEHANDLING)
@@ -44,18 +35,44 @@ class SakValidator(private val sak: Sak) {
     }
 
     fun checkSoknad(): SakValidator {
-        // Sjekker annoteringer på Sak-klassen
-        val violations = validator.validate(sak)
-        violations.forEach {
-            _validationErrors.add(ValidationFieldError(it.propertyPath.toString(), it.message))
-        }
-
+        // TODO vurdere å bruke enum for felt for mer strukturert validering
         with(sak) {
+
+            check(tittel.isNullOrBlank(), "tittel", "Tittel må være satt")
+            check((tittel?.length ?: 0) > 200, "tittel", "Sakstittel kan ikke være lengre enn 200 tegn")
+
+            check(soknadsDato == null, "soknadsDato", "Søknadsdato må være satt")
+
             check(
-                utbetaling == null && forhandstilsagn == null,
-                "utbetaling",
-                "Det må settes enten utbetaling eller forhandstilsagn før sak kan ferdigstilles"
+                (begrunnelse?.length ?: 0) > 1000,
+                "begrunnelse",
+                "Begrunnelse kan ikke være lengre enn 1000 tegn"
             )
+
+            check(vedtaksResultat == null, "vedtaksResultat", "Vedtak må være satt")
+
+            if (listOf(VedtaksResultat.INNVILGET, VedtaksResultat.DELVIS_INNVILGET).contains(vedtaksResultat)) {
+                check(
+                    utbetaling == null && forhandstilsagn == null,
+                    "utbetaling",
+                    "Det må velges enten utbetaling eller forhandstilsagn"
+                )
+
+                when (utbetalingsType) {
+                    UtbetalingsType.BRUKER -> {
+                        check(
+                            utbetaling != null && utbetaling.belop.value <= 0,
+                            "utbetaling.belop",
+                            "Beløpet må settes og være positivt"
+                        )
+                    }
+
+                    UtbetalingsType.FORHANDSTILSAGN -> {}
+                    UtbetalingsType.INGEN -> {}
+                }
+
+            }
+
         }
         return this
     }
@@ -72,6 +89,5 @@ class SakValidator(private val sak: Sak) {
             throw ValideringException(reason = "Validering av sak feilet", validationErrors = _validationErrors)
         }
     }
-
 
 }

@@ -1,55 +1,58 @@
 package no.nav.historisk.superhelt.sak
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.validation.Valid
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
+import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Fnr
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
-import no.nav.historisk.superhelt.sak.rest.UtbetalingsType
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
-import no.nav.person.Fnr
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.Instant
 import java.time.LocalDate
 
-/** DTO */
+/**
+ * Representerer en sak for en person (fnr) innen en bestemt stønads type
+ *
+ * En åpen sak representerer en pågående behandling. Når saken ferdigstilles lages det ett vedtak.
+ * Ved gjenåpning av en sak opprettes en ny behandling på samme saksnummer med ett nytt behandlingsNummer.
+ *
+ */
 data class Sak(
+    /** Saksnummer for å skille mellom ulike saker for samme person Unik */
     val saksnummer: Saksnummer,
+
+    /** Generert behandlingsnummer for denne behandlingen av saken. Unik */
+    val behandlingsnummer: Behandlingsnummer,
+
     val type: StonadsType,
     val fnr: Fnr,
     val status: SakStatus,
 
-    @field:NotBlank(message = "Sakstittel må være satt")
-    @field:Size(max = 200, message = "Sakstittel kan ikke være lengre enn {max} tegn")
     val tittel: String? = null,
 
-    @field:NotNull(message = "Søknadsdato må være satt")
     val soknadsDato: LocalDate? = null,
 
-    @field:Size(max = 1000, message = "Begrunnelse kan ikke være lengre enn {max} tegn")
     val begrunnelse: String? = null,
 
-    @field:NotNull(message = "Vedtak må være satt")
-    val vedtak: VedtakType? = null,
+    val vedtaksResultat: VedtaksResultat? = null,
 
     val opprettetDato: Instant,
-    val saksbehandler: String,
+    val saksbehandler: NavIdent,
+    val attestant: NavIdent? = null,
 
-    @field:Valid
     val utbetaling: Utbetaling? = null,
-    @field:Valid
     val forhandstilsagn: Forhandstilsagn? = null,
 ) {
+
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val utbetalingsType: UtbetalingsType
-        get() =
-            when {
-                forhandstilsagn != null -> UtbetalingsType.FORHANDSTILSAGN
-                utbetaling != null -> UtbetalingsType.BRUKER
-                else -> UtbetalingsType.INGEN
-            }
+        get() = when {
+            forhandstilsagn != null -> UtbetalingsType.FORHANDSTILSAGN
+            utbetaling != null -> UtbetalingsType.BRUKER
+            else -> UtbetalingsType.INGEN
+        }
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent
@@ -63,5 +66,5 @@ data class Sak(
     val tilstand: SakTilstand
         get() = SakTilstand(this)
 
-
 }
+

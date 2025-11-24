@@ -1,5 +1,6 @@
 package no.nav.person
 
+import no.nav.common.types.Fnr
 import no.nav.pdl.*
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.HttpClientErrorException

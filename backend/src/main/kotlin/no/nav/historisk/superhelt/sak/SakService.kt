@@ -6,7 +6,6 @@ import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto
 import no.nav.historisk.superhelt.sak.rest.SakUpdateRequestDto
 import no.nav.historisk.superhelt.sak.rest.UtbetalingRequestDto
-import no.nav.historisk.superhelt.sak.rest.UtbetalingsType
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -28,7 +27,7 @@ class SakService(private val sakRepository: SakRepository) {
                 tittel = req.tittel,
                 status = SakStatus.UNDER_BEHANDLING,
                 soknadsDato = req.soknadsDato ?: LocalDate.now(),
-                saksbehandler = getCurrentNavIdent() ?: "ukjent",
+                saksbehandler = getCurrentNavIdent()
             )
         val saved = sakRepository.save(sak)
         logger.info("Opprettet ny sak med saksnummer {}", saved.saksnummer)
@@ -43,7 +42,7 @@ class SakService(private val sakRepository: SakRepository) {
         req.tittel?.let { sak.tittel = it }
         req.begrunnelse?.let { sak.begrunnelse = it }
         req.soknadsDato?.let { sak.soknadsDato = it }
-        req.vedtak?.let { sak.vedtak = it }
+        req.vedtaksResultat?.let { sak.vedtaksResultat = it }
         logger.debug("Oppdaterer sak med saksnummer {}", saksnummer)
         return sakRepository.save(sak)
     }
@@ -82,6 +81,22 @@ class SakService(private val sakRepository: SakRepository) {
             return
         }
         sak.status = status
+        sakRepository.save(sak)
+        logger.debug("Sak {} endret status til {}", saksnummer, status)
+    }
+
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun ferdigstill(saksnummer: Saksnummer) {
+        val sak = sakRepository.getSakEntityOrThrow(saksnummer)
+        val status = SakStatus.FERDIG
+        if (status == sak.status) {
+            logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
+            return
+        }
+        sak.status = status
+        sak.attestant = getCurrentNavIdent()
         sakRepository.save(sak)
         logger.debug("Sak {} endret status til {}", saksnummer, status)
     }

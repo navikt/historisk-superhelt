@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.infrastruktur.Role
 import no.nav.historisk.superhelt.test.WithAttestant
 import no.nav.historisk.superhelt.test.WithMockJwtAuth
@@ -77,8 +78,8 @@ class SakRettigheterTest {
         fun `får kun LES når sak er under behandling`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.UNDER_BEHANDLING,
-                saksbehandler = "saks-1"
-            )
+
+                )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }
 
@@ -86,7 +87,7 @@ class SakRettigheterTest {
         fun `får FERDIGSTILLE når sak er til attestering og attestant er ikke saksbehandler`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.TIL_ATTESTERING,
-                saksbehandler = "saks-1"
+                saksbehandler = NavIdent("saks-1")
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES, SakRettighet.FERDIGSTILLE)
         }
@@ -96,7 +97,7 @@ class SakRettigheterTest {
         fun `får kun LES når sak er til attestering og attestant er samme som saksbehandler`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.TIL_ATTESTERING,
-                saksbehandler = "saks-1"
+                saksbehandler = NavIdent("saks-1")
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }
@@ -105,7 +106,6 @@ class SakRettigheterTest {
         fun `får kun LES når sak er ferdig`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.FERDIG,
-                saksbehandler = "saks-1"
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }

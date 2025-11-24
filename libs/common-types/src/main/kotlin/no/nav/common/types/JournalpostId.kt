@@ -1,0 +1,5 @@
+package no.nav.common.types
+
+/** Id på en journalpost i NAVs journalsystem */
+@JvmInline
+value class JournalpostId(val value: String)

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateSakData, CreateSakErrors, CreateSakResponses, FerdigstillSakData, FerdigstillSakErrors, FerdigstillSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
+import type { CreateSakData, CreateSakErrors, CreateSakResponses, FerdigstillSakData, FerdigstillSakErrors, FerdigstillSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, HentVedtakForSakData, HentVedtakForSakErrors, HentVedtakForSakResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -21,183 +21,105 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 /**
  * Hent opp en sak
  */
-export const getSakBySaksnummer = <ThrowOnError extends boolean = false>(options: Options<GetSakBySaksnummerData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetSakBySaksnummerResponses, GetSakBySaksnummerErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/{saksnummer}',
-        ...options
-    });
-};
+export const getSakBySaksnummer = <ThrowOnError extends boolean = false>(options: Options<GetSakBySaksnummerData, ThrowOnError>) => (options.client ?? client).get<GetSakBySaksnummerResponses, GetSakBySaksnummerErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}',
+    ...options
+});
 
-export const oppdaterSak = <ThrowOnError extends boolean = false>(options: Options<OppdaterSakData, ThrowOnError>) => {
-    return (options.client ?? client).put<OppdaterSakResponses, OppdaterSakErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/{saksnummer}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const oppdaterSak = <ThrowOnError extends boolean = false>(options: Options<OppdaterSakData, ThrowOnError>) => (options.client ?? client).put<OppdaterSakResponses, OppdaterSakErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const oppdaterUtbetaling = <ThrowOnError extends boolean = false>(options: Options<OppdaterUtbetalingData, ThrowOnError>) => {
-    return (options.client ?? client).put<OppdaterUtbetalingResponses, OppdaterUtbetalingErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/{saksnummer}/utbetaling',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const oppdaterUtbetaling = <ThrowOnError extends boolean = false>(options: Options<OppdaterUtbetalingData, ThrowOnError>) => (options.client ?? client).put<OppdaterUtbetalingResponses, OppdaterUtbetalingErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}/utbetaling',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const sendTilAttestering = <ThrowOnError extends boolean = false>(options: Options<SendTilAttesteringData, ThrowOnError>) => {
-    return (options.client ?? client).put<SendTilAttesteringResponses, SendTilAttesteringErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/{saksnummer}/status/tilattestering',
-        ...options
-    });
-};
+export const sendTilAttestering = <ThrowOnError extends boolean = false>(options: Options<SendTilAttesteringData, ThrowOnError>) => (options.client ?? client).put<SendTilAttesteringResponses, SendTilAttesteringErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}/status/tilattestering',
+    ...options
+});
 
-export const gjenapneSak = <ThrowOnError extends boolean = false>(options: Options<GjenapneSakData, ThrowOnError>) => {
-    return (options.client ?? client).put<GjenapneSakResponses, GjenapneSakErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/{saksnummer}/status/gjenapne',
-        ...options
-    });
-};
+export const gjenapneSak = <ThrowOnError extends boolean = false>(options: Options<GjenapneSakData, ThrowOnError>) => (options.client ?? client).put<GjenapneSakResponses, GjenapneSakErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}/status/gjenapne',
+    ...options
+});
 
-export const ferdigstillSak = <ThrowOnError extends boolean = false>(options: Options<FerdigstillSakData, ThrowOnError>) => {
-    return (options.client ?? client).put<FerdigstillSakResponses, FerdigstillSakErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/{saksnummer}/status/ferdigstill',
-        ...options
-    });
-};
+export const ferdigstillSak = <ThrowOnError extends boolean = false>(options: Options<FerdigstillSakData, ThrowOnError>) => (options.client ?? client).put<FerdigstillSakResponses, FerdigstillSakErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}/status/ferdigstill',
+    ...options
+});
 
 /**
  * Finn saker for en person
  */
-export const findSakerForPerson = <ThrowOnError extends boolean = false>(options: Options<FindSakerForPersonData, ThrowOnError>) => {
-    return (options.client ?? client).get<FindSakerForPersonResponses, FindSakerForPersonErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak',
-        ...options
-    });
-};
+export const findSakerForPerson = <ThrowOnError extends boolean = false>(options: Options<FindSakerForPersonData, ThrowOnError>) => (options.client ?? client).get<FindSakerForPersonResponses, FindSakerForPersonErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak',
+    ...options
+});
 
 /**
  * opprett en ny sak
  */
-export const createSak = <ThrowOnError extends boolean = false>(options: Options<CreateSakData, ThrowOnError>) => {
-    return (options.client ?? client).post<CreateSakResponses, CreateSakErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const createSak = <ThrowOnError extends boolean = false>(options: Options<CreateSakData, ThrowOnError>) => (options.client ?? client).post<CreateSakResponses, CreateSakErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Finn person basert på fødselsnummer
  */
-export const findPersonByFnr = <ThrowOnError extends boolean = false>(options: Options<FindPersonByFnrData, ThrowOnError>) => {
-    return (options.client ?? client).post<FindPersonByFnrResponses, FindPersonByFnrErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/person',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    });
-};
+export const findPersonByFnr = <ThrowOnError extends boolean = false>(options: Options<FindPersonByFnrData, ThrowOnError>) => (options.client ?? client).post<FindPersonByFnrResponses, FindPersonByFnrErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/person',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
-export const getUserInfo = <ThrowOnError extends boolean = false>(options?: Options<GetUserInfoData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetUserInfoResponses, GetUserInfoErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/user',
-        ...options
-    });
-};
+export const getUserInfo = <ThrowOnError extends boolean = false>(options?: Options<GetUserInfoData, ThrowOnError>) => (options?.client ?? client).get<GetUserInfoResponses, GetUserInfoErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/user',
+    ...options
+});
 
-export const getKodeverkStonadType = <ThrowOnError extends boolean = false>(options?: Options<GetKodeverkStonadTypeData, ThrowOnError>) => {
-    return (options?.client ?? client).get<GetKodeverkStonadTypeResponses, GetKodeverkStonadTypeErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/sak/kodeverk/stonadtyper',
-        ...options
-    });
-};
+export const hentVedtakForSak = <ThrowOnError extends boolean = false>(options: Options<HentVedtakForSakData, ThrowOnError>) => (options.client ?? client).get<HentVedtakForSakResponses, HentVedtakForSakErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}/vedtak',
+    ...options
+});
 
-export const getPersonByMaskertIdent = <ThrowOnError extends boolean = false>(options: Options<GetPersonByMaskertIdentData, ThrowOnError>) => {
-    return (options.client ?? client).get<GetPersonByMaskertIdentResponses, GetPersonByMaskertIdentErrors, ThrowOnError>({
-        security: [
-            {
-                scheme: 'bearer',
-                type: 'http'
-            }
-        ],
-        url: '/api/person/{maskertPersonident}',
-        ...options
-    });
-};
+export const getKodeverkStonadType = <ThrowOnError extends boolean = false>(options?: Options<GetKodeverkStonadTypeData, ThrowOnError>) => (options?.client ?? client).get<GetKodeverkStonadTypeResponses, GetKodeverkStonadTypeErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/kodeverk/stonadtyper',
+    ...options
+});
+
+export const getPersonByMaskertIdent = <ThrowOnError extends boolean = false>(options: Options<GetPersonByMaskertIdentData, ThrowOnError>) => (options.client ?? client).get<GetPersonByMaskertIdentResponses, GetPersonByMaskertIdentErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/person/{maskertPersonident}',
+    ...options
+});

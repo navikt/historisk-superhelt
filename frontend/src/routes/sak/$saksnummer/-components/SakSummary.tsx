@@ -29,7 +29,7 @@ export default function SakSummary({sak}: SakSummaryProps) {
 
                 <FormSummary.Answer>
                     <FormSummary.Label>Status og vedtak</FormSummary.Label>
-                    <FormSummary.Value>{sak.status} / {sak.vedtak}</FormSummary.Value>
+                    <FormSummary.Value>{sak.status} / {sak.vedtaksResultat}</FormSummary.Value>
                 </FormSummary.Answer>
 
                 {sak.utbetaling && <FormSummary.Answer>

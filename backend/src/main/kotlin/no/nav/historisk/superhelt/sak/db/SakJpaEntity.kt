@@ -1,10 +1,16 @@
 package no.nav.historisk.superhelt.sak.db
 
 import jakarta.persistence.*
-import no.nav.historisk.superhelt.sak.*
+import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Fnr
+import no.nav.common.types.NavIdent
+import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakStatus
+import no.nav.historisk.superhelt.sak.Saksnummer
+import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.utbetaling.db.ForhandTilsagnJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
-import no.nav.person.Fnr
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.hibernate.Hibernate
 import java.time.Instant
 import java.time.LocalDate
@@ -12,18 +18,37 @@ import java.time.LocalDate
 @Entity
 @Table(name = "sak")
 class SakJpaEntity(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
-    @Enumerated(EnumType.STRING) var type: StonadsType,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
+    @Enumerated(EnumType.STRING)
+    var type: StonadsType,
+
+    /** Skiller mellom ulike behandlinger på samme sak. Økes med 1 for hver behandling */
+    var behandlingsTeller: Int = 1,
+
     var fnr: Fnr,
+
     var tittel: String? = null,
-    @Enumerated(EnumType.STRING) var status: SakStatus = SakStatus.UNDER_BEHANDLING,
-    @Enumerated(EnumType.STRING) var vedtak: VedtakType? = null,
+
+    @Enumerated(EnumType.STRING)
+    var status: SakStatus = SakStatus.UNDER_BEHANDLING,
+
+    @Enumerated(EnumType.STRING)
+    var vedtaksResultat: VedtaksResultat? = null,
+
     var begrunnelse: String? = null,
-    var saksbehandler: String,
+
+    var saksbehandler: NavIdent,
+    var attestant: NavIdent? = null,
+
     var opprettet: Instant = Instant.now(),
+
     var soknadsDato: LocalDate? = null,
+
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var utbetaling: UtbetalingJpaEntity? = null,
+
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var forhandstilsagn: ForhandTilsagnJpaEntity? = null,
 ) {
@@ -49,20 +74,27 @@ class SakJpaEntity(
         this.forhandstilsagn = entity
     }
 
+    val saksnummer: Saksnummer
+        get() = id?.let { Saksnummer(it) }
+            ?: throw IllegalStateException(
+                "SakJpaEntity id kan ikke være null ved henting av saksnummer"
+            )
+    val behandlingsnummer: Behandlingsnummer
+        get() = Behandlingsnummer(saksnummer.value, behandlingsTeller)
+
     internal fun toDomain(): Sak {
+
         return Sak(
-            saksnummer =
-                this.id?.let { Saksnummer(it) }
-                    ?: throw IllegalStateException(
-                        "SakJpaEntity id kan ikke være null ved mapping til domain"
-                    ),
+            saksnummer = saksnummer,
+            behandlingsnummer = behandlingsnummer,
             type = this.type,
             fnr = this.fnr,
             tittel = this.tittel,
             begrunnelse = this.begrunnelse,
             status = this.status,
-            vedtak = this.vedtak,
+            vedtaksResultat = this.vedtaksResultat,
             saksbehandler = this.saksbehandler,
+            attestant = this.attestant,
             opprettetDato = this.opprettet,
             soknadsDato = this.soknadsDato,
             utbetaling = this.utbetaling?.toDomain(),

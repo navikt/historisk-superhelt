@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, oppdaterSak, oppdaterUtbetaling, type Options, sendTilAttestering } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, GetKodeverkStonadTypeData, GetPersonByMaskertIdentData, GetSakBySaksnummerData, GetUserInfoData, GjenapneSakData, GjenapneSakError, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
+import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentVedtakForSak, oppdaterSak, oppdaterUtbetaling, type Options, sendTilAttestering } from '../sdk.gen';
+import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -36,9 +36,7 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     if (options?.query) {
         params.query = options.query;
     }
-    return [
-        params
-    ];
+    return [params];
 };
 
 export const getSakBySaksnummerQueryKey = (options: Options<GetSakBySaksnummerData>) => createQueryKey('getSakBySaksnummer', options);
@@ -46,20 +44,18 @@ export const getSakBySaksnummerQueryKey = (options: Options<GetSakBySaksnummerDa
 /**
  * Hent opp en sak
  */
-export const getSakBySaksnummerOptions = (options: Options<GetSakBySaksnummerData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getSakBySaksnummer({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getSakBySaksnummerQueryKey(options)
-    });
-};
+export const getSakBySaksnummerOptions = (options: Options<GetSakBySaksnummerData>) => queryOptions<GetSakBySaksnummerResponse, GetSakBySaksnummerError, GetSakBySaksnummerResponse, ReturnType<typeof getSakBySaksnummerQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSakBySaksnummer({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSakBySaksnummerQueryKey(options)
+});
 
 export const oppdaterSakMutation = (options?: Partial<Options<OppdaterSakData>>): UseMutationOptions<OppdaterSakResponse, OppdaterSakError, Options<OppdaterSakData>> => {
     const mutationOptions: UseMutationOptions<OppdaterSakResponse, OppdaterSakError, Options<OppdaterSakData>> = {
@@ -136,20 +132,18 @@ export const findSakerForPersonQueryKey = (options: Options<FindSakerForPersonDa
 /**
  * Finn saker for en person
  */
-export const findSakerForPersonOptions = (options: Options<FindSakerForPersonData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await findSakerForPerson({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: findSakerForPersonQueryKey(options)
-    });
-};
+export const findSakerForPersonOptions = (options: Options<FindSakerForPersonData>) => queryOptions<FindSakerForPersonResponse, FindSakerForPersonError, FindSakerForPersonResponse, ReturnType<typeof findSakerForPersonQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await findSakerForPerson({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: findSakerForPersonQueryKey(options)
+});
 
 /**
  * opprett en ny sak
@@ -187,51 +181,60 @@ export const findPersonByFnrMutation = (options?: Partial<Options<FindPersonByFn
 
 export const getUserInfoQueryKey = (options?: Options<GetUserInfoData>) => createQueryKey('getUserInfo', options);
 
-export const getUserInfoOptions = (options?: Options<GetUserInfoData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getUserInfo({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getUserInfoQueryKey(options)
-    });
-};
+export const getUserInfoOptions = (options?: Options<GetUserInfoData>) => queryOptions<GetUserInfoResponse, GetUserInfoError, GetUserInfoResponse, ReturnType<typeof getUserInfoQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getUserInfo({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUserInfoQueryKey(options)
+});
+
+export const hentVedtakForSakQueryKey = (options: Options<HentVedtakForSakData>) => createQueryKey('hentVedtakForSak', options);
+
+export const hentVedtakForSakOptions = (options: Options<HentVedtakForSakData>) => queryOptions<HentVedtakForSakResponse, HentVedtakForSakError, HentVedtakForSakResponse, ReturnType<typeof hentVedtakForSakQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await hentVedtakForSak({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: hentVedtakForSakQueryKey(options)
+});
 
 export const getKodeverkStonadTypeQueryKey = (options?: Options<GetKodeverkStonadTypeData>) => createQueryKey('getKodeverkStonadType', options);
 
-export const getKodeverkStonadTypeOptions = (options?: Options<GetKodeverkStonadTypeData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getKodeverkStonadType({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getKodeverkStonadTypeQueryKey(options)
-    });
-};
+export const getKodeverkStonadTypeOptions = (options?: Options<GetKodeverkStonadTypeData>) => queryOptions<GetKodeverkStonadTypeResponse, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, ReturnType<typeof getKodeverkStonadTypeQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getKodeverkStonadType({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getKodeverkStonadTypeQueryKey(options)
+});
 
 export const getPersonByMaskertIdentQueryKey = (options: Options<GetPersonByMaskertIdentData>) => createQueryKey('getPersonByMaskertIdent', options);
 
-export const getPersonByMaskertIdentOptions = (options: Options<GetPersonByMaskertIdentData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getPersonByMaskertIdent({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getPersonByMaskertIdentQueryKey(options)
-    });
-};
+export const getPersonByMaskertIdentOptions = (options: Options<GetPersonByMaskertIdentData>) => queryOptions<GetPersonByMaskertIdentResponse, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, ReturnType<typeof getPersonByMaskertIdentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPersonByMaskertIdent({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPersonByMaskertIdentQueryKey(options)
+});
