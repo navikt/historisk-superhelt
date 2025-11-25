@@ -15,8 +15,8 @@ export default function SakStatus({sak}: Props) {
                 return "Innvilget";
             case "DELVIS_INNVILGET":
                 return "Delvis innvilget";
-            case "AVVIST":
-                return "Avvisst";
+            case "FEILREGISTRERT":
+                return "Feilregistrert";
             case "HENLAGT" :
                 return "Henlagt";
 

@@ -8,5 +8,8 @@ package no.nav.common.types
 @JvmInline
 value class Behandlingsnummer(val value: String) {
     constructor(prefix: String, id: Int) : this("${prefix}-${id}")
-    
+
+    override fun toString(): String {
+        return value
+    }
 }

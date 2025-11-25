@@ -1,9 +1,15 @@
-import {BodyShort, Box, Button, Heading, HStack, Table, Tag, VStack} from '@navikt/ds-react'
+import {BodyShort, Box, Button, GlobalAlert, Heading, HStack, Table, Tag, VStack} from '@navikt/ds-react'
 import {useNavigate} from '@tanstack/react-router'
 import {findPersonByFnr as findPerson} from "@generated";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 
 export function OppgaveTabell() {
     const navigate = useNavigate()
+    const {data: user} = useSuspenseQuery({
+        ...getUserInfoOptions()
+    })
+
 
     async function doSearch(fnr: string) {
 
@@ -67,6 +73,22 @@ export function OppgaveTabell() {
             default:
                 return 'neutral'
         }
+    }
+    if (user.roles.length === 0) {
+        return <Box padding={"space-8"}>
+            <GlobalAlert status="warning">
+                <GlobalAlert.Header>
+                    <GlobalAlert.Title>
+                        Manglende tilgang
+                    </GlobalAlert.Title>
+                </GlobalAlert.Header>
+                <GlobalAlert.Content>
+                    <p>Din bruker har ikke noen roller i systemet og har derfor ikke tilgang.</p>
+
+                    <p>Vennligst kontakt systemadministrator for å få tildelt roller.</p>
+                </GlobalAlert.Content>
+            </GlobalAlert>
+        </Box>
     }
 
     return (

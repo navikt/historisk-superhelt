@@ -28,7 +28,7 @@ export default function SakMeny({sak}: SakMenyProps) {
         </ActionMenu.Trigger>
         <ActionMenu.Content>
             <ActionMenu.Group label={`Sak ${sak.saksnummer}`}>
-                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Avvis sak</ActionMenu.Item>
+                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Feilregister sak</ActionMenu.Item>
                 <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Henlegg sak</ActionMenu.Item>
                 <ActionMenu.Item onSelect={console.info} disabled={!hasRettighet("GJENAPNE")}>Gjenåpne
                     sak</ActionMenu.Item>

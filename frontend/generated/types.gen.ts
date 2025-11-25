@@ -21,7 +21,7 @@ export type SakUpdateRequestDto = {
     begrunnelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
-    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
 };
 
 export type Forhandstilsagn = {
@@ -38,14 +38,14 @@ export type Sak = {
     soknadsDato?: string;
     tildelingsAar?: number;
     begrunnelse?: string;
-    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
     saksbehandler: string;
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
 };
@@ -113,7 +113,7 @@ export type Vedtak = {
     soknadsDato: string;
     tildelingsAar?: number;
     begrunnelse?: string;
-    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     vedtaksTidspunkt: string;
     saksbehandler: string;
     attestant: string;
@@ -137,7 +137,7 @@ export type SakWritable = {
     soknadsDato?: string;
     tildelingsAar?: number;
     begrunnelse?: string;
-    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
     saksbehandler: string;
     attestant?: string;

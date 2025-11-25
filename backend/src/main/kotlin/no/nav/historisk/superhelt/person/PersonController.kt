@@ -22,7 +22,7 @@ class PersonController(
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
         val maskertPersonident = request.fnr.toMaskertPersonIdent()
         if (persondata == null) {
-            throw IkkeFunnetException("Ingen person funnet med ident $request.fnr")
+            throw IkkeFunnetException("Ingen person funnet med ident ${request.fnr}")
         }
         return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang))
     }
