@@ -5,7 +5,7 @@ enum class VedtaksResultat {
     DELVIS_INNVILGET,
     AVSLATT,
 
-    /** Saken er henlagt fordi bruker feks trekker søknad. */
+    /** Saken er henlagt fordi bruker f.eks. trekker søknad. */
     HENLAGT,
 
     /** Nav har gjort noe feil. Saken avvises  */

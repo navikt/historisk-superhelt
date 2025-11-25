@@ -3,7 +3,6 @@ import {useNavigate} from '@tanstack/react-router'
 import {findPersonByFnr as findPerson} from "@generated";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
-import React from "react";
 
 export function OppgaveTabell() {
     const navigate = useNavigate()
@@ -75,7 +74,7 @@ export function OppgaveTabell() {
                 return 'neutral'
         }
     }
-    if (user.roles.length == 0) {
+    if (user.roles.length === 0) {
         return <Box padding={"space-8"}>
             <GlobalAlert status="warning">
                 <GlobalAlert.Header>

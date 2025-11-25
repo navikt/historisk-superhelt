@@ -15,11 +15,11 @@ export function Header() {
         ...getUserInfoOptions()
     })
 
-    const hasAccess = user?.roles.length > 0;
+    const hasAccess = user.roles.length > 0;
 
     async function doSearch() {
         setSearchError(undefined)
-        if (search?.length != 11) {
+        if (search?.length !== 11) {
             setSearchError("Ugyldig fødselsnummer")
             return
         }
