@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.sak.rest
 
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import no.nav.common.types.Aar
 import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
@@ -19,9 +20,12 @@ data class SakCreateRequestDto(
 
 data class SakUpdateRequestDto(
     val type: StonadsType? = null,
+    @field:Size(min = 1, max = 200)
     val tittel: String? = null,
+    @field:Size(max = 1000)
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
+    val tildelingsAar: Aar? = null,
     val vedtaksResultat: VedtaksResultat? = null,
 )
 

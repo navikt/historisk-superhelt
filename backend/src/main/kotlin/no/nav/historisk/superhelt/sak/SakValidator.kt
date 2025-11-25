@@ -42,6 +42,11 @@ class SakValidator(private val sak: Sak) {
             check((tittel?.length ?: 0) > 200, "tittel", "Sakstittel kan ikke være lengre enn 200 tegn")
 
             check(soknadsDato == null, "soknadsDato", "Søknadsdato må være satt")
+            check(
+                tildelingsAar != null && !tildelingsAar.isValid(),
+                "tildelingsAar",
+                "Tildelingsår må være et gyldig årstall"
+            )
 
             check(
                 (begrunnelse?.length ?: 0) > 1000,

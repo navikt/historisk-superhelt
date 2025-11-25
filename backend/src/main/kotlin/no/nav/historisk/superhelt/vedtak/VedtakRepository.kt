@@ -31,6 +31,7 @@ class VedtakRepository(
             attestant = vedtak.attestant,
             soknadsDato = vedtak.soknadsDato,
             vedtaksTidspunkt = vedtak.vedtaksTidspunkt,
+            tildelingsAar = vedtak.tildelingsAar?.value,
         )
         vedtakJpaRepository.save(vedtakJpaEntity)
     }
