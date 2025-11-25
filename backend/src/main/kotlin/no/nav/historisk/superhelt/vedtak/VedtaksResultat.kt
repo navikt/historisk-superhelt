@@ -4,6 +4,10 @@ enum class VedtaksResultat {
     INNVILGET,
     DELVIS_INNVILGET,
     AVSLATT,
+
+    /** Saken er henlagt fordi bruker feks trekker søknad. */
     HENLAGT,
-    AVVIST;
+
+    /** Nav har gjort noe feil. Saken avvises  */
+    FEILREGISTRERT;
 }

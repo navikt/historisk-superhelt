@@ -20,7 +20,7 @@ export type SakUpdateRequestDto = {
     tittel?: string;
     begrunnelse?: string;
     soknadsDato?: string;
-    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
 };
 
 export type Forhandstilsagn = {
@@ -33,10 +33,10 @@ export type Sak = {
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
-    tittel: string;
-    soknadsDato: string;
+    tittel?: string;
+    soknadsDato?: string;
     begrunnelse?: string;
-    vedtaksResultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
     saksbehandler: string;
     attestant?: string;
@@ -67,7 +67,7 @@ export type Utbetaling = {
 
 export type ValidationFieldError = {
     field: string;
-    message?: string;
+    message: string;
 };
 
 export type UtbetalingRequestDto = {
@@ -110,7 +110,7 @@ export type Vedtak = {
     tittel: string;
     soknadsDato: string;
     begrunnelse?: string;
-    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     vedtaksTidspunkt: string;
     saksbehandler: string;
     attestant: string;
@@ -130,10 +130,10 @@ export type SakWritable = {
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
-    tittel: string;
-    soknadsDato: string;
+    tittel?: string;
+    soknadsDato?: string;
     begrunnelse?: string;
-    vedtaksResultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
     saksbehandler: string;
     attestant?: string;
