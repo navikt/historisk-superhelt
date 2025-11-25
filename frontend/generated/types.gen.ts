@@ -20,6 +20,7 @@ export type SakUpdateRequestDto = {
     tittel?: string;
     begrunnelse?: string;
     soknadsDato?: string;
+    tildelingsAar?: number;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
 };
 
@@ -35,6 +36,7 @@ export type Sak = {
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     tittel?: string;
     soknadsDato?: string;
+    tildelingsAar?: number;
     begrunnelse?: string;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
@@ -109,6 +111,7 @@ export type Vedtak = {
     fnr: string;
     tittel: string;
     soknadsDato: string;
+    tildelingsAar?: number;
     begrunnelse?: string;
     resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     vedtaksTidspunkt: string;
@@ -132,6 +135,7 @@ export type SakWritable = {
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     tittel?: string;
     soknadsDato?: string;
+    tildelingsAar?: number;
     begrunnelse?: string;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
