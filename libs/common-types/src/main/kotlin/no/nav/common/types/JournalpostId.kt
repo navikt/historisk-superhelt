@@ -2,4 +2,8 @@ package no.nav.common.types
 
 /** Id på en journalpost i NAVs journalsystem */
 @JvmInline
-value class JournalpostId(val value: String)
+value class JournalpostId(val value: String) {
+    override fun toString(): String {
+        return value
+    }
+}

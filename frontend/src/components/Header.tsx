@@ -20,6 +20,7 @@ export function Header() {
         setSearchError(undefined)
         if (search?.length != 11) {
             setSearchError("Ugyldig fødselsnummer")
+            return
         }
 
         const {data, error} = await findPerson({
@@ -27,7 +28,9 @@ export function Header() {
             }
         )
         if (error) {
-            setSearchError("Noe gikk galt " + error)
+            const errorMessage = error.detail ?? "Noe gikk galt";
+            setSearchError(errorMessage)
+            return
         }
         await navigate({to: "/person/$personid", params: {personid: data?.maskertPersonident!}})
         setSearch("")

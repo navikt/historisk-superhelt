@@ -35,7 +35,7 @@ class TilgangsmaskinClient(private val restClient: RestClient) {
                 else -> throw RuntimeException("Uventet respons fra tilgangsmaskin: ${responseEntity.statusCode}")
             }
         } catch (ex: HttpClientErrorException.NotFound) {
-            log.info("Person $personident ikke funnet i tilgangsmaskin", ex)
+            log.info("Person $personident ikke funnet i tilgangsmaskin")
             return TilgangResult(
                 false, ProblemDetaljResponse(
                     type = "https://nav.no/tilgangskontroll/ikke-funnet",
