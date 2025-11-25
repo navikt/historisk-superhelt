@@ -23,6 +23,7 @@ import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.typ
 import useDebounce from "~/components/useDebounce";
 import UtbetalingEditor from "~/routes/sak/$saksnummer/-components/UtbetalingEditor";
 import {useNavigate} from "@tanstack/react-router";
+import {NumericInput} from "~/components/NumericInput";
 
 
 interface Props {
@@ -49,7 +50,14 @@ export default function SakEditor({sak}: Props) {
         }
     })
 
-    const [updateSakData, setUpdateSakData] = useState<SakUpdateRequestDto>({...sak})
+    const [updateSakData, setUpdateSakData] = useState<SakUpdateRequestDto>({
+        type: sak.type,
+        tildelingsAar: sak.tildelingsAar,
+        tittel: sak.tittel,
+        vedtaksResultat: sak.vedtaksResultat,
+        soknadsDato: sak.soknadsDato,
+        begrunnelse: sak.begrunnelse
+    })
     const debouncedSak = useDebounce(updateSakData, 2000)
 
 
@@ -94,7 +102,7 @@ export default function SakEditor({sak}: Props) {
     const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
 
 
-    function getErrorMessage(field: "tittel" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling"): string | undefined {
+    function getErrorMessage(field: "tittel" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling" | "tildelingsAar"): string | undefined {
         if (!showValidation || !hasValidationErrors) {
             return undefined
         }
@@ -118,12 +126,21 @@ export default function SakEditor({sak}: Props) {
                     ))}
                 </Select>
 
-                <DatePicker {...datepickerProps} >
-                    <DatePicker.Input {...inputProps}
-                                      label="Søknadsdato"
-                                      error={getErrorMessage("soknadsDato")}
+                <HStack gap="6">
+                    <DatePicker {...datepickerProps} >
+                        <DatePicker.Input {...inputProps}
+                                          label="Søknadsdato"
+                                          error={getErrorMessage("soknadsDato")}
+                        />
+                    </DatePicker>
+                    <NumericInput
+                        label="Tildelingsår"
+                        autoComplete="on"
+                        error={getErrorMessage("tildelingsAar")}
+                        value={updateSakData.tildelingsAar}
+                        onChange={(value) => patchSak({tildelingsAar: value})}
                     />
-                </DatePicker>
+                </HStack>
 
                 <TextField
                     label="Tittel"
@@ -134,6 +151,7 @@ export default function SakEditor({sak}: Props) {
 
 
                 <Heading size="small">Fatte vedtak</Heading>
+
 
                 <HStack gap="8" align="start">
                     <VStack style={{flex: 1}}>

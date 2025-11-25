@@ -28,6 +28,11 @@ export default function SakSummary({sak}: SakSummaryProps) {
                 </FormSummary.Answer>
 
                 <FormSummary.Answer>
+                    <FormSummary.Label>Tildelingsår</FormSummary.Label>
+                    <FormSummary.Value>{sak.tildelingsAar}</FormSummary.Value>
+                </FormSummary.Answer>
+
+                <FormSummary.Answer>
                     <FormSummary.Label>Status og vedtak</FormSummary.Label>
                     <FormSummary.Value>{sak.status} / {sak.vedtaksResultat}</FormSummary.Value>
                 </FormSummary.Answer>

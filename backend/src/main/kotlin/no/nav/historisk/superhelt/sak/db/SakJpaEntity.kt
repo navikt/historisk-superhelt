@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak.db
 
 import jakarta.persistence.*
+import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
@@ -45,6 +46,7 @@ class SakJpaEntity(
     var opprettet: Instant = Instant.now(),
 
     var soknadsDato: LocalDate? = null,
+    var tildelingsAar: Int? = null,
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var utbetaling: UtbetalingJpaEntity? = null,
@@ -97,6 +99,7 @@ class SakJpaEntity(
             attestant = this.attestant,
             opprettetDato = this.opprettet,
             soknadsDato = this.soknadsDato,
+            tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             utbetaling = this.utbetaling?.toDomain(),
             forhandstilsagn = this.forhandstilsagn?.toDomain(),
         )
