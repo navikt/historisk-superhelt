@@ -22,7 +22,7 @@ data class SakUpdateRequestDto(
     val type: StonadsType? = null,
     @field:Size(min = 1, max = 200)
     val tittel: String? = null,
-    @field:Size(max = 2000)
+    @field:Size(max = 1000)
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
     val tildelingsAar: Aar? = null,
