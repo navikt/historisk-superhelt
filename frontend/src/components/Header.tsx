@@ -1,6 +1,6 @@
 import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
 import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
-import {useQuery} from "@tanstack/react-query";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {LeaveIcon} from "@navikt/aksel-icons";
 import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 import {useState} from "react";
@@ -11,10 +11,11 @@ export function Header() {
     const [searchError, setSearchError] = useState<string>();
     const navigate = useNavigate()
 
-    // const {  data: username}  = useQuery({ queryKey: ['user'], queryFn: fetchUser })
-    const {data: user} = useQuery({
+    const {data: user} = useSuspenseQuery({
         ...getUserInfoOptions()
     })
+
+    const hasAccess = user?.roles.length > 0;
 
     async function doSearch() {
         setSearchError(undefined)
@@ -55,6 +56,7 @@ export function Header() {
             <Search
                 label="Søk"
                 size="small"
+                disabled={!hasAccess}
                 variant="simple"
                 placeholder="Finn person"
                 value={search}
