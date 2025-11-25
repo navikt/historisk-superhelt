@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
@@ -33,7 +34,7 @@ data class Sak(
     val tittel: String? = null,
 
     val soknadsDato: LocalDate? = null,
-    val tildelingsAar: String? = null,
+    val tildelingsAar: Aar? = null,
 
     val begrunnelse: String? = null,
 

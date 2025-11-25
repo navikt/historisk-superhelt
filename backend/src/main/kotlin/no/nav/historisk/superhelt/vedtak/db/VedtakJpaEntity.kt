@@ -1,10 +1,7 @@
 package no.nav.historisk.superhelt.vedtak.db
 
 import jakarta.persistence.*
-import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Belop
-import no.nav.common.types.Fnr
-import no.nav.common.types.NavIdent
+import no.nav.common.types.*
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
@@ -45,7 +42,7 @@ class VedtakJpaEntity(
     val attestant: NavIdent,
 
     val soknadsDato: LocalDate,
-    val tildelingsAar: String?,
+    var tildelingsAar: Int?,
     val vedtaksTidspunkt: Instant
 
 ) {
@@ -74,7 +71,7 @@ class VedtakJpaEntity(
             saksbehandler = this.saksbehandler,
             attestant = this.attestant,
             soknadsDato = this.soknadsDato,
-            tildelingsAar = this.tildelingsAar,
+            tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             vedtaksTidspunkt = vedtaksTidspunkt,
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },

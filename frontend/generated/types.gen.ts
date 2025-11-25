@@ -20,7 +20,7 @@ export type SakUpdateRequestDto = {
     tittel?: string;
     begrunnelse?: string;
     soknadsDato?: string;
-    tildelingsAar?: string;
+    tildelingsAar?: number;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
 };
 
@@ -36,7 +36,7 @@ export type Sak = {
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     tittel?: string;
     soknadsDato?: string;
-    tildelingsAar?: string;
+    tildelingsAar?: number;
     begrunnelse?: string;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;
@@ -44,10 +44,10 @@ export type Sak = {
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
@@ -111,6 +111,7 @@ export type Vedtak = {
     fnr: string;
     tittel: string;
     soknadsDato: string;
+    tildelingsAar?: number;
     begrunnelse?: string;
     resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     vedtaksTidspunkt: string;
@@ -134,7 +135,7 @@ export type SakWritable = {
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     tittel?: string;
     soknadsDato?: string;
-    tildelingsAar?: string;
+    tildelingsAar?: number;
     begrunnelse?: string;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'AVVIST';
     opprettetDato: string;

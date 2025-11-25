@@ -28,7 +28,7 @@ class SakService(private val sakRepository: SakRepository) {
                 tittel = req.tittel,
                 status = SakStatus.UNDER_BEHANDLING,
                 soknadsDato = soknadsDato,
-                tildelingsAar = soknadsDato.year.toString(),
+                tildelingsAar = soknadsDato.year,
                 saksbehandler = getCurrentNavIdent()
             )
         val saved = sakRepository.save(sak)
@@ -44,7 +44,7 @@ class SakService(private val sakRepository: SakRepository) {
         req.tittel?.let { sak.tittel = it }
         req.begrunnelse?.let { sak.begrunnelse = it }
         req.soknadsDato?.let { sak.soknadsDato = it }
-        req.tildelingsAar?.let { sak.tildelingsAar = it }
+        sak.tildelingsAar = req.tildelingsAar?.value
         req.vedtaksResultat?.let { sak.vedtaksResultat = it }
         logger.debug("Oppdaterer sak med saksnummer {}", saksnummer)
         return sakRepository.save(sak)

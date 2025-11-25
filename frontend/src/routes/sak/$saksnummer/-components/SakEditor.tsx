@@ -23,6 +23,7 @@ import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.typ
 import useDebounce from "~/components/useDebounce";
 import UtbetalingEditor from "~/routes/sak/$saksnummer/-components/UtbetalingEditor";
 import {useNavigate} from "@tanstack/react-router";
+import {NumericInput} from "~/components/NumericInput";
 
 
 interface Props {
@@ -49,7 +50,14 @@ export default function SakEditor({sak}: Props) {
         }
     })
 
-    const [updateSakData, setUpdateSakData] = useState<SakUpdateRequestDto>({...sak})
+    const [updateSakData, setUpdateSakData] = useState<SakUpdateRequestDto>({
+        type: sak.type,
+        tildelingsAar: sak.tildelingsAar,
+        tittel: sak.tittel,
+        vedtaksResultat: sak.vedtaksResultat,
+        soknadsDato: sak.soknadsDato,
+        begrunnelse: sak.begrunnelse
+    })
     const debouncedSak = useDebounce(updateSakData, 2000)
 
 
@@ -125,12 +133,12 @@ export default function SakEditor({sak}: Props) {
                                           error={getErrorMessage("soknadsDato")}
                         />
                     </DatePicker>
-                    <TextField
+                    <NumericInput
                         label="Tildelingsår"
-                        autoComplete="off"
+                        autoComplete="on"
                         error={getErrorMessage("tildelingsAar")}
-                        value={updateSakData.tildelingsAar ?? ''}
-                        onChange={(e) => patchSak({tildelingsAar: e.target.value})}
+                        value={updateSakData.tildelingsAar}
+                        onChange={(value) => patchSak({tildelingsAar: value})}
                     />
                 </HStack>
 

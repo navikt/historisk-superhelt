@@ -1,9 +1,6 @@
 package no.nav.historisk.superhelt.vedtak
 
-import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Belop
-import no.nav.common.types.Fnr
-import no.nav.common.types.NavIdent
+import no.nav.common.types.*
 import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
@@ -18,7 +15,7 @@ data class Vedtak(
     val fnr: Fnr,
     val tittel: String, //?? Usikker på om denne skal være med
     val soknadsDato: LocalDate,
-    val tildelingsAar: String?,
+    val tildelingsAar: Aar?,
     val begrunnelse: String? = null,
     val resultat: VedtaksResultat,
     val vedtaksTidspunkt: Instant,
