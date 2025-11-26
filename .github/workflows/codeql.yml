@@ -38,7 +38,7 @@ jobs:
           build-mode: manual
 
       - name: Build artifacts
-        run: mvn compile
+        run: mvn test-compile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
