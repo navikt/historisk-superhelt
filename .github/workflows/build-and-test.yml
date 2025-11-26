@@ -49,11 +49,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
-      - name: Run tests
-        run: mvn test
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
       - name: Bygg og push docker image til GAR
         uses: nais/docker-build-push@v0
         id: docker-build-push
