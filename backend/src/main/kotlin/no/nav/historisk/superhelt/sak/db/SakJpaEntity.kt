@@ -5,6 +5,10 @@ import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
+import no.nav.historisk.superhelt.brev.BrevMottaker
+import no.nav.historisk.superhelt.brev.BrevStatus
+import no.nav.historisk.superhelt.brev.BrevType
+import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.Saksnummer
@@ -53,6 +57,9 @@ class SakJpaEntity(
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var forhandstilsagn: ForhandTilsagnJpaEntity? = null,
+
+    @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    private var brev: MutableList<BrevutkastJpaEntity> = mutableListOf()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -63,6 +70,15 @@ class SakJpaEntity(
     }
 
     override fun hashCode(): Int = javaClass.hashCode()
+
+    val saksnummer: Saksnummer
+        get() = id?.let { Saksnummer(it) }
+            ?: throw IllegalStateException(
+                "SakJpaEntity id kan ikke være null ved henting av saksnummer"
+            )
+    val behandlingsnummer: Behandlingsnummer
+        get() = Behandlingsnummer(saksnummer.value, behandlingsTeller)
+
 
     fun setOrUpdateUtbetaling(belop: Int) {
         val entity = this.utbetaling ?: UtbetalingJpaEntity(sak = this, belop = 0)
@@ -76,13 +92,22 @@ class SakJpaEntity(
         this.forhandstilsagn = entity
     }
 
-    val saksnummer: Saksnummer
-        get() = id?.let { Saksnummer(it) }
-            ?: throw IllegalStateException(
-                "SakJpaEntity id kan ikke være null ved henting av saksnummer"
-            )
-    val behandlingsnummer: Behandlingsnummer
-        get() = Behandlingsnummer(saksnummer.value, behandlingsTeller)
+    fun getOrCreateBrev(brevType: BrevType, mottaker: BrevMottaker): BrevutkastJpaEntity {
+        return getBrev(brevType, mottaker) ?: BrevutkastJpaEntity(
+            sak = this,
+            tittel = null,
+            innhold = null,
+            status = BrevStatus.NY,
+            type = brevType,
+            mottakerType = mottaker
+        ).also { this.brev.add(it) }
+    }
+
+    private fun getBrev(
+        brevType: BrevType,
+        mottaker: BrevMottaker): BrevutkastJpaEntity? {
+        return brev.find { it.type == brevType && it.mottakerType == mottaker }
+    }
 
     internal fun toDomain(): Sak {
 
@@ -102,6 +127,7 @@ class SakJpaEntity(
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             utbetaling = this.utbetaling?.toDomain(),
             forhandstilsagn = this.forhandstilsagn?.toDomain(),
+            vedtaksbrevBruker = getBrev(BrevType.VEDTAKSBREV, BrevMottaker.BRUKER)?.toDomain()
         )
     }
 }
