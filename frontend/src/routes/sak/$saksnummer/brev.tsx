@@ -1,187 +1,45 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {Alert, BodyShort, Box, Button, Heading, HStack, Select, Textarea, TextField, VStack} from '@navikt/ds-react'
-import {PencilWritingIcon} from '@navikt/aksel-icons'
-import {useEffect, useState} from 'react'
+import {VStack} from "@navikt/ds-react";
+import TiptapEditor from "~/routes/sak/$saksnummer/-components/htmleditor/TiptapEditor";
+import {PDFGenViewer} from "~/routes/sak/$saksnummer/-components/htmleditor/PdfGenViewer";
+import {finnRedigerbartInnhold} from "~/routes/sak/$saksnummer/-components/htmleditor/pdfgen.utils";
+import {html as htmlExample} from "~/routes/sak/$saksnummer/-components/htmleditor/pdfgen.html";
 
 export const Route = createFileRoute('/sak/$saksnummer/brev')({
     component: BrevPage,
 })
 
+
+
 function BrevPage() {
-    const [mottaker, setMottaker] = useState<string>('Ola Nordmann')
-    const [brevtype, setBrevtype] = useState<string>('')
-    const [tittel, setTittel] = useState<string>('')
-    const [innhold, setInnhold] = useState<string>('')
 
-    useEffect(() => {
-        handleBrevmalChange("VEDTAK_INNVILGET")
-    }, [])
+    const html= htmlExample;
+    const editorContent = finnRedigerbartInnhold(html)
 
-    // Mock data for brevmaler
-    const brevmaler = [
-        {
-            id: 'VEDTAK_INNVILGET',
-            navn: 'Vedtak - Innvilget',
-            beskrivelse: 'Standard vedtaksbrev for innvilgede søknader'
-        },
-        {
-            id: 'VEDTAK_AVSLATT',
-            navn: 'Vedtak - Avslått',
-            beskrivelse: 'Standard vedtaksbrev for avslåtte søknader'
-        },
-        {
-            id: 'FORESPØRSEL_OPPLYSNINGER',
-            navn: 'Forespørsel om opplysninger',
-            beskrivelse: 'Be om tilleggsopplysninger fra bruker'
-        },
-        {
-            id: 'VARSEL_STANS',
-            navn: 'Varsel om stans',
-            beskrivelse: 'Varsel før ytelse stanses'
-        }
-    ]
-
-    const handleBrevmalChange = (value: string) => {
-        setBrevtype(value)
-
-        // Auto-fill based on template
-        const mal = brevmaler.find(m => m.id === value)
-        if (mal) {
-            setTittel(mal.navn)
-
-            // Set default content based on template
-            switch (value) {
-                case 'VEDTAK_INNVILGET':
-                    setInnhold(`Vi viser til din søknad om dagpenger.
-
-Søknaden din er innvilget.
-
-Vedtaket er fattet med hjemmel i folketrygdloven § 4-3.
-
-Begrunnelse:
-[Fyll inn begrunnelse]
-
-Du har rett til å klage på dette vedtaket innen 6 uker fra du mottok det.`)
-                    break
-                case 'VEDTAK_AVSLATT':
-                    setInnhold(`Vi viser til din søknad om dagpenger.
-
-Søknaden din er ikke innvilget.
-
-Vedtaket er fattet med hjemmel i folketrygdloven § 4-3.
-
-Begrunnelse:
-[Fyll inn begrunnelse]
-
-Du har rett til å klage på dette vedtaket innen 6 uker fra du mottok det.`)
-                    break
-                case 'FORESPØRSEL_OPPLYSNINGER':
-                    setInnhold(`Vi trenger flere opplysninger for å behandle saken din.
-
-Vi ber deg sende inn:
-- [Spesifiser hvilke dokumenter]
-
-Opplysningene må være sendt til oss innen [dato].
-
-Dersom vi ikke mottar opplysningene innen fristen, vil saken bli avsluttet.`)
-                    break
-                case 'VARSEL_STANS':
-                    setInnhold(`Vi varsler deg om at utbetalingen av [ytelse] vil bli stanset fra [dato].
-
-Årsak:
-[Fyll inn årsak]
-
-Hvis du mener dette er feil, må du ta kontakt med oss innen [dato].`)
-                    break
-                default:
-                    setInnhold('')
-            }
-        }
-    }
-
-    const handleSendBrev = () => {
-        if (!mottaker || !brevtype || !tittel || !innhold) {
-            alert('Vennligst fyll ut alle feltene')
-            return
-        }
-
-        alert('Brev sendt til ' + mottaker)
-        // Reset form
-        setMottaker('')
-        setBrevtype('')
-        setTittel('')
-        setInnhold('')
-    }
 
     return (
-        <Box padding="6" borderWidth="1" borderRadius="medium">
-            <VStack gap="6">
-                <HStack gap="4" align="center">
-                    <PencilWritingIcon fontSize="2rem"/>
-                    <VStack gap="1">
-                        <Heading size="medium">Brev til bruker</Heading>
-                        <BodyShort>Skriv og send brev til bruker</BodyShort>
-                    </VStack>
-                </HStack>
+        <VStack gap={"8"}>
+            {/*<ExpansionCard aria-label={"header og til"}>*/}
+            {/*    <ExpansionCard.Header>*/}
+            {/*        <ExpansionCard.Title as="h4" size={"small"}>Mottaker osv</ExpansionCard.Title>*/}
+            {/*    </ExpansionCard.Header>*/}
+            {/*    <ExpansionCard.Content>*/}
+            {/*        Her kommer tekst i topp*/}
+            {/*    </ExpansionCard.Content>*/}
+            {/*</ExpansionCard>*/}
+            <PDFGenViewer html={html}>
+                <TiptapEditor initialContentHtml={editorContent} onChange={console.debug}/>
+            </PDFGenViewer>
+            {/*<ExpansionCard aria-label={"Standardtekster og signatur"}>*/}
+            {/*    <ExpansionCard.Header>*/}
+            {/*        <ExpansionCard.Title as="h4" size={"small"}>Standardtekster og signatur</ExpansionCard.Title>*/}
+            {/*    </ExpansionCard.Header>*/}
+            {/*    <ExpansionCard.Content>*/}
+            {/*      Her kommer tekst i bunn*/}
+            {/*    </ExpansionCard.Content>*/}
+            {/*</ExpansionCard>*/}
 
-                <VStack gap="4">
-
-                    <Select
-                        label="Brevmal"
-                        value={brevtype}
-                        onChange={(e) => handleBrevmalChange(e.target.value)}
-                    >
-                        <option value="">Velg brevmal</option>
-                        {brevmaler.map((mal) => (
-                            <option key={mal.id} value={mal.id}>
-                                {mal.navn}
-                            </option>
-                        ))}
-                    </Select>
-
-                    {brevtype && (
-                        <Alert variant="info">
-                            {brevmaler.find(m => m.id === brevtype)?.beskrivelse}
-                        </Alert>
-                    )}
-
-                    <TextField
-                        label="Tittel"
-                        value={tittel}
-                        onChange={(e) => setTittel(e.target.value)}
-                    />
-
-                    <Textarea
-                        label="Brevinnhold"
-                        description="Skriv brevteksten her"
-                        value={innhold}
-                        onChange={(e) => setInnhold(e.target.value)}
-                        minRows={10}
-                    />
-
-                    <Alert variant="warning">
-                        Kontroller at all informasjon er korrekt før du sender brevet.
-                    </Alert>
-
-                    <HStack gap="4">
-                        <Button
-                            variant="primary"
-                            onClick={handleSendBrev}
-                            disabled={!brevtype || !tittel || !innhold}
-                        >
-                            Send brev
-                        </Button>
-                        {/*<Button variant="secondary">*/}
-                        {/*    Lagre som kladd*/}
-                        {/*</Button>*/}
-                        {/*<Button variant="tertiary">*/}
-                        {/*    Forhåndsvis*/}
-                        {/*</Button>*/}
-                    </HStack>
-                </VStack>
-            </VStack>
-        </Box>
-    )
+        </VStack>)
 }
 
 
