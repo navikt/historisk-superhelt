@@ -5,6 +5,7 @@ import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
+import no.nav.historisk.superhelt.brev.BrevUtkast
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
@@ -46,6 +47,7 @@ data class Sak(
 
     val utbetaling: Utbetaling? = null,
     val forhandstilsagn: Forhandstilsagn? = null,
+    val vedtaksbrevBruker: BrevUtkast? = null
 ) {
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)

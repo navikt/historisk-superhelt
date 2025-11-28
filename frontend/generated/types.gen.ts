@@ -24,6 +24,15 @@ export type SakUpdateRequestDto = {
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
 };
 
+export type BrevUtkast = {
+    uuid: string;
+    tittel?: string;
+    innhold?: string;
+    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    mottakerType: 'BRUKER' | 'SAMHANDLER';
+    status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+};
+
 export type Forhandstilsagn = {
     belop?: number;
 };
@@ -44,6 +53,7 @@ export type Sak = {
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+    vedtaksbrevBruker?: BrevUtkast;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
@@ -143,6 +153,7 @@ export type SakWritable = {
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+    vedtaksbrevBruker?: BrevUtkast;
 };
 
 export type SakTilstandWritable = {
