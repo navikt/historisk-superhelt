@@ -1,5 +1,4 @@
-import './TiptapEditor.module.css'
-
+import styles from './TiptapEditor.module.css'
 import type {Editor} from '@tiptap/react'
 import {EditorContent, EditorContext, useEditor, useEditorState} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -42,8 +41,9 @@ function MenuBar({ editor }: { editor: Editor }) {
         },
     })
 
+    const activeStyle = "is-active";
     return (
-        <div className="redigeringsMeny">
+        <div className={styles.redigeringsMeny}>
             <button
                 aria-label="Angre"
                 onClick={() => editor.chain().focus().undo().run()}
@@ -62,7 +62,7 @@ function MenuBar({ editor }: { editor: Editor }) {
             <button
                 aria-label="Fet"
                 onClick={() => editor.chain().focus().toggleBold().run()}
-                className={editorState.isBold ? 'is-active' : ''}
+                className={editorState.isBold ? activeStyle : ''}
                 disabled={!editorState.canBold}
             >
                 <Bold />
@@ -71,7 +71,7 @@ function MenuBar({ editor }: { editor: Editor }) {
             <button
                 aria-label="Krusiv"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={editorState.isItalic ? 'is-active' : ''}
+                className={editorState.isItalic ? activeStyle : ''}
                 disabled={!editorState.canItalic}
             >
                 <Italic />
@@ -79,42 +79,42 @@ function MenuBar({ editor }: { editor: Editor }) {
             <button
                 aria-label="Heading 1"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                className={editorState.isHeading1 ? 'is-active' : ''}
+                className={editorState.isHeading1 ? activeStyle : ''}
             >
                 H1
             </button>
             <button
                 aria-label="Heading 2"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                className={editorState.isHeading2 ? 'is-active' : ''}
+                className={editorState.isHeading2 ? activeStyle : ''}
             >
                 H2
             </button>
             <button
                 aria-label="Heading 3"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                className={editorState.isHeading3 ? 'is-active' : ''}
+                className={editorState.isHeading3 ? activeStyle : ''}
             >
                 H3
             </button>
             <button
                 aria-label="Heading 4"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-                className={editorState.isHeading4 ? 'is-active' : ''}
+                className={editorState.isHeading4 ? activeStyle : ''}
             >
                 H4
             </button>
             <button
                 aria-label="Punktliste"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={editorState.isBulletList ? 'is-active' : ''}
+                className={editorState.isBulletList ? activeStyle : ''}
             >
                 <BulletListIcon title="Punkt liste" />
             </button>
             <button
                 aria-label="Nummerert liste"
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={editorState.isOrderedList ? 'is-active' : ''}
+                className={editorState.isOrderedList ? activeStyle : ''}
             >
                 <NumberListIcon title="Ordnet liste" />
             </button>

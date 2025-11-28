@@ -1,4 +1,4 @@
-import './HTMLEditor.css'
+import './aksel-brev.css'
 import {
     toXhtml,
     utledPostfixInnhold,
@@ -28,13 +28,13 @@ function HTMLEditorContentAndStyle({html, brevStiler}: HTMLEditorContentAndStyle
     )
 }
 
-export function PDFGenViewer({html, children}: PDFGenViewerProps) {
+export function HtmlEditor({html, children}: PDFGenViewerProps) {
     const xhtml = toXhtml(html)
     const brevStiler = utledStiler(xhtml)
     const prefix = utledPrefiksInnhold(xhtml)
     const postfix = utledPostfixInnhold(xhtml)
 
-    return <Box.New background={"neutral-moderate"} padding={"space-16"} >
+    return <Box.New background={"neutral-moderate"} padding={"space-16"}  className="htmleditor">
     <VStack gap={"space-8"} >
         <HTMLEditorContentAndStyle html={prefix} brevStiler={brevStiler} />
         {children}
