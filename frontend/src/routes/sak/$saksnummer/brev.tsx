@@ -1,9 +1,8 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {VStack} from "@navikt/ds-react";
-import TiptapEditor from "~/routes/sak/$saksnummer/-components/htmleditor/TiptapEditor";
-import {HtmlEditor} from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlEditor";
-import {finnRedigerbartInnhold} from "~/routes/sak/$saksnummer/-components/htmleditor/pdfgen.utils";
+import {HtmlPdfgenEditor} from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlPdfgenEditor";
 import {html as htmlExample} from "~/routes/sak/$saksnummer/-components/htmleditor/pdfgen.html";
+import {useState} from "react";
 
 export const Route = createFileRoute('/sak/$saksnummer/brev')({
     component: BrevPage,
@@ -14,14 +13,11 @@ export const Route = createFileRoute('/sak/$saksnummer/brev')({
 function BrevPage() {
 
     const html= htmlExample;
-    const editorContent = finnRedigerbartInnhold(html)
-
+    const [editorContent, setEditorContent] = useState("")
 
     return (
         <VStack gap={"8"}>
-            <HtmlEditor html={html}>
-                <TiptapEditor initialContentHtml={editorContent} onChange={console.debug}/>
-            </HtmlEditor>
+            <HtmlPdfgenEditor html={html} onChange={setEditorContent} />
         </VStack>)
 }
 
