@@ -2,7 +2,6 @@ import {Detail, Heading, HStack, VStack} from "@navikt/ds-react";
 import {Sak} from "@generated";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 import SakMeny from "~/routes/sak/$saksnummer/-components/SakMeny";
-import SakActionButton from "~/routes/sak/$saksnummer/-components/SakActionButton";
 
 interface Props {
     sak: Sak
@@ -17,7 +16,6 @@ export default function SakHeading({sak}: Props) {
             <Heading size={"small"}>{sak.tittel}</Heading>
         </VStack>
         <HStack gap={"space-8"} height={"1.5rem"}>
-            <SakActionButton sak={sak}/>
             <SakMeny sak={sak}/>
         </HStack>
     </HStack>
