@@ -54,10 +54,10 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
-    readonly maskertPersonIdent: string;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakTilstand = {
@@ -379,6 +379,7 @@ export type FerdigstillSakResponses = {
 export type HentBrevData = {
     body?: never;
     path: {
+        saksnummer: string;
         brevId: string;
     };
     query?: never;
@@ -414,6 +415,7 @@ export type HentBrevResponse = HentBrevResponses[keyof HentBrevResponses];
 export type OppdaterBrevData = {
     body: OppdaterBrevRequest;
     path: {
+        saksnummer: string;
         brevId: string;
     };
     query?: never;
