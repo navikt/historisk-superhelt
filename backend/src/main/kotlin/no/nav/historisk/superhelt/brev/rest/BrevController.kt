@@ -23,9 +23,9 @@ class BrevController(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @Operation(operationId = "opprettBrev")
-    @PostMapping()
-    fun opprettBrev(@PathVariable saksnummer: Saksnummer, @Valid @RequestBody request : OpprettBrevRequest): ResponseEntity<BrevUtkast> {
+    @Operation(operationId = "hentEllerOpprettBrev")
+    @PostMapping
+    fun hentEllerOpprettBrev(@PathVariable saksnummer: Saksnummer, @Valid @RequestBody request : OpprettBrevRequest): ResponseEntity<BrevUtkast> {
         val sak = sakRepository.getSak(saksnummer)
 
         val brev=brevService.hentEllerOpprettBrev(sak, request.type, request.mottaker)

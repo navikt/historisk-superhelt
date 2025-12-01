@@ -1,7 +1,7 @@
-import {Sak as SakDto} from "@generated";
+import {Sak} from "@generated";
 
-export type SakStatusType = SakDto['status']
-export type SakVedtakType = SakDto['vedtaksResultat']
-export type StonadType = SakDto['type']
-export type UtbetalingsType = SakDto['utbetalingsType']
-export type RettighetType = SakDto['rettigheter'][0]
+export type SakStatusType = Sak['status']
+export type SakVedtakType = Sak['vedtaksResultat']
+export type StonadType = Sak['type']
+export type UtbetalingsType = Sak['utbetalingsType']
+export type RettighetType = Sak['rettigheter'][0]

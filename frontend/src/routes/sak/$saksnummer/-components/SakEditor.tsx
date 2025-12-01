@@ -94,7 +94,7 @@ export default function SakEditor({sak}: Props) {
         lagreSak()
         setShowValidation(true)
         if (!hasValidationErrors) {
-            navigate({to: "/sak/$saksnummer/brev", params: {saksnummer}})
+            navigate({to: "/sak/$saksnummer/vedtaksbrevbruker", params: {saksnummer}})
         }
 
     }

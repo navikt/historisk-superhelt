@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentVedtakForSak, oppdaterSak, oppdaterUtbetaling, type Options, sendTilAttestering } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
+import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentBrev, hentEllerOpprettBrev, hentVedtakForSak, htmlBrev, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, sendTilAttestering } from '../sdk.gen';
+import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -127,6 +127,35 @@ export const ferdigstillSakMutation = (options?: Partial<Options<FerdigstillSakD
     return mutationOptions;
 };
 
+export const hentBrevQueryKey = (options: Options<HentBrevData>) => createQueryKey('hentBrev', options);
+
+export const hentBrevOptions = (options: Options<HentBrevData>) => queryOptions<HentBrevResponse, HentBrevError, HentBrevResponse, ReturnType<typeof hentBrevQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await hentBrev({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: hentBrevQueryKey(options)
+});
+
+export const oppdaterBrevMutation = (options?: Partial<Options<OppdaterBrevData>>): UseMutationOptions<OppdaterBrevResponse, OppdaterBrevError, Options<OppdaterBrevData>> => {
+    const mutationOptions: UseMutationOptions<OppdaterBrevResponse, OppdaterBrevError, Options<OppdaterBrevData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await oppdaterBrev({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const findSakerForPersonQueryKey = (options: Options<FindSakerForPersonData>) => createQueryKey('findSakerForPerson', options);
 
 /**
@@ -152,6 +181,20 @@ export const createSakMutation = (options?: Partial<Options<CreateSakData>>): Us
     const mutationOptions: UseMutationOptions<CreateSakResponse, CreateSakError, Options<CreateSakData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await createSak({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const hentEllerOpprettBrevMutation = (options?: Partial<Options<HentEllerOpprettBrevData>>): UseMutationOptions<HentEllerOpprettBrevResponse, HentEllerOpprettBrevError, Options<HentEllerOpprettBrevData>> => {
+    const mutationOptions: UseMutationOptions<HentEllerOpprettBrevResponse, HentEllerOpprettBrevError, Options<HentEllerOpprettBrevData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await hentEllerOpprettBrev({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -207,6 +250,21 @@ export const hentVedtakForSakOptions = (options: Options<HentVedtakForSakData>) 
         return data;
     },
     queryKey: hentVedtakForSakQueryKey(options)
+});
+
+export const htmlBrevQueryKey = (options: Options<HtmlBrevData>) => createQueryKey('htmlBrev', options);
+
+export const htmlBrevOptions = (options: Options<HtmlBrevData>) => queryOptions<HtmlBrevResponse, HtmlBrevError, HtmlBrevResponse, ReturnType<typeof htmlBrevQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await htmlBrev({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: htmlBrevQueryKey(options)
 });
 
 export const getKodeverkStonadTypeQueryKey = (options?: Options<GetKodeverkStonadTypeData>) => createQueryKey('getKodeverkStonadType', options);
