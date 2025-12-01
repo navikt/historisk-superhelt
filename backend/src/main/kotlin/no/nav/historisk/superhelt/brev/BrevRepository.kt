@@ -6,7 +6,6 @@ import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.Saksnummer
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class BrevRepository(
@@ -17,18 +16,20 @@ class BrevRepository(
     fun findBySak(saksnummer: Saksnummer): BrevUtkastList {
         return jpaRepository.findAllBySakId(saksnummer.id).map { it.toDomain() }
     }
-    private fun getEntityByUUid(uuid: UUID): BrevutkastJpaEntity {
+
+    private fun getEntityByUUid(uuid: BrevId): BrevutkastJpaEntity {
         return jpaRepository.findByUuid(uuid)
             ?: throw IkkeFunnetException("Brev med uuid $uuid ikke funnet")
     }
 
-    fun getByUUid(uuid: UUID): BrevUtkast {
+    fun getByUUid(uuid: BrevId): BrevUtkast {
         return getEntityByUUid(uuid).toDomain()
     }
 
     internal fun opprettBrev(saksnummer: Saksnummer, brevUtkast: BrevUtkast): BrevUtkast {
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
         val brevJpaEntity = BrevutkastJpaEntity(
+            uuid = brevUtkast.uuid,
             sak = sakEntity,
             tittel = brevUtkast.tittel,
             innhold = brevUtkast.innhold,

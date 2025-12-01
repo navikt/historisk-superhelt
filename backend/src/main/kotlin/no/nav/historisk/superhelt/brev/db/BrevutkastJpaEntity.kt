@@ -1,14 +1,10 @@
 package no.nav.historisk.superhelt.brev.db
 
 import jakarta.persistence.*
-import no.nav.historisk.superhelt.brev.BrevMottaker
-import no.nav.historisk.superhelt.brev.BrevStatus
-import no.nav.historisk.superhelt.brev.BrevType
-import no.nav.historisk.superhelt.brev.BrevUtkast
+import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import org.hibernate.Hibernate
 import java.time.Instant
-import java.util.*
 
 @Entity
 @Table(name = "brevutkast")
@@ -16,7 +12,7 @@ class BrevutkastJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    var uuid: UUID = UUID.randomUUID(),
+    val uuid: BrevId,
 
     val createdDate: Instant = Instant.now(),
 

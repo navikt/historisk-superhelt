@@ -4,7 +4,6 @@ import no.nav.historisk.superhelt.brev.rest.OppdaterBrevRequest
 import no.nav.historisk.superhelt.sak.Sak
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class BrevService(
@@ -19,7 +18,7 @@ class BrevService(
         val brevTekstGenerator= BrevTekstGenerator(sak)
 
         val brevUtkast = BrevUtkast(
-            uuid = UUID.randomUUID(),
+            uuid = BrevId.random(),
             tittel = sak.tittel,
             innhold = brevTekstGenerator.generate(type, mottaker),
             type = type,
@@ -29,7 +28,7 @@ class BrevService(
     }
 
     @Transactional
-    fun oppdaterBrev(uuid: UUID, request: OppdaterBrevRequest): BrevUtkast {
+    fun oppdaterBrev(uuid: BrevId, request: OppdaterBrevRequest): BrevUtkast {
         val brev = brevRepository.getByUUid(uuid)
         if (brev.status == BrevStatus.SENDT) {
             throw IllegalStateException("Kan ikke oppdatere brev som er sendt")
