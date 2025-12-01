@@ -144,7 +144,7 @@ function TiptapEditor({initialContentHtml, onChange}: TiptapEditorProps)  {
         <Box.New background={"raised"} padding={"space-4"} >
             <EditorContext.Provider value={providerValue}>
                 <MenuBar editor={editor} />
-                <EditorContent editor={editor} />
+                <EditorContent editor={editor} className={styles.editor}/>
             </EditorContext.Provider>
         </Box.New>
     )

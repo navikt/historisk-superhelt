@@ -11,3 +11,9 @@
         background-color: darkgrey;
     }
 }
+.editor{
+    /* Fjerner blå fokus-ring rundt editoren  */
+    *:focus {
+       outline: none;
+    }
+}
