@@ -57,6 +57,7 @@ spec:
       rules:
         - application: populasjonstilgangskontroll
           namespace: tilgangsmaskin
+        - application: historisk-pdfgen
       external:
         - host: "pdl-api.{{env}}-fss-pub.nais.io"
         - host: "oppgave.{{env}}-fss-pub.nais.io"
