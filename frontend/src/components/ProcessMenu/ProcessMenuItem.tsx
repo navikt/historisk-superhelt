@@ -18,7 +18,8 @@ export const ProcessMenuItem = (props: ProcessButtonProps) => {
     const {
         label,
         stepType = StepType.default,
-        disabled = false
+        disabled = false,
+            ...linkProps
     } = props;
 
     function renderButton(isActive: boolean) {
@@ -43,7 +44,7 @@ export const ProcessMenuItem = (props: ProcessButtonProps) => {
     }
 
     return <Box className={styles.step}>
-        <Link {...props} disabled={disabled}>
+        <Link {...linkProps} disabled={disabled}>
             {({isActive}) => {
                 return renderButton(isActive);
             }}
