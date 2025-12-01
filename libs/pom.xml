@@ -17,6 +17,7 @@
         <module>pdl</module>
         <module>helved</module>
         <module>common-types</module>
+        <module>pdfgen</module>
     </modules>
 
     <dependencies>

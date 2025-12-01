@@ -80,5 +80,7 @@ spec:
       value: "http://populasjonstilgangskontroll.tilgangsmaskin"
     - name: APP_TILGANGSMASKIN_AUDIENCE
       value: "api://{{env}}-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"
+    - name: APP_PDFGEN_URL
+      value: "http://historisk-pdfgen"
 
 

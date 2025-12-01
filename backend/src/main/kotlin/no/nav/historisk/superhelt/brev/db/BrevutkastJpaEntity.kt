@@ -21,7 +21,7 @@ class BrevutkastJpaEntity(
     val createdDate: Instant = Instant.now(),
 
     @ManyToOne
-    @JoinColumn(name = "brev_id")
+    @JoinColumn(name = "sak_id")
     val sak: SakJpaEntity,
 
     var tittel: String?,
@@ -34,7 +34,7 @@ class BrevutkastJpaEntity(
     val mottakerType: BrevMottaker,
 
     @Enumerated(EnumType.STRING)
-    val status: BrevStatus = BrevStatus.NY
+    var status: BrevStatus = BrevStatus.NY
 
 ) {
     override fun equals(other: Any?): Boolean {
@@ -53,7 +53,8 @@ class BrevutkastJpaEntity(
             tittel = this.tittel,
             innhold = this.innhold,
             type = this.type,
-            mottakerType = this.mottakerType
+            mottakerType = this.mottakerType,
+            status = this.status
         )
     }
 }

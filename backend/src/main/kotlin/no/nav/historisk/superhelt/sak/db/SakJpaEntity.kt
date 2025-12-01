@@ -6,7 +6,6 @@ import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.brev.BrevMottaker
-import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
 import no.nav.historisk.superhelt.sak.Sak
@@ -92,16 +91,6 @@ class SakJpaEntity(
         this.forhandstilsagn = entity
     }
 
-    fun getOrCreateBrev(brevType: BrevType, mottaker: BrevMottaker): BrevutkastJpaEntity {
-        return getBrev(brevType, mottaker) ?: BrevutkastJpaEntity(
-            sak = this,
-            tittel = null,
-            innhold = null,
-            status = BrevStatus.NY,
-            type = brevType,
-            mottakerType = mottaker
-        ).also { this.brev.add(it) }
-    }
 
     private fun getBrev(
         brevType: BrevType,
