@@ -54,15 +54,15 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
-    vedtaksbrev: TilstandResultat;
 };
 
 export type TilstandResultat = {
@@ -168,8 +168,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
+    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
-    vedtaksbrev: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {

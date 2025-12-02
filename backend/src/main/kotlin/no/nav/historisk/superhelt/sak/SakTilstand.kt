@@ -1,19 +1,15 @@
 package no.nav.historisk.superhelt.sak
 
+import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
 
 class SakTilstand(private val sak: Sak) {
     val soknad: TilstandResultat
         get() {
-            val validationErrors = SakValidator(sak)
+            val valideringsfeil = SakValidator(sak)
                 .checkSoknad()
                 .validationErrors
-            if (validationErrors.isEmpty()) {
-                return TilstandResultat(
-                    tilstand = TilstandStatus.OK,
-                    valideringsfeil = validationErrors
-                )
-            }
+
             // Sjekk om det ikke er startet på saken i det hele tatt
             if (sak.tittel.isNullOrBlank()
                 && sak.begrunnelse.isNullOrBlank()
@@ -23,21 +19,33 @@ class SakTilstand(private val sak: Sak) {
             ) {
                 return TilstandResultat(
                     tilstand = TilstandStatus.IKKE_STARTET,
-                    valideringsfeil = validationErrors
+                    valideringsfeil = valideringsfeil
+                )
+            }
+
+                return TilstandResultat(
+                    tilstand = if (valideringsfeil.isEmpty()) TilstandStatus.OK else TilstandStatus.VALIDERING_FEILET,
+                    valideringsfeil = valideringsfeil
+                )
+
+        }
+
+    val vedtaksbrevBruker: TilstandResultat
+        get() {
+            val valideringsfeil = SakValidator(sak)
+                .checkBrev()
+                .validationErrors
+
+            if (sak.vedtaksbrevBruker == null || sak.vedtaksbrevBruker.status == BrevStatus.NY) {
+                return TilstandResultat(
+                    tilstand = TilstandStatus.IKKE_STARTET,
+                    valideringsfeil = valideringsfeil
                 )
             }
 
             return TilstandResultat(
-                tilstand = TilstandStatus.VALIDERING_FEILET,
-                valideringsfeil = validationErrors
-            )
-        }
-
-    val vedtaksbrev: TilstandResultat
-        get() {
-            return TilstandResultat(
-                tilstand = TilstandStatus.IKKE_STARTET,
-                valideringsfeil = emptyList()
+                tilstand = if (valideringsfeil.isEmpty()) TilstandStatus.OK else TilstandStatus.VALIDERING_FEILET,
+                valideringsfeil = valideringsfeil
             )
         }
 

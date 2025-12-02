@@ -30,7 +30,15 @@ class SakValidator(private val sak: Sak) {
 
     fun checkCompleted(): SakValidator {
         checkSoknad()
-        //checkBrev()
+        checkBrev()
+        return this
+    }
+
+    fun checkBrev() : SakValidator {
+        sak.vedtaksbrevBruker?.let { brev ->
+            check(brev.tittel.isNullOrBlank(), "vedtaksbrevBruker.tittel", "Vedtaksbrev til bruker må ha tittel")
+            check(brev.innhold.isNullOrBlank(), "vedtaksbrevBruker.innhold", "Vedtaksbrev til bruker må ha innhold")
+        }
         return this
     }
 

@@ -17,7 +17,7 @@ function VedtakPage() {
     return (
         <VStack gap={"8"}>
             <BodyLong>
-                Her kan du kommer en oppsummering av saken og mulighet til å fatte vedtak, sende til totrinn osv
+                Her kommer en oppsummering av saken og mulighet til å fatte vedtak, sende til totrinn osv
             </BodyLong>
             <SakActionButton sak={sak}/>
         </VStack>)

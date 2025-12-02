@@ -45,8 +45,9 @@ export default function SakEditor({sak}: Props) {
 
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
-        , onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+        , onSuccess: (data) => {
+            // queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+            queryClient.setQueryData(sakQueryKey(saksnummer),data)
         }
     })
 
@@ -82,7 +83,7 @@ export default function SakEditor({sak}: Props) {
     }
 
     function lagreSak() {
-        oppdaterSak.mutate({
+        return oppdaterSak.mutateAsync({
             path: {
                 saksnummer: saksnummer
             },
@@ -90,13 +91,12 @@ export default function SakEditor({sak}: Props) {
         })
     }
 
-    function completedSoknad() {
-        lagreSak()
+    async function completedSoknad() {
+        await lagreSak()
         setShowValidation(true)
         if (!hasValidationErrors) {
             navigate({to: "/sak/$saksnummer/vedtaksbrevbruker", params: {saksnummer}})
         }
-
     }
 
     const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
