@@ -182,7 +182,7 @@ export default function SakEditor({sak}: Props) {
 
 
                 <HStack gap="8" align="start">
-                    <Button type="submit" variant="secondary" onClick={completedSoknad}>Gå til brev</Button>
+                    <Button type="submit" variant="secondary" onClick={completedSoknad}>Lagre og gå videre</Button>
                 </HStack>
                 {hasError && <ErrorSummary>
                     {oppdaterSak.error && <ErrorSummary.Item>{oppdaterSak?.error?.detail}</ErrorSummary.Item>}
