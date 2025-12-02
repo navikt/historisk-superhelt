@@ -3,13 +3,13 @@ import type {Editor} from '@tiptap/react'
 import {EditorContent, EditorContext, useEditor, useEditorState} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, {useMemo} from 'react'
-import {Box} from "@navikt/ds-react";
+import {Box, ErrorMessage} from "@navikt/ds-react";
 import {ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon} from "@navikt/aksel-icons";
 import {Bold, Italic} from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
 
 const extensions = [StarterKit]
 
-function MenuBar({ editor }: { editor: Editor }) {
+function MenuBar({editor}: { editor: Editor }) {
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
         editor,
@@ -25,12 +25,12 @@ function MenuBar({ editor }: { editor: Editor }) {
                 canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
                 canClearMarks: ctx.editor.can().chain().unsetAllMarks().run() ?? false,
                 isParagraph: ctx.editor.isActive('paragraph') ?? false,
-                isHeading1: ctx.editor.isActive('heading', { level: 1 }) ?? false,
-                isHeading2: ctx.editor.isActive('heading', { level: 2 }) ?? false,
-                isHeading3: ctx.editor.isActive('heading', { level: 3 }) ?? false,
-                isHeading4: ctx.editor.isActive('heading', { level: 4 }) ?? false,
-                isHeading5: ctx.editor.isActive('heading', { level: 5 }) ?? false,
-                isHeading6: ctx.editor.isActive('heading', { level: 6 }) ?? false,
+                isHeading1: ctx.editor.isActive('heading', {level: 1}) ?? false,
+                isHeading2: ctx.editor.isActive('heading', {level: 2}) ?? false,
+                isHeading3: ctx.editor.isActive('heading', {level: 3}) ?? false,
+                isHeading4: ctx.editor.isActive('heading', {level: 4}) ?? false,
+                isHeading5: ctx.editor.isActive('heading', {level: 5}) ?? false,
+                isHeading6: ctx.editor.isActive('heading', {level: 6}) ?? false,
                 isBulletList: ctx.editor.isActive('bulletList') ?? false,
                 isOrderedList: ctx.editor.isActive('orderedList') ?? false,
                 isCodeBlock: ctx.editor.isActive('codeBlock') ?? false,
@@ -49,14 +49,14 @@ function MenuBar({ editor }: { editor: Editor }) {
                 onClick={() => editor.chain().focus().undo().run()}
                 disabled={!editor.can().undo()}
             >
-                <ArrowUndoIcon title="Angre" />
+                <ArrowUndoIcon title="Angre"/>
             </button>
             <button
                 aria-label="Gjør om igjen"
                 onClick={() => editor.chain().focus().redo().run()}
                 disabled={!editor.can().redo()}
             >
-                <ArrowRedoIcon title="Gjør om igjen" />
+                <ArrowRedoIcon title="Gjør om igjen"/>
             </button>
 
             <button
@@ -65,7 +65,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 className={editorState.isBold ? activeStyle : ''}
                 disabled={!editorState.canBold}
             >
-                <Bold />
+                <Bold/>
             </button>
 
             <button
@@ -74,32 +74,32 @@ function MenuBar({ editor }: { editor: Editor }) {
                 className={editorState.isItalic ? activeStyle : ''}
                 disabled={!editorState.canItalic}
             >
-                <Italic />
+                <Italic/>
             </button>
             <button
                 aria-label="Heading 1"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                onClick={() => editor.chain().focus().toggleHeading({level: 1}).run()}
                 className={editorState.isHeading1 ? activeStyle : ''}
             >
                 H1
             </button>
             <button
                 aria-label="Heading 2"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                onClick={() => editor.chain().focus().toggleHeading({level: 2}).run()}
                 className={editorState.isHeading2 ? activeStyle : ''}
             >
                 H2
             </button>
             <button
                 aria-label="Heading 3"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                onClick={() => editor.chain().focus().toggleHeading({level: 3}).run()}
                 className={editorState.isHeading3 ? activeStyle : ''}
             >
                 H3
             </button>
             <button
                 aria-label="Heading 4"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+                onClick={() => editor.chain().focus().toggleHeading({level: 4}).run()}
                 className={editorState.isHeading4 ? activeStyle : ''}
             >
                 H4
@@ -109,14 +109,14 @@ function MenuBar({ editor }: { editor: Editor }) {
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={editorState.isBulletList ? activeStyle : ''}
             >
-                <BulletListIcon title="Punkt liste" />
+                <BulletListIcon title="Punkt liste"/>
             </button>
             <button
                 aria-label="Nummerert liste"
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
                 className={editorState.isOrderedList ? activeStyle : ''}
             >
-                <NumberListIcon title="Ordnet liste" />
+                <NumberListIcon title="Ordnet liste"/>
             </button>
 
         </div>
@@ -127,25 +127,28 @@ function MenuBar({ editor }: { editor: Editor }) {
 interface TiptapEditorProps {
     initialContentHtml: string,
     onChange: (html: string) => void,
+    error: string | undefined
 }
-function TiptapEditor({initialContentHtml, onChange}: TiptapEditorProps)  {
+
+function TiptapEditor({initialContentHtml, onChange, error}: TiptapEditorProps) {
     const editor = useEditor({
         extensions,
         content: initialContentHtml,
-        onUpdate: (editorState ) => {
+        onUpdate: (editorState) => {
             onChange(editorState.editor.getHTML())
         }
     })
 
-    const providerValue = useMemo(() => ({ editor }), [editor])
+    const providerValue = useMemo(() => ({editor}), [editor])
 
 
     return (
-        <Box.New background={"raised"} padding={"space-4"} >
+        <Box.New background={"raised"} padding={"space-4"} className={error ? styles.errorBorder : ''}>
             <EditorContext.Provider value={providerValue}>
-                <MenuBar editor={editor} />
+                <MenuBar editor={editor}/>
                 <EditorContent editor={editor} className={styles.editor}/>
             </EditorContext.Provider>
+            {error && <ErrorMessage showIcon>{error}</ErrorMessage>}
         </Box.New>
     )
 }

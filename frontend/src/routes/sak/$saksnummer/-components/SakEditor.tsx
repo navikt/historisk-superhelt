@@ -187,7 +187,7 @@ export default function SakEditor({sak}: Props) {
                 {hasError && <ErrorSummary>
                     {oppdaterSak.error && <ErrorSummary.Item>{oppdaterSak?.error?.detail}</ErrorSummary.Item>}
                     {validationErrors.map((feil) => (
-                        <ErrorSummary.Item key={feil.field}>{feil.field}: {feil.message}</ErrorSummary.Item>
+                        <ErrorSummary.Item key={feil.field}>{feil.message}</ErrorSummary.Item>
                     ))}
 
                 </ErrorSummary>}

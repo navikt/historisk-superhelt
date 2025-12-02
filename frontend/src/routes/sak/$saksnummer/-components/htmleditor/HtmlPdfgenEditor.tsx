@@ -12,12 +12,13 @@ import {BrevExpandable} from "./BrevExpandable";
 
 
 interface HtmlEditorProps {
-    html: string;
-    onChange: (html: string) => void;
+    html: string,
+    onChange: (html: string) => void,
+    error?: string | undefined
 }
 
 
-export function HtmlPdfgenEditor({html, onChange}: HtmlEditorProps) {
+export function HtmlPdfgenEditor({html, onChange, error}: HtmlEditorProps) {
     const xhtml = toXhtml(html)
     const prefix = utledPrefiksInnhold(xhtml)
     const postfix = utledPostfixInnhold(xhtml)
@@ -26,7 +27,7 @@ export function HtmlPdfgenEditor({html, onChange}: HtmlEditorProps) {
     return <Box.New background={"neutral-moderate"} padding={"space-16"} className="htmleditor">
         <VStack gap={"space-8"}>
             <FixedHtml html={prefix}/>
-            <TiptapEditor initialContentHtml={editorContent} onChange={onChange}/>
+            <TiptapEditor initialContentHtml={editorContent} onChange={onChange} error={error}/>
             <BrevExpandable title={"Standardtekster og signatur"}>
                 <FixedHtml html={postfix}/>
             </BrevExpandable>

@@ -4,6 +4,7 @@ import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 
+
 class SakValidator(private val sak: Sak) {
 
     private val _validationErrors = mutableListOf<ValidationFieldError>()
@@ -36,8 +37,8 @@ class SakValidator(private val sak: Sak) {
 
     fun checkBrev() : SakValidator {
         sak.vedtaksbrevBruker?.let { brev ->
-            check(brev.tittel.isNullOrBlank(), "vedtaksbrevBruker.tittel", "Vedtaksbrev til bruker må ha tittel")
-            check(brev.innhold.isNullOrBlank(), "vedtaksbrevBruker.innhold", "Vedtaksbrev til bruker må ha innhold")
+            check(brev.tittel.isNullOrBlank(), "vedtaksbrevBruker.tittel", "Vedtaksbrev til bruker må ha en tittel")
+            check(brev.innhold.isEmptyHtml(), "vedtaksbrevBruker.innhold", "Vedtaksbrev til bruker må ha innhold")
         }
         return this
     }
@@ -101,6 +102,11 @@ class SakValidator(private val sak: Sak) {
         if (_validationErrors.isNotEmpty()) {
             throw ValideringException(reason = "Validering av sak feilet", validationErrors = _validationErrors)
         }
+    }
+
+    private fun String?.isEmptyHtml(): Boolean {
+        val stripped = this?.replace(Regex("<[^>]*>"), "")?.trim()
+        return stripped.isNullOrEmpty()
     }
 
 }
