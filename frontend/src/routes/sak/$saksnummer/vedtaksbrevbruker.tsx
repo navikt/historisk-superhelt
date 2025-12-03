@@ -41,7 +41,7 @@ function BrevPage() {
 
     const oppdaterBrev = useMutation({
         ...oppdaterBrevMutation(),
-        onSuccess: (data) => {
+        onSuccess: () => {
         return queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
         // queryClient.setQueryData(sakQueryKey(saksnummer),data)
     }
