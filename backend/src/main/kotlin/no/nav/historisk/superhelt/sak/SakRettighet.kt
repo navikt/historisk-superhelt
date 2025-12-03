@@ -27,8 +27,6 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
-                    //TODO Fjerne denne når vi har totrinnskontroll
-                    rettigheter.add(SakRettighet.FERDIGSTILLE)
                 }
             }
 

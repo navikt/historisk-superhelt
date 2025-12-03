@@ -91,6 +91,7 @@ function BrevPage() {
     }
 
     const hasError: boolean = showValidation && (!!oppdaterBrev?.error || hasValidationErrors)
+    const hasRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
 
     return (
         <VStack gap={"8"}>

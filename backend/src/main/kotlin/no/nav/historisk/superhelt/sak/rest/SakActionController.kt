@@ -34,7 +34,7 @@ class SakActionController(
             .validate()
         //TODO  håndtere retry
         sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
-        sakService.ferdigstill(saksnummer)
+        sakService.ferdigstill(sak)
         // sende brev
 
         vedtakService.fattVedtak(saksnummer)
@@ -51,7 +51,7 @@ class SakActionController(
             .checkCompleted()
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
-        sakService.changeStatus(saksnummer, SakStatus.TIL_ATTESTERING)
+        sakService.sendTilAttestering(sak)
 
         sakChangelog.logChange(saksnummer, "Sak $saksnummer sendt til totrinnskontroll")
         return ResponseEntity.ok().build()
@@ -67,7 +67,7 @@ class SakActionController(
             .checkRettighet(SakRettighet.GJENAPNE)
             .validate()
 
-        sakService.changeStatus(saksnummer, SakStatus.UNDER_BEHANDLING)
+        sakService.gjenapneSak(saksnummer)
         sakChangelog.logChange(saksnummer, "Sak $saksnummer er gjenåpnet")
         return ResponseEntity.ok().build()
     }
