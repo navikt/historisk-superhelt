@@ -11,6 +11,9 @@
     "test": "vitest run",
     "openapi-ts": "openapi-ts"
   },
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
     "@navikt/ds-css": "^7.34.0",
     "@navikt/ds-react": "^7.34.0",
