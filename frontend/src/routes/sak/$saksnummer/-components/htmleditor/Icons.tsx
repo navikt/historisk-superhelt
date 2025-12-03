@@ -1,4 +1,3 @@
-//TODO bytt ut med Aksel
 export const Bold = ({ size = 16, color = 'currentColor' }) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +29,6 @@ export const Italic = ({ size = 16, color = 'currentColor' }) => (
       strokeLinejoin="round"
    >
       <path d="M19 4h-9M14 20H5M14.7 4.7L9.2 19.4" />
-      <title>Krusiv</title>
+      <title>Kursiv</title>
    </svg>
 )

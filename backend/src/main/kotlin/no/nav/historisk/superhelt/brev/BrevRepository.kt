@@ -5,6 +5,7 @@ import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.Saksnummer
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -13,6 +14,7 @@ class BrevRepository(
     private val sakRepository: SakRepository,
 ) {
 
+    @PreAuthorize("hasAuthority('READ')")
     fun findBySak(saksnummer: Saksnummer): BrevUtkastList {
         return jpaRepository.findAllBySakId(saksnummer.id).map { it.toDomain() }
     }
@@ -22,10 +24,12 @@ class BrevRepository(
             ?: throw IkkeFunnetException("Brev med uuid $uuid ikke funnet")
     }
 
+    @PreAuthorize("hasAuthority('READ')")
     fun getByUUid(uuid: BrevId): BrevUtkast {
         return getEntityByUUid(uuid).toDomain()
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     internal fun opprettBrev(saksnummer: Saksnummer, brevUtkast: BrevUtkast): BrevUtkast {
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
         val brevJpaEntity = BrevutkastJpaEntity(
@@ -40,6 +44,7 @@ class BrevRepository(
         return jpaRepository.save(brevJpaEntity).toDomain()
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     fun lagre(oppdatertBrev: BrevUtkast): BrevUtkast {
         val entity = getEntityByUUid(oppdatertBrev.uuid)
         entity.tittel = oppdatertBrev.tittel

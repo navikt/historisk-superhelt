@@ -7,9 +7,7 @@
 .accordionButton {
     width: 100%;
     padding: 0.5rem;
-    /*background: #f8f8f8;*/
     border: none;
-    /*cursor: pointer;*/
     display: flex;
     justify-content: space-between;
     align-items: center;

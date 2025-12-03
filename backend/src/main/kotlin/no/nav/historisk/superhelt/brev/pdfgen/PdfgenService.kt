@@ -15,20 +15,20 @@ class PdfgenService(
 ) {
     internal fun mapToPdfgenRequest(sak: Sak, brev: BrevUtkast): PdfgenRequest {
 
-        val person= personService.hentPerson(sak.fnr)
+        val person = personService.hentPerson(sak.fnr)
 
         return PdfgenRequest(
             behandlingsnummer = sak.behandlingsnummer,
             personalia = Personalia(
                 ident = sak.fnr,
                 fornavn = person?.fornavn ?: "XXX",
-                etternavn = person?.etternavn?:"YYY"
+                etternavn = person?.etternavn ?: "YYY"
             ),
             datoForUtsending = LocalDate.now(),
             saksbehandlerNavn = sak.saksbehandler.value,
             beslutterNavn = sak.attestant?.value ?: "attestant",
             kontor = "NAV Arbeid og ytelser",
-            html = brev.innhold?:"",
+            html = brev.innhold ?: "",
             brevtype = PdfgenBrevtype.VEDTAKSBREV,
             mottaker = PdfgenMottakerType.BRUKER,
         )

@@ -69,7 +69,7 @@ function MenuBar({editor}: { editor: Editor }) {
             </button>
 
             <button
-                aria-label="Krusiv"
+                aria-label="Kursiv"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 className={editorState.isItalic ? activeStyle : ''}
                 disabled={!editorState.canItalic}

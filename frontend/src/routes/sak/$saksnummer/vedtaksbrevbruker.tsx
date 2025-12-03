@@ -42,9 +42,8 @@ function BrevPage() {
     const oppdaterBrev = useMutation({
         ...oppdaterBrevMutation(),
         onSuccess: () => {
-        return queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
-        // queryClient.setQueryData(sakQueryKey(saksnummer),data)
-    }
+            return queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+        }
     })
 
     const lagreBrev = () => {
@@ -57,6 +56,7 @@ function BrevPage() {
             },
             body: {
                 innhold: editorContent,
+                tittel: tittel,
             }
         })
     }
@@ -97,9 +97,10 @@ function BrevPage() {
         <VStack gap={"8"}>
             <TextField label={"Dokumentbeskrivelse i arkivet"} value={tittel}
                        onChange={e => tittelChanged(e.target.value)}
-                          error={getErrorMessage("vedtaksbrevBruker.tittel")}
+                       error={getErrorMessage("vedtaksbrevBruker.tittel")}
                        onBlur={lagreBrev}/>
-            <HtmlPdfgenEditor html={genpdfHtml} onChange={editorChanged} error={getErrorMessage("vedtaksbrevBruker.innhold")} />
+            <HtmlPdfgenEditor html={genpdfHtml} onChange={editorChanged}
+                              error={getErrorMessage("vedtaksbrevBruker.innhold")}/>
             <HStack gap="8" align="start">
                 <Button type="submit" variant="secondary" onClick={completedBrev}>Lagre og gå videre</Button>
             </HStack>

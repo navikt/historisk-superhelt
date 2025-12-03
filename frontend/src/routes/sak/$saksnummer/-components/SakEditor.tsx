@@ -46,7 +46,6 @@ export default function SakEditor({sak}: Props) {
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
         , onSuccess: (data) => {
-            // queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
             queryClient.setQueryData(sakQueryKey(saksnummer),data)
         }
     })

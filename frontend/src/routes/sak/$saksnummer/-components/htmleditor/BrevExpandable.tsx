@@ -1,6 +1,6 @@
 import {ReactNode, useState} from 'react';
 import {ChevronDownIcon, ChevronUpIcon} from '@navikt/aksel-icons';
-import styles from './BrevExpanable.module.css';
+import styles from './BrevExpandable.module.css';
 
 interface AccordionProps {
     title: string;
