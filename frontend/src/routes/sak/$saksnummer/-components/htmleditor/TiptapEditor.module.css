@@ -1,4 +1,3 @@
-@import '@navikt/ds-css';
 
 .redigeringsMeny {
     padding: 2px;
@@ -21,7 +20,7 @@
 }
 
 .errorBorder {
-    border: 2px solid var(--a-border-danger);
-    border-radius: var(--a-border-radius-large);
+    border: 2px solid var(--ax-border-danger);
+    border-radius: var(--ax-border-radius-large);
 }
 
