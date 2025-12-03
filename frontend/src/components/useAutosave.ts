@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 import useDebounce from "./useDebounce";
 
 /**
@@ -6,10 +6,12 @@ import useDebounce from "./useDebounce";
  */
 export function useAutoSave<T>(value: T, saveFunction: (value: T) => void, delay: number) {
     const debouncedValue = useDebounce<T>(value, delay);
+    const initialValue = useRef(value);
 
     useEffect(() => {
-        // Only save if the debouncedData is different from the initial data
-        // and if a saveFunction is provided
+        if (debouncedValue === initialValue.current) {
+            return;
+        }
         saveFunction(debouncedValue);
     }, [debouncedValue]);
 }
