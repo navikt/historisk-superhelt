@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentBrev, hentEllerOpprettBrev, hentVedtakForSak, htmlBrev, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, sendTilAttestering } from '../sdk.gen';
-import type { CreateSakData, CreateSakError, CreateSakResponse, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
+import { attersterSak, createSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentBrev, hentEllerOpprettBrev, hentVedtakForSak, htmlBrev, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, sendTilAttestering } from '../sdk.gen';
+import type { AttersterSakData, AttersterSakError, CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -113,10 +113,10 @@ export const gjenapneSakMutation = (options?: Partial<Options<GjenapneSakData>>)
     return mutationOptions;
 };
 
-export const ferdigstillSakMutation = (options?: Partial<Options<FerdigstillSakData>>): UseMutationOptions<unknown, FerdigstillSakError, Options<FerdigstillSakData>> => {
-    const mutationOptions: UseMutationOptions<unknown, FerdigstillSakError, Options<FerdigstillSakData>> = {
+export const attersterSakMutation = (options?: Partial<Options<AttersterSakData>>): UseMutationOptions<unknown, AttersterSakError, Options<AttersterSakData>> => {
+    const mutationOptions: UseMutationOptions<unknown, AttersterSakError, Options<AttersterSakData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await ferdigstillSak({
+            const { data } = await attersterSak({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

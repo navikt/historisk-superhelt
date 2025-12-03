@@ -45,7 +45,7 @@ export default function TotrinnkontrollAction({sak}: Props) {
         >
             Send til attestering
         </Button>
-        {hasError && <ErrorSummary>
+        {hasError  && <ErrorSummary>
             {sendTilTotrinn.error && <ErrorSummary.Item>{sendTilTotrinn?.error?.detail}</ErrorSummary.Item>}
             {valideringsfeil.map((feil) => (
                 <ErrorSummary.Item key={feil.field}>{feil.message}</ErrorSummary.Item>

@@ -49,7 +49,7 @@ class SakRettigheterTest {
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE,
-                SakRettighet.FERDIGSTILLE
+                SakRettighet.ATTESTERE
             )
         }
 
@@ -89,7 +89,7 @@ class SakRettigheterTest {
                 status = SakStatus.TIL_ATTESTERING,
                 saksbehandler = NavIdent("saks-1")
             )
-            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES, SakRettighet.FERDIGSTILLE)
+            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES, SakRettighet.ATTESTERE)
         }
 
         @Test

@@ -9,7 +9,7 @@ enum class SakRettighet {
     SAKSBEHANDLE,
 
     /** Gir rettighet til å attestere og ferdigstille sak */
-    FERDIGSTILLE,
+    ATTESTERE,
 
     /** Gir rettighet til å gjenåpne en ferdigstilt sak */
     GJENAPNE,
@@ -32,7 +32,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
 
             SakStatus.TIL_ATTESTERING -> {
                 if (hasRole(Role.ATTESTANT) && navIdent != saksbehandler) {
-                    rettigheter.add(SakRettighet.FERDIGSTILLE)
+                    rettigheter.add(SakRettighet.ATTESTERE)
                 }
             }
 

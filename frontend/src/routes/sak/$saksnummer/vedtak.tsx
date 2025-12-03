@@ -23,7 +23,7 @@ function VedtakPage() {
             case "TIL_ATTESTERING":
                 return <FerdigstillSakAction sak={sak}/>
             case "FERDIG":
-                break;
+                return <div>Saken er ferdigstilt</div>
         }
     }
 

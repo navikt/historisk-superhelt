@@ -54,15 +54,15 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly maskertPersonIdent: string;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
-    soknad: TilstandResultat;
     vedtaksbrevBruker: TilstandResultat;
+    soknad: TilstandResultat;
 };
 
 export type TilstandResultat = {
@@ -85,6 +85,11 @@ export type ValidationFieldError = {
 export type UtbetalingRequestDto = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
+};
+
+export type AttesterSakRequestDto = {
+    godkjent: boolean;
+    kommentar?: string;
 };
 
 export type OppdaterBrevRequest = {
@@ -168,8 +173,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    soknad: TilstandResultat;
     vedtaksbrevBruker: TilstandResultat;
+    soknad: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {
@@ -343,8 +348,8 @@ export type GjenapneSakResponses = {
     200: unknown;
 };
 
-export type FerdigstillSakData = {
-    body?: never;
+export type AttersterSakData = {
+    body: AttesterSakRequestDto;
     path: {
         saksnummer: string;
     };
@@ -352,7 +357,7 @@ export type FerdigstillSakData = {
     url: '/api/sak/{saksnummer}/status/ferdigstill';
 };
 
-export type FerdigstillSakErrors = {
+export type AttersterSakErrors = {
     /**
      * Bad Request
      */
@@ -367,9 +372,9 @@ export type FerdigstillSakErrors = {
     500: ProblemDetail;
 };
 
-export type FerdigstillSakError = FerdigstillSakErrors[keyof FerdigstillSakErrors];
+export type AttersterSakError = AttersterSakErrors[keyof AttersterSakErrors];
 
-export type FerdigstillSakResponses = {
+export type AttersterSakResponses = {
     /**
      * OK
      */

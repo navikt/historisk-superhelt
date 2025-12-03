@@ -81,7 +81,8 @@ class SakService(
 
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
-    fun gjenapneSak(saksnummer: Saksnummer) {
+    fun gjenapneSak(sak: Sak, kommentar: String) {
+        val saksnummer=sak.saksnummer
         val status = SakStatus.UNDER_BEHANDLING
         val sak = sakRepository.getSakEntityOrThrow(saksnummer)
         if (status === sak.status) {

@@ -54,7 +54,7 @@ class SakActionControllerTest() {
         fun `skal ferdigstille sak`() {
             val sak = lagreNySak(SakTestData.sakEntityCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING))
 
-            sakActionController.ferdigstill(sak.saksnummer)
+            sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true, kommentar = null))
 
             val ferdigstiltSak = sakRepository.getSak(sak.saksnummer)
             assertThat(ferdigstiltSak.status).isEqualTo(SakStatus.FERDIG)
