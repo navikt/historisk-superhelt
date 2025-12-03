@@ -61,7 +61,6 @@ function BrevPage() {
         })
     }
 
-
     useAutoSave(editorContent, lagreBrev, 2000)
 
     const editorChanged = (html: string) => {
