@@ -128,12 +128,14 @@ interface TiptapEditorProps {
     initialContentHtml: string,
     onChange: (html: string) => void,
     error: string | undefined
+    readOnly?: boolean
 }
 
-function TiptapEditor({initialContentHtml, onChange, error}: TiptapEditorProps) {
+function TiptapEditor({initialContentHtml, onChange, error, readOnly}: TiptapEditorProps) {
     const editor = useEditor({
         extensions,
         content: initialContentHtml,
+        editable: !readOnly,
         onUpdate: (editorState) => {
             onChange(editorState.editor.getHTML())
         }
@@ -145,7 +147,7 @@ function TiptapEditor({initialContentHtml, onChange, error}: TiptapEditorProps) 
     return (
         <Box.New background={"raised"} padding={"space-4"} className={error ? styles.errorBorder : ''}>
             <EditorContext.Provider value={providerValue}>
-                <MenuBar editor={editor}/>
+                {!readOnly &&<MenuBar editor={editor}/>}
                 <EditorContent editor={editor} className={styles.editor}/>
             </EditorContext.Provider>
             {error && <ErrorMessage showIcon>{error}</ErrorMessage>}

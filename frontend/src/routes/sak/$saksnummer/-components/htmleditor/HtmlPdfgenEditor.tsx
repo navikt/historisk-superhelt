@@ -15,10 +15,11 @@ interface HtmlEditorProps {
     html: string,
     onChange: (html: string) => void,
     error?: string | undefined
+    readOnly?: boolean
 }
 
 
-export function HtmlPdfgenEditor({html, onChange, error}: HtmlEditorProps) {
+export function HtmlPdfgenEditor({html, onChange, error, readOnly}: HtmlEditorProps) {
     const xhtml = toXhtml(html)
     const prefix = utledPrefiksInnhold(xhtml)
     const postfix = utledPostfixInnhold(xhtml)
@@ -27,7 +28,7 @@ export function HtmlPdfgenEditor({html, onChange, error}: HtmlEditorProps) {
     return <Box.New background={"neutral-moderate"} padding={"space-16"} className="htmleditor">
         <VStack gap={"space-8"}>
             <FixedHtml html={prefix}/>
-            <TiptapEditor initialContentHtml={editorContent} onChange={onChange} error={error}/>
+            <TiptapEditor initialContentHtml={editorContent} onChange={onChange} error={error} readOnly={readOnly} />
             <BrevExpandable title={"Standardtekster og signatur"}>
                 <FixedHtml html={postfix}/>
             </BrevExpandable>
