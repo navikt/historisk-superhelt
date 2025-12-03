@@ -1,0 +1,121 @@
+.htmleditor {
+    font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
+    margin-left: 0;
+    margin-right: 0;
+
+
+    /*
+    ** Styling under her følger aksel sine anbefalinger
+    ** https://aksel.nav.no/monster-maler/brev/visuelle-retningslinjer-for-brev
+    */
+
+    h1 {
+        margin-top: 40px;
+        margin-bottom: 26px;
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: bold;
+    }
+
+    h2 {
+        font-size: 13px;
+    }
+
+    h3 {
+        font-size: 12px;
+    }
+
+    h4 {
+        font-size: 11px;
+    }
+
+    h2,
+    h3,
+    h4 {
+        margin-top: 26px;
+        line-height: 16px;
+        margin-bottom: 6px;
+        font-weight: bold;
+    }
+
+    p,
+    ul {
+        font-size: 12px;
+        line-height: 16px;
+        margin-top: 0;
+    }
+
+    ul {
+        padding-left: 16px;
+        margin-bottom: 16px;
+    }
+
+    ul p {
+        margin: 0;
+    }
+
+    header {
+        height: 48px;
+        position: relative;
+    }
+
+    .navLogo {
+        height: 16px;
+        margin-bottom: 48px;
+    }
+
+    /* End aksel sine anbefalinger */
+
+    #pagenumber:before {
+        content: counter(page);
+    }
+
+    #pagecount:before {
+        content: counter(pages);
+    }
+
+    .personalia {
+        margin-right: 10%;
+        float: left;
+    }
+
+    .personalia p {
+        margin: 0;
+    }
+
+    .dato {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 0;
+    }
+
+    .hilsen {
+        margin-top: 32px;
+    }
+
+    .hilsen p {
+        margin: 0;
+    }
+
+    .signatur {
+        margin-top: 26px;
+    }
+
+    .beslutter {
+        float: left;
+        margin-right: 50%;
+    }
+
+    .venstrestill {
+        float: left;
+    }
+
+    .right-align {
+        text-align: right;
+    }
+
+    a {
+        text-decoration: none;
+    }
+}

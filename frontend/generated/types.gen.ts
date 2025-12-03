@@ -24,6 +24,15 @@ export type SakUpdateRequestDto = {
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
 };
 
+export type BrevUtkast = {
+    uuid: string;
+    tittel?: string;
+    innhold?: string;
+    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    mottakerType: 'BRUKER' | 'SAMHANDLER';
+    status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+};
+
 export type Forhandstilsagn = {
     belop?: number;
 };
@@ -44,15 +53,16 @@ export type Sak = {
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    vedtaksbrevBruker?: BrevUtkast;
     readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'FERDIGSTILLE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
-    vedtaksbrev: TilstandResultat;
 };
 
 export type TilstandResultat = {
@@ -77,11 +87,21 @@ export type UtbetalingRequestDto = {
     belop?: number;
 };
 
+export type OppdaterBrevRequest = {
+    tittel?: string;
+    innhold?: string;
+};
+
 export type SakCreateRequestDto = {
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     fnr: string;
     tittel?: string;
     soknadsDato?: string;
+};
+
+export type OpprettBrevRequest = {
+    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    mottaker: 'BRUKER' | 'SAMHANDLER';
 };
 
 export type PersonRequest = {
@@ -143,12 +163,13 @@ export type SakWritable = {
     attestant?: string;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
+    vedtaksbrevBruker?: BrevUtkast;
 };
 
 export type SakTilstandWritable = {
     sak?: unknown;
+    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
-    vedtaksbrev: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {
@@ -355,6 +376,78 @@ export type FerdigstillSakResponses = {
     200: unknown;
 };
 
+export type HentBrevData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+        brevId: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/brev/{brevId}';
+};
+
+export type HentBrevErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentBrevError = HentBrevErrors[keyof HentBrevErrors];
+
+export type HentBrevResponses = {
+    /**
+     * OK
+     */
+    200: BrevUtkast;
+};
+
+export type HentBrevResponse = HentBrevResponses[keyof HentBrevResponses];
+
+export type OppdaterBrevData = {
+    body: OppdaterBrevRequest;
+    path: {
+        saksnummer: string;
+        brevId: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/brev/{brevId}';
+};
+
+export type OppdaterBrevErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type OppdaterBrevError = OppdaterBrevErrors[keyof OppdaterBrevErrors];
+
+export type OppdaterBrevResponses = {
+    /**
+     * OK
+     */
+    200: BrevUtkast;
+};
+
+export type OppdaterBrevResponse = OppdaterBrevResponses[keyof OppdaterBrevResponses];
+
 export type FindSakerForPersonData = {
     body?: never;
     path?: never;
@@ -422,6 +515,41 @@ export type CreateSakResponses = {
 };
 
 export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];
+
+export type HentEllerOpprettBrevData = {
+    body: OpprettBrevRequest;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/brev';
+};
+
+export type HentEllerOpprettBrevErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentEllerOpprettBrevError = HentEllerOpprettBrevErrors[keyof HentEllerOpprettBrevErrors];
+
+export type HentEllerOpprettBrevResponses = {
+    /**
+     * OK
+     */
+    200: BrevUtkast;
+};
+
+export type HentEllerOpprettBrevResponse = HentEllerOpprettBrevResponses[keyof HentEllerOpprettBrevResponses];
 
 export type FindPersonByFnrData = {
     body: PersonRequest;
@@ -523,6 +651,42 @@ export type HentVedtakForSakResponses = {
 };
 
 export type HentVedtakForSakResponse = HentVedtakForSakResponses[keyof HentVedtakForSakResponses];
+
+export type HtmlBrevData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+        brevId: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/brev/{brevId}/html';
+};
+
+export type HtmlBrevErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HtmlBrevError = HtmlBrevErrors[keyof HtmlBrevErrors];
+
+export type HtmlBrevResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type HtmlBrevResponse = HtmlBrevResponses[keyof HtmlBrevResponses];
 
 export type GetKodeverkStonadTypeData = {
     body?: never;

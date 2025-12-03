@@ -3,8 +3,9 @@ import {useState} from "react";
 import {Sak, UtbetalingRequestDto} from "@generated";
 import {UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {NumericInput} from "~/components/NumericInput";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {oppdaterUtbetalingMutation} from "@generated/@tanstack/react-query.gen";
+import {sakQueryKey} from "~/routes/sak/$saksnummer/-api/sak.query";
 
 
 interface Props {
@@ -15,10 +16,14 @@ interface Props {
 
 export default function UtbetalingEditor({sak, errorUtbetaling, errorBelop}: Props) {
     const saksnummer = sak.saksnummer
+    const queryClient = useQueryClient()
 
 
     const oppdaterUtbetaling = useMutation({
-        ...oppdaterUtbetalingMutation()
+        ...oppdaterUtbetalingMutation(),
+        onSuccess: (data) => {
+        queryClient.setQueryData(sakQueryKey(saksnummer),data)
+    }
     })
 
 

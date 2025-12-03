@@ -57,6 +57,7 @@ spec:
       rules:
         - application: populasjonstilgangskontroll
           namespace: tilgangsmaskin
+        - application: historisk-pdfgen
       external:
         - host: "pdl-api.{{env}}-fss-pub.nais.io"
         - host: "oppgave.{{env}}-fss-pub.nais.io"
@@ -80,5 +81,7 @@ spec:
       value: "http://populasjonstilgangskontroll.tilgangsmaskin"
     - name: APP_TILGANGSMASKIN_AUDIENCE
       value: "api://{{env}}-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"
+    - name: APP_PDFGEN_URL
+      value: "http://historisk-pdfgen"
 
 

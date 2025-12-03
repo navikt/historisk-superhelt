@@ -11,14 +11,13 @@ import {Link, LinkProps} from "@tanstack/react-router";
 interface ProcessButtonProps extends LinkProps {
     label: string;
     stepType?: StepType;
-    disabled?: boolean;
 }
 
 export const ProcessMenuItem = (props: ProcessButtonProps) => {
     const {
         label,
         stepType = StepType.default,
-        disabled = false
+            ...linkProps
     } = props;
 
     function renderButton(isActive: boolean) {
@@ -43,7 +42,7 @@ export const ProcessMenuItem = (props: ProcessButtonProps) => {
     }
 
     return <Box className={styles.step}>
-        <Link {...props} disabled={disabled}>
+        <Link {...linkProps} >
             {({isActive}) => {
                 return renderButton(isActive);
             }}

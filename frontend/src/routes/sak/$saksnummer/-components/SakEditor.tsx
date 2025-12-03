@@ -45,8 +45,8 @@ export default function SakEditor({sak}: Props) {
 
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
-        , onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+        , onSuccess: (data) => {
+            queryClient.setQueryData(sakQueryKey(saksnummer),data)
         }
     })
 
@@ -82,7 +82,7 @@ export default function SakEditor({sak}: Props) {
     }
 
     function lagreSak() {
-        oppdaterSak.mutate({
+        return oppdaterSak.mutateAsync({
             path: {
                 saksnummer: saksnummer
             },
@@ -90,13 +90,12 @@ export default function SakEditor({sak}: Props) {
         })
     }
 
-    function completedSoknad() {
-        lagreSak()
+    async function completedSoknad() {
+        await lagreSak()
         setShowValidation(true)
         if (!hasValidationErrors) {
-            navigate({to: "/sak/$saksnummer/brev", params: {saksnummer}})
+            navigate({to: "/sak/$saksnummer/vedtaksbrevbruker", params: {saksnummer}})
         }
-
     }
 
     const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
@@ -182,12 +181,12 @@ export default function SakEditor({sak}: Props) {
 
 
                 <HStack gap="8" align="start">
-                    <Button type="submit" variant="secondary" onClick={completedSoknad}>Gå til brev</Button>
+                    <Button type="submit" variant="secondary" onClick={completedSoknad}>Lagre og gå videre</Button>
                 </HStack>
                 {hasError && <ErrorSummary>
                     {oppdaterSak.error && <ErrorSummary.Item>{oppdaterSak?.error?.detail}</ErrorSummary.Item>}
                     {validationErrors.map((feil) => (
-                        <ErrorSummary.Item key={feil.field}>{feil.field}: {feil.message}</ErrorSummary.Item>
+                        <ErrorSummary.Item key={feil.field}>{feil.message}</ErrorSummary.Item>
                     ))}
 
                 </ErrorSummary>}

@@ -1,0 +1,23 @@
+.accordion {
+    border: 1px solid #c6c2bf;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.accordionButton {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.accordionButton:hover {
+    background: #e6e6e6;
+}
+
+.accordionContent {
+    padding: 1rem;
+}

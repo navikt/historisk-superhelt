@@ -41,6 +41,11 @@
             <artifactId>helved</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>pdfgen</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Spring boot dependencies -->
         <dependency>
