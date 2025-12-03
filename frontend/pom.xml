@@ -14,7 +14,7 @@
 
     <properties>
         <!-- Siste lts version -->
-        <node.version>v22.19.0</node.version>
+        <node.version>v24.11.1</node.version>
     </properties>
     <build>
         <plugins>
@@ -43,7 +43,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.15.1</version>
+                <version>1.15.4</version>
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
                 </configuration>
