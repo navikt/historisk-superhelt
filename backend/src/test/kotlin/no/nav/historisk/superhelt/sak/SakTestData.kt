@@ -52,7 +52,8 @@ object SakTestData {
 
     fun sakEntityCompleteUtbetaling(
         fnr: Fnr = Fnr(faker.numerify("###########")),
-        sakStatus: SakStatus = SakStatus.UNDER_BEHANDLING
+        sakStatus: SakStatus = SakStatus.UNDER_BEHANDLING,
+        saksbehehandlerIdent: String = faker.bothify("s??###")
     ): SakJpaEntity {
         val sak = sakEntityMinimum(fnr)
         with(sak) {
@@ -64,7 +65,7 @@ object SakTestData {
             begrunnelse = faker.yoda().quote().take(250)
             status = sakStatus
             vedtaksResultat = faker.options().option(VedtaksResultat::class.java)
-            saksbehandler = NavIdent(faker.bothify("s??###"))
+            saksbehandler = NavIdent(saksbehehandlerIdent)
 
             setOrUpdateUtbetaling(faker.number().numberBetween(10, 99999))
         }

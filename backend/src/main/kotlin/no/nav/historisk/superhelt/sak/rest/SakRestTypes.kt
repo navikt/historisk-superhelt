@@ -29,4 +29,10 @@ data class SakUpdateRequestDto(
     val vedtaksResultat: VedtaksResultat? = null,
 )
 
+data class AttesterSakRequestDto(
+    val godkjent: Boolean,
+    @field:Size(min= 5, max = 500)
+    val kommentar: String? = null,
+)
+
 data class UtbetalingRequestDto(val utbetalingsType: UtbetalingsType, val belop: Int?)

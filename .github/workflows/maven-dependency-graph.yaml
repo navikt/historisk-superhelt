@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "pom.xml"
+      - "**/pom.xml"
 jobs:
   dependencies:
     runs-on: ubuntu-latest

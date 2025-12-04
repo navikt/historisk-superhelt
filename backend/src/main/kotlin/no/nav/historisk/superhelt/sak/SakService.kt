@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
-class SakService(private val sakRepository: SakRepository) {
+class SakService(
+    private val sakRepository: SakRepository,
+    private val sakChangelog: SakChangelog,
+) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
@@ -46,6 +49,7 @@ class SakService(private val sakRepository: SakRepository) {
         req.soknadsDato?.let { sak.soknadsDato = it }
         sak.tildelingsAar = req.tildelingsAar?.value
         req.vedtaksResultat?.let { sak.vedtaksResultat = it }
+        sak.saksbehandler = getCurrentNavIdent()
         logger.debug("Oppdaterer sak med saksnummer {}", saksnummer)
         return sakRepository.save(sak)
     }
@@ -77,30 +81,54 @@ class SakService(private val sakRepository: SakRepository) {
 
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
-    fun changeStatus(saksnummer: Saksnummer, status: SakStatus) {
-        val sak = sakRepository.getSakEntityOrThrow(saksnummer)
-        if (status === sak.status) {
+    fun gjenapneSak(sak: Sak, kommentar: String) {
+        val saksnummer=sak.saksnummer
+        val status = SakStatus.UNDER_BEHANDLING
+        val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
+        if (status === sakEntity.status) {
             logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
             return
         }
-        sak.status = status
-        sakRepository.save(sak)
-        logger.debug("Sak {} endret status til {}", saksnummer, status)
+        sakEntity.status = status
+        sakEntity.attestant = null
+
+        sakRepository.save(sakEntity)
+        logger.info("Sak {} endret status til {}", saksnummer, status)
+    }
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun sendTilAttestering(sak: Sak) {
+        val saksnummer=sak.saksnummer
+        val status = SakStatus.TIL_ATTESTERING
+
+        val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
+        if (status === sakEntity.status) {
+            logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
+            return
+        }
+        sakEntity.status = status
+        sakEntity.saksbehandler = getCurrentNavIdent()
+        sakEntity.attestant = null
+        sakRepository.save(sakEntity)
+        logger.info("Sak {} endret status til {}", saksnummer, status)
+
     }
 
 
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
-    fun ferdigstill(saksnummer: Saksnummer) {
-        val sak = sakRepository.getSakEntityOrThrow(saksnummer)
+    fun ferdigstill( sak: Sak) {
+        val saksnummer=sak.saksnummer
+        val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
         val status = SakStatus.FERDIG
-        if (status == sak.status) {
+        if (status == sakEntity.status) {
             logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
             return
         }
-        sak.status = status
-        sak.attestant = getCurrentNavIdent()
-        sakRepository.save(sak)
-        logger.debug("Sak {} endret status til {}", saksnummer, status)
+        sakEntity.status = status
+        sakEntity.attestant = getCurrentNavIdent()
+        sakRepository.save(sakEntity)
+        logger.info("Sak {} endret status til {}", saksnummer, status)
     }
 }

@@ -22,13 +22,13 @@ class SakValidatorTest {
         }
 
         @Test
-        fun `should reject invalid transition from TIL_ATTESTERING to UNDER_BEHANDLING`() {
+        fun `should allow invalid transition from TIL_ATTESTERING to UNDER_BEHANDLING`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(status = SakStatus.TIL_ATTESTERING)
             val validator = SakValidator(sak)
 
             validator.checkStatusTransition(SakStatus.UNDER_BEHANDLING)
 
-            assertThat(validator.validationErrors).hasSize(1)
+            assertThat(validator.validationErrors).isEmpty()
         }
     }
 

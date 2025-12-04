@@ -50,7 +50,7 @@ function SakLayout() {
                                          to={"/sak/$saksnummer/soknad"}/>
                         <ProcessMenuItem label={"Brev til bruker"} stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
                                          to={"/sak/$saksnummer/vedtaksbrevbruker"}/>
-                        <ProcessMenuItem label={"Vedtak"} stepType={StepType.default}
+                        <ProcessMenuItem label={"Oppsummering"} stepType={StepType.default}
                                          to={"/sak/$saksnummer/vedtak"} />
 
                     </ProcessMenu>
