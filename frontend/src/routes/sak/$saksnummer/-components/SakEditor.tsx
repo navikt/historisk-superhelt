@@ -142,7 +142,7 @@ export default function SakEditor({sak}: Props) {
                 </HStack>
 
                 <TextField
-                    label="Tittel"
+                    label="Kort beskrivelse av stønad"
                     error={getErrorMessage("tittel")}
                     value={updateSakData.tittel ?? ''}
                     onChange={(e) => patchSak({tittel: e.target.value})}
