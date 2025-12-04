@@ -51,7 +51,58 @@ class SakActionControllerTest() {
     @Nested
     inner class `Send til attestering` {
 
+        @Test
+        fun `skal sende sak til attestering`() {
+            val sak = lagreNySak(SakTestData.sakEntityCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING))
 
+            sakActionController.tilAttestering(sak.saksnummer)
+
+            val sendtSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(sendtSak.status).isEqualTo(SakStatus.TIL_ATTESTERING)
+            assertThat(sendtSak.attestant).isNull()
+
+            // TODO: Sjekk at changelog er logget korrekt hvis mulig
+        }
+
+        @WithAttestant
+        @Test
+        fun `attestant skal ikke få sende til attestering`() {
+            val sak = lagreNySak(SakTestData.sakEntityCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING))
+
+            assertThatThrownBy {
+                sakActionController.tilAttestering(sak.saksnummer)
+            }.isInstanceOf(ValideringException::class.java)
+                .hasMessageContaining("Manglende rettighet")
+
+            val sendtSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(sendtSak.status).isEqualTo(SakStatus.UNDER_BEHANDLING)
+        }
+
+        @Test
+        fun `skal feile validering når saken ikke er under behandling`() {
+            val sak = lagreNySak(SakTestData.sakEntityCompleteUtbetaling(sakStatus = SakStatus.FERDIG))
+
+            assertThatThrownBy {
+                sakActionController.tilAttestering(sak.saksnummer)
+            }.isInstanceOf(ValideringException::class.java)
+                .hasMessageContaining("Ugyldig statusovergang")
+
+            val sendtSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(sendtSak.status).isEqualTo(SakStatus.FERDIG)
+        }
+
+        @Test
+        fun `skal feile validering når saken ikke er komplett`() {
+            val sak = lagreNySak(SakTestData.sakEntityMinimum())
+
+            assertThatThrownBy {
+                sakActionController.tilAttestering(sak.saksnummer)
+            }.isInstanceOf(ValideringException::class.java)
+                .hasMessageContaining("Validering av sak feilet")
+
+            val sendtSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(sendtSak.status).isEqualTo(SakStatus.UNDER_BEHANDLING)
+        }
     }
 
     @WithAttestant(navIdent = "a12345")
