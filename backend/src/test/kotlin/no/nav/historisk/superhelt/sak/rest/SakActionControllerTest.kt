@@ -181,12 +181,12 @@ class SakActionControllerTest() {
             assertThatThrownBy {
                 sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = false, kommentar = null))
             }.isInstanceOf(ValideringException::class.java)
-                .hasMessageContaining("Kommentar å oppgis når sak ikke godkjennes")
+                .hasMessageContaining("Kommentar må")
 
             assertThatThrownBy {
                 sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = false, kommentar = ""))
             }.isInstanceOf(ValideringException::class.java)
-                .hasMessageContaining("Kommentar å oppgis når sak ikke godkjennes")
+                .hasMessageContaining("Kommentar må")
         }
 
         @Test
