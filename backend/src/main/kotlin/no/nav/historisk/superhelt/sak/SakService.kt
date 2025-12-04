@@ -84,15 +84,15 @@ class SakService(
     fun gjenapneSak(sak: Sak, kommentar: String) {
         val saksnummer=sak.saksnummer
         val status = SakStatus.UNDER_BEHANDLING
-        val sak = sakRepository.getSakEntityOrThrow(saksnummer)
-        if (status === sak.status) {
+        val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
+        if (status === sakEntity.status) {
             logger.debug("Sak {} status er allerede {}, ingen endring gjort.", saksnummer, status)
             return
         }
-        sak.status = status
-        sak.attestant = null
+        sakEntity.status = status
+        sakEntity.attestant = null
 
-        sakRepository.save(sak)
+        sakRepository.save(sakEntity)
         logger.info("Sak {} endret status til {}", saksnummer, status)
     }
 

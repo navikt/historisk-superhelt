@@ -9,7 +9,6 @@ export const Route = createFileRoute('/sak/$saksnummer/vedtak')({
     component: VedtakPage,
 })
 
-
 function VedtakPage() {
 
     const {saksnummer} = Route.useParams()

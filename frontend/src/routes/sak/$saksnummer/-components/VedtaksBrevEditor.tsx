@@ -44,6 +44,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
     const [hasChanged, setHasChanged] = useState(false)
 
     const [showValidation, setShowValidation] = useState(false)
+    // TODO fikse generell validering. Denne er spesifikk for vedtaksbrev til bruker
     const validationErrors = sak.tilstand.vedtaksbrevBruker.valideringsfeil || []
     const hasValidationErrors = validationErrors.length > 0
 

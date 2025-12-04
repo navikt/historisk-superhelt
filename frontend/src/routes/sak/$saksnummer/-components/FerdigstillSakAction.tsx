@@ -9,7 +9,7 @@ interface Props {
     sak: Sak
 }
 
-type RadioValue = "godkjent" | "ikke_godkjent"| "init"
+type RadioValue = "godkjent" | "ikke_godkjent"
 
 interface ValideringState {
     beslutning?: string
@@ -19,7 +19,7 @@ interface ValideringState {
 export default function FerdigstillSakAction({sak}: Props) {
     const queryClient = useQueryClient();
     const saksnummer = sak.saksnummer
-    const [beslutning, setBeslutning] = useState<RadioValue >("init");
+    const [beslutning, setBeslutning] = useState<RadioValue|"" >("");
     const [kommentar, setKommentar] = useState("")
     const [validering, setValidering] = useState<ValideringState>({})
 
@@ -31,10 +31,10 @@ export default function FerdigstillSakAction({sak}: Props) {
     })
 
     function validate() {
-        const beslutningValid = beslutning !== "init"
+        const beslutningValid = !!beslutning
         const kommentarValid = beslutning === "godkjent" || (beslutning === "ikke_godkjent" && kommentar.trim().length > 5)
         setValidering({
-            beslutning: beslutningValid ? undefined : "Du velge ett alternativ",
+            beslutning: beslutningValid ? undefined : "Du må velge ett alternativ",
             kommentar: kommentarValid ? undefined : "Du må oppgi en årsak på minst 5 tegn ved avslag"
         })
         return beslutningValid && kommentarValid
@@ -74,7 +74,7 @@ export default function FerdigstillSakAction({sak}: Props) {
     return <VStack gap={"space-16"}>
         <Heading size="medium">Godkjenne sak</Heading>
         <BodyLong>Saken må attesteres for å bli fullført </BodyLong>
-        <RadioGroup legend="Velgresultat"
+        <RadioGroup legend="Velg resultat"
                     onChange={changeBeslutning}
                     value={beslutning} disabled={!hasRettighet}
                     error={validering.beslutning}>

@@ -31,7 +31,7 @@ data class SakUpdateRequestDto(
 
 data class AttesterSakRequestDto(
     val godkjent: Boolean,
-    @field:Size(min= 10, max = 500)
+    @field:Size(min= 5, max = 500)
     val kommentar: String? = null,
 )
 

@@ -24,16 +24,19 @@ class SakActionController(
 
     @Operation(operationId = "attersterSak")
     @PutMapping("status/ferdigstill")
-    fun attesterSak(@PathVariable saksnummer: Saksnummer, @RequestBody request: AttesterSakRequestDto): ResponseEntity<Unit> {
+    fun attesterSak(
+        @PathVariable saksnummer: Saksnummer,
+        @RequestBody request: AttesterSakRequestDto): ResponseEntity<Unit> {
         val sak = sakRepository.getSak(saksnummer)
-        if (!request.godkjent && request.kommentar.isNullOrBlank()) {
-           throw ValideringException(reason ="Valideringsfeil" , validationErrors = listOf(
-               ValidationFieldError("kommentar", "Kommentar å oppgis når sak ikke godkjennes")))
+        if (!request.godkjent && (request.kommentar == null || request.kommentar.trim().length <= 5)) {
+            throw ValideringException(
+                reason = "Valideringsfeil", validationErrors = listOf(
+                    ValidationFieldError("kommentar", "Kommentar må være lengre enn 5 tegn når sak ikke godkjennes")
+                )
+            )
         }
 
-
-
-        if(request.godkjent){
+        if (request.godkjent) {
             SakValidator(sak)
                 .checkStatusTransition(SakStatus.FERDIG)
                 .checkRettighet(SakRettighet.ATTESTERE)
@@ -46,13 +49,16 @@ class SakActionController(
 
             vedtakService.fattVedtak(saksnummer)
             sakChangelog.logChange(saksnummer, "Sak $saksnummer ferdigstilt")
-        }else{
+        } else {
             SakValidator(sak)
                 .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
                 .checkRettighet(SakRettighet.ATTESTERE)
                 .validate()
             sakService.gjenapneSak(sak, request.kommentar!!)
-            sakChangelog.logChange(saksnummer, "Sak $saksnummer returnert til saksbehandling med kommentar: ${request.kommentar}")
+            sakChangelog.logChange(
+                saksnummer,
+                "Sak $saksnummer returnert til saksbehandling med kommentar: ${request.kommentar}"
+            )
         }
 
         return ResponseEntity.ok().build()
