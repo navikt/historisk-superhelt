@@ -36,8 +36,7 @@ updates:
           - "*"
 
   - package-ecosystem: "docker"
-    directories:
-    - "/backend"
+    directory: "/backend"
     schedule:
       interval: "weekly"
  
