@@ -1,0 +1,16 @@
+name: Submit dependency graph
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "pom.xml"
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    permissions: # The Dependency Submission API requires write permission
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Submit Dependency Snapshot (for dependabot)
+        uses: advanced-security/maven-dependency-submission-action@v5
