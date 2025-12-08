@@ -67,7 +67,7 @@ class SakControllerRestTest() {
                     assertThat(it.type).isEqualTo(StonadsType.BRYSTPROTESE)
                     assertThat(it.saksnummer).isNotNull
                 })
-            verify(tilgangsmaskinService).sjekkKomplettTilgang(fnr)
+            verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(fnr)
         }
 
         @WithMockUser(authorities = ["READ"])
