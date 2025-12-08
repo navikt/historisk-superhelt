@@ -54,15 +54,15 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
+    vedtaksbrevBruker: TilstandResultat;
 };
 
 export type TilstandResultat = {
@@ -146,6 +146,15 @@ export type Vedtak = {
     belop?: number;
 };
 
+export type EndringsloggLinje = {
+    saksnummer: string;
+    endretTidspunkt: string;
+    type: 'OPPRETTET_SAK' | 'OPPDATERTE_SAKSDETALJER' | 'SENDT_BREV' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK';
+    endring: string;
+    beskrivelse?: string;
+    endretAv: string;
+};
+
 export type StonadsTypeDto = {
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     navn: string;
@@ -173,8 +182,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
+    vedtaksbrevBruker: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {
@@ -656,6 +665,41 @@ export type HentVedtakForSakResponses = {
 };
 
 export type HentVedtakForSakResponse = HentVedtakForSakResponses[keyof HentVedtakForSakResponses];
+
+export type HentData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/endringslogg';
+};
+
+export type HentErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentError = HentErrors[keyof HentErrors];
+
+export type HentResponses = {
+    /**
+     * OK
+     */
+    200: Array<EndringsloggLinje>;
+};
+
+export type HentResponse = HentResponses[keyof HentResponses];
 
 export type HtmlBrevData = {
     body?: never;

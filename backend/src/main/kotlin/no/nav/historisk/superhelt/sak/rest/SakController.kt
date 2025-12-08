@@ -2,6 +2,8 @@ package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
 import org.slf4j.LoggerFactory
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 class SakController(
     private val sakService: SakService,
     private val sakRepository: SakRepository,
-    private val sakChangelog: SakChangelog,
+    private val endringsloggService: EndringsloggService,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -32,7 +34,9 @@ class SakController(
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
         val createdSak = sakService.createSak(sak)
-        sakChangelog.logChange(createdSak.saksnummer, "Sak opprettet")
+        endringsloggService.logChange(saksnummer = createdSak.saksnummer,
+            endingsType = EndringsloggType.OPPRETTET_SAK,
+            endring = "Sak opprettet")
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSak)
     }
 

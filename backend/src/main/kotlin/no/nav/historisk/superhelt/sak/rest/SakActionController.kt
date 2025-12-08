@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 import no.nav.historisk.superhelt.sak.*
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.*
 class SakActionController(
     private val sakService: SakService,
     private val sakRepository: SakRepository,
-    private val sakChangelog: SakChangelog,
+    private val endringsloggService: EndringsloggService,
     private val utbetalingService: UtbetalingService,
     private val vedtakService: VedtakService
 ) {
@@ -48,16 +50,20 @@ class SakActionController(
             // sende brev
 
             vedtakService.fattVedtak(saksnummer)
-            sakChangelog.logChange(saksnummer, "Sak $saksnummer ferdigstilt")
+            endringsloggService.logChange(saksnummer = saksnummer,
+                endingsType = EndringsloggType.ATTESTERT_SAK,
+                endring = "Sak ferdigstilt")
         } else {
             SakValidator(sak)
                 .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
                 .checkRettighet(SakRettighet.ATTESTERE)
                 .validate()
             sakService.gjenapneSak(sak, request.kommentar!!)
-            sakChangelog.logChange(
-                saksnummer,
-                "Sak $saksnummer returnert til saksbehandling med kommentar: ${request.kommentar}"
+            endringsloggService.logChange(
+                saksnummer = saksnummer,
+                endingsType = EndringsloggType.ATTESTERING_UNDERKJENT,
+                endring = "Sak returnert til saksbehandler",
+                beskrivelse = request.kommentar
             )
         }
 
@@ -75,7 +81,11 @@ class SakActionController(
             .validate()
         sakService.sendTilAttestering(sak)
 
-        sakChangelog.logChange(saksnummer, "Sak $saksnummer sendt til totrinnskontroll")
+        endringsloggService.logChange(
+            saksnummer = saksnummer,
+            endingsType = EndringsloggType.TIL_ATTESTERING,
+            endring = "Sak sendt til totrinnskontroll"
+        )
         return ResponseEntity.ok().build()
     }
 
@@ -90,7 +100,9 @@ class SakActionController(
             .validate()
 
         sakService.gjenapneSak(sak, "Gjenåpnet via API TODO årsak")
-        sakChangelog.logChange(saksnummer, "Sak $saksnummer er gjenåpnet")
+        endringsloggService.logChange(saksnummer = saksnummer,
+            endingsType = EndringsloggType.GJENAPNET_SAK,
+            endring = "Sak er gjenåpnet")
         return ResponseEntity.ok().build()
     }
 
