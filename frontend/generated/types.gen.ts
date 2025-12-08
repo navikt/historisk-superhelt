@@ -54,15 +54,15 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakTilstand = {
-    soknad: TilstandResultat;
     vedtaksbrevBruker: TilstandResultat;
+    soknad: TilstandResultat;
 };
 
 export type TilstandResultat = {
@@ -182,8 +182,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    soknad: TilstandResultat;
     vedtaksbrevBruker: TilstandResultat;
+    soknad: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {
@@ -666,7 +666,7 @@ export type HentVedtakForSakResponses = {
 
 export type HentVedtakForSakResponse = HentVedtakForSakResponses[keyof HentVedtakForSakResponses];
 
-export type HentData = {
+export type HentEndringsloggForSakData = {
     body?: never;
     path: {
         saksnummer: string;
@@ -675,7 +675,7 @@ export type HentData = {
     url: '/api/sak/{saksnummer}/endringslogg';
 };
 
-export type HentErrors = {
+export type HentEndringsloggForSakErrors = {
     /**
      * Bad Request
      */
@@ -690,16 +690,16 @@ export type HentErrors = {
     500: ProblemDetail;
 };
 
-export type HentError = HentErrors[keyof HentErrors];
+export type HentEndringsloggForSakError = HentEndringsloggForSakErrors[keyof HentEndringsloggForSakErrors];
 
-export type HentResponses = {
+export type HentEndringsloggForSakResponses = {
     /**
      * OK
      */
     200: Array<EndringsloggLinje>;
 };
 
-export type HentResponse = HentResponses[keyof HentResponses];
+export type HentEndringsloggForSakResponse = HentEndringsloggForSakResponses[keyof HentEndringsloggForSakResponses];
 
 export type HtmlBrevData = {
     body?: never;

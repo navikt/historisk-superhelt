@@ -20,9 +20,9 @@ class EndringsloggController(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @Operation(operationId = "hent")
+    @Operation(operationId = "hentEndringsloggForSak")
     @GetMapping
-    fun hentVedtakForSak(@PathVariable saksnummer: Saksnummer): List<EndringsloggLinje> {
+    fun hentEndringsloggForSak(@PathVariable saksnummer: Saksnummer): List<EndringsloggLinje> {
         // Henter sak for å verifisere at den eksisterer og sjekke tilgang
         val sak = sakRepository.getSak(saksnummer)
         return endringsloggService.findBySak(sak.saksnummer)
