@@ -10,7 +10,7 @@ import {StepType} from "~/components/ProcessMenu/StepType";
 import {ProcessMenuItem} from "~/components/ProcessMenu/ProcessMenuItem";
 import {ProcessMenu} from "~/components/ProcessMenu/ProcessMenu";
 import {TilstandResultat} from "@generated";
-import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringslogg";
+import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -49,10 +49,11 @@ function SakLayout() {
                     <ProcessMenu>
                         <ProcessMenuItem label={"Opplysninger"} stepType={calculateStepType(sak?.tilstand.soknad)}
                                          to={"/sak/$saksnummer/soknad"}/>
-                        <ProcessMenuItem label={"Brev til bruker"} stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
+                        <ProcessMenuItem label={"Brev til bruker"}
+                                         stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
                                          to={"/sak/$saksnummer/vedtaksbrevbruker"}/>
                         <ProcessMenuItem label={"Oppsummering"} stepType={StepType.default}
-                                         to={"/sak/$saksnummer/vedtak"} />
+                                         to={"/sak/$saksnummer/vedtak"}/>
 
                     </ProcessMenu>
 
@@ -102,7 +103,7 @@ function SakLayout() {
                         </Tabs.Panel>
                         <Tabs.Panel value="endringer">
                             <Box width="100%" height="6rem" padding="space-16">
-                            <SakEndringer sak={sak}/>
+                                <SakEndringer sak={sak}/>
 
                             </Box>
                         </Tabs.Panel>

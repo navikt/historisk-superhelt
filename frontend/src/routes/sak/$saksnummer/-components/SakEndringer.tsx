@@ -21,7 +21,7 @@ export default function SakEndringer({sak}: SakEndringerProps) {
         <Process>
             {changelog?.map((entry, index) => (
                     <Process.Event
-                        key={entry.endretTidspunkt}
+                        key={index}
                         status="completed"
                         title={entry.endring}
                         timestamp={`${isoTilLokal(entry.endretTidspunkt)} av ${entry.endretAv}`}
