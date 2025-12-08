@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.endringslogg.rest
 
-import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.endringslogg.EndringsloggLinje
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
@@ -34,8 +33,7 @@ class EndringsloggControllerTest {
     @WithSaksbehandler(navIdent = "s12345")
     @Test
     fun `finn changelog `() {
-        val fnr = Fnr("12345678901")
-        val sak = lagreNySak(SakTestData.sakEntityMinimum(fnr))
+        val sak = lagreNySak(SakTestData.sakEntityMinimum())
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
             endringsType = OPPRETTET_SAK,
