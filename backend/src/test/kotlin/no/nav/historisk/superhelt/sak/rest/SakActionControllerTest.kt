@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.sak.rest
 
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -36,6 +38,9 @@ class SakActionControllerTest() {
     @Autowired
     private lateinit var vedtakRepository: VedtakRepository
 
+    @Autowired
+    private lateinit var endringsloggService: EndringsloggService
+
     @MockitoBean
     private lateinit var utbetalingService: UtbetalingService
 
@@ -61,7 +66,13 @@ class SakActionControllerTest() {
             assertThat(sendtSak.status).isEqualTo(SakStatus.TIL_ATTESTERING)
             assertThat(sendtSak.attestant).isNull()
 
-            // TODO: Sjekk at changelog er logget korrekt hvis mulig
+            val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+            assertThat(endringslogg)
+                .anySatisfy {
+                    assertThat(it.type).isEqualTo(EndringsloggType.TIL_ATTESTERING)
+                    assertThat(it.endretAv.value).isEqualTo("a12345")
+                }
+
         }
 
         @WithAttestant
@@ -131,7 +142,12 @@ class SakActionControllerTest() {
 
             verify(utbetalingService).sendTilUtbetaling(any())
 
-            // TODO sjekke feks changelog og brev når det er på plass
+            val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+            assertThat(endringslogg)
+                .anySatisfy {
+                    assertThat(it.type).isEqualTo(EndringsloggType.ATTESTERT_SAK)
+                    assertThat(it.endretAv.value).isEqualTo("a12345")
+                }
 
         }
 
@@ -144,7 +160,13 @@ class SakActionControllerTest() {
             val attestertSak = sakRepository.getSak(sak.saksnummer)
             assertThat(attestertSak.status).isEqualTo(SakStatus.UNDER_BEHANDLING)
 
-            // TODO: Sjekk at changelog er logget korrekt hvis mulig
+            val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+            assertThat(endringslogg)
+                .anySatisfy {
+                    assertThat(it.type).isEqualTo(EndringsloggType.ATTESTERING_UNDERKJENT)
+                    assertThat(it.endretAv.value).isEqualTo("a12345")
+                }
+
         }
 
         @WithSaksbehandler
