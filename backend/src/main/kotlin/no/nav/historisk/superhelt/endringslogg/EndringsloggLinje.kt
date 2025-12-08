@@ -9,6 +9,6 @@ data class EndringsloggLinje(
     val endretTidspunkt: Instant,
     val type: EndringsloggType,
     val endring: String,
-    val beskrivelse: String?= null,
+    val beskrivelse: String? = null,
     val endretAv: NavIdent,
 )

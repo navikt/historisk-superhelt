@@ -17,7 +17,7 @@ class EndringsloggService(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Transactional
-    fun logChange(saksnummer: Saksnummer, endingsType: EndringsloggType, endring: String, beskrivelse: String? = null) {
+    fun logChange(saksnummer: Saksnummer, endringsType: EndringsloggType, endring: String, beskrivelse: String? = null) {
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
         val navBruker = getCurrentNavIdent()
         logger.info("CHANGELOG: Sak $saksnummer endret: $endring av $navBruker")
@@ -26,13 +26,11 @@ class EndringsloggService(
             EndringsloggJpaEntity(
                 sak = sakEntity,
                 endretAv = navBruker,
-                type = endingsType,
+                type = endringsType,
                 endring = endring,
                 beskrivelse = beskrivelse
             )
         )
-
-        // lagre i database
     }
 
     @Transactional(readOnly = true)

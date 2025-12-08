@@ -51,7 +51,7 @@ class SakActionController(
 
             vedtakService.fattVedtak(saksnummer)
             endringsloggService.logChange(saksnummer = saksnummer,
-                endingsType = EndringsloggType.ATTESTERT_SAK,
+                endringsType = EndringsloggType.ATTESTERT_SAK,
                 endring = "Sak ferdigstilt")
         } else {
             SakValidator(sak)
@@ -61,7 +61,7 @@ class SakActionController(
             sakService.gjenapneSak(sak, request.kommentar!!)
             endringsloggService.logChange(
                 saksnummer = saksnummer,
-                endingsType = EndringsloggType.ATTESTERING_UNDERKJENT,
+                endringsType = EndringsloggType.ATTESTERING_UNDERKJENT,
                 endring = "Sak returnert til saksbehandler",
                 beskrivelse = request.kommentar
             )
@@ -83,7 +83,7 @@ class SakActionController(
 
         endringsloggService.logChange(
             saksnummer = saksnummer,
-            endingsType = EndringsloggType.TIL_ATTESTERING,
+            endringsType = EndringsloggType.TIL_ATTESTERING,
             endring = "Sak sendt til totrinnskontroll"
         )
         return ResponseEntity.ok().build()
@@ -101,7 +101,7 @@ class SakActionController(
 
         sakService.gjenapneSak(sak, "Gjenåpnet via API TODO årsak")
         endringsloggService.logChange(saksnummer = saksnummer,
-            endingsType = EndringsloggType.GJENAPNET_SAK,
+            endringsType = EndringsloggType.GJENAPNET_SAK,
             endring = "Sak er gjenåpnet")
         return ResponseEntity.ok().build()
     }

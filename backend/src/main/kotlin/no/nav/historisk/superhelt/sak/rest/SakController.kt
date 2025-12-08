@@ -34,9 +34,11 @@ class SakController(
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
         val createdSak = sakService.createSak(sak)
-        endringsloggService.logChange(saksnummer = createdSak.saksnummer,
-            endingsType = EndringsloggType.OPPRETTET_SAK,
-            endring = "Sak opprettet")
+        endringsloggService.logChange(
+            saksnummer = createdSak.saksnummer,
+            endringsType = EndringsloggType.OPPRETTET_SAK,
+            endring = "Sak opprettet"
+        )
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSak)
     }
 

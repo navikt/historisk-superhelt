@@ -26,7 +26,7 @@ class EndringsloggControllerTest {
     @Autowired
     private lateinit var repository: SakRepository
     @Autowired
-    private lateinit var endringloggService: EndringsloggService
+    private lateinit var endringsloggService: EndringsloggService
     @Autowired
     private lateinit var mockMvc: MockMvcTester
 
@@ -36,14 +36,14 @@ class EndringsloggControllerTest {
     fun `finn changelog `() {
         val fnr = Fnr("12345678901")
         val sak = lagreNySak(SakTestData.sakEntityMinimum(fnr))
-        endringloggService.logChange(
+        endringsloggService.logChange(
             saksnummer = sak.saksnummer,
-            endingsType = OPPRETTET_SAK,
+            endringsType = OPPRETTET_SAK,
             endring = "Sak opprettet"
         )
-        endringloggService.logChange(
+        endringsloggService.logChange(
             saksnummer = sak.saksnummer,
-            endingsType = EndringsloggType.FERDIGSTILT_SAK,
+            endringsType = EndringsloggType.FERDIGSTILT_SAK,
             endring = "Sak ferdigstilt"
         )
 
