@@ -70,7 +70,7 @@ class SakActionControllerTest() {
             assertThat(endringslogg)
                 .anySatisfy {
                     assertThat(it.type).isEqualTo(EndringsloggType.TIL_ATTESTERING)
-                    assertThat(it.endretAv.value).isEqualTo("a12345")
+                    assertThat(it.endretAv.value).isEqualTo("s12345")
                 }
 
         }
