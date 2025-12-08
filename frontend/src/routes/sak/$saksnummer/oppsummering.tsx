@@ -1,15 +1,16 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {VStack} from "@navikt/ds-react";
+import {Heading, VStack} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 import TotrinnkontrollAction from "~/routes/sak/$saksnummer/-components/TotrinnkontrollAction";
 import FerdigstillSakAction from "~/routes/sak/$saksnummer/-components/FerdigstillSakAction";
+import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 
-export const Route = createFileRoute('/sak/$saksnummer/vedtak')({
-    component: VedtakPage,
+export const Route = createFileRoute('/sak/$saksnummer/oppsummering')({
+    component: OppsummeringPage,
 })
 
-function VedtakPage() {
+function OppsummeringPage() {
 
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
@@ -22,13 +23,14 @@ function VedtakPage() {
             case "TIL_ATTESTERING":
                 return <FerdigstillSakAction sak={sak}/>
             case "FERDIG":
-                return <div>Saken er ferdigstilt</div>
+                return <Heading size={"medium"}>Saken er ferdigstilt</Heading>
         }
     }
 
     return (
         <VStack gap={"8"}>
             {renderAction()}
+            <SakEndringer sak={sak}/>
         </VStack>)
 }
 
