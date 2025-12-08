@@ -11,6 +11,7 @@ import {ProcessMenuItem} from "~/components/ProcessMenu/ProcessMenuItem";
 import {ProcessMenu} from "~/components/ProcessMenu/ProcessMenu";
 import {TilstandResultat} from "@generated";
 import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
+import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -71,7 +72,7 @@ function SakLayout() {
                             />
                             <Tabs.Tab
                                 value="historikk"
-                                label="Historikk"
+                                label="Sakshistorikk"
                                 icon={<TasklistIcon aria-hidden/>}
                             />
                             <Tabs.Tab
@@ -98,7 +99,7 @@ function SakLayout() {
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
                             <Box width="100%" height="6rem" padding="space-16">
-                                Her kommer det kanskje litt historikk på tidligere saker?
+                                <SakerTable maskertPersonIdent={sak.maskertPersonIdent} />
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="endringer">

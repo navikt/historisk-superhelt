@@ -59,7 +59,7 @@ function PersonPage() {
 
                                 </HStack>
 
-                                <SakerTable person={personid}/>
+                                <SakerTable maskertPersonIdent={personid}/>
                             </VStack>
                         </Box>
                     </Tabs.Panel>

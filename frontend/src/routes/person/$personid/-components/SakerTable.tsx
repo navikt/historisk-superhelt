@@ -4,15 +4,16 @@ import {useSuspenseQuery} from "@tanstack/react-query";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
 import {finnSakerForPersonOptions} from "~/routes/person/$personid/-api/person.query";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
+import {isoTilLokal} from "~/components/dato.utils";
 
 
 interface SakerTableProps {
-    person: string
+    maskertPersonIdent: string
 }
 
-export function SakerTable({person}: SakerTableProps) {
+export function SakerTable({maskertPersonIdent}: SakerTableProps) {
 
-    const {data, isPending, error} = useSuspenseQuery(finnSakerForPersonOptions(person))
+    const {data, isPending, error} = useSuspenseQuery(finnSakerForPersonOptions(maskertPersonIdent))
 
     if (error) {
         return <ErrorAlert error={error}/>
@@ -52,7 +53,7 @@ export function SakerTable({person}: SakerTableProps) {
                         <Table.DataCell>
                             <SakStatus sak={sak}/>
                         </Table.DataCell>
-                        <Table.DataCell>{sak.opprettetDato}</Table.DataCell>
+                        <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
                         <Table.DataCell>{sak.saksbehandler}</Table.DataCell>
                         <Table.DataCell>
                             <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>

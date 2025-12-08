@@ -35,6 +35,8 @@ class EndringsloggService(
 
     @Transactional(readOnly = true)
     fun findBySak(saksnummer: Saksnummer): List<EndringsloggLinje> {
-        return endringsloggJpaRepository.findBySak_Id(saksnummer.id).map { it.toDomain() }
+        return endringsloggJpaRepository.findBySak_Id(saksnummer.id)
+            .map { it.toDomain() }
+            .sortedBy { it.endretTidspunkt}
     }
 }
