@@ -3,13 +3,15 @@ import {Box, HGrid, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
-import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
+import {ClockDashedIcon, FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
 import {StepType} from "~/components/ProcessMenu/StepType";
 import {ProcessMenuItem} from "~/components/ProcessMenu/ProcessMenuItem";
 import {ProcessMenu} from "~/components/ProcessMenu/ProcessMenu";
 import {TilstandResultat} from "@generated";
+import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
+import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -47,11 +49,12 @@ function SakLayout() {
 
                     <ProcessMenu>
                         <ProcessMenuItem label={"Opplysninger"} stepType={calculateStepType(sak?.tilstand.soknad)}
-                                         to={"/sak/$saksnummer/soknad"}/>
-                        <ProcessMenuItem label={"Brev til bruker"} stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
+                                         to={"/sak/$saksnummer/opplysninger"}/>
+                        <ProcessMenuItem label={"Brev til bruker"}
+                                         stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
                                          to={"/sak/$saksnummer/vedtaksbrevbruker"}/>
                         <ProcessMenuItem label={"Oppsummering"} stepType={StepType.default}
-                                         to={"/sak/$saksnummer/vedtak"} />
+                                         to={"/sak/$saksnummer/oppsummering"}/>
 
                     </ProcessMenu>
 
@@ -68,9 +71,14 @@ function SakLayout() {
                                 icon={<FilePdfIcon aria-hidden/>}
                             />
                             <Tabs.Tab
-                                value="inbox"
-                                label="Historikk"
+                                value="historikk"
+                                label="Sakshistorikk"
                                 icon={<TasklistIcon aria-hidden/>}
+                            />
+                            <Tabs.Tab
+                                value="endringer"
+                                label="Endringer"
+                                icon={<ClockDashedIcon aria-hidden/>}
                             />
                             <Tabs.Tab
                                 value="dokumenter"
@@ -89,9 +97,15 @@ function SakLayout() {
                                 />
                             </Box>
                         </Tabs.Panel>
-                        <Tabs.Panel value="inbox">
+                        <Tabs.Panel value="historikk">
                             <Box width="100%" height="6rem" padding="space-16">
-                                Her kommer det kanskje litt historikk på tidligere saker?
+                                <SakerTable maskertPersonIdent={sak.maskertPersonIdent} />
+                            </Box>
+                        </Tabs.Panel>
+                        <Tabs.Panel value="endringer">
+                            <Box width="100%" height="6rem" padding="space-16">
+                                <SakEndringer sak={sak}/>
+
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="dokumenter">

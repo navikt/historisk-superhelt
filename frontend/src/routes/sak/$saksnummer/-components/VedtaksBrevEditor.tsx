@@ -96,7 +96,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
         await lagreBrev();
         setShowValidation(true)
         if (!hasValidationErrors) {
-            navigate({to: "/sak/$saksnummer/vedtak", params: {saksnummer}})
+            navigate({to: "/sak/$saksnummer/oppsummering", params: {saksnummer}})
         }
 
     }

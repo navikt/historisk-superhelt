@@ -53,4 +53,4 @@ updates:
     groups:
       docker-compose:
         patterns:
-          - "*" 
+          - "*"

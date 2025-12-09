@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto
@@ -15,7 +16,7 @@ import java.time.LocalDate
 @Service
 class SakService(
     private val sakRepository: SakRepository,
-    private val sakChangelog: SakChangelog,
+    private val endringsloggService: EndringsloggService,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 

@@ -146,6 +146,15 @@ export type Vedtak = {
     belop?: number;
 };
 
+export type EndringsloggLinje = {
+    saksnummer: string;
+    endretTidspunkt: string;
+    type: 'OPPRETTET_SAK' | 'OPPDATERTE_SAKSDETALJER' | 'SENDT_BREV' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK';
+    endring: string;
+    beskrivelse?: string;
+    endretAv: string;
+};
+
 export type StonadsTypeDto = {
     type: 'PARYKK' | 'HODEPLAGG' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER' | 'HUND' | 'FUNKSJONSASSISTENT' | 'DATAHJELPEMIDDEL' | 'BIL' | 'REP_SPES_UTSTYR' | 'TOLK';
     navn: string;
@@ -656,6 +665,41 @@ export type HentVedtakForSakResponses = {
 };
 
 export type HentVedtakForSakResponse = HentVedtakForSakResponses[keyof HentVedtakForSakResponses];
+
+export type HentEndringsloggForSakData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/endringslogg';
+};
+
+export type HentEndringsloggForSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentEndringsloggForSakError = HentEndringsloggForSakErrors[keyof HentEndringsloggForSakErrors];
+
+export type HentEndringsloggForSakResponses = {
+    /**
+     * OK
+     */
+    200: Array<EndringsloggLinje>;
+};
+
+export type HentEndringsloggForSakResponse = HentEndringsloggForSakResponses[keyof HentEndringsloggForSakResponses];
 
 export type HtmlBrevData = {
     body?: never;
