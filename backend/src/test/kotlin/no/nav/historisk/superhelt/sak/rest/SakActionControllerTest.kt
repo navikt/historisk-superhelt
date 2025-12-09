@@ -136,7 +136,7 @@ class SakActionControllerTest() {
                     assertThat(it.saksnummer).isEqualTo(sak.saksnummer)
                     assertThat(it.behandlingsnummer).isEqualTo(sak.behandlingsnummer)
                     assertThat(it.resultat).isEqualTo(sak.vedtaksResultat)
-                    assertThat(it.attestant.value).isEqualTo("a12345")
+                    assertThat(it.attestant.navIdent.value).isEqualTo("a12345")
                     assertThat(it.vedtaksTidspunkt).isCloseTo(Instant.now(), within(5, ChronoUnit.SECONDS))
                 })
 

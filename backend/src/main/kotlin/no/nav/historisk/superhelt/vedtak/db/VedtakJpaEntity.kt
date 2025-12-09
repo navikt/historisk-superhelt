@@ -1,7 +1,11 @@
 package no.nav.historisk.superhelt.vedtak.db
 
 import jakarta.persistence.*
-import no.nav.common.types.*
+import no.nav.common.types.Aar
+import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Belop
+import no.nav.common.types.Fnr
+import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
@@ -38,14 +42,27 @@ class VedtakJpaEntity(
     val utbetalingsType: UtbetalingsType,
     val belop: Int?,
 
-    val saksbehandler: NavIdent,
-    val attestant: NavIdent,
+    @Embedded
+    @AttributeOverrides(
+        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_navIdent")),
+        AttributeOverride(name = "navn", column = Column(name = "saksbehandler_navn"))
+    )
+    var saksbehandler: NavUser,
+
+    @Embedded
+    @AttributeOverrides(
+        AttributeOverride(name = "navIdent", column = Column(name = "attestant_navIdent")),
+        AttributeOverride(name = "navn", column = Column(name = "attestant_navn"))
+    )
+    var attestant: NavUser,
 
     val soknadsDato: LocalDate,
     var tildelingsAar: Int?,
-    val vedtaksTidspunkt: Instant
+    val vedtaksTidspunkt: Instant,
 
-) {
+    ) {
+
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -56,9 +73,7 @@ class VedtakJpaEntity(
 
     override fun hashCode(): Int = javaClass.hashCode()
 
-
     internal fun toDomain(): Vedtak {
-
 
         return Vedtak(
             saksnummer = this.sak.saksnummer,

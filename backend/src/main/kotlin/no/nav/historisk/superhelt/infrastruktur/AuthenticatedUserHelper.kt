@@ -38,6 +38,12 @@ fun getCurrentNavIdent(): NavIdent {
     return authentication?.name?.let { NavIdent(it) } ?: throw IllegalStateException("NavIdent ikke funnet i JWT")
 }
 
+fun getCurrentNavUser() = NavUser(
+    navIdent = getCurrentNavIdent(),
+    navn = getCurrentUserName()
+)
+
+
 fun getCurrentUserToken(): String? {
     val authentication = getJwtAuthentication()
     return authentication?.token?.tokenValue

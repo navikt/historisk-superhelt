@@ -25,8 +25,8 @@ class PdfgenService(
                 etternavn = person?.etternavn ?: "YYY"
             ),
             datoForUtsending = LocalDate.now(),
-            saksbehandlerNavn = sak.saksbehandler.value,
-            beslutterNavn = sak.attestant?.value ?: "attestant",
+            saksbehandlerNavn = sak.saksbehandler.navn,
+            beslutterNavn = sak.attestant?.navn ?: "attestant",
             kontor = "NAV Arbeid og ytelser",
             html = brev.innhold ?: "",
             brevtype = PdfgenBrevtype.VEDTAKSBREV,

@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
+import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto
 import no.nav.historisk.superhelt.sak.rest.SakUpdateRequestDto
@@ -25,6 +25,7 @@ class SakService(
     fun createSak(@Valid req: SakCreateRequestDto): Sak {
 
         val soknadsDato = req.soknadsDato ?: LocalDate.now()
+        val saksbehandler= getCurrentNavUser()
         val sak =
             SakJpaEntity(
                 type = req.type,
@@ -33,7 +34,7 @@ class SakService(
                 status = SakStatus.UNDER_BEHANDLING,
                 soknadsDato = soknadsDato,
                 tildelingsAar = soknadsDato.year,
-                saksbehandler = getCurrentNavIdent()
+                saksbehandler = saksbehandler
             )
         val saved = sakRepository.save(sak)
         logger.info("Opprettet ny sak med saksnummer {}", saved.saksnummer)
@@ -50,7 +51,7 @@ class SakService(
         req.soknadsDato?.let { sak.soknadsDato = it }
         sak.tildelingsAar = req.tildelingsAar?.value
         req.vedtaksResultat?.let { sak.vedtaksResultat = it }
-        sak.saksbehandler = getCurrentNavIdent()
+        sak.saksbehandler = getCurrentNavUser()
         logger.debug("Oppdaterer sak med saksnummer {}", saksnummer)
         return sakRepository.save(sak)
     }
@@ -109,7 +110,7 @@ class SakService(
             return
         }
         sakEntity.status = status
-        sakEntity.saksbehandler = getCurrentNavIdent()
+        sakEntity.saksbehandler = getCurrentNavUser()
         sakEntity.attestant = null
         sakRepository.save(sakEntity)
         logger.info("Sak {} endret status til {}", saksnummer, status)
@@ -128,7 +129,7 @@ class SakService(
             return
         }
         sakEntity.status = status
-        sakEntity.attestant = getCurrentNavIdent()
+        sakEntity.attestant = getCurrentNavUser()
         sakRepository.save(sakEntity)
         logger.info("Sak {} endret status til {}", saksnummer, status)
     }
