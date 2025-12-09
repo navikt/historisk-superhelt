@@ -6,10 +6,10 @@ import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.Saksnummer
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Repository
+@Service
 class EndringsloggService(
     private val endringsloggJpaRepository: EndringsloggJpaRepository,
     private val sakRepository: SakRepository
