@@ -1,13 +1,13 @@
 package no.nav.historisk.superhelt.vedtak
 
-enum class VedtaksResultat {
-    INNVILGET,
-    DELVIS_INNVILGET,
-    AVSLATT,
+enum class VedtaksResultat(val navn: String) {
+    INNVILGET("innvilget"),
+    DELVIS_INNVILGET("delvis innvilget"),
+    AVSLATT("aslått"),
 
     /** Saken er henlagt fordi bruker f.eks. trekker søknad. */
-    HENLAGT,
+    HENLAGT("henlagt"),
 
     /** Nav har gjort noe feil. Saken avvises  */
-    FEILREGISTRERT;
+    FEILREGISTRERT("feilregistrert");
 }

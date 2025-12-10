@@ -19,8 +19,8 @@ class BrevService(
 
         val brevUtkast = BrevUtkast(
             uuid = BrevId.random(),
-            tittel = sak.tittel,
-            innhold = brevTekstGenerator.generate(type, mottaker),
+            tittel = brevTekstGenerator.generateTittel(type, mottaker),
+            innhold = brevTekstGenerator.generateInnhold(type, mottaker),
             type = type,
             mottakerType = mottaker,
         )
