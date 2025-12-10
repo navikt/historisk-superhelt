@@ -1,9 +1,15 @@
 package no.nav.historisk.superhelt.brev
 
 import no.nav.historisk.superhelt.sak.Sak
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class BrevTekstGenerator(private val sak: Sak) {
-    fun generate(type: BrevType, mottaker: BrevMottaker): String {
+
+    private val navDateFormatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("dd. MMMM yyyy", Locale.forLanguageTag("no"))
+
+    fun generateInnhold(type: BrevType, mottaker: BrevMottaker): String {
         return when (type) {
             BrevType.VEDTAKSBREV -> generateVedtaksbrev(mottaker)
             BrevType.INFORMASJONSBREV -> "informasjonsbrev innhold"
@@ -16,27 +22,40 @@ class BrevTekstGenerator(private val sak: Sak) {
             BrevMottaker.BRUKER -> {
                 return """
                     <h1>Vedtaksbrev</h1>
-                    <p>Søknaden din av ${sak.soknadsDato} er ${sak.vedtaksResultat}</p>
-                    <p>${sak.tittel}</p>
-                    <p>Du får støtte til følgende</p>
+                    <p>Søknaden din av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}</p>
+                 
+                    <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
-                        ${if (sak.utbetaling != null) "<li>Utbetaling: ${sak.utbetaling?.belop} kr</li>" else ""}
-                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn: ${sak.forhandstilsagn?.belop} kr</li>" else ""}
+                        ${if (sak.utbetaling != null) "<li>Utbetaling: ${sak.utbetaling.belop} kr til din konto</li>" else ""}
+                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn: ${sak.forhandstilsagn.belop} kr</li>" else ""}
                       </ul> 
                 """.trimIndent()
             }
+
             BrevMottaker.SAMHANDLER -> {
                 return """
                     <h1>Informasjon til samhandler</h1>
-                    <p>Søknaden av ${sak.soknadsDato} er ${sak.vedtaksResultat}</p>
-                    <p>${sak.tittel}</p>
-                    <p>Du får støtte til følgende</p>
+                    <p>Søknaden av  ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}</p>
+         
+                    <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
                         ${if (sak.utbetaling != null) "<li>Utbetaling: ${sak.utbetaling?.belop} kr</li>" else ""}
-                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn: ${sak.forhandstilsagn?.belop} kr</li>" else ""}
+                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn på inntil ${sak.forhandstilsagn?.belop} kr</li>" else ""}
                       </ul> 
                 """.trimIndent()
             }
+        }
+    }
+
+    fun generateTittel(type: BrevType, mottaker: BrevMottaker): String {
+        return when (type) {
+            BrevType.VEDTAKSBREV -> when (mottaker) {
+                BrevMottaker.BRUKER -> "Vedtaksbrev, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()} "
+                BrevMottaker.SAMHANDLER -> "Vedtaksbrev til samhandler, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
+            }
+
+            BrevType.INFORMASJONSBREV -> "Informasjonsbrev"
+            BrevType.INNHENTINGSBREV -> "Innhentingsbrev"
         }
     }
 
