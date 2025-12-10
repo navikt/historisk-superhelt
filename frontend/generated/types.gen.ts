@@ -37,6 +37,11 @@ export type Forhandstilsagn = {
     belop?: number;
 };
 
+export type NavUser = {
+    navIdent: string;
+    navn: string;
+};
+
 export type Sak = {
     saksnummer: string;
     behandlingsnummer: string;
@@ -49,13 +54,13 @@ export type Sak = {
     begrunnelse?: string;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
-    saksbehandler: string;
-    attestant?: string;
+    saksbehandler: NavUser;
+    attestant?: NavUser;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
 };
@@ -140,8 +145,8 @@ export type Vedtak = {
     begrunnelse?: string;
     resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     vedtaksTidspunkt: string;
-    saksbehandler: string;
-    attestant: string;
+    saksbehandler: NavUser;
+    attestant: NavUser;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
 };
@@ -173,8 +178,8 @@ export type SakWritable = {
     begrunnelse?: string;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
     opprettetDato: string;
-    saksbehandler: string;
-    attestant?: string;
+    saksbehandler: NavUser;
+    attestant?: NavUser;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;

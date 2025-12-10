@@ -185,7 +185,7 @@ class SakActionControllerTest() {
 
         @Test
         fun `attestant skal ikke få attestere sin egen sak`() {
-            val sak = lagreNySak(SakTestData.sakEntityCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING, saksbehehandlerIdent = "a12345"))
+            val sak = lagreNySak(SakTestData.sakEntityCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING, saksbehandlerIdent = "a12345"))
 
             assertThatThrownBy {
                 sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true))

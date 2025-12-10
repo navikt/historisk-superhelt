@@ -32,7 +32,7 @@ class EndringsloggControllerTest {
 
     @WithSaksbehandler(navIdent = "s12345")
     @Test
-    fun `hent endingslogg for sak`() {
+    fun `hent endringslogg for sak`() {
         val sak = lagreNySak(SakTestData.sakEntityMinimum())
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
