@@ -97,7 +97,7 @@ class SakRettigheterTest {
         fun `får kun LES når sak er til attestering og attestant er samme som saksbehandler`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.TIL_ATTESTERING,
-                saksbehandler =NavUser(NavIdent("saks-1"), "Saks Behandler")
+                saksbehandler = NavUser(NavIdent("saks-1"), "Saks Behandler")
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }

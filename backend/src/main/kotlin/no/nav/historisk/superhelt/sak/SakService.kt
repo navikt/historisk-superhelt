@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
-import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto
@@ -16,7 +15,6 @@ import java.time.LocalDate
 @Service
 class SakService(
     private val sakRepository: SakRepository,
-    private val endringsloggService: EndringsloggService,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -25,7 +23,7 @@ class SakService(
     fun createSak(@Valid req: SakCreateRequestDto): Sak {
 
         val soknadsDato = req.soknadsDato ?: LocalDate.now()
-        val saksbehandler= getCurrentNavUser()
+        val saksbehandler = getCurrentNavUser()
         val sak =
             SakJpaEntity(
                 type = req.type,
@@ -84,7 +82,7 @@ class SakService(
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
     fun gjenapneSak(sak: Sak, kommentar: String) {
-        val saksnummer=sak.saksnummer
+        val saksnummer = sak.saksnummer
         val status = SakStatus.UNDER_BEHANDLING
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
         if (status === sakEntity.status) {
@@ -101,7 +99,7 @@ class SakService(
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
     fun sendTilAttestering(sak: Sak) {
-        val saksnummer=sak.saksnummer
+        val saksnummer = sak.saksnummer
         val status = SakStatus.TIL_ATTESTERING
 
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
@@ -120,8 +118,8 @@ class SakService(
 
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
-    fun ferdigstill( sak: Sak) {
-        val saksnummer=sak.saksnummer
+    fun ferdigstill(sak: Sak) {
+        val saksnummer = sak.saksnummer
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
         val status = SakStatus.FERDIG
         if (status == sakEntity.status) {
