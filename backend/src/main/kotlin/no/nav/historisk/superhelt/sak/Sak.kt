@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
-import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.brev.BrevUtkast
+import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
@@ -42,8 +42,8 @@ data class Sak(
     val vedtaksResultat: VedtaksResultat? = null,
 
     val opprettetDato: Instant,
-    val saksbehandler: NavIdent,
-    val attestant: NavIdent? = null,
+    val saksbehandler: NavUser,
+    val attestant: NavUser? = null,
 
     val utbetaling: Utbetaling? = null,
     val forhandstilsagn: Forhandstilsagn? = null,

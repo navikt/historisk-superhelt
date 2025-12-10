@@ -4,10 +4,10 @@ import jakarta.persistence.*
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
-import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
+import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.Saksnummer
@@ -43,8 +43,19 @@ class SakJpaEntity(
 
     var begrunnelse: String? = null,
 
-    var saksbehandler: NavIdent,
-    var attestant: NavIdent? = null,
+    @Embedded
+    @AttributeOverrides(
+        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_navIdent")),
+        AttributeOverride(name = "navn", column = Column(name = "saksbehandler_navn"))
+    )
+    var saksbehandler: NavUser,
+
+    @Embedded
+    @AttributeOverrides(
+        AttributeOverride(name = "navIdent", column = Column(name = "attestant_navIdent")),
+        AttributeOverride(name = "navn", column = Column(name = "attestant_navn"))
+    )
+    var attestant: NavUser? = null,
 
     var opprettet: Instant = Instant.now(),
 

@@ -31,7 +31,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             }
 
             SakStatus.TIL_ATTESTERING -> {
-                if (hasRole(Role.ATTESTANT) && navIdent != saksbehandler) {
+                if (hasRole(Role.ATTESTANT) && navIdent != saksbehandler.navIdent) {
                     rettigheter.add(SakRettighet.ATTESTERE)
                 }
             }

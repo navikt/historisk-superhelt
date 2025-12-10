@@ -32,7 +32,7 @@ class EndringsloggControllerTest {
 
     @WithSaksbehandler(navIdent = "s12345")
     @Test
-    fun `finn changelog `() {
+    fun `hent endingslogg for sak`() {
         val sak = lagreNySak(SakTestData.sakEntityMinimum())
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
@@ -46,7 +46,7 @@ class EndringsloggControllerTest {
         )
 
 
-        assertThat(hentSakChangelog(sak.saksnummer))
+        assertThat(hentEndringslogg(sak.saksnummer))
             .hasStatus(HttpStatus.OK)
             .bodyJson()
             .convertTo(Array<EndringsloggLinje>::class.java)
@@ -62,7 +62,7 @@ class EndringsloggControllerTest {
 
     }
 
-    private fun hentSakChangelog(saksnummer: Saksnummer?): MockMvcTester.MockMvcRequestBuilder =
+    private fun hentEndringslogg(saksnummer: Saksnummer?): MockMvcTester.MockMvcRequestBuilder =
         mockMvc.get().uri("/api/sak/{saksnummer}/endringslogg", saksnummer)
 
     fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum()): Sak {
@@ -70,6 +70,4 @@ class EndringsloggControllerTest {
             repository.save(sak)
         }
     }
-
-
 }

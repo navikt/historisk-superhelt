@@ -15,18 +15,19 @@ class PdfgenService(
 ) {
     internal fun mapToPdfgenRequest(sak: Sak, brev: BrevUtkast): PdfgenRequest {
 
-        val person = personService.hentPerson(sak.fnr)
+        val person = personService.hentPerson(sak.fnr)?:
+            throw IllegalStateException("Fant ikke persondata for person i sak ${sak.saksnummer}")
 
         return PdfgenRequest(
             behandlingsnummer = sak.behandlingsnummer,
             personalia = Personalia(
                 ident = sak.fnr,
-                fornavn = person?.fornavn ?: "XXX",
-                etternavn = person?.etternavn ?: "YYY"
+                fornavn = person.fornavn ,
+                etternavn = person.etternavn,
             ),
             datoForUtsending = LocalDate.now(),
-            saksbehandlerNavn = sak.saksbehandler.value,
-            beslutterNavn = sak.attestant?.value ?: "attestant",
+            saksbehandlerNavn = sak.saksbehandler.navn,
+            beslutterNavn = sak.attestant?.navn ?: "<attestant>",
             kontor = "NAV Arbeid og ytelser",
             html = brev.innhold ?: "",
             brevtype = PdfgenBrevtype.VEDTAKSBREV,

@@ -10,7 +10,7 @@ interface SakEndringerProps {
 }
 
 export default function SakEndringer({sak}: SakEndringerProps) {
-    const {data: changelog} = useSuspenseQuery(hentEndringsloggForSakOptions({
+    const {data: endringslogg} = useSuspenseQuery(hentEndringsloggForSakOptions({
         path: {
             saksnummer: sak.saksnummer
         }
@@ -19,19 +19,18 @@ export default function SakEndringer({sak}: SakEndringerProps) {
 
     return (
         <Process>
-            {changelog?.map((entry, index) => (
+            {endringslogg?.map((loggLinje) => (
                     <Process.Event
-                        key={index}
+                        key={loggLinje.type + loggLinje.endretTidspunkt}
                         status="completed"
-                        title={entry.endring}
-                        timestamp={`${isoTilLokal(entry.endretTidspunkt)} av ${entry.endretAv}`}
+                        title={loggLinje.endring}
+                        timestamp={`${isoTilLokal(loggLinje.endretTidspunkt)} av ${loggLinje.endretAv}`}
                         bullet={<ChevronRightIcon/>}
                     >
-                        <BodyLong>  {entry.beskrivelse}</BodyLong>
+                        <BodyLong>  {loggLinje.beskrivelse}</BodyLong>
                     </Process.Event>
                 )
             )}
-
 
         </Process>
     );

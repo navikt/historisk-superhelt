@@ -48,8 +48,8 @@ class UtbetalingKafkaProducer(
                             beløp = utbetaling.belop.value
                         )
                     ),
-                saksbehandler = sak.saksbehandler.value,
-                beslutter = sak.attestant?.value ?: sak.saksbehandler.value,
+                saksbehandler = sak.saksbehandler.navIdent.value,
+                beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
             )
 
         logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, id)

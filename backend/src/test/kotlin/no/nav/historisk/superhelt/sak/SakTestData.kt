@@ -4,6 +4,7 @@ import net.datafaker.Faker
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
+import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
@@ -30,12 +31,14 @@ object SakTestData {
             status = SakStatus.UNDER_BEHANDLING,
             vedtaksResultat = faker.options().option(VedtaksResultat::class.java),
             opprettetDato = faker.timeAndDate().past(1, TimeUnit.DAYS),
-            saksbehandler = NavIdent(faker.bothify("???###")),
+            saksbehandler = navUser(),
             attestant = null,
             utbetaling = null,
             forhandstilsagn = null
         )
     }
+
+    private fun navUser(): NavUser = NavUser(NavIdent(faker.bothify("???###")), faker.name().name())
 
     fun sakMedUtbetaling() = sakUtenUtbetaling().copy(
         utbetaling = UtbetalingTestData.utbetalingMinimum()
@@ -46,7 +49,7 @@ object SakTestData {
             type = faker.options().option(StonadsType::class.java),
             fnr = fnr,
             status = SakStatus.UNDER_BEHANDLING,
-            saksbehandler = NavIdent(faker.greekPhilosopher().name())
+            saksbehandler = navUser()
         )
     }
 
@@ -65,7 +68,7 @@ object SakTestData {
             begrunnelse = faker.yoda().quote().take(250)
             status = sakStatus
             vedtaksResultat = faker.options().option(VedtaksResultat::class.java)
-            saksbehandler = NavIdent(saksbehehandlerIdent)
+            saksbehandler = NavUser(NavIdent(saksbehehandlerIdent), faker.name().name())
 
             setOrUpdateUtbetaling(faker.number().numberBetween(10, 99999))
         }
