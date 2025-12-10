@@ -54,7 +54,7 @@ export function SakerTable({maskertPersonIdent}: SakerTableProps) {
                             <SakStatus sak={sak}/>
                         </Table.DataCell>
                         <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
-                        <Table.DataCell>{sak.saksbehandler}</Table.DataCell>
+                        <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>
                         <Table.DataCell>
                             <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
                                 Åpne sak

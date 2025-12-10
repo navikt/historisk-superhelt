@@ -55,7 +55,7 @@ export default function SakSummary({sak}: SakSummaryProps) {
                 </FormSummary.Answer>
                 <FormSummary.Answer>
                     <FormSummary.Label>Saksbehandler</FormSummary.Label>
-                    <FormSummary.Value>{sak.saksbehandler}</FormSummary.Value>
+                    <FormSummary.Value>{sak.saksbehandler.navn} <small>({sak.saksbehandler.navIdent})</small></FormSummary.Value>
                 </FormSummary.Answer>
             </FormSummary.Answers>
         </FormSummary>
