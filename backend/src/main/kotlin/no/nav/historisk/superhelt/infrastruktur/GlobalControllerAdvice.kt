@@ -1,9 +1,9 @@
 package no.nav.historisk.superhelt.infrastruktur
 
 import jakarta.validation.ConstraintViolationException
-import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
-import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
-import no.nav.historisk.superhelt.infrastruktur.exception.createValidationErrorMessage
+import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
+import no.nav.historisk.superhelt.infrastruktur.validation.createValidationErrorMessage
 import org.slf4j.LoggerFactory
 import org.springframework.http.*
 import org.springframework.security.access.AccessDeniedException

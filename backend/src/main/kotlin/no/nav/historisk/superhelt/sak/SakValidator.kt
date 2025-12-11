@@ -1,21 +1,11 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
-import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
+import no.nav.historisk.superhelt.brev.BrevValidator
+import no.nav.historisk.superhelt.infrastruktur.validation.Validator
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 
 
-class SakValidator(private val sak: Sak) {
-
-    private val _validationErrors = mutableListOf<ValidationFieldError>()
-    val validationErrors: List<ValidationFieldError>
-        get() = _validationErrors.toList()
-
-    private fun check(condition: Boolean, property: String, message: String) {
-        if (condition) {
-            _validationErrors.add(ValidationFieldError(property, message))
-        }
-    }
+class SakValidator(private val sak: Sak): Validator() {
 
     fun checkStatusTransition(newStatus: SakStatus): SakValidator {
         val validTransitions = when (sak.status) {
@@ -37,8 +27,11 @@ class SakValidator(private val sak: Sak) {
 
     fun checkBrev() : SakValidator {
         sak.vedtaksbrevBruker?.let { brev ->
-            check(brev.tittel.isNullOrBlank(), "vedtaksbrevBruker.tittel", "Vedtaksbrev til bruker må ha en tittel")
-            check(brev.innhold.isEmptyHtml(), "vedtaksbrevBruker.innhold", "Vedtaksbrev til bruker må ha innhold")
+            BrevValidator(brev).checkBrev()
+                .validationErrors
+                .forEach { feil ->
+                    check(true, "vedtaksbrevBruker.${feil.field}", feil.message)
+                }
         }
         return this
     }
@@ -95,18 +88,4 @@ class SakValidator(private val sak: Sak) {
         check(!sak.rettigheter.contains(rettighet), "rettighet", "Manglende rettighet i sak: $rettighet")
         return this
     }
-
-    /** Sjekker validering og kaster ValideringException hvis feil */
-    @Throws(ValideringException::class)
-    fun validate() {
-        if (_validationErrors.isNotEmpty()) {
-            throw ValideringException(reason = "Validering av sak feilet", validationErrors = _validationErrors)
-        }
-    }
-
-    private fun String?.isEmptyHtml(): Boolean {
-        val stripped = this?.replace(Regex("<[^>]*>"), "")?.trim()
-        return stripped.isNullOrEmpty()
-    }
-
 }

@@ -3,8 +3,8 @@ package no.nav.historisk.superhelt.sak.rest
 import io.swagger.v3.oas.annotations.Operation
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
-import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
-import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
+import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakService

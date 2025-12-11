@@ -1,7 +1,8 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.historisk.superhelt.brev.BrevStatus
-import no.nav.historisk.superhelt.infrastruktur.exception.ValidationFieldError
+import no.nav.historisk.superhelt.infrastruktur.validation.TilstandResultat
+import no.nav.historisk.superhelt.infrastruktur.validation.TilstandStatus
 
 class SakTilstand(private val sak: Sak) {
     val soknad: TilstandResultat
@@ -50,15 +51,5 @@ class SakTilstand(private val sak: Sak) {
         }
 
 
-    data class TilstandResultat(
-        val tilstand: TilstandStatus,
-        val valideringsfeil: List<ValidationFieldError>,
-    )
-
-    enum class TilstandStatus {
-        IKKE_STARTET,
-        OK,
-        VALIDERING_FEILET
-    }
 }
 

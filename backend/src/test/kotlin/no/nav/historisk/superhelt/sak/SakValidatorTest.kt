@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
