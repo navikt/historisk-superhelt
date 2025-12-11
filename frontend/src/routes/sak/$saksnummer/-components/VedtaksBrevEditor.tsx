@@ -40,7 +40,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
     const [hasChanged, setHasChanged] = useState(false)
 
     const [showValidation, setShowValidation] = useState(false)
-    const validationErrors = brev?.validation || []
+    const validationErrors = brev?.valideringsfeil || []
     const hasValidationErrors = validationErrors.length > 0
 
     const oppdaterBrev = useMutation({

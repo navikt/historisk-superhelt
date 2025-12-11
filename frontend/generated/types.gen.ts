@@ -31,7 +31,7 @@ export type BrevUtkast = {
     type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
-    readonly validation: Array<ValidationFieldError>;
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type Forhandstilsagn = {
@@ -60,20 +60,17 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
-    soknad: TilstandResultat;
-    vedtaksbrevBruker: TilstandResultat;
-};
-
-export type TilstandResultat = {
-    tilstand: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    valideringsfeil: Array<ValidationFieldError>;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -197,8 +194,9 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    soknad: TilstandResultat;
-    vedtaksbrevBruker: TilstandResultat;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type GetSakBySaksnummerData = {

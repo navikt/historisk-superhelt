@@ -1,15 +1,15 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.historisk.superhelt.brev.BrevStatus
-import no.nav.historisk.superhelt.infrastruktur.validation.TilstandResultat
 import no.nav.historisk.superhelt.infrastruktur.validation.TilstandStatus
-
+/** Representerer tilstanden til en sak i forhold til utfylling og validering
+ *
+ * Brukes for å vise hviket steg i en sak som er fullført, har valideringsfeil eller ikke er startet
+ */
 class SakTilstand(private val sak: Sak) {
-    val soknad: TilstandResultat
+    val opplysninger: TilstandStatus
         get() {
-            val valideringsfeil = SakValidator(sak)
-                .checkSoknad()
-                .validationErrors
+            val valideringsfeil = sak.valideringsfeil
 
             // Sjekk om det ikke er startet på saken i det hele tatt
             if (sak.tittel.isNullOrBlank()
@@ -18,36 +18,37 @@ class SakTilstand(private val sak: Sak) {
                 && sak.forhandstilsagn == null
                 && sak.vedtaksResultat == null
             ) {
-                return TilstandResultat(
-                    tilstand = TilstandStatus.IKKE_STARTET,
-                    valideringsfeil = valideringsfeil
-                )
+                return TilstandStatus.IKKE_STARTET
             }
 
-                return TilstandResultat(
-                    tilstand = if (valideringsfeil.isEmpty()) TilstandStatus.OK else TilstandStatus.VALIDERING_FEILET,
-                    valideringsfeil = valideringsfeil
-                )
-
+            if (!valideringsfeil.isEmpty()) {
+                return TilstandStatus.VALIDERING_FEILET
+            }
+            return TilstandStatus.OK
         }
 
-    val vedtaksbrevBruker: TilstandResultat
+    val vedtaksbrevBruker: TilstandStatus
         get() {
-            val valideringsfeil = SakValidator(sak)
-                .checkBrev()
-                .validationErrors
+
 
             if (sak.vedtaksbrevBruker == null || sak.vedtaksbrevBruker.status == BrevStatus.NY) {
-                return TilstandResultat(
-                    tilstand = TilstandStatus.IKKE_STARTET,
-                    valideringsfeil = valideringsfeil
-                )
+                return TilstandStatus.IKKE_STARTET
             }
+            val valideringsfeil = sak.vedtaksbrevBruker.valideringsfeil
 
-            return TilstandResultat(
-                tilstand = if (valideringsfeil.isEmpty()) TilstandStatus.OK else TilstandStatus.VALIDERING_FEILET,
-                valideringsfeil = valideringsfeil
-            )
+            if (!valideringsfeil.isEmpty()) {
+                return TilstandStatus.VALIDERING_FEILET
+            }
+            return TilstandStatus.OK
+        }
+
+    val oppsummering: TilstandStatus
+        get() {
+            return when (sak.status) {
+                SakStatus.UNDER_BEHANDLING -> TilstandStatus.IKKE_STARTET
+                SakStatus.TIL_ATTESTERING -> TilstandStatus.IKKE_STARTET
+                SakStatus.FERDIG -> TilstandStatus.OK
+            }
         }
 
 

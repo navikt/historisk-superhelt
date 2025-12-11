@@ -3,15 +3,14 @@ import {Box, HGrid, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/components/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
-import {ClockDashedIcon, FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
+import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/components/error/ErrorAlert";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
 import {StepType} from "~/components/ProcessMenu/StepType";
 import {ProcessMenuItem} from "~/components/ProcessMenu/ProcessMenuItem";
 import {ProcessMenu} from "~/components/ProcessMenu/ProcessMenu";
-import {TilstandResultat} from "@generated";
-import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
+import {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -28,8 +27,8 @@ function SakLayout() {
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
 
 
-    const calculateStepType = (tilstandResultat: TilstandResultat): StepType => {
-        switch (tilstandResultat?.tilstand) {
+    const calculateStepType = (tilstandResultat: TilstandStatusType): StepType => {
+        switch (tilstandResultat) {
             case "IKKE_STARTET":
                 return StepType.default;
             case "OK":
@@ -48,12 +47,13 @@ function SakLayout() {
                 <VStack gap="space-16">
 
                     <ProcessMenu>
-                        <ProcessMenuItem label={"Opplysninger"} stepType={calculateStepType(sak?.tilstand.soknad)}
+                        <ProcessMenuItem label={"Opplysninger"} stepType={calculateStepType(sak?.tilstand.opplysninger)}
                                          to={"/sak/$saksnummer/opplysninger"}/>
                         <ProcessMenuItem label={"Brev til bruker"}
                                          stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
                                          to={"/sak/$saksnummer/vedtaksbrevbruker"}/>
-                        <ProcessMenuItem label={"Oppsummering"} stepType={StepType.default}
+                        <ProcessMenuItem label={"Oppsummering"}
+                                         stepType={calculateStepType(sak?.tilstand.oppsummering)}
                                          to={"/sak/$saksnummer/oppsummering"}/>
 
                     </ProcessMenu>
@@ -75,11 +75,7 @@ function SakLayout() {
                                 label="Sakshistorikk"
                                 icon={<TasklistIcon aria-hidden/>}
                             />
-                            <Tabs.Tab
-                                value="endringer"
-                                label="Endringer"
-                                icon={<ClockDashedIcon aria-hidden/>}
-                            />
+
                             <Tabs.Tab
                                 value="dokumenter"
                                 label="Dokumenter"
@@ -102,12 +98,7 @@ function SakLayout() {
                                 <SakerTable maskertPersonIdent={sak.maskertPersonIdent} />
                             </Box>
                         </Tabs.Panel>
-                        <Tabs.Panel value="endringer">
-                            <Box width="100%" height="6rem" padding="space-16">
-                                <SakEndringer sak={sak}/>
 
-                            </Box>
-                        </Tabs.Panel>
                         <Tabs.Panel value="dokumenter">
                             <Box width="100%" height="6rem" padding="space-16">
                                 Her kommer det kanskje dokumenter fra joark?

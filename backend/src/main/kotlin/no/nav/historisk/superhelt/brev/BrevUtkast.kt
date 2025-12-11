@@ -14,7 +14,7 @@ data class BrevUtkast(
     val status: BrevStatus = BrevStatus.NY
 ){
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val validation: List<ValidationFieldError>
+    val valideringsfeil: List<ValidationFieldError>
         get() = BrevValidator(this).checkBrev().validationErrors
 }
 

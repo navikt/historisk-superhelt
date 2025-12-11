@@ -12,10 +12,9 @@ function BrevPage() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
 
-    const hasRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
+    const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
 
-
-        return <VedtaksBrevEditor sak={sak} type={"VEDTAKSBREV"} mottaker="BRUKER" readOnly={!hasRettighet}/>
+    return <VedtaksBrevEditor sak={sak} type={"VEDTAKSBREV"} mottaker="BRUKER" readOnly={!hasSaksbehandleRettighet}/>
 
 
 }
