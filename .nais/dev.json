@@ -1,5 +1,6 @@
 {
   "env": "dev",
+  "legacyEnvSuffix": "-q2",
   "appIngress": "https://superhelt.intern.dev.nav.no",
   "gruppe": {
     "les": "104a5fb8-17f3-42ab-8844-c586d0bff45a",
