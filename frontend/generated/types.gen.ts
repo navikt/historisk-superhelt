@@ -31,6 +31,7 @@ export type BrevUtkast = {
     type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+    readonly validation: Array<ValidationFieldError>;
 };
 
 export type Forhandstilsagn = {
@@ -59,15 +60,15 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
-    readonly maskertPersonIdent: string;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
+    vedtaksbrevBruker: TilstandResultat;
 };
 
 export type TilstandResultat = {
@@ -166,6 +167,15 @@ export type StonadsTypeDto = {
     beskrivelse?: string;
 };
 
+export type BrevUtkastWritable = {
+    uuid: string;
+    tittel?: string;
+    innhold?: string;
+    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    mottakerType: 'BRUKER' | 'SAMHANDLER';
+    status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+};
+
 export type SakWritable = {
     saksnummer: string;
     behandlingsnummer: string;
@@ -182,13 +192,13 @@ export type SakWritable = {
     attestant?: NavUser;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    vedtaksbrevBruker?: BrevUtkast;
+    vedtaksbrevBruker?: BrevUtkastWritable;
 };
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    vedtaksbrevBruker: TilstandResultat;
     soknad: TilstandResultat;
+    vedtaksbrevBruker: TilstandResultat;
 };
 
 export type GetSakBySaksnummerData = {
