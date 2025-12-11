@@ -200,10 +200,11 @@ class SakControllerRestTest() {
                 .hasPathSatisfying("$.fnr") { assertThat(it).isEqualTo(opprettetSak.fnr.value) }
                 .hasPathSatisfying("$.type") { assertThat(it).isEqualTo(opprettetSak.type.name) }
                 .hasPathSatisfying("$.tittel") { assertThat(it).isEqualTo(opprettetSak.tittel) }
-                // Genererte verdie
+                // Genererte verdier
                 .hasPathSatisfying("$.maskertPersonIdent") { assertThat(it).isEqualTo(opprettetSak.fnr.toMaskertPersonIdent().value) }
                 .hasPathSatisfying("$.rettigheter") { assertThat(it).isNotEmpty }
                 .hasPathSatisfying("$.tilstand") { assertThat(it).isNotEmpty }
+                .hasPathSatisfying("$.valideringsfeil") { assertThat(it).isNotNull }
 
 
             verify(tilgangsmaskinService).sjekkKomplettTilgang(opprettetSak.fnr)

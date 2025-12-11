@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import net.datafaker.Faker
+import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.NavIdent
@@ -15,6 +16,16 @@ import java.util.concurrent.TimeUnit
 object SakTestData {
 
     private val faker: Faker = Faker()
+
+    fun sakMedStatus( sakStatus: SakStatus) = when(sakStatus){
+        SakStatus.UNDER_BEHANDLING -> sakMedUtbetaling().copy(status = sakStatus)
+        SakStatus.TIL_ATTESTERING -> sakMedUtbetaling().copy(status = sakStatus)
+        SakStatus.FERDIG -> sakMedUtbetaling().copy(status = sakStatus, attestant = navUser())
+    }
+
+    fun sakMedUtbetaling() = sakUtenUtbetaling().copy(
+        utbetaling = UtbetalingTestData.utbetalingMinimum()
+    )
 
     fun sakUtenUtbetaling(): Sak {
         val saksnummer = faker.numerify("Mock-#####")
@@ -32,6 +43,8 @@ object SakTestData {
             vedtaksResultat = faker.options().option(VedtaksResultat::class.java),
             opprettetDato = faker.timeAndDate().past(1, TimeUnit.DAYS),
             saksbehandler = navUser(),
+            tildelingsAar = Aar(faker.number().numberBetween(2020, 2026)),
+            begrunnelse = faker.lebowski().quote(),
             attestant = null,
             utbetaling = null,
             forhandstilsagn = null
@@ -39,10 +52,6 @@ object SakTestData {
     }
 
     private fun navUser(): NavUser = NavUser(NavIdent(faker.bothify("???###")), faker.name().name())
-
-    fun sakMedUtbetaling() = sakUtenUtbetaling().copy(
-        utbetaling = UtbetalingTestData.utbetalingMinimum()
-    )
 
     fun sakEntityMinimum(fnr: Fnr = Fnr(faker.numerify("###########"))): SakJpaEntity {
         return SakJpaEntity(
