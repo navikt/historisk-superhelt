@@ -61,8 +61,9 @@ spec:
       external:
         - host: "pdl-api.{{env}}-fss-pub.nais.io"
         - host: "oppgave.{{env}}-fss-pub.nais.io"
-        - host: "dokarkiv.{{env}}-fss-pub.nais.io"
+        - host: "dokarkiv{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
         - host: "dokdistfordeling.{{env}}-fss-pub.nais.io"
+        - host: "saf{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
 
   env:
     - name: APP_FNR_ENCRYPTOR_SECRET
