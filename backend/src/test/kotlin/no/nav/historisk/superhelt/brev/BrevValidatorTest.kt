@@ -21,7 +21,7 @@ class BrevValidatorTest {
             val brev = BrevTestdata.vedtaksbrevBruker().copy(tittel = null)
             val validator = BrevValidator(brev).checkBrev()
             assertThat(validator.validationErrors).isNotEmpty()
-            assertThat(validator.validationErrors).anyMatch { it.field == "tittel" && it.message == "Vedtaksbrev til bruker må ha en tittel" }
+            assertThat(validator.validationErrors).anyMatch { it.field == "tittel" && it.message == "Brev må ha en tittel" }
         }
 
         @Test
@@ -29,7 +29,7 @@ class BrevValidatorTest {
             val brev = BrevTestdata.vedtaksbrevBruker().copy(tittel = "")
             val validator = BrevValidator(brev).checkBrev()
             assertThat(validator.validationErrors).isNotEmpty()
-            assertThat(validator.validationErrors).anyMatch { it.field == "tittel" && it.message == "Vedtaksbrev til bruker må ha en tittel" }
+            assertThat(validator.validationErrors).anyMatch { it.field == "tittel" && it.message == "Brev må ha en tittel" }
         }
 
         @Test
@@ -37,7 +37,7 @@ class BrevValidatorTest {
             val brev = BrevTestdata.vedtaksbrevBruker().copy(innhold = "")
             val validator = BrevValidator(brev).checkBrev()
             assertThat(validator.validationErrors).isNotEmpty()
-            assertThat(validator.validationErrors).anyMatch { it.field == "innhold" && it.message == "Vedtaksbrev til bruker må ha innhold" }
+            assertThat(validator.validationErrors).anyMatch { it.field == "innhold" && it.message == "Brev må ha innhold" }
         }
 
         @Test
@@ -45,7 +45,7 @@ class BrevValidatorTest {
             val brev = BrevTestdata.vedtaksbrevBruker().copy(innhold = "<p></p>")
             val validator = BrevValidator(brev).checkBrev()
             assertThat(validator.validationErrors).isNotEmpty()
-            assertThat(validator.validationErrors).anyMatch { it.field == "innhold" && it.message == "Vedtaksbrev til bruker må ha innhold" }
+            assertThat(validator.validationErrors).anyMatch { it.field == "innhold" && it.message == "Brev må ha innhold" }
         }
 
         @Test
