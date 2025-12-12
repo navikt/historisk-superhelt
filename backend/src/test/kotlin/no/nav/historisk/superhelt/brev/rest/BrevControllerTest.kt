@@ -84,6 +84,7 @@ class BrevControllerTest {
                     assertThat(it.mottakerType).isEqualTo(request.mottaker)
                     assertThat(it.tittel).isNotEmpty
                     assertThat(it.innhold).isNotEmpty
+                    assertThat(it.valideringsfeil).isNotNull
                 })
             verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(sak.fnr)
         }
@@ -200,6 +201,24 @@ class BrevControllerTest {
                 .satisfies ({
                     assertThat(it.tittel).isEqualTo(request.tittel)
                     assertThat(it.innhold).isEqualTo(request.innhold)
+                })
+        }
+
+        @Test
+        fun `oppdater brev valideringsfeil`() {
+            val sak = lagreNySak()
+            val brev = lagreBrev(sak)
+            val saksnummer = sak.saksnummer
+            val brevId = brev.uuid
+
+            val request = OppdaterBrevRequest(tittel = "", innhold = "Nytt innhold")
+
+            assertThat(oppdaterBrev(saksnummer, brevId, request))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(BrevUtkast::class.java)
+                .satisfies ({
+                    assertThat(it.valideringsfeil).isNotEmpty
                 })
         }
 

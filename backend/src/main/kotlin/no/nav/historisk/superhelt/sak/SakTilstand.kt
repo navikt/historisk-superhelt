@@ -4,7 +4,7 @@ import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.infrastruktur.validation.TilstandStatus
 /** Representerer tilstanden til en sak i forhold til utfylling og validering
  *
- * Brukes for å vise hviket steg i en sak som er fullført, har valideringsfeil eller ikke er startet
+ * Brukes for å vise hvilket steg i en sak som er fullført, har valideringsfeil eller ikke er startet
  */
 class SakTilstand(private val sak: Sak) {
     val opplysninger: TilstandStatus
