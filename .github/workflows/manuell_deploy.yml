@@ -1,0 +1,34 @@
+name: "Manuell deploy til dev"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-and-test.yml
+    secrets: inherit
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
+  deploy_dev:
+    needs:
+      - build
+    name: "Deploy til dev"
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Deploy backend til dev-gcp
+        uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/app/backend.yaml
+          VARS: .nais/dev.json
+          IMAGE: ${{ needs.build.outputs.image }}
+          TELEMETRY: ${{ needs.build.outputs.telemetry }}
+
