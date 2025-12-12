@@ -14,14 +14,14 @@ interface BrevEditorProps {
     type: BrevType,
     mottaker: BrevMottakerType,
     readOnly?: boolean,
-    onSucess: () => void,
+    onSuccess: () => void,
     buttonText: string,
 }
 
 
 /** Editor for vedtaksbrev til bruker
  */
-export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSucess, buttonText}: BrevEditorProps) {
+export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText}: BrevEditorProps) {
     const saksnummer = sak.saksnummer
     const {data: brev} = useSuspenseQuery(getOrCreateBrevOptions(saksnummer, type, mottaker))
     const queryClient = useQueryClient();
@@ -91,7 +91,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSucess, butt
         await lagreBrev();
         setShowValidation(true)
         if (!hasValidationErrors) {
-            onSucess()
+            onSuccess()
         }
 
     }

@@ -43,10 +43,10 @@ class PdfgenService(
     }
 
     private fun BrevType.asPdfGenBrevType(): PdfgenBrevtype {
-      return when (this) {
-          BrevType.VEDTAKSBREV -> PdfgenBrevtype.VEDTAKSBREV
-          else -> PdfgenBrevtype.BREV
-      }
+        return when (this) {
+            BrevType.VEDTAKSBREV -> PdfgenBrevtype.VEDTAKSBREV
+            else -> PdfgenBrevtype.BREV
+        }
     }
 
     private fun BrevMottaker.asPdfgenMottakerType(): PdfgenMottakerType {

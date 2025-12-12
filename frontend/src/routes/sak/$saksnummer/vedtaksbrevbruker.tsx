@@ -21,7 +21,7 @@ function BrevPage() {
                               mottaker="BRUKER"
                               buttonText="Lagre og gå videre"
                               readOnly={!hasSaksbehandleRettighet}
-                              onSucess={gotoOppsummering}/>
+                              onSuccess={gotoOppsummering}/>
 
 
 }

@@ -7,10 +7,10 @@ import {VedtaksBrevEditor} from "~/routes/sak/$saksnummer/-components/VedtaksBre
 import {DocPencilIcon} from "@navikt/aksel-icons";
 
 export const Route = createFileRoute('/sak/$saksnummer/annetbrev')({
-    component: OppsummeringPage,
+    component: AnnetBrevPage,
 })
 
-function OppsummeringPage() {
+function AnnetBrevPage() {
 
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
@@ -43,7 +43,7 @@ function OppsummeringPage() {
                 <Modal.Body>
                     <VedtaksBrevEditor sak={sak} type={"INNHENTINGSBREV"} mottaker="BRUKER"
                                        buttonText="Send brev"
-                                       onSucess={onBrevSend}
+                                       onSuccess={onBrevSend}
                                        readOnly={!hasSaksbehandleRettighet}
                     />
                 </Modal.Body>
