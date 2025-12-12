@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.brev.pdfgen
 
 import no.nav.historisk.pdfgen.*
+import no.nav.historisk.superhelt.brev.BrevMottaker
+import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.BrevUtkast
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
@@ -30,8 +32,8 @@ class PdfgenService(
             beslutterNavn = sak.attestant?.navn ?: "<attestant>",
             kontor = "NAV Arbeid og ytelser",
             html = brev.innhold ?: "",
-            brevtype = PdfgenBrevtype.VEDTAKSBREV,
-            mottaker = PdfgenMottakerType.BRUKER,
+            brevtype = brev.type.asPdfGenBrevType(),
+            mottaker = brev.mottakerType.asPdfgenMottakerType(),
         )
     }
 
@@ -39,4 +41,21 @@ class PdfgenService(
         val pdfgenRequest = mapToPdfgenRequest(sak, brev)
         return pdfgenClient.genererHtml(pdfgenRequest)
     }
+
+    private fun BrevType.asPdfGenBrevType(): PdfgenBrevtype {
+        return when (this) {
+            BrevType.VEDTAKSBREV -> PdfgenBrevtype.VEDTAKSBREV
+            else -> PdfgenBrevtype.BREV
+        }
+    }
+
+    private fun BrevMottaker.asPdfgenMottakerType(): PdfgenMottakerType {
+        return when (this) {
+            BrevMottaker.BRUKER -> PdfgenMottakerType.BRUKER
+            BrevMottaker.SAMHANDLER -> PdfgenMottakerType.SAMHANDLER
+        }
+    }
+
 }
+
+

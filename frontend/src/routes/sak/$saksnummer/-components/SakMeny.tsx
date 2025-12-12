@@ -2,6 +2,7 @@ import {ActionMenu, Button} from "@navikt/ds-react";
 import {ChevronDownIcon} from "@navikt/aksel-icons";
 import {Sak} from "@generated";
 import {RettighetType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {Link as RouterLink} from "@tanstack/react-router";
 
 
 interface SakMenyProps {
@@ -34,9 +35,9 @@ export default function SakMeny({sak}: SakMenyProps) {
                     sak</ActionMenu.Item>
             </ActionMenu.Group>
             <ActionMenu.Group label={"Brev"}>
-                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Send
+                <ActionMenu.Item as={RouterLink} disabled={notSaksbehandler} to={`/sak/${sak.saksnummer}/annetbrev`}>Send
                     informasjonsbrev</ActionMenu.Item>
-                <ActionMenu.Item onSelect={console.info} disabled={notSaksbehandler}>Send
+                <ActionMenu.Item as={RouterLink} disabled={notSaksbehandler} to={`/sak/${sak.saksnummer}/annetbrev`}>Send
                     innhentingsbrev</ActionMenu.Item>
             </ActionMenu.Group>
         </ActionMenu.Content>

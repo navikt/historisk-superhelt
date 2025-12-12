@@ -1,9 +1,9 @@
 import {BodyLong, Button, ErrorSummary, Heading, Radio, RadioGroup, Textarea, VStack} from "@navikt/ds-react";
 import {Sak} from "@generated";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import {attersterSakMutation} from "@generated/@tanstack/react-query.gen";
-import {sakQueryKey} from "~/routes/sak/$saksnummer/-api/sak.query";
 import {useState} from "react";
+import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
 interface Props {
     sak: Sak
@@ -17,16 +17,16 @@ interface ValideringState {
 }
 
 export default function FerdigstillSakAction({sak}: Props) {
-    const queryClient = useQueryClient();
+    const invalidateSakQuery = useInvalidateSakQuery();
     const saksnummer = sak.saksnummer
-    const [beslutning, setBeslutning] = useState<RadioValue|"" >("");
+    const [beslutning, setBeslutning] = useState<RadioValue | "">("");
     const [kommentar, setKommentar] = useState("")
     const [validering, setValidering] = useState<ValideringState>({})
 
     const attesterSak = useMutation({
         ...attersterSakMutation()
         , onSettled: () => {
-            queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+            invalidateSakQuery(saksnummer);
         }
     })
 
@@ -39,6 +39,7 @@ export default function FerdigstillSakAction({sak}: Props) {
         })
         return beslutningValid && kommentarValid
     }
+
     function clearValidation() {
         setValidering({})
     }
@@ -69,7 +70,7 @@ export default function FerdigstillSakAction({sak}: Props) {
     }
 
     const hasRettighet = sak.rettigheter.includes("ATTESTERE")
-    const hasError =  !!attesterSak.error
+    const hasError = !!attesterSak.error
 
     return <VStack gap={"space-16"}>
         <Heading size="medium">Godkjenne sak</Heading>
