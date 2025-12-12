@@ -6,7 +6,6 @@ import {getOrCreateBrevOptions, getOrCreateBrevQueryKey} from "~/routes/sak/$sak
 import {htmlBrevOptions, oppdaterBrevMutation} from "@generated/@tanstack/react-query.gen";
 import {useAutoSave} from "~/components/useAutosave";
 import {Sak} from "@generated";
-import {useNavigate} from "@tanstack/react-router";
 import {BrevMottakerType, BrevType} from "~/routes/sak/$saksnummer/-types/brev.types";
 
 
@@ -15,14 +14,16 @@ interface BrevEditorProps {
     type: BrevType,
     mottaker: BrevMottakerType,
     readOnly?: boolean,
+    onSucess: () => void,
+    buttonText: string,
 }
+
 
 /** Editor for vedtaksbrev til bruker
  */
-export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorProps) {
+export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSucess, buttonText}: BrevEditorProps) {
     const saksnummer = sak.saksnummer
     const {data: brev} = useSuspenseQuery(getOrCreateBrevOptions(saksnummer, type, mottaker))
-    const navigate = useNavigate()
     const queryClient = useQueryClient();
     const brevId = brev?.uuid ?? "";
     const {data: genpdfHtml} = useSuspenseQuery({
@@ -90,7 +91,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
         await lagreBrev();
         setShowValidation(true)
         if (!hasValidationErrors) {
-            navigate({to: "/sak/$saksnummer/oppsummering", params: {saksnummer}})
+            onSucess()
         }
 
     }
@@ -107,8 +108,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
                               readOnly={readOnly}
                               error={getErrorMessage("innhold")}/>
             <HStack gap="8" align="start">
-                <Button type="submit" variant="secondary" onClick={completedBrev} disabled={readOnly}>Lagre og gå
-                    videre</Button>
+                <Button type="submit" variant="secondary" onClick={completedBrev} disabled={readOnly}>{buttonText}</Button>
             </HStack>
             {hasError && <ErrorSummary>
                 {oppdaterBrev.error && <ErrorSummary.Item>{oppdaterBrev?.error?.detail}</ErrorSummary.Item>}
