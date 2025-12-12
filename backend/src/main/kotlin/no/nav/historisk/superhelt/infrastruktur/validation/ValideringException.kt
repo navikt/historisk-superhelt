@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.infrastruktur.exception
+package no.nav.historisk.superhelt.infrastruktur.validation
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
@@ -14,5 +14,5 @@ class ValideringException(
 
     override val message: String
         get() = "${reason ?: "Valideringsfeil"}: ${validationErrors.joinToString(", ") { "${it.field}: ${it.message}" }}"
-       
+
 }

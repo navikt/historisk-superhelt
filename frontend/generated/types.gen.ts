@@ -31,6 +31,7 @@ export type BrevUtkast = {
     type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type Forhandstilsagn = {
@@ -60,19 +61,16 @@ export type Sak = {
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevUtkast;
     readonly maskertPersonIdent: string;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: TilstandResultat;
-    soknad: TilstandResultat;
-};
-
-export type TilstandResultat = {
-    tilstand: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    valideringsfeil: Array<ValidationFieldError>;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -166,6 +164,15 @@ export type StonadsTypeDto = {
     beskrivelse?: string;
 };
 
+export type BrevUtkastWritable = {
+    uuid: string;
+    tittel?: string;
+    innhold?: string;
+    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    mottakerType: 'BRUKER' | 'SAMHANDLER';
+    status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+};
+
 export type SakWritable = {
     saksnummer: string;
     behandlingsnummer: string;
@@ -182,13 +189,14 @@ export type SakWritable = {
     attestant?: NavUser;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    vedtaksbrevBruker?: BrevUtkast;
+    vedtaksbrevBruker?: BrevUtkastWritable;
 };
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    vedtaksbrevBruker: TilstandResultat;
-    soknad: TilstandResultat;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type GetSakBySaksnummerData = {

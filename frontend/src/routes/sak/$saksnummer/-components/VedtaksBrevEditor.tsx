@@ -2,10 +2,9 @@ import {Button, ErrorSummary, HStack, TextField, VStack} from "@navikt/ds-react"
 import {HtmlPdfgenEditor} from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlPdfgenEditor";
 import {useState} from "react";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
-import {getOrCreateBrevOptions} from "~/routes/sak/$saksnummer/-api/brev.query";
+import {getOrCreateBrevOptions, getOrCreateBrevQueryKey} from "~/routes/sak/$saksnummer/-api/brev.query";
 import {htmlBrevOptions, oppdaterBrevMutation} from "@generated/@tanstack/react-query.gen";
 import {useAutoSave} from "~/components/useAutosave";
-import {sakQueryKey} from "~/routes/sak/$saksnummer/-api/sak.query";
 import {Sak} from "@generated";
 import {useNavigate} from "@tanstack/react-router";
 import {BrevMottakerType, BrevType} from "~/routes/sak/$saksnummer/-types/brev.types";
@@ -16,12 +15,9 @@ interface BrevEditorProps {
     type: BrevType,
     mottaker: BrevMottakerType,
     readOnly?: boolean,
-
 }
 
 /** Editor for vedtaksbrev til bruker
- *
- * TODO sørge for at validering fungerer for alle typer brev
  */
 export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorProps) {
     const saksnummer = sak.saksnummer
@@ -44,15 +40,13 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
     const [hasChanged, setHasChanged] = useState(false)
 
     const [showValidation, setShowValidation] = useState(false)
-    // TODO fikse generell validering. Denne er spesifikk for vedtaksbrev til bruker
-    const validationErrors = sak.tilstand.vedtaksbrevBruker.valideringsfeil || []
+    const validationErrors = brev?.valideringsfeil || []
     const hasValidationErrors = validationErrors.length > 0
-
 
     const oppdaterBrev = useMutation({
         ...oppdaterBrevMutation(),
-        onSuccess: () => {
-            return queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+        onSuccess: (data) => {
+            queryClient.setQueryData(getOrCreateBrevQueryKey(saksnummer, type, mottaker), data)
         }
     })
 
@@ -84,7 +78,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
         setTittel(tekst)
     }
 
-    function getErrorMessage(field: "vedtaksbrevBruker.tittel" | "vedtaksbrevBruker.innhold"): string | undefined {
+    function getErrorMessage(field: "tittel" | "innhold"): string | undefined {
         if (!showValidation || !hasValidationErrors) {
             return undefined
         }
@@ -107,11 +101,11 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly}: BrevEditorPro
         <VStack gap={"8"}>
             <TextField label={"Dokumentbeskrivelse i arkivet"} value={tittel} readOnly={readOnly}
                        onChange={e => tittelChanged(e.target.value)}
-                       error={getErrorMessage("vedtaksbrevBruker.tittel")}
+                       error={getErrorMessage("tittel")}
                        onBlur={lagreBrev}/>
             <HtmlPdfgenEditor html={genpdfHtml} onChange={editorChanged}
                               readOnly={readOnly}
-                              error={getErrorMessage("vedtaksbrevBruker.innhold")}/>
+                              error={getErrorMessage("innhold")}/>
             <HStack gap="8" align="start">
                 <Button type="submit" variant="secondary" onClick={completedBrev} disabled={readOnly}>Lagre og gå
                     videre</Button>

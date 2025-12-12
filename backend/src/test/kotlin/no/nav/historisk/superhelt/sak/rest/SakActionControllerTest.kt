@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.sak.rest
 
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
-import no.nav.historisk.superhelt.infrastruktur.exception.ValideringException
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus

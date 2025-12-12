@@ -6,6 +6,7 @@ import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.brev.BrevUtkast
 import no.nav.historisk.superhelt.infrastruktur.NavUser
+import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
@@ -65,6 +66,10 @@ data class Sak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val rettigheter: Set<SakRettighet>
         get() = getRettigheter(this)
+
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val valideringsfeil: List<ValidationFieldError>
+        get() = SakValidator(this).checkSoknad().validationErrors
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val tilstand: SakTilstand

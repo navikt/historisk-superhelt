@@ -29,7 +29,7 @@ export default function TotrinnkontrollAction({sak}: Props) {
     }
 
     const hasRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
-    const valideringsfeil = sak.tilstand.soknad.valideringsfeil.concat(sak.tilstand.vedtaksbrevBruker.valideringsfeil)
+    const valideringsfeil = sak.valideringsfeil.concat(sak.vedtaksbrevBruker?.valideringsfeil??[])
     const hasValideringsfeil = valideringsfeil.length > 0
     const hasError = hasValideringsfeil || !!sendTilTotrinn.error
 
