@@ -1,21 +1,21 @@
 import {BodyLong, Button, ErrorSummary, Heading, VStack} from "@navikt/ds-react";
 import {Sak} from "@generated";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import {sendTilAttesteringMutation} from "@generated/@tanstack/react-query.gen";
-import {sakQueryKey} from "~/routes/sak/$saksnummer/-api/sak.query";
+import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
 interface Props {
     sak: Sak
 }
 
 export default function TotrinnkontrollAction({sak}: Props) {
-    const queryClient = useQueryClient();
+    const invalidateSakQuery = useInvalidateSakQuery();
     const saksnummer = sak.saksnummer
 
     const sendTilTotrinn = useMutation({
         ...sendTilAttesteringMutation()
         , onSettled: () => {
-            queryClient.invalidateQueries({queryKey: sakQueryKey(saksnummer)})
+            invalidateSakQuery(saksnummer)
         }
     })
 
@@ -29,7 +29,7 @@ export default function TotrinnkontrollAction({sak}: Props) {
     }
 
     const hasRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
-    const valideringsfeil = sak.valideringsfeil.concat(sak.vedtaksbrevBruker?.valideringsfeil??[])
+    const valideringsfeil = sak.valideringsfeil.concat(sak.vedtaksbrevBruker?.valideringsfeil ?? [])
     const hasValideringsfeil = valideringsfeil.length > 0
     const hasError = hasValideringsfeil || !!sendTilTotrinn.error
 
@@ -45,7 +45,7 @@ export default function TotrinnkontrollAction({sak}: Props) {
         >
             Send til attestering
         </Button>
-        {hasError  && <ErrorSummary>
+        {hasError && <ErrorSummary>
             {sendTilTotrinn.error && <ErrorSummary.Item>{sendTilTotrinn?.error?.detail}</ErrorSummary.Item>}
             {valideringsfeil.map((feil) => (
                 <ErrorSummary.Item key={feil.field}>{feil.message}</ErrorSummary.Item>
