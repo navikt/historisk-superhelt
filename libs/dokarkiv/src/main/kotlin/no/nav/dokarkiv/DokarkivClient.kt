@@ -5,12 +5,10 @@ import no.nav.common.types.Saksnummer
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.patchForObject
-import org.springframework.web.client.postForObject
+import org.springframework.web.client.RestClient
 
 class DokarkivClient(
-    private val restTemplate: RestTemplate,
+    private val restClient: RestClient,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -18,21 +16,22 @@ class DokarkivClient(
         req: JournalpostRequest,
         forsokFerdigstill: Boolean,
     ): JournalpostResponse =
-        restTemplate.postForObject<JournalpostResponse>(
-            "/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=$forsokFerdigstill",
-            req,
-        )
+        restClient.post()
+            .uri("/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=$forsokFerdigstill")
+            .body(req)
+            .retrieve()
+            .body(JournalpostResponse::class.java)!!
 
     fun ferdigstill(
         journalPostId: EksternJournalpostId,
         journalfoerendeEnhet: String,
     ) {
         val req = FerdigstillJournalpostRequest(journalfoerendeEnhet)
-        restTemplate.patchForObject<String>(
-            "/rest/journalpostapi/v1/journalpost/{journalPostId}/ferdigstill",
-            req,
-            journalPostId,
-        )
+        restClient.patch()
+            .uri("/rest/journalpostapi/v1/journalpost/{journalPostId}/ferdigstill", journalPostId)
+            .body(req)
+            .retrieve()
+            .toBodilessEntity()
     }
 
     /** Fjerner alle logiske vedlegg fra dokumentet */
@@ -42,11 +41,11 @@ class DokarkivClient(
     ) {
         val req = BulkOppdaterLogiskVedleggRequest(titler)
         try {
-            restTemplate.put(
-                "/rest/journalpostapi/v1/dokumentInfo/{dokumentInfoId}/logiskVedlegg",
-                req,
-                dokumentInfoId,
-            )
+            restClient.put()
+                .uri("/rest/journalpostapi/v1/dokumentInfo/{dokumentInfoId}/logiskVedlegg", dokumentInfoId)
+                .body(req)
+                .retrieve()
+                .toBodilessEntity()
         } catch (e: HttpClientErrorException) {
             if (e.statusCode == HttpStatus.NOT_FOUND) {
                 logger.info(
@@ -92,11 +91,11 @@ class DokarkivClient(
                 dokumenter = dokumenter,
                 tema = tema,
             )
-        restTemplate.put(
-            "/rest/journalpostapi/v1/journalpost/{journalpostId}",
-            req,
-            journalPostId,
-        )
+        restClient.put()
+            .uri("/rest/journalpostapi/v1/journalpost/{journalpostId}", journalPostId)
+            .body(req)
+            .retrieve()
+            .toBodilessEntity()
     }
 
     data class BulkOppdaterLogiskVedleggRequest(

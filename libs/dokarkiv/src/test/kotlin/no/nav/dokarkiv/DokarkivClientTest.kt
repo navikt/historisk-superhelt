@@ -15,13 +15,14 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 
 class DokarkivClientTest {
    private val restTemplate: RestTemplate = RestTemplate()
    private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()
-
-   private val dokarkivClient = DokarkivClient(restTemplate)
+    private val restClient = RestClient.builder(restTemplate).build()
+   private val dokarkivClient = DokarkivClient(restClient)
 
    @AfterEach
    fun tearDown() {

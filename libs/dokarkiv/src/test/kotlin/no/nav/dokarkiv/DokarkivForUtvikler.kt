@@ -4,17 +4,15 @@ import no.nav.common.types.Fnr
 import no.nav.common.types.Saksnummer
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
-import org.springframework.http.client.JdkClientHttpRequestFactory
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestClient
 import java.time.LocalDateTime
+import java.util.*
 
 @Disabled
 class DokarkivForUtvikler {
-    private val restTemplate: RestTemplate = getRestTemplate()
 
     /**
      * Logg på med AZURE AD først
@@ -25,7 +23,9 @@ class DokarkivForUtvikler {
         """
       """.trimIndent()
 
-    val client = DokarkivClient(restTemplate)
+//    val baseUrl = "https://dokarkiv-q2.dev.intern.nav.no"
+    val baseUrl = "http://localhost:9080/dokarkiv-mock"
+    val client = DokarkivClient(getRestClient())
 
     @Test
     fun `Opprett journalpost`() {
@@ -70,18 +70,20 @@ class DokarkivForUtvikler {
         println("Satt logiske vedlegg :" + dokumentInfoId)
     }
 
-    private fun getRestTemplate(): RestTemplate =
-        RestTemplateBuilder()
-            .rootUri("https://dokarkiv-q2.dev.intern.nav.no")
-            .requestFactory(JdkClientHttpRequestFactory::class.java)
-            .additionalInterceptors(
-                bearerTokenInterceptor(),
-            ).build()
+    private fun getRestClient(): RestClient =
+        RestClient
+            .builder()
+            .baseUrl(baseUrl)
+            .requestInterceptor(bearerTokenInterceptor())
+            .defaultHeaders { headers ->
+                headers.set("Nav-Callid", UUID.randomUUID().toString())
+            }.build()
 
     private fun bearerTokenInterceptor(): ClientHttpRequestInterceptor =
         ClientHttpRequestInterceptor { request: HttpRequest, body: ByteArray?, execution: ClientHttpRequestExecution ->
             request.headers.setBearerAuth(accessToken)
             execution.execute(request, body!!)
         }
+
 
 }
