@@ -1,75 +1,116 @@
 package no.nav.historisk.mock.dokarkiv
 
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import no.nav.dokarkiv.*
+import no.nav.saf.graphql.JournalStatus
+import no.nav.saf.graphql.JournalpostAvsenderMottaker
+import no.nav.saf.graphql.JournalpostBruker
+import no.nav.saf.graphql.JournalpostDokumentInfo
+import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("dokarkiv-mock")
-class DokarkivController {
+class DokarkivController(
+    private val repository: DokarkivTestRepository,
+) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     @PostMapping("/rest/journalpostapi/v1/journalpost")
-    fun opprettJournalpostMock(@RequestParam("forsoekFerdigstill") forsokFerdigStill: Boolean = false) : JournalpostResponse {
-        return JournalpostResponse(journalpostId = "112233", journalpostferdigstilt = forsokFerdigStill, dokumenter = emptyList(), melding="OK fra dokarkiv-mock")
+    fun opprettJournalpostMock(
+        @RequestParam("forsoekFerdigstill") forsokFerdigStill: Boolean = false,
+        @RequestBody req: JournalpostRequest,
+    ): JournalpostResponse {
+        val id = EksternJournalpostId(faker.numerify("########"))
+        logger.info("Oppretter journalpost for id {}", id)
+        val journalpost =
+            generateJournalpost(id)
+                .copy(
+                    journalstatus = JournalStatus.JOURNALFOERT,
+                    tittel = req.tittel,
+                    bruker =
+                        req.bruker.let {
+                            JournalpostBruker(
+                                id = it.id,
+                                type = BrukerIdType.FNR,
+                            )
+                        },
+                )
+        repository.lagre(id, journalpost)
+
+        return JournalpostResponse(
+            journalpostId = EksternJournalpostId(id.value),
+            journalpostferdigstilt = forsokFerdigStill,
+            dokumenter = emptyList(),
+            melding = "OK fra dokarkiv-mock",
+        )
     }
+
+    @PutMapping("/rest/journalpostapi/v1/journalpost/{journalpostId}")
+    fun oppdaterJournalpostMock(
+        @PathVariable journalpostId: EksternJournalpostId,
+        @RequestBody req: OppdaterJournalpostRequest,
+    ): String {
+        logger.info("oppdaterer journalpost for id {}", journalpostId)
+        val journalpost = repository.findOrCreate(journalpostId)
+
+        val oppdatert =
+            journalpost.copy(
+                tittel = req.tittel,
+                bruker =
+                    req.bruker.let {
+                        JournalpostBruker(
+                            id = it.id,
+                            type = BrukerIdType.FNR,
+                        )
+                    },
+                avsenderMottaker =
+                    req.avsenderMottaker.let {
+                        JournalpostAvsenderMottaker(
+                            id = it.id,
+                            type = AvsenderMottakerIdType.FNR,
+                            navn = it.navn,
+                        )
+                    },
+                dokumenter =
+                    req.dokumenter?.map {
+                        JournalpostDokumentInfo(
+                            tittel = it.tittel,
+                            dokumentInfoId = it.dokumentInfoId,
+                            dokumentvarianter = emptyList(),
+                        )
+                    } ?: journalpost.dokumenter,
+            )
+
+
+        repository.lagre(journalpostId, oppdatert)
+
+        return journalpostId.value
+    }
+
+    @PatchMapping("/rest/journalpostapi/v1/journalpost/{journalpostId}/ferdigstill")
+    fun ferdigStillJournalpostMock(
+        @PathVariable journalpostId: EksternJournalpostId,
+    ): String {
+        logger.info("ferdigstiller journalpost for id {}", journalpostId)
+
+        val journalpost = repository.findOrCreate(journalpostId)
+
+        val oppdatert =
+            journalpost.copy(
+                journalstatus = JournalStatus.JOURNALFOERT,
+            )
+        repository.lagre(journalpostId, oppdatert)
+        return journalpostId.value
+    }
+
+    @PutMapping("/rest/journalpostapi/v1/dokumentInfo/{dokumentInfoId}/logiskVedlegg")
+    fun bulkOppdaterLogiskeVedlegg(
+        @PathVariable dokumentInfoId: EksternDokumentInfoId,
+        @RequestBody req: DokarkivClient.BulkOppdaterLogiskVedleggRequest,
+    ) {
+        logger.info("setter logiske vedlegg {} for dokument id {}", req, dokumentInfoId)
+    }
+
+
 }
 
-data class JournalpostRequest(
-    val avsenderMottaker: AvsenderMottaker? = null,
-    val behandlingstema: String? = null,
-    var bruker: Bruker? = null,
-    val dokumenter: List<Dokument>,
-    val eksternReferanseId: String? = null,
-    val journalfoerendeEnhet: String? = null,
-    val journalpostType: String? = null,
-    val kanal: String? = null,
-    val sak: Sak? = null,
-    val tema: String? = null,
-    val tittel: String? = null,
-)
-
-data class AvsenderMottaker(
-    val id: String? = null,
-    val idType: String? = null,
-    val land: String? = null,
-    val navn: String,
-)
-
-data class Bruker(
-    val id: String,
-    val idType: String,
-)
-
-data class Dokument(
-    val brevkode: String? = null,
-    val dokumentKategori: String? = null,
-    val dokumentvarianter: List<Dokumentvarianter>,
-    val tittel: String,
-)
-
-data class Dokumentvarianter(
-    val filnavn: String,
-    val filtype: String,
-    val fysiskDokument: ByteArray,
-    val variantformat: String,
-)
-
-data class Sak(
-    val sakstype: String? = null,
-)
-
-
-data class JournalpostResponse(
-    val dokumenter: List<DokumentInfo>,
-    val journalpostId: String,
-    val journalpostferdigstilt: Boolean,
-    val journalstatus: String? = null,
-    val melding: String? = null,
-)
-
-data class DokumentInfo(
-    val brevkode: String? = null,
-    val dokumentInfoId: String? = null,
-    val tittel: String? = null,
-)
