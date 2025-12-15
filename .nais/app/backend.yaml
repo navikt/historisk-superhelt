@@ -84,5 +84,18 @@ spec:
       value: "api://{{env}}-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"
     - name: APP_PDFGEN_URL
       value: "http://historisk-pdfgen"
+    - name: APP_DOKARKIV_URL
+      value: "https://dokarkiv{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
+    - name: APP_DOKARKIV_AUDIENCE
+      value: "api://{{env}}-fss.teamdokumenthandtering.dokarkiv/.default"
+    - name: APP_DOKDIST_URL
+      value: "https://dokdistfordeling.{{env}}-fss-pub.nais.io"
+    - name: APP_DOKDIST_AUDIENCE
+      value: "api://{{env}}-fss.teamdokumenthandtering.dokdistfordeling/.default"
+    - name: APP_SAF_URL
+      value: "https://saf{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
+    - name: APP_SAF_AUDIENCE
+      value: "api://{{env}}-fss.teamdokumenthandtering.saf/.default"
+
 
 
