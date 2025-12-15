@@ -1,13 +1,13 @@
 package no.nav.historisk.superhelt.brev.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.test.*
 import no.nav.tilgangsmaskin.TilgangsmaskinClient

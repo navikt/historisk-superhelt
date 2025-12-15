@@ -18,6 +18,7 @@
         <module>helved</module>
         <module>common-types</module>
         <module>pdfgen</module>
+        <module>dokarkiv</module>
     </modules>
 
     <dependencies>

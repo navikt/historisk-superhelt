@@ -4,13 +4,13 @@ import jakarta.persistence.*
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.utbetaling.db.ForhandTilsagnJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity

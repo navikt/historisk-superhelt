@@ -1,10 +1,10 @@
 package no.nav.historisk.superhelt.brev
 
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.db.BrevJpaRepository
 import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.Saksnummer
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Repository
 

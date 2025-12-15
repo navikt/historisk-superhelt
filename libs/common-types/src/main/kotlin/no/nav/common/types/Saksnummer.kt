@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.sak
+package no.nav.common.types
 
 @JvmInline
 value class Saksnummer(val value: String) {
@@ -11,4 +11,3 @@ value class Saksnummer(val value: String) {
         return value
     }
 }
-

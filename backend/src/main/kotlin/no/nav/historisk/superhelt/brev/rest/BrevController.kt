@@ -2,13 +2,13 @@ package no.nav.historisk.superhelt.brev.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevId
 import no.nav.historisk.superhelt.brev.BrevRepository
 import no.nav.historisk.superhelt.brev.BrevService
 import no.nav.historisk.superhelt.brev.BrevUtkast
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.Saksnummer
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

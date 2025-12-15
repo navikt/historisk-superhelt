@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.endringslogg.rest
 
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.endringslogg.EndringsloggLinje
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
@@ -7,7 +8,6 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggType.OPPRETTET_SAK
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler

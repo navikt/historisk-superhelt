@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.vedtak.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.vedtak.Vedtak
 import no.nav.historisk.superhelt.vedtak.VedtakRepository
 import org.slf4j.LoggerFactory

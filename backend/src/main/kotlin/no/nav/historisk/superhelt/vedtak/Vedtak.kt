@@ -1,11 +1,7 @@
 package no.nav.historisk.superhelt.vedtak
 
-import no.nav.common.types.Aar
-import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Belop
-import no.nav.common.types.Fnr
+import no.nav.common.types.*
 import no.nav.historisk.superhelt.infrastruktur.NavUser
-import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.UtbetalingsType
 import java.time.Instant
