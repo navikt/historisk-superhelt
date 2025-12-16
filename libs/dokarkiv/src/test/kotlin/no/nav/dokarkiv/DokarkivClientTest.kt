@@ -19,177 +19,209 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 
 class DokarkivClientTest {
-   private val restTemplate: RestTemplate = RestTemplate()
-   private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()
+    private val restTemplate: RestTemplate = RestTemplate()
+    private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()
     private val restClient = RestClient.builder(restTemplate).build()
-   private val dokarkivClient = DokarkivClient(restClient)
+    private val dokarkivClient = DokarkivClient(restClient)
 
-   @AfterEach
-   fun tearDown() {
-      mockServer.verify()
-   }
+    @AfterEach
+    fun tearDown() {
+        mockServer.verify()
+    }
 
 
-   @Test
-   fun `opprett skal returnere journalpost response`() {
-      // Given
-      val req = journalpostRequest()
-      val forsokFerdigstill = true
+    @Test
+    fun `opprett skal returnere journalpost response`() {
+        // Given
+        val req = journalpostRequest()
+        val forsokFerdigstill = true
 
-      mockServer
-         .expect(requestTo("/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=true"))
-         .andExpect(method(HttpMethod.POST))
-         .andRespond(
-            withSuccess(
-               // Minimal gyldig respons for JournalpostResponse
-               """
+        mockServer
+            .expect(requestTo("/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=true"))
+            .andExpect(method(HttpMethod.POST))
+            .andRespond(
+                withSuccess(
+                    // Minimal gyldig respons for JournalpostResponse
+                    """
                {
                  "journalpostId":"123",
                  "journalpostferdigstilt":false,
                  "dokumenter":[]
                }
                """.trimIndent(),
-               MediaType.APPLICATION_JSON,
-            ),
-         )
+                    MediaType.APPLICATION_JSON,
+                ),
+            )
 
-      // When
-      val result = dokarkivClient.opprett(req, forsokFerdigstill)
+        // When
+        val result = dokarkivClient.opprett(req, forsokFerdigstill)
 
-      // Then
-      assertThat(result.journalpostId).isEqualTo(EksternJournalpostId("123"))
-      assertThat(result.journalpostferdigstilt).isFalse()
-      assertThat(result.dokumenter).isEmpty()
-      mockServer.verify()
-   }
+        // Then
+        assertThat(result.journalpostId).isEqualTo(EksternJournalpostId("123"))
+        assertThat(result.journalpostferdigstilt).isFalse()
+        assertThat(result.dokumenter).isEmpty()
+        mockServer.verify()
+    }
 
-   @Test
-   fun `oppdaterJournalpost skal sende put request`() {
-      // Given
-      val journalPostId = EksternJournalpostId("123")
-      val fagsaksnummer = Saksnummer("sak123")
-      val tittel = "Tittel"
-      val bruker = Fnr("12345678901")
-      val avsender = Fnr("09876543210")
+    @Test
+    fun `opprett skal akseptere at journalpost allerede er opprettet med samme eksternref 409 response`() {
+        // Given
+        val req = journalpostRequest()
+        val forsokFerdigstill = true
 
-      mockServer
-         .expect(requestTo("/rest/journalpostapi/v1/journalpost/123"))
-         .andExpect(method(HttpMethod.PUT))
-         .andExpect(content().string(Matchers.containsString("Tittel")))
-         .andExpect(content().string(Matchers.containsString("sak123")))
-         .andRespond(withSuccess())
+        mockServer
+            .expect(requestTo("/rest/journalpostapi/v1/journalpost?forsoekFerdigstill=true"))
+            .andExpect(method(HttpMethod.POST))
+            .andRespond(
+                withStatus(HttpStatus.CONFLICT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(
+                        // Minimal gyldig respons for JournalpostResponse
+                        """
+               {
+                 "journalpostId":"123",
+                 "journalpostferdigstilt":true,
+                 "dokumenter":[]
+               }
+               """.trimIndent(),
+                    ),
+            )
 
-      // When
-      dokarkivClient.oppdaterJournalpost(journalPostId, fagsaksnummer, tittel, bruker, avsender)
+        // When
+        val result = dokarkivClient.opprett(req, forsokFerdigstill)
 
-      mockServer.verify()
-   }
+        // Then
+        assertThat(result.journalpostId).isEqualTo(EksternJournalpostId("123"))
+        mockServer.verify()
+    }
 
-   @Test
-   fun `ferdigstill skal sende patch request`() {
-      // Given
-      val journalPostId = EksternJournalpostId("123")
-      val journalfoerendeEnhet = "enhet"
+    @Test
+    fun `oppdaterJournalpost skal sende put request`() {
+        // Given
+        val journalPostId = EksternJournalpostId("123")
+        val fagsaksnummer = Saksnummer("sak123")
+        val tittel = "Tittel"
+        val bruker = Fnr("12345678901")
+        val avsender = Fnr("09876543210")
 
-      mockServer
-         .expect(requestTo("/rest/journalpostapi/v1/journalpost/123/ferdigstill"))
-         .andExpect(method(HttpMethod.PATCH))
-         .andExpect(content().string(Matchers.containsString("enhet")))
-         .andRespond(withSuccess("123", MediaType.TEXT_PLAIN))
+        mockServer
+            .expect(requestTo("/rest/journalpostapi/v1/journalpost/123"))
+            .andExpect(method(HttpMethod.PUT))
+            .andExpect(content().string(Matchers.containsString("Tittel")))
+            .andExpect(content().string(Matchers.containsString("sak123")))
+            .andRespond(withSuccess())
 
-      // When
-      dokarkivClient.ferdigstill(journalPostId, journalfoerendeEnhet)
+        // When
+        dokarkivClient.oppdaterJournalpost(journalPostId, fagsaksnummer, tittel, bruker, avsender)
 
-      mockServer.verify()
-   }
+        mockServer.verify()
+    }
 
-   @Test
-   fun `setLogiskeVedlegg skal sende put request`() {
-      // Given
-      val dokumentInfoId = EksternDokumentInfoId("456")
+    @Test
+    fun `ferdigstill skal sende patch request`() {
+        // Given
+        val journalPostId = EksternJournalpostId("123")
+        val journalfoerendeEnhet = "enhet"
 
-      mockServer
-         .expect(requestTo("/rest/journalpostapi/v1/dokumentInfo/456/logiskVedlegg"))
-         .andExpect(method(HttpMethod.PUT))
-         .andExpect(
-            content().string(
-               Matchers.allOf(
-                  Matchers.containsString("tittel1"),
-                  Matchers.containsString("tittel2"),
-               ),
-            ),
-         ).andRespond(withSuccess())
+        mockServer
+            .expect(requestTo("/rest/journalpostapi/v1/journalpost/123/ferdigstill"))
+            .andExpect(method(HttpMethod.PATCH))
+            .andExpect(content().string(Matchers.containsString("enhet")))
+            .andRespond(withSuccess("123", MediaType.TEXT_PLAIN))
 
-      // When
-      dokarkivClient.setLogiskeVedlegg(dokumentInfoId, listOf("tittel1", "tittel2"))
-      mockServer.verify()
-   }
+        // When
+        dokarkivClient.ferdigstill(journalPostId, journalfoerendeEnhet)
 
-   @Test
-   fun `setLogiskeVedlegg skal ignorere 404 feil og logge`() {
-      // Given
-      val dokumentInfoId = EksternDokumentInfoId("456")
+        mockServer.verify()
+    }
 
-      mockServer
-         .expect(requestTo("/rest/journalpostapi/v1/dokumentInfo/456/logiskVedlegg"))
-         .andExpect(method(HttpMethod.PUT))
-         .andRespond(withStatus(HttpStatus.NOT_FOUND))
+    @Test
+    fun `setLogiskeVedlegg skal sende put request`() {
+        // Given
+        val dokumentInfoId = EksternDokumentInfoId("456")
 
-      // When
-      dokarkivClient.setLogiskeVedlegg(dokumentInfoId, emptyList())
-      // Then ingen exception
-      mockServer.verify()
-   }
+        mockServer
+            .expect(requestTo("/rest/journalpostapi/v1/dokumentInfo/456/logiskVedlegg"))
+            .andExpect(method(HttpMethod.PUT))
+            .andExpect(
+                content().string(
+                    Matchers.allOf(
+                        Matchers.containsString("tittel1"),
+                        Matchers.containsString("tittel2"),
+                    ),
+                ),
+            ).andRespond(withSuccess())
 
-   @Test
-   fun `setLogiskeVedlegg skal kaste andre feil`() {
-      // Given
-      val dokumentInfoId = EksternDokumentInfoId("456")
+        // When
+        dokarkivClient.setLogiskeVedlegg(dokumentInfoId, listOf("tittel1", "tittel2"))
+        mockServer.verify()
+    }
 
-      mockServer
-         .expect(requestTo("/rest/journalpostapi/v1/dokumentInfo/456/logiskVedlegg"))
-         .andExpect(method(HttpMethod.PUT))
-         .andRespond(withStatus(HttpStatus.BAD_REQUEST))
+    @Test
+    fun `setLogiskeVedlegg skal ignorere 404 feil og logge`() {
+        // Given
+        val dokumentInfoId = EksternDokumentInfoId("456")
 
-      // When & Then
-      assertThatThrownBy { dokarkivClient.setLogiskeVedlegg(dokumentInfoId, emptyList()) }
-         .isInstanceOf(HttpClientErrorException::class.java)
-      mockServer.verify()
-   }
+        mockServer
+            .expect(requestTo("/rest/journalpostapi/v1/dokumentInfo/456/logiskVedlegg"))
+            .andExpect(method(HttpMethod.PUT))
+            .andRespond(withStatus(HttpStatus.NOT_FOUND))
 
-   /** Minimal testdata. Fyll inn påkrevde felter i JournalpostRequest dersom constructor endres. */
-   private fun journalpostRequest(): JournalpostRequest =
-      JournalpostRequest(
-         tittel = "Test tittel",
-         tema = EksternFellesKodeverkTema.HEL,
-         journalpostType = JournalpostType.INNGAAENDE,
-         avsenderMottaker =
-            AvsenderMottaker(
-               id = "12345678901",
-               idType = AvsenderMottakerIdType.FNR,
-            ),
-         dokumenter =
-            listOf(
-               Dokument(
-                  tittel = "Dokument tittel",
-                  brevkode = "Brevkode",
-                  dokumentvarianter = listOf(),
-               ),
-            ),
-         bruker =
-            DokarkivBruker(
-               id = "12345678901",
-               idType = BrukerIdType.FNR,
-            ),
-         sak =
-            DokArkivSak(
-               sakstype = Sakstype.FAGSAK,
-               fagsakId = Saksnummer("123"),
-               fagsaksystem = "MOCK",
-            ),
-         journalfoerendeEnhet = Enhetsnummer("9999"),
-         eksternReferanseId = "eksternRef",
-         kanal = null,
-      )
+        // When
+        dokarkivClient.setLogiskeVedlegg(dokumentInfoId, emptyList())
+        // Then ingen exception
+        mockServer.verify()
+    }
+
+    @Test
+    fun `setLogiskeVedlegg skal kaste andre feil`() {
+        // Given
+        val dokumentInfoId = EksternDokumentInfoId("456")
+
+        mockServer
+            .expect(requestTo("/rest/journalpostapi/v1/dokumentInfo/456/logiskVedlegg"))
+            .andExpect(method(HttpMethod.PUT))
+            .andRespond(withStatus(HttpStatus.BAD_REQUEST))
+
+        // When & Then
+        assertThatThrownBy { dokarkivClient.setLogiskeVedlegg(dokumentInfoId, emptyList()) }
+            .isInstanceOf(HttpClientErrorException::class.java)
+        mockServer.verify()
+    }
+
+    /** Minimal testdata. Fyll inn påkrevde felter i JournalpostRequest dersom constructor endres. */
+    private fun journalpostRequest(): JournalpostRequest =
+        JournalpostRequest(
+            tittel = "Test tittel",
+            tema = EksternFellesKodeverkTema.HEL,
+            journalpostType = JournalpostType.INNGAAENDE,
+            avsenderMottaker =
+                AvsenderMottaker(
+                    id = "12345678901",
+                    idType = AvsenderMottakerIdType.FNR,
+                ),
+            dokumenter =
+                listOf(
+                    Dokument(
+                        tittel = "Dokument tittel",
+                        brevkode = "Brevkode",
+                        dokumentvarianter = listOf(),
+                    ),
+                ),
+            bruker =
+                DokarkivBruker(
+                    id = "12345678901",
+                    idType = BrukerIdType.FNR,
+                ),
+            sak =
+                DokArkivSak(
+                    sakstype = Sakstype.FAGSAK,
+                    fagsakId = Saksnummer("123"),
+                    fagsaksystem = "MOCK",
+                ),
+            journalfoerendeEnhet = Enhetsnummer("9999"),
+            eksternReferanseId = "eksternRef",
+            kanal = null,
+        )
 
 }
