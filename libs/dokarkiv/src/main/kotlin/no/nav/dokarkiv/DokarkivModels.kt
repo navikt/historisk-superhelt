@@ -2,12 +2,12 @@ package no.nav.dokarkiv
 
 import no.nav.common.types.Saksnummer
 
-data class Bruker(
+data class DokarkivBruker(
     val id: String,
     val idType: BrukerIdType,
 )
 
-data class Sak(
+data class DokArkivSak(
     val sakstype: Sakstype = Sakstype.FAGSAK,
     val fagsakId: Saksnummer,
     val fagsaksystem: String = "SUPERHELT"

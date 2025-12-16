@@ -40,8 +40,7 @@ class DokarkivController(
         return JournalpostResponse(
             journalpostId = EksternJournalpostId(id.value),
             journalpostferdigstilt = forsokFerdigStill,
-            dokumenter = emptyList(),
-            melding = "OK fra dokarkiv-mock",
+            dokumenter = emptyList()
         )
     }
 

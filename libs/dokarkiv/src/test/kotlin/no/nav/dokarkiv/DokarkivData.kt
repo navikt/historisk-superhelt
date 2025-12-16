@@ -31,13 +31,13 @@ fun getMockJournalpostRequest() =
                 ),
             ),
         bruker =
-            Bruker(
+            DokarkivBruker(
                 id = "20896997794",
                 idType = BrukerIdType.FNR,
             ),
         kanal = Kanal.NAV_NO,
         sak =
-            Sak(
+            DokArkivSak(
                 fagsakId = Saksnummer(123),
                 fagsaksystem = "SUPERHELT",
             ),

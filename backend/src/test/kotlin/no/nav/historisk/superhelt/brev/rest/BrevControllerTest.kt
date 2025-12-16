@@ -170,7 +170,7 @@ class BrevControllerTest {
 
             val html = "<html></html>"
 
-            whenever(pdfgenService.hentHtmlBrev(any(), any())) doReturn html.toByteArray()
+            whenever(pdfgenService.genererHtml(any(), any())) doReturn html.toByteArray()
 
             assertThat(htmlBrev(saksnummer, brevId))
                 .hasStatus(HttpStatus.OK)

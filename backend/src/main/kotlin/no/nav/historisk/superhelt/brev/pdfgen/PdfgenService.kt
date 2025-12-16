@@ -37,9 +37,14 @@ class PdfgenService(
         )
     }
 
-    fun hentHtmlBrev(sak: Sak, brev: BrevUtkast): ByteArray {
+    fun genererHtml(sak: Sak, brev: BrevUtkast): ByteArray {
         val pdfgenRequest = mapToPdfgenRequest(sak, brev)
         return pdfgenClient.genererHtml(pdfgenRequest)
+    }
+
+    fun genererPdf(sak: Sak, brev: BrevUtkast): ByteArray {
+        val pdfgenRequest = mapToPdfgenRequest(sak, brev)
+        return pdfgenClient.genererPdf(pdfgenRequest)
     }
 
     private fun BrevType.asPdfGenBrevType(): PdfgenBrevtype {

@@ -7,9 +7,9 @@ data class JournalpostRequest(
     val avsenderMottaker: AvsenderMottaker?,
     val eksternReferanseId: String?,
     val dokumenter: List<Dokument>,
-    val bruker: Bruker,
+    val bruker: DokarkivBruker,
     val kanal: Kanal?,
-    val sak: Sak,
+    val sak: DokArkivSak,
     val journalfoerendeEnhet: Enhetsnummer?,
 )
 
@@ -17,14 +17,12 @@ data class JournalpostResponse(
     val dokumenter: List<DokumentInfo>,
     val journalpostId: EksternJournalpostId,
     val journalpostferdigstilt: Boolean,
-    val journalstatus: String? = null,
-    val melding: String? = null,
 )
 
 data class OppdaterJournalpostRequest(
-    val sak: Sak,
+    val sak: DokArkivSak,
     val tittel: String,
-    val bruker: Bruker,
+    val bruker: DokarkivBruker,
     val avsenderMottaker: AvsenderMottaker,
     val tema: EksternFellesKodeverkTema,
     val dokumenter: List<DokumentMedTittel>?,

@@ -74,12 +74,12 @@ class DokarkivClient(
         val req =
             OppdaterJournalpostRequest(
                 sak =
-                    Sak(
+                    DokArkivSak(
                         fagsakId = fagsaksnummer,
                     ),
                 tittel = tittel,
                 bruker =
-                    Bruker(
+                    DokarkivBruker(
                         id = bruker.value,
                         idType = BrukerIdType.FNR,
                     ),

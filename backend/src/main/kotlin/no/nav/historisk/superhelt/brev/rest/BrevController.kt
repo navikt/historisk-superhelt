@@ -3,10 +3,7 @@ package no.nav.historisk.superhelt.brev.rest
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.brev.BrevId
-import no.nav.historisk.superhelt.brev.BrevRepository
-import no.nav.historisk.superhelt.brev.BrevService
-import no.nav.historisk.superhelt.brev.BrevUtkast
+import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.sak.SakRepository
 import org.slf4j.LoggerFactory
@@ -19,7 +16,9 @@ class BrevController(
     private val brevRepository: BrevRepository,
     private val brevService: BrevService,
     private val sakRepository: SakRepository,
-    private val pdfgenService: PdfgenService) {
+    private val pdfgenService: PdfgenService,
+    private val brevSendingService: BrevSendingService
+) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -45,7 +44,7 @@ class BrevController(
     fun htmlBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): ByteArray {
         val brev = brevRepository.getByUUid(brevId)
         val sak = sakRepository.getSak(saksnummer)
-        return pdfgenService.hentHtmlBrev(sak, brev)
+        return pdfgenService.genererHtml(sak, brev)
     }
 
     @Operation(operationId = "oppdaterBrev")
@@ -54,7 +53,27 @@ class BrevController(
         @PathVariable saksnummer: Saksnummer,
         @PathVariable brevId: BrevId,
         @Valid @RequestBody request: OppdaterBrevRequest): BrevUtkast {
-        return brevService.oppdaterBrev(brevId, request)
+        val oppdatertBrev = BrevOppdatering(
+            tittel = request.tittel,
+            innhold = request.innhold,
+            status = BrevStatus.UNDER_ARBEID
+        )
+        // TODO sjekke tilgang i sak
+        return brevRepository.oppdater(brevId, oppdatertBrev)
     }
+
+    @Operation(operationId = "sendBrev")
+    @PostMapping("{brevId}/send")
+    fun sendAnnetBrev(
+        brevController: BrevController, @PathVariable saksnummer: Saksnummer,
+        @PathVariable brevId: BrevId,
+    ) {
+        val brev = brevController.brevRepository.getByUUid(brevId)
+        val sak = brevController.sakRepository.getSak(saksnummer)
+
+        brevSendingService.sendBrev(sak, brev)
+
+    }
+
 
 }

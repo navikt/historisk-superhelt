@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.brev.db
 
 import jakarta.persistence.*
+import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import org.hibernate.Hibernate
@@ -31,7 +32,9 @@ class BrevutkastJpaEntity(
     val mottakerType: BrevMottaker,
 
     @Enumerated(EnumType.STRING)
-    var status: BrevStatus = BrevStatus.NY
+    var status: BrevStatus = BrevStatus.NY,
+
+    var journalpostId: EksternJournalpostId? = null,
 
 ) {
     override fun equals(other: Any?): Boolean {
@@ -51,7 +54,8 @@ class BrevutkastJpaEntity(
             innhold = this.innhold,
             type = this.type,
             mottakerType = this.mottakerType,
-            status = this.status
+            status = this.status,
+            journalpostId = this.journalpostId
         )
     }
 }

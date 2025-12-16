@@ -1,12 +1,14 @@
 package no.nav.historisk.superhelt.brev
 
 import no.nav.common.types.Saksnummer
+import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.historisk.superhelt.brev.db.BrevJpaRepository
 import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.SakRepository
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class BrevRepository(
@@ -44,17 +46,29 @@ class BrevRepository(
         return jpaRepository.save(brevJpaEntity).toDomain()
     }
 
+    @Transactional
     @PreAuthorize("hasAuthority('WRITE')")
-    fun lagre(oppdatertBrev: BrevUtkast): BrevUtkast {
-        val entity = getEntityByUUid(oppdatertBrev.uuid)
-        entity.tittel = oppdatertBrev.tittel
-        entity.innhold = oppdatertBrev.innhold
-        entity.status = oppdatertBrev.status
+    internal fun oppdater(uuid: BrevId, oppdatering: BrevOppdatering): BrevUtkast {
+        val entity = getEntityByUUid(uuid)
+        if (entity.status == BrevStatus.SENDT) {
+            throw IllegalStateException("Kan ikke oppdatere brev som er sendt")
+        }
+        oppdatering.tittel?.let { entity.tittel = it }
+        oppdatering.innhold?.let { entity.innhold = it }
+        oppdatering.status?.let { entity.status = it }
+        oppdatering.journalpostId?.let { entity.journalpostId = it }
         return jpaRepository.save(entity).toDomain()
     }
 
 
 }
+
+internal data class BrevOppdatering(
+    val tittel: String? = null,
+    val innhold: String? = null,
+    val status: BrevStatus? = null,
+    val journalpostId: EksternJournalpostId? = null
+)
 
 typealias BrevUtkastList = List<BrevUtkast>
 

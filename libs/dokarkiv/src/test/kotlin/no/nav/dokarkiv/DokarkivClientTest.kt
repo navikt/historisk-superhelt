@@ -177,12 +177,12 @@ class DokarkivClientTest {
                ),
             ),
          bruker =
-            Bruker(
+            DokarkivBruker(
                id = "12345678901",
                idType = BrukerIdType.FNR,
             ),
          sak =
-            Sak(
+            DokArkivSak(
                sakstype = Sakstype.FAGSAK,
                fagsakId = Saksnummer("123"),
                fagsaksystem = "MOCK",
