@@ -8,11 +8,11 @@ import {DocPencilIcon} from "@navikt/aksel-icons";
 import {sendBrevMutation} from "@generated/@tanstack/react-query.gen";
 import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
-export const Route = createFileRoute('/sak/$saksnummer/annetbrev')({
-    component: AnnetBrevPage,
+export const Route = createFileRoute('/sak/$saksnummer/fritekstbrev')({
+    component: FritekstBrevPage,
 })
 
-function AnnetBrevPage() {
+function FritekstBrevPage() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
     const ref = useRef<HTMLDialogElement>(null);
@@ -25,8 +25,6 @@ function AnnetBrevPage() {
             invalidateSakQuery(saksnummer)
             navigateBack()
         }
-
-
     })
 
     const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
@@ -59,7 +57,7 @@ function AnnetBrevPage() {
                    }}
             >
                 <Modal.Body>
-                    <VedtaksBrevEditor sak={sak} type={"INNHENTINGSBREV"} mottaker="BRUKER"
+                    <VedtaksBrevEditor sak={sak} type={"FRITEKSTBREV"} mottaker="BRUKER"
                                        buttonText="Send brev"
                                        onSuccess={onBrevSend}
                                        readOnly={!hasSaksbehandleRettighet}

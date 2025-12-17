@@ -28,7 +28,7 @@ export type Brev = {
     uuid: string;
     tittel?: string;
     innhold?: string;
-    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    type: 'VEDTAKSBREV' | 'FRITEKSTBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
@@ -62,16 +62,16 @@ export type Sak = {
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
     readonly maskertPersonIdent: string;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly tilstand: SakTilstand;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -109,7 +109,7 @@ export type SakCreateRequestDto = {
 };
 
 export type OpprettBrevRequest = {
-    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    type: 'VEDTAKSBREV' | 'FRITEKSTBREV';
     mottaker: 'BRUKER' | 'SAMHANDLER';
 };
 
@@ -169,7 +169,7 @@ export type BrevWritable = {
     uuid: string;
     tittel?: string;
     innhold?: string;
-    type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
+    type: 'VEDTAKSBREV' | 'FRITEKSTBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
@@ -196,9 +196,9 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type GetSakBySaksnummerData = {
