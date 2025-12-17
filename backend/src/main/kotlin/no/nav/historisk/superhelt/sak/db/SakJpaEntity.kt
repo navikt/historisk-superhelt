@@ -7,7 +7,7 @@ import no.nav.common.types.Fnr
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
-import no.nav.historisk.superhelt.brev.db.BrevutkastJpaEntity
+import no.nav.historisk.superhelt.brev.db.BrevJpaEntity
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
@@ -69,7 +69,7 @@ class SakJpaEntity(
     var forhandstilsagn: ForhandTilsagnJpaEntity? = null,
 
     @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
-    private var brev: MutableList<BrevutkastJpaEntity> = mutableListOf()
+    private var brev: MutableList<BrevJpaEntity> = mutableListOf()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -105,7 +105,7 @@ class SakJpaEntity(
 
     private fun getBrev(
         brevType: BrevType,
-        mottaker: BrevMottaker): BrevutkastJpaEntity? {
+        mottaker: BrevMottaker): BrevJpaEntity? {
         return brev.find { it.type == brevType && it.mottakerType == mottaker }
     }
 

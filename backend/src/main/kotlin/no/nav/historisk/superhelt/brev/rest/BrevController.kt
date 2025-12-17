@@ -26,7 +26,7 @@ class BrevController(
     @PostMapping
     fun hentEllerOpprettBrev(
         @PathVariable saksnummer: Saksnummer,
-        @Valid @RequestBody request: OpprettBrevRequest): ResponseEntity<BrevUtkast> {
+        @Valid @RequestBody request: OpprettBrevRequest): ResponseEntity<Brev> {
         val sak = sakRepository.getSak(saksnummer)
 
         val brev = brevService.hentEllerOpprettBrev(sak, request.type, request.mottaker)
@@ -35,7 +35,7 @@ class BrevController(
 
     @Operation(operationId = "hentBrev")
     @GetMapping("{brevId}")
-    fun hentBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): BrevUtkast {
+    fun hentBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): Brev {
         return brevRepository.getByUUid(brevId)
     }
 
@@ -52,7 +52,7 @@ class BrevController(
     fun oppdaterBrev(
         @PathVariable saksnummer: Saksnummer,
         @PathVariable brevId: BrevId,
-        @Valid @RequestBody request: OppdaterBrevRequest): BrevUtkast {
+        @Valid @RequestBody request: OppdaterBrevRequest): Brev {
         val oppdatertBrev = BrevOppdatering(
             tittel = request.tittel,
             innhold = request.innhold,

@@ -4,8 +4,8 @@ import no.nav.dokarkiv.*
 import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
+import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevType
-import no.nav.historisk.superhelt.brev.BrevUtkast
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.pdl.SafGraphqlClient
 import no.nav.saf.rest.SafRestClient
@@ -19,7 +19,7 @@ class DokarkivService(
     private val dokdistClient: DokdistClient
 
 ) {
-    fun arkiver(sak: Sak, brev: BrevUtkast, pdf: ByteArray): JournalpostResponse {
+    fun arkiver(sak: Sak, brev: Brev, pdf: ByteArray): JournalpostResponse {
         val req = JournalpostRequest(
             tittel = brev.tittel!!,
             journalpostType = JournalpostType.UTGAAENDE,
@@ -58,7 +58,7 @@ class DokarkivService(
         return dokarkivClient.opprett(req, forsokFerdigstill = true)
     }
 
-    fun distribuerBrev(sak: Sak, brev: BrevUtkast): DistribuerJournalpostResponse {
+    fun distribuerBrev(sak: Sak, brev: Brev): DistribuerJournalpostResponse {
         val journalPostId = brev.journalpostId
             ?: throw IllegalStateException("Kan ikke distribuere brev uten journalpostId. BrevId=${brev.uuid}")
 

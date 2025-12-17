@@ -4,7 +4,7 @@ import no.nav.historisk.superhelt.infrastruktur.validation.Validator
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 
-class BrevValidator(private val brev: BrevUtkast) : Validator() {
+class BrevValidator(private val brev: Brev) : Validator() {
     fun checkBrev(): BrevValidator {
         check(brev.tittel.isNullOrBlank(), "tittel", "Brev må ha en tittel")
         check(brev.innhold.isEmptyHtml(), "innhold", "Brev må ha innhold")

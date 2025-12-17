@@ -5,7 +5,7 @@ import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 
 
-data class BrevUtkast(
+data class Brev(
     val uuid: BrevId,
     val tittel: String?,
     /** html innholdet i brevet */

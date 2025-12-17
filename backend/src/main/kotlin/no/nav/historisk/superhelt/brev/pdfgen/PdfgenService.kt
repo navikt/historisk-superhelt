@@ -1,9 +1,9 @@
 package no.nav.historisk.superhelt.brev.pdfgen
 
 import no.nav.historisk.pdfgen.*
+import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
-import no.nav.historisk.superhelt.brev.BrevUtkast
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
 import org.springframework.stereotype.Service
@@ -15,7 +15,7 @@ class PdfgenService(
     private val personService: PersonService
 
 ) {
-    internal fun mapToPdfgenRequest(sak: Sak, brev: BrevUtkast): PdfgenRequest {
+    internal fun mapToPdfgenRequest(sak: Sak, brev: Brev): PdfgenRequest {
 
         val person = personService.hentPerson(sak.fnr)
             ?: throw IllegalStateException("Fant ikke persondata for person i sak ${sak.saksnummer}")
@@ -37,12 +37,12 @@ class PdfgenService(
         )
     }
 
-    fun genererHtml(sak: Sak, brev: BrevUtkast): ByteArray {
+    fun genererHtml(sak: Sak, brev: Brev): ByteArray {
         val pdfgenRequest = mapToPdfgenRequest(sak, brev)
         return pdfgenClient.genererHtml(pdfgenRequest)
     }
 
-    fun genererPdf(sak: Sak, brev: BrevUtkast): ByteArray {
+    fun genererPdf(sak: Sak, brev: Brev): ByteArray {
         val pdfgenRequest = mapToPdfgenRequest(sak, brev)
         return pdfgenClient.genererPdf(pdfgenRequest)
     }

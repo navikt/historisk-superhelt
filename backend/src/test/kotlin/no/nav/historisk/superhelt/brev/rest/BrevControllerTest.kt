@@ -57,7 +57,7 @@ class BrevControllerTest {
         }
     }
 
-    fun lagreBrev(sak: Sak, brev: BrevUtkast = BrevTestdata.vedtaksbrevBruker()): BrevUtkast {
+    fun lagreBrev(sak: Sak, brev: Brev = BrevTestdata.vedtaksbrevBruker()): Brev {
         return withMockedUser {
             brevRepository.opprettBrev(sak.saksnummer, brev)
         }
@@ -76,7 +76,7 @@ class BrevControllerTest {
             assertThat(hentEllerOpprettBrev(saksnummer, request))
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(BrevUtkast::class.java)
+                .convertTo(Brev::class.java)
                 .satisfies({
                     assertThat(it.uuid).isNotNull
                     assertThat(it.type).isEqualTo(request.type)
@@ -99,7 +99,7 @@ class BrevControllerTest {
             assertThat(hentEllerOpprettBrev(saksnummer, request))
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(BrevUtkast::class.java)
+                .convertTo(Brev::class.java)
                 .satisfies({
                     assertThat(it).isEqualTo(brev)
                 })
@@ -137,7 +137,7 @@ class BrevControllerTest {
             assertThat(hentBrev(saksnummer, brevId))
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(BrevUtkast::class.java)
+                .convertTo(Brev::class.java)
                 .satisfies({
                     assertThat(it.uuid).isEqualTo(brevId)
                 })
@@ -197,7 +197,7 @@ class BrevControllerTest {
             assertThat(oppdaterBrev(saksnummer, brevId, request))
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(BrevUtkast::class.java)
+                .convertTo(Brev::class.java)
                 .satisfies ({
                     assertThat(it.tittel).isEqualTo(request.tittel)
                     assertThat(it.innhold).isEqualTo(request.innhold)
@@ -216,7 +216,7 @@ class BrevControllerTest {
             assertThat(oppdaterBrev(saksnummer, brevId, request))
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(BrevUtkast::class.java)
+                .convertTo(Brev::class.java)
                 .satisfies ({
                     assertThat(it.valideringsfeil).isNotEmpty
                 })

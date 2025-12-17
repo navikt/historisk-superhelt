@@ -18,7 +18,7 @@ class BrevSendingService(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun sendBrev(sak: Sak, brev: BrevUtkast) {
+    fun sendBrev(sak: Sak, brev: Brev) {
         val brevId = brev.uuid
 
         BrevValidator(brev)
@@ -48,7 +48,7 @@ class BrevSendingService(
     }
 
     private fun arkiverBrev(
-        brev: BrevUtkast,
+        brev: Brev,
         sak: Sak,
         brevId: BrevId) {
         if (brev.journalpostId != null) {

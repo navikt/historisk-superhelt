@@ -10,20 +10,20 @@ class BrevService(
 ) {
 
     @Transactional
-    fun hentEllerOpprettBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): BrevUtkast {
+    fun hentEllerOpprettBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev {
         brevRepository.findBySak(sak.saksnummer).findBrev(type = type, mottaker = mottaker)?.let {
             return it
         }
         val brevTekstGenerator = BrevTekstGenerator(sak)
 
-        val brevUtkast = BrevUtkast(
+        val brev = Brev(
             uuid = BrevId.random(),
             tittel = brevTekstGenerator.generateTittel(type, mottaker),
             innhold = brevTekstGenerator.generateInnhold(type, mottaker),
             type = type,
             mottakerType = mottaker,
         )
-        return brevRepository.opprettBrev(sak.saksnummer, brevUtkast)
+        return brevRepository.opprettBrev(sak.saksnummer, brev)
     }
 
 }

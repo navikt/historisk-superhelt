@@ -5,7 +5,7 @@ import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Fnr
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.brev.BrevUtkast
+import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
@@ -49,7 +49,7 @@ data class Sak(
 
     val utbetaling: Utbetaling? = null,
     val forhandstilsagn: Forhandstilsagn? = null,
-    val vedtaksbrevBruker: BrevUtkast? = null
+    val vedtaksbrevBruker: Brev? = null
 ) {
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
