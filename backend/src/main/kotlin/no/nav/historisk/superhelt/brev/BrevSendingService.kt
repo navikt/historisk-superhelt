@@ -2,18 +2,18 @@ package no.nav.historisk.superhelt.brev
 
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.SakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class BrevSendingService(
     private val brevRepository: BrevRepository,
-    private val brevService: BrevService,
-    private val sakRepository: SakRepository,
     private val pdfgenService: PdfgenService,
-    private val dokarkivService: DokarkivService
+    private val dokarkivService: DokarkivService,
+    private val endringsloggService: EndringsloggService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -35,13 +35,15 @@ class BrevSendingService(
         brevRepository.oppdater(brevId, BrevOppdatering(status = BrevStatus.KLAR_TIL_SENDING))
         // Sett brev til klar til sending
         arkiverBrev(brev, sak, brevId)
-        // Todo hva hvis det ikke er fullført i dokarkiv?
 
+        dokarkivService.distribuerBrev(sak, brev)
 
-
-        //send til dokdist
-        // kvittere ut i brevstatus
         brevRepository.oppdater(brevId, BrevOppdatering(status = BrevStatus.SENDT))
+        endringsloggService.logChange(
+            saksnummer = sak.saksnummer,
+            endringsType = EndringsloggType.SENDT_BREV,
+            endring = "Brev ${brev.tittel} sendt til ${brev.mottakerType.name}"
+        )
 
     }
 
