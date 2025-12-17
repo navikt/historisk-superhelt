@@ -12,8 +12,7 @@ class BrevTekstGenerator(private val sak: Sak) {
     fun generateInnhold(type: BrevType, mottaker: BrevMottaker): String {
         return when (type) {
             BrevType.VEDTAKSBREV -> generateVedtaksbrev(mottaker)
-            BrevType.INFORMASJONSBREV -> "informasjonsbrev innhold"
-            BrevType.INNHENTINGSBREV -> "innhentingsbrev innhold"
+            BrevType.FRITEKSTBREV -> ""
         }
     }
 
@@ -54,8 +53,7 @@ class BrevTekstGenerator(private val sak: Sak) {
                 BrevMottaker.SAMHANDLER -> "Vedtaksbrev til samhandler, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
             }
 
-            BrevType.INFORMASJONSBREV -> "Informasjonsbrev"
-            BrevType.INNHENTINGSBREV -> "Innhentingsbrev"
+            BrevType.FRITEKSTBREV -> ""
         }
     }
 

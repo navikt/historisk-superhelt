@@ -3,7 +3,17 @@ import {Sak} from '@generated';
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {hentEndringsloggForSakOptions} from "@generated/@tanstack/react-query.gen";
 import {isoTilLokal} from "~/components/dato.utils";
-import {ChevronRightIcon} from "@navikt/aksel-icons";
+import {
+    ArrowCirclepathReverseIcon,
+    CheckmarkCircleIcon,
+    ChevronRightIcon,
+    HourglassBottomFilledIcon,
+    PersonPencilIcon,
+    SparkLargeIcon,
+    ThumbDownIcon,
+    ThumbUpIcon
+} from "@navikt/aksel-icons";
+import {EndringsloggType} from "~/routes/sak/$saksnummer/-types/endringslogg.types";
 
 interface SakEndringerProps {
     sak: Sak;
@@ -17,6 +27,33 @@ export default function SakEndringer({sak}: SakEndringerProps) {
 
     }));
 
+    const getBullet = (type: EndringsloggType) => {
+        switch (type) {
+            case "OPPDATERTE_SAKSDETALJER":
+                return <PersonPencilIcon/>;
+            case "TIL_ATTESTERING":
+                return <HourglassBottomFilledIcon/>;
+            case "ATTESTERT_SAK":
+                return <ThumbUpIcon/>
+            case "FERDIGSTILT_SAK":
+                return <CheckmarkCircleIcon/>
+            case "ATTESTERING_UNDERKJENT":
+                return <ThumbDownIcon/>
+            case "GJENAPNET_SAK":
+               return <ArrowCirclepathReverseIcon/>
+            case "SENDT_BREV":
+                // subtask
+                return undefined
+            case "OPPRETTET_SAK":
+                return <SparkLargeIcon/>
+
+            default:
+                return <ChevronRightIcon/>;
+
+        }
+
+
+    }
     return (
         <Process>
             {endringslogg?.map((loggLinje) => (
@@ -25,7 +62,7 @@ export default function SakEndringer({sak}: SakEndringerProps) {
                         status="completed"
                         title={loggLinje.endring}
                         timestamp={`${isoTilLokal(loggLinje.endretTidspunkt)} av ${loggLinje.endretAv}`}
-                        bullet={<ChevronRightIcon/>}
+                        bullet={getBullet(loggLinje.type)}
                     >
                         <BodyLong>  {loggLinje.beskrivelse}</BodyLong>
                     </Process.Event>

@@ -35,10 +35,9 @@ export default function SakMeny({sak}: SakMenyProps) {
                     sak</ActionMenu.Item>
             </ActionMenu.Group>
             <ActionMenu.Group label={"Brev"}>
-                <ActionMenu.Item as={RouterLink} disabled={notSaksbehandler} to={`/sak/${sak.saksnummer}/annetbrev`}>Send
-                    informasjonsbrev</ActionMenu.Item>
-                <ActionMenu.Item as={RouterLink} disabled={notSaksbehandler} to={`/sak/${sak.saksnummer}/annetbrev`}>Send
-                    innhentingsbrev</ActionMenu.Item>
+                <ActionMenu.Item as={RouterLink} disabled={notSaksbehandler} to={`/sak/${sak.saksnummer}/fritekstbrev`}>Fritekstbrev til bruker
+                    </ActionMenu.Item>
+                <ActionMenu.Item as={RouterLink} disabled={true} to={`/sak/${sak.saksnummer}/fritekstbrev`}>Fritekstbrev til samhandler</ActionMenu.Item>
             </ActionMenu.Group>
         </ActionMenu.Content>
     </ActionMenu>

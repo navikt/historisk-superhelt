@@ -16,7 +16,7 @@ import { Route as PersonPersonidIndexRouteImport } from './routes/person/$person
 import { Route as SakSaksnummerVedtaksbrevbrukerRouteImport } from './routes/sak/$saksnummer/vedtaksbrevbruker'
 import { Route as SakSaksnummerOppsummeringRouteImport } from './routes/sak/$saksnummer/oppsummering'
 import { Route as SakSaksnummerOpplysningerRouteImport } from './routes/sak/$saksnummer/opplysninger'
-import { Route as SakSaksnummerAnnetbrevRouteImport } from './routes/sak/$saksnummer/annetbrev'
+import { Route as SakSaksnummerFritekstbrevRouteImport } from './routes/sak/$saksnummer/fritekstbrev'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -56,16 +56,17 @@ const SakSaksnummerOpplysningerRoute =
     path: '/opplysninger',
     getParentRoute: () => SakSaksnummerRouteRoute,
   } as any)
-const SakSaksnummerAnnetbrevRoute = SakSaksnummerAnnetbrevRouteImport.update({
-  id: '/annetbrev',
-  path: '/annetbrev',
-  getParentRoute: () => SakSaksnummerRouteRoute,
-} as any)
+const SakSaksnummerFritekstbrevRoute =
+  SakSaksnummerFritekstbrevRouteImport.update({
+    id: '/fritekstbrev',
+    path: '/fritekstbrev',
+    getParentRoute: () => SakSaksnummerRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
-  '/sak/$saksnummer/annetbrev': typeof SakSaksnummerAnnetbrevRoute
+  '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
@@ -74,7 +75,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/sak/$saksnummer/annetbrev': typeof SakSaksnummerAnnetbrevRoute
+  '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
@@ -85,7 +86,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
-  '/sak/$saksnummer/annetbrev': typeof SakSaksnummerAnnetbrevRoute
+  '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
@@ -97,7 +98,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/sak/$saksnummer'
-    | '/sak/$saksnummer/annetbrev'
+    | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
@@ -106,7 +107,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/sak/$saksnummer/annetbrev'
+    | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
@@ -116,7 +117,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/sak/$saksnummer'
-    | '/sak/$saksnummer/annetbrev'
+    | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
@@ -181,18 +182,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SakSaksnummerOpplysningerRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
-    '/sak/$saksnummer/annetbrev': {
-      id: '/sak/$saksnummer/annetbrev'
-      path: '/annetbrev'
-      fullPath: '/sak/$saksnummer/annetbrev'
-      preLoaderRoute: typeof SakSaksnummerAnnetbrevRouteImport
+    '/sak/$saksnummer/fritekstbrev': {
+      id: '/sak/$saksnummer/fritekstbrev'
+      path: '/fritekstbrev'
+      fullPath: '/sak/$saksnummer/fritekstbrev'
+      preLoaderRoute: typeof SakSaksnummerFritekstbrevRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
   }
 }
 
 interface SakSaksnummerRouteRouteChildren {
-  SakSaksnummerAnnetbrevRoute: typeof SakSaksnummerAnnetbrevRoute
+  SakSaksnummerFritekstbrevRoute: typeof SakSaksnummerFritekstbrevRoute
   SakSaksnummerOpplysningerRoute: typeof SakSaksnummerOpplysningerRoute
   SakSaksnummerOppsummeringRoute: typeof SakSaksnummerOppsummeringRoute
   SakSaksnummerVedtaksbrevbrukerRoute: typeof SakSaksnummerVedtaksbrevbrukerRoute
@@ -200,7 +201,7 @@ interface SakSaksnummerRouteRouteChildren {
 }
 
 const SakSaksnummerRouteRouteChildren: SakSaksnummerRouteRouteChildren = {
-  SakSaksnummerAnnetbrevRoute: SakSaksnummerAnnetbrevRoute,
+  SakSaksnummerFritekstbrevRoute: SakSaksnummerFritekstbrevRoute,
   SakSaksnummerOpplysningerRoute: SakSaksnummerOpplysningerRoute,
   SakSaksnummerOppsummeringRoute: SakSaksnummerOppsummeringRoute,
   SakSaksnummerVedtaksbrevbrukerRoute: SakSaksnummerVedtaksbrevbrukerRoute,

@@ -1,7 +1,7 @@
 import {BrevMottakerType, BrevType} from "~/routes/sak/$saksnummer/-types/brev.types";
 import {hentEllerOpprettBrev} from "@generated";
 
-export const getOrCreateBrevQueryKey = (saksnummer: string, type: "VEDTAKSBREV" | "INFORMASJONSBREV" | "INNHENTINGSBREV", mottaker: "BRUKER" | "SAMHANDLER") => {
+export const getOrCreateBrevQueryKey = (saksnummer: string, type: BrevType, mottaker: BrevMottakerType) => {
     return ["brev", saksnummer, type, mottaker];
 }
 export const getOrCreateBrevOptions= (saksnummer: string, type: BrevType, mottaker: BrevMottakerType) => ({

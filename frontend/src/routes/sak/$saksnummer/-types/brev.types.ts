@@ -1,5 +1,5 @@
-import {BrevUtkast} from "@generated";
+import {Brev} from "@generated";
 
-export type BrevType= BrevUtkast["type"]
-export type BrevMottakerType= BrevUtkast["mottakerType"]
-export type BrevStatusType= BrevUtkast["status"]
+export type BrevType = Brev["type"]
+export type BrevMottakerType = Brev["mottakerType"]
+export type BrevStatusType = Brev["status"]

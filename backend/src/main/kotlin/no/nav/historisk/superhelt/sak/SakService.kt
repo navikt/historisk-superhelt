@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import jakarta.validation.Valid
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.rest.SakCreateRequestDto

@@ -4,28 +4,6 @@ include:
 
 services:
 
-  #  backend:
-  ##    backend spring boot inkludert  frontend som kjører på 8080
-  #    build: backend
-  #    ports:
-  #      - "8080:8080"
-  #    extra_hosts:
-  #      - "host.docker.internal:host-gateway"
-  #    environment:
-  #      AZURE_OPENID_CONFIG_ISSUER: http://host.docker.internal:8102/azure-mock
-  #      AZURE_APP_CLIENT_ID: historisk-superapp
-  #    env_file:
-  #      - path: ../../local.env
-  #        required: false
-  #
-  #  frontend:
-  #    # Proxy for frontend som kan skrues av for lokal utvikling med vite. Pekes på av wonderwall
-  #    image: alpine/socat
-  #    command:
-  #      "tcp-l:80,fork,reuseaddr tcp:wonderwall:4000"
-  #    ports:
-  #      - "3000:80"
-
   backend-proxy:
     # Proxy for backend som pekes på av wonderwall. Trengs for å unngå problemer med å skru backend av og på
     image: alpine/socat

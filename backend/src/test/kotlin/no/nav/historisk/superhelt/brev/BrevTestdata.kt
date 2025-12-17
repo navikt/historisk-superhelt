@@ -7,12 +7,12 @@ object BrevTestdata {
     private val faker: Faker = Faker()
 
 
-    fun vedtaksbrevBruker(): BrevUtkast{
+    fun vedtaksbrevBruker(): Brev{
         return brevUtkast().copy(type = BrevType.VEDTAKSBREV, mottakerType = BrevMottaker.BRUKER)
     }
 
-    fun brevUtkast(): BrevUtkast {
-        return BrevUtkast(
+    fun brevUtkast(): Brev {
+        return Brev(
             tittel= faker.lorem().sentence(),
             innhold = faker.lorem().paragraphs(2).joinToString("<br/>"),
             uuid = BrevId.random(),

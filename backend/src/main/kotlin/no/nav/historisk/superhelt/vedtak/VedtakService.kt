@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.vedtak
 
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.sak.SakExtensions.createVedtak
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.Saksnummer
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 

@@ -1,7 +1,8 @@
 package no.nav.historisk.superhelt.brev
 
-enum class BrevStatus {
+enum class BrevStatus(val editable: Boolean= true) {
     NY,
     UNDER_ARBEID,
-    SENDT,
+    KLAR_TIL_SENDING(false),
+    SENDT(false),
 }

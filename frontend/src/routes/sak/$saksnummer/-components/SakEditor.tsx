@@ -46,7 +46,7 @@ export default function SakEditor({sak}: Props) {
     const oppdaterSak = useMutation({
         ...oppdaterSakMutation()
         , onSuccess: (data) => {
-            queryClient.setQueryData(sakQueryKey(saksnummer),data)
+            queryClient.setQueryData(sakQueryKey(saksnummer), data)
         }
     })
 
@@ -71,7 +71,6 @@ export default function SakEditor({sak}: Props) {
         // Lagrer etter siste endring
         if (debouncedSak && hasChanged) {
             lagreSak()
-            setHasChanged(false)
         }
     }, [debouncedSak]);
 
@@ -82,18 +81,23 @@ export default function SakEditor({sak}: Props) {
     }
 
     function lagreSak() {
-        return oppdaterSak.mutateAsync({
+        if (!hasChanged) {
+            return Promise.resolve(sak)
+        }
+        const response = oppdaterSak.mutateAsync({
             path: {
                 saksnummer: saksnummer
             },
             body: updateSakData
-        })
+        });
+        setHasChanged(false)
+        return response
     }
 
     async function completedSoknad() {
-        await lagreSak()
+        const lagretSak = await lagreSak()
         setShowValidation(true)
-        if (!hasValidationErrors) {
+        if (lagretSak.valideringsfeil.length === 0) {
             navigate({to: "/sak/$saksnummer/vedtaksbrevbruker", params: {saksnummer}})
         }
     }

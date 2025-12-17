@@ -1,10 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import net.datafaker.Faker
-import no.nav.common.types.Aar
-import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Fnr
-import no.nav.common.types.NavIdent
+import no.nav.common.types.*
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData

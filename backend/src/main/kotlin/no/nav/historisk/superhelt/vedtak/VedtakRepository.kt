@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.vedtak
 
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.Saksnummer
 import no.nav.historisk.superhelt.vedtak.db.VedtakJpaEntity
 import no.nav.historisk.superhelt.vedtak.db.VedtakJpaRepository
 import org.springframework.security.access.prepost.PreAuthorize

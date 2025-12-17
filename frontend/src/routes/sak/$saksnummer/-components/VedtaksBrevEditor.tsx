@@ -5,7 +5,7 @@ import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-que
 import {getOrCreateBrevOptions, getOrCreateBrevQueryKey} from "~/routes/sak/$saksnummer/-api/brev.query";
 import {htmlBrevOptions, oppdaterBrevMutation} from "@generated/@tanstack/react-query.gen";
 import {useAutoSave} from "~/components/useAutosave";
-import {Sak} from "@generated";
+import {Brev, Sak} from "@generated";
 import {BrevMottakerType, BrevType} from "~/routes/sak/$saksnummer/-types/brev.types";
 
 
@@ -14,7 +14,7 @@ interface BrevEditorProps {
     type: BrevType,
     mottaker: BrevMottakerType,
     readOnly?: boolean,
-    onSuccess: () => void,
+    onSuccess: (brevId: string) => Promise<void>,
     buttonText: string,
 }
 
@@ -41,6 +41,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
     const [hasChanged, setHasChanged] = useState(false)
 
     const [showValidation, setShowValidation] = useState(false)
+    const [loading, setLoading] = useState(false)
     const validationErrors = brev?.valideringsfeil || []
     const hasValidationErrors = validationErrors.length > 0
 
@@ -51,9 +52,9 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
         }
     })
 
-    const lagreBrev = () => {
-        if (readOnly) return;
-        if (!hasChanged) return;
+    async function lagreBrev(): Promise<Brev | undefined> {
+        if (readOnly) return undefined;
+        if (!hasChanged) return brev;
         setHasChanged(false)
         return oppdaterBrev.mutateAsync({
             path: {
@@ -88,12 +89,13 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
     }
 
     async function completedBrev() {
-        await lagreBrev();
+        setLoading(true)
+        const lagretBrev = await lagreBrev();
         setShowValidation(true)
-        if (!hasValidationErrors) {
-            onSuccess()
+        if (lagretBrev && lagretBrev.valideringsfeil.length === 0) {
+            await onSuccess(brevId)
         }
-
+        setLoading(false)
     }
 
     const hasError: boolean = showValidation && (!!oppdaterBrev?.error || hasValidationErrors)
@@ -108,7 +110,8 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
                               readOnly={readOnly}
                               error={getErrorMessage("innhold")}/>
             <HStack gap="8" align="start">
-                <Button type="submit" variant="secondary" onClick={completedBrev} disabled={readOnly}>{buttonText}</Button>
+                <Button type="submit" variant="secondary" onClick={completedBrev} disabled={readOnly}
+                        loading={loading}>{buttonText}</Button>
             </HStack>
             {hasError && <ErrorSummary>
                 {oppdaterBrev.error && <ErrorSummary.Item>{oppdaterBrev?.error?.detail}</ErrorSummary.Item>}

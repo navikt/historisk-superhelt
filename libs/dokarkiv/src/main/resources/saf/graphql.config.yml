@@ -1,0 +1,5 @@
+schema: saf-schema.graphqls
+extensions:
+  endpoints:
+    SAF GraphQL Endpoint:
+      url: https://saf.dev.intern.nav.no/graphql

@@ -23,6 +23,11 @@
         </dependency>
         <dependency>
             <groupId>no.nav.historisk</groupId>
+            <artifactId>dokarkiv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.historisk</groupId>
             <artifactId>tilgangsmaskin</artifactId>
             <version>${project.version}</version>
         </dependency>
