@@ -2,7 +2,7 @@ package saf
 
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.dokarkiv.EksternJournalpostId
-import no.nav.pdl.SafGraphqlClient
+import no.nav.saf.graphql.SafGraphqlClient
 import no.nav.saf.rest.SafRestClient
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

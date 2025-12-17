@@ -1,7 +1,6 @@
 package no.nav.saf.graphql
 
 import no.nav.dokarkiv.EksternJournalpostId
-import no.nav.pdl.GraphqlError
 
 data class JournalPostVariables(
     val journalpostId: EksternJournalpostId,

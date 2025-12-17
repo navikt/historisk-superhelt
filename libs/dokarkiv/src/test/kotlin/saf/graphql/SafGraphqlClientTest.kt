@@ -7,12 +7,7 @@ import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.dokarkiv.EksternJournalpostId
-import no.nav.pdl.ErrorExtensions
-import no.nav.pdl.GraphqlError
-import no.nav.pdl.SafGraphqlClient
-import no.nav.saf.graphql.HentJournalpostData
-import no.nav.saf.graphql.HentJournalpostGraphqlResponse
-import no.nav.saf.graphql.JournalStatus
+import no.nav.saf.graphql.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpMethod

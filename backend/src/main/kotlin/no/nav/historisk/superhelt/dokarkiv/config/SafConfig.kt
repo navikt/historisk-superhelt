@@ -4,7 +4,7 @@ package no.nav.historisk.superhelt.dokarkiv.config
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
-import no.nav.pdl.SafGraphqlClient
+import no.nav.saf.graphql.SafGraphqlClient
 import no.nav.saf.rest.SafRestClient
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
