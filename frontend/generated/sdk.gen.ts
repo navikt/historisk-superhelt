@@ -61,7 +61,7 @@ export const gjenapneSak = <ThrowOnError extends boolean = false>(options: Optio
 
 export const attersterSak = <ThrowOnError extends boolean = false>(options: Options<AttersterSakData, ThrowOnError>) => (options.client ?? client).put<AttersterSakResponses, AttersterSakErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/sak/{saksnummer}/status/ferdigstill',
+    url: '/api/sak/{saksnummer}/status/attester',
     ...options,
     headers: {
         'Content-Type': 'application/json',

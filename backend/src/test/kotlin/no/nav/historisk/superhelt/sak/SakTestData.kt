@@ -14,15 +14,19 @@ object SakTestData {
 
     private val faker: Faker = Faker()
 
-    fun sakMedStatus( sakStatus: SakStatus) = when(sakStatus){
+    fun sakMedStatus(sakStatus: SakStatus) = when (sakStatus) {
         SakStatus.UNDER_BEHANDLING -> sakMedUtbetaling().copy(status = sakStatus)
         SakStatus.TIL_ATTESTERING -> sakMedUtbetaling().copy(status = sakStatus)
         SakStatus.FERDIG -> sakMedUtbetaling().copy(status = sakStatus, attestant = navUser())
     }
 
-    fun sakMedUtbetaling() = sakUtenUtbetaling().copy(
-        utbetaling = UtbetalingTestData.utbetalingMinimum()
-    )
+    fun sakMedUtbetaling(): Sak {
+        val sakUtenUtbetaling = sakUtenUtbetaling()
+        return sakUtenUtbetaling.copy(
+            utbetaling = UtbetalingTestData.utbetalingMinimum()
+                .copy(saksnummer = sakUtenUtbetaling.saksnummer)
+        )
+    }
 
     fun sakUtenUtbetaling(): Sak {
         val saksnummer = faker.numerify("Mock-#####")

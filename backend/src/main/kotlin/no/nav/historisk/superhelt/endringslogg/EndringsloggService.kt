@@ -33,6 +33,7 @@ class EndringsloggService(
         )
     }
 
+
     @Transactional(readOnly = true)
     fun findBySak(saksnummer: Saksnummer): List<EndringsloggLinje> {
         return endringsloggJpaRepository.findBySak_Id(saksnummer.id)

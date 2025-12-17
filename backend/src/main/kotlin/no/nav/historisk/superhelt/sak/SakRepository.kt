@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class SakRepository(private val jpaRepository: SakJpaRepository) {
 
+    //TODO lage opprett og oppdater med someneobjekt i stedet for å eksponere jpa entiteten direkte
     @PreAuthorize("hasAuthority('WRITE')")
     internal fun save(sak: SakJpaEntity): Sak {
         return jpaRepository.save(sak).toDomain()
@@ -22,6 +23,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         return jpaRepository.findByIdOrNull(saksnummer.id)
     }
 
+    // TODO fjerne denne og bruke eget update data class
     @PreAuthorize("hasAuthority('READ')")
     @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
     fun getSakEntityOrThrow(saksnummer: Saksnummer): SakJpaEntity {
