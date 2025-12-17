@@ -83,7 +83,7 @@ class DokarkivController(
 
         repository.lagre(journalpostId, oppdatert)
 
-        return journalpostId.value
+        return journalpost.journalpostId.value
     }
 
     @PatchMapping("/rest/journalpostapi/v1/journalpost/{journalpostId}/ferdigstill")
@@ -99,7 +99,7 @@ class DokarkivController(
                 journalstatus = JournalStatus.JOURNALFOERT,
             )
         repository.lagre(journalpostId, oppdatert)
-        return journalpostId.value
+        return journalpost.journalpostId.value
     }
 
     @PutMapping("/rest/journalpostapi/v1/dokumentInfo/{dokumentInfoId}/logiskVedlegg")

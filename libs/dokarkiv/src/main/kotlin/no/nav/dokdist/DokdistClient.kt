@@ -16,7 +16,7 @@ class DokdistClient(
             .retrieve()
             .onStatus({ it.value() == 409 }) { _, _ ->
                 // 409 Conflict is acceptable, no action needed
-                logger.info("Journalpost med id {} er allerede distribuert. Ingorer", request.journalpostId)
+                logger.info("Journalpost med id {} er allerede distribuert. Ignorer", request.journalpostId)
             }
             .body(DistribuerJournalpostResponse::class.java)!!
     }

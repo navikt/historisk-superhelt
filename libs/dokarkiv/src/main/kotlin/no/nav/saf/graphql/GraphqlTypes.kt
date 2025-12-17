@@ -1,4 +1,4 @@
-package no.nav.pdl
+package no.nav.saf.graphql
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 

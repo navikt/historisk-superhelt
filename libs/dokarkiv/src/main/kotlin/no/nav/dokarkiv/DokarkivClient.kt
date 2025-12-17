@@ -21,7 +21,7 @@ class DokarkivClient(
             .body(req)
             .retrieve()
             .onStatus({ it.value() == 409 }) { _, _ ->
-                logger.info("Journalpost med ref {} i sak {} er allerede opperettet. Ignorerer", req.eksternReferanseId, req.sak.fagsakId)
+                logger.info("Journalpost med ref {} i sak {} er allerede opprettet. Ignorerer", req.eksternReferanseId, req.sak.fagsakId)
             }
             .body(JournalpostResponse::class.java)!!
 

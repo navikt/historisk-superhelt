@@ -1,8 +1,6 @@
-package no.nav.pdl
+package no.nav.saf.graphql
 
 import no.nav.dokarkiv.EksternJournalpostId
-import no.nav.saf.graphql.HentJournalpostGraphqlResponse
-import no.nav.saf.graphql.JournalPostVariables
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestClient
 

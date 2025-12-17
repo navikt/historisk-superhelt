@@ -71,7 +71,6 @@ export default function SakEditor({sak}: Props) {
         // Lagrer etter siste endring
         if (debouncedSak && hasChanged) {
             lagreSak()
-
         }
     }, [debouncedSak]);
 
