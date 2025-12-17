@@ -14,7 +14,7 @@ interface BrevEditorProps {
     type: BrevType,
     mottaker: BrevMottakerType,
     readOnly?: boolean,
-    onSuccess: () => void,
+    onSuccess: (brevId: string) => void,
     buttonText: string,
 }
 
@@ -91,7 +91,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
         await lagreBrev();
         setShowValidation(true)
         if (!hasValidationErrors) {
-            onSuccess()
+            onSuccess(brevId)
         }
 
     }

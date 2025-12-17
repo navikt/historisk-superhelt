@@ -64,12 +64,9 @@ class BrevController(
 
     @Operation(operationId = "sendBrev")
     @PostMapping("{brevId}/send")
-    fun sendAnnetBrev(
-        brevController: BrevController, @PathVariable saksnummer: Saksnummer,
-        @PathVariable brevId: BrevId,
-    ) {
-        val brev = brevController.brevRepository.getByUUid(brevId)
-        val sak = brevController.sakRepository.getSak(saksnummer)
+    fun sendAnnetBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId) {
+        val brev = brevRepository.getByUUid(brevId)
+        val sak = sakRepository.getSak(saksnummer)
 
         brevSendingService.sendBrev(sak, brev)
 

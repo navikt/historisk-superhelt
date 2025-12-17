@@ -24,13 +24,14 @@ export type SakUpdateRequestDto = {
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
 };
 
-export type BrevUtkast = {
+export type Brev = {
     uuid: string;
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
-    status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+    status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
+    journalpostId?: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
@@ -59,7 +60,7 @@ export type Sak = {
     attestant?: NavUser;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    vedtaksbrevBruker?: BrevUtkast;
+    vedtaksbrevBruker?: Brev;
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
@@ -164,13 +165,14 @@ export type StonadsTypeDto = {
     beskrivelse?: string;
 };
 
-export type BrevUtkastWritable = {
+export type BrevWritable = {
     uuid: string;
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'INFORMASJONSBREV' | 'INNHENTINGSBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
-    status: 'NY' | 'UNDER_ARBEID' | 'SENDT';
+    status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
+    journalpostId?: string;
 };
 
 export type SakWritable = {
@@ -189,7 +191,7 @@ export type SakWritable = {
     attestant?: NavUser;
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
-    vedtaksbrevBruker?: BrevUtkastWritable;
+    vedtaksbrevBruker?: BrevWritable;
 };
 
 export type SakTilstandWritable = {
@@ -434,7 +436,7 @@ export type HentBrevResponses = {
     /**
      * OK
      */
-    200: BrevUtkast;
+    200: Brev;
 };
 
 export type HentBrevResponse = HentBrevResponses[keyof HentBrevResponses];
@@ -470,7 +472,7 @@ export type OppdaterBrevResponses = {
     /**
      * OK
      */
-    200: BrevUtkast;
+    200: Brev;
 };
 
 export type OppdaterBrevResponse = OppdaterBrevResponses[keyof OppdaterBrevResponses];
@@ -573,10 +575,44 @@ export type HentEllerOpprettBrevResponses = {
     /**
      * OK
      */
-    200: BrevUtkast;
+    200: Brev;
 };
 
 export type HentEllerOpprettBrevResponse = HentEllerOpprettBrevResponses[keyof HentEllerOpprettBrevResponses];
+
+export type SendBrevData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+        brevId: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/brev/{brevId}/send';
+};
+
+export type SendBrevErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type SendBrevError = SendBrevErrors[keyof SendBrevErrors];
+
+export type SendBrevResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
 
 export type FindPersonByFnrData = {
     body: PersonRequest;

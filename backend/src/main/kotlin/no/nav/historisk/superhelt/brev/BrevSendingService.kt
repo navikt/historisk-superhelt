@@ -31,40 +31,43 @@ class BrevSendingService(
             return
         }
 
+
         // sjekk om brev er arkivert
-        brevRepository.oppdater(brevId, BrevOppdatering(status = BrevStatus.KLAR_TIL_SENDING))
+        var oppdatertBrev = brevRepository.oppdater(
+            uuid = brevId,
+            oppdatering = BrevOppdatering(status = BrevStatus.KLAR_TIL_SENDING)
+        )
         // Sett brev til klar til sending
-        arkiverBrev(brev, sak, brevId)
+        oppdatertBrev = arkiverBrev(brev = oppdatertBrev, sak = sak)
 
-        dokarkivService.distribuerBrev(sak, brev)
+        dokarkivService.distribuerBrev(sak = sak, brev = oppdatertBrev)
 
-        brevRepository.oppdater(brevId, BrevOppdatering(status = BrevStatus.SENDT))
+        oppdatertBrev=brevRepository.oppdater(uuid = brevId, oppdatering = BrevOppdatering(status = BrevStatus.SENDT))
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
             endringsType = EndringsloggType.SENDT_BREV,
-            endring = "Brev ${brev.tittel} sendt til ${brev.mottakerType.name}"
+            endring = "Brev ${oppdatertBrev.tittel} sendt til ${brev.mottakerType.name.lowercase()}",
         )
-
     }
 
-    private fun arkiverBrev(
-        brev: Brev,
-        sak: Sak,
-        brevId: BrevId) {
+    private fun arkiverBrev(brev: Brev, sak: Sak): Brev {
+
+        val brevId = brev.uuid
         if (brev.journalpostId != null) {
             log.info("Brev med id $brevId er allerede arkivert med journalpostId ${brev.journalpostId}, hopper over arkivering")
-            return
+            return brev
         }
         val pdf = pdfgenService.genererPdf(sak, brev)
         val arkivResponse = dokarkivService.arkiver(sak, brev, pdf)
-        brevRepository.oppdater(
+
+        if (!arkivResponse.journalpostferdigstilt) {
+            log.error("Brev med id $brevId i sak ${sak.saksnummer} og journalpostId ${arkivResponse.journalpostId} ble ikke ferdigstilt i dokarkiv. Dette må følges opp")
+        }
+        return brevRepository.oppdater(
             brevId,
             BrevOppdatering(
                 journalpostId = arkivResponse.journalpostId,
             )
         )
-        if (!arkivResponse.journalpostferdigstilt) {
-            log.error("Brev med id $brevId i sak ${sak.saksnummer} og journalpostId ${arkivResponse.journalpostId} ble ikke ferdigstilt i dokarkiv. Dette må følges opp")
-        }
     }
 }
