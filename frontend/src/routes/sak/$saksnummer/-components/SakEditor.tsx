@@ -91,7 +91,7 @@ export default function SakEditor({sak}: Props) {
     }
 
     async function completedSoknad() {
-        await lagreSak()
+        const resp=await lagreSak()
         setShowValidation(true)
         if (!hasValidationErrors) {
             navigate({to: "/sak/$saksnummer/vedtaksbrevbruker", params: {saksnummer}})

@@ -1,5 +1,5 @@
-import {createFileRoute, useRouter} from '@tanstack/react-router'
-import {Modal, VStack} from "@navikt/ds-react";
+import {createFileRoute, useNavigate} from '@tanstack/react-router'
+import {ErrorSummary, Modal, VStack} from "@navikt/ds-react";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 import {useRef} from "react";
@@ -16,29 +16,35 @@ function AnnetBrevPage() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
     const ref = useRef<HTMLDialogElement>(null);
-    const router = useRouter();
+    const navigate = useNavigate();
     const invalidateSakQuery = useInvalidateSakQuery();
 
     const sendBrev = useMutation({
-        ...sendBrevMutation()
+        ...sendBrevMutation(),
+        onSuccess: (data) => {
+            invalidateSakQuery(saksnummer)
+            navigateBack()
+        }
+
+
     })
 
     const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
 
     const navigateBack = () => {
-        router.history.back()
+        navigate({to: "/sak/$saksnummer/oppsummering", params: {saksnummer}});
     }
 
-    const onBrevSend = (brevId: string) => {
+    const onBrevSend = async (brevId: string) => {
         sendBrev.mutate({
             path: {
                 saksnummer: saksnummer,
                 brevId: brevId
             }
         })
-        invalidateSakQuery(saksnummer)
-        navigateBack()
+
     }
+    const hasError = !!sendBrev.error
 
     return (
         <VStack gap={"8"}>
@@ -58,10 +64,15 @@ function AnnetBrevPage() {
                                        onSuccess={onBrevSend}
                                        readOnly={!hasSaksbehandleRettighet}
                     />
+
+                    {hasError && <ErrorSummary>
+                        {sendBrev.error && <ErrorSummary.Item>{sendBrev?.error?.detail}</ErrorSummary.Item>}
+                    </ErrorSummary>}
                 </Modal.Body>
 
             </Modal>
-        </VStack>)
+        </VStack>
+    )
 }
 
 

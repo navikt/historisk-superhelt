@@ -11,7 +11,8 @@ class BrevService(
 
     @Transactional
     fun hentEllerOpprettBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev {
-        brevRepository.findBySak(sak.saksnummer).findBrev(type = type, mottaker = mottaker)?.let {
+        brevRepository.findBySak(sak.saksnummer)
+            .findEditableBrev(type = type, mottaker = mottaker)?.let {
             return it
         }
         val brevTekstGenerator = BrevTekstGenerator(sak)

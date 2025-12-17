@@ -72,5 +72,5 @@ internal data class BrevOppdatering(
 
 typealias BrevUtkastList = List<Brev>
 
-fun BrevUtkastList.findBrev(type: BrevType, mottaker: BrevMottaker): Brev? =
-    this.find { it.type == type && it.mottakerType == mottaker }
+fun BrevUtkastList.findEditableBrev(type: BrevType, mottaker: BrevMottaker): Brev? =
+    this.find { it.type == type && it.mottakerType == mottaker && it.status.editable }

@@ -9,7 +9,7 @@ import {
     ChevronRightIcon,
     HourglassBottomFilledIcon,
     PersonPencilIcon,
-    PlusIcon,
+    SparkLargeIcon,
     ThumbDownIcon,
     ThumbUpIcon
 } from "@navikt/aksel-icons";
@@ -45,7 +45,7 @@ export default function SakEndringer({sak}: SakEndringerProps) {
                 // subtask
                 return undefined
             case "OPPRETTET_SAK":
-                return <PlusIcon/>
+                return <SparkLargeIcon/>
 
             default:
                 return <ChevronRightIcon/>;
