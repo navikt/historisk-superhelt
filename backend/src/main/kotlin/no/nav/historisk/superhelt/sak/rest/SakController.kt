@@ -2,15 +2,18 @@ package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import no.nav.common.types.Aar
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate.now
 
 @RestController
 @RequestMapping("/api/sak")
@@ -34,7 +37,20 @@ class SakController(
     @Operation(operationId = "createSak", summary = "opprett en ny sak")
     @PostMapping
     fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
-        val createdSak = sakService.createSak(sak)
+        val soknadsDato = sak.soknadsDato ?: now()
+        val createdSak = sakRepository.opprettNySak(
+            OpprettSakDto(
+                type = sak.type,
+                fnr = sak.fnr,
+                properties = UpdateSakDto(
+                    tittel = sak.tittel,
+                    soknadsDato = soknadsDato,
+                    saksbehandler = getCurrentNavUser(),
+                    tildelingsAar = soknadsDato?.let { Aar(it.year) },
+                ),
+
+                )
+        )
         endringsloggService.logChange(
             saksnummer = createdSak.saksnummer,
             endringsType = EndringsloggType.OPPRETTET_SAK,
@@ -53,7 +69,18 @@ class SakController(
         SakValidator(sak)
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
-        val updated = sakService.updateSak(saksnummer, req)
+
+        val updated = sakRepository.updateSak(
+            saksnummer, UpdateSakDto(
+                type = req.type,
+                tittel = req.tittel,
+                begrunnelse = req.begrunnelse,
+                soknadsDato = req.soknadsDato,
+                tildelingsAar = req.tildelingsAar,
+                vedtaksResultat = req.vedtaksResultat,
+                saksbehandler = getCurrentNavUser()
+            )
+        )
         return ResponseEntity.ok(updated)
     }
 

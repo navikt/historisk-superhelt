@@ -33,7 +33,7 @@ class UtbetalingStatusConsumer(
     )
     fun statusMessage(record: ConsumerRecord<String, String>) {
         val utbetalingsId = UUID.fromString(record.key())
-        val utbetaling = utbetalingRepository.getUtbetalingByUuid(utbetalingsId)
+        val utbetaling = utbetalingRepository.findByUuid(utbetalingsId)
         if (utbetaling == null) {
             logger.debug("Fant ikke utbetaling med id: {}. Ignoring message", utbetalingsId)
             return

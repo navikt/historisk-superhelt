@@ -15,4 +15,5 @@ object UtbetalingTestData {
         utbetalingTidspunkt = null,
         saksnummer = Saksnummer(faker.number().positive().toLong()),
     )
+
 }

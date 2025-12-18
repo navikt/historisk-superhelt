@@ -3,8 +3,10 @@ package no.nav.historisk.superhelt.sak
 import net.datafaker.Faker
 import no.nav.common.types.*
 import no.nav.historisk.superhelt.infrastruktur.NavUser
-import no.nav.historisk.superhelt.sak.db.SakJpaEntity
+import no.nav.historisk.superhelt.test.withMockedUser
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
+import no.nav.historisk.superhelt.utbetaling.UtbetalingUpdateDto
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -54,36 +56,48 @@ object SakTestData {
 
     private fun navUser(): NavUser = NavUser(NavIdent(faker.bothify("???###")), faker.name().name())
 
-    fun sakEntityMinimum(fnr: Fnr = Fnr(faker.numerify("###########"))): SakJpaEntity {
-        return SakJpaEntity(
+    fun nySakMinimum(fnr: Fnr = Fnr(faker.numerify("###########"))): OpprettSakDto {
+        return OpprettSakDto(
             type = faker.options().option(StonadsType::class.java),
             fnr = fnr,
-            status = SakStatus.UNDER_BEHANDLING,
-            saksbehandler = navUser()
+            properties = UpdateSakDto(
+                status = SakStatus.UNDER_BEHANDLING,
+                saksbehandler = navUser()
+            )
         )
     }
 
-    fun sakEntityCompleteUtbetaling(
+    fun nySakCompleteUtbetaling(
         fnr: Fnr = Fnr(faker.numerify("###########")),
         sakStatus: SakStatus = SakStatus.UNDER_BEHANDLING,
         saksbehandlerIdent: String = faker.bothify("s??###")
-    ): SakJpaEntity {
-        val sak = sakEntityMinimum(fnr)
-        with(sak) {
-            tittel = faker.harryPotter().spell()
+    ): OpprettSakDto {
+        val properties = UpdateSakDto(
+            tittel = faker.harryPotter().spell(),
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
                 ZoneId.systemDefault()
+            ),
+            begrunnelse = faker.yoda().quote().take(250),
+            status = sakStatus,
+            vedtaksResultat = faker.options().option(VedtaksResultat::class.java),
+            saksbehandler = NavUser(NavIdent(saksbehandlerIdent), faker.name().name()),
+            utbetalingUpdateDto = UtbetalingUpdateDto(
+                belop = Belop(faker.number().numberBetween(10, 99999)),
+                utbetalingsType = UtbetalingsType.BRUKER
             )
-            begrunnelse = faker.yoda().quote().take(250)
-            status = sakStatus
-            vedtaksResultat = faker.options().option(VedtaksResultat::class.java)
-            saksbehandler = NavUser(NavIdent(saksbehandlerIdent), faker.name().name())
+        )
+        return nySakMinimum(fnr)
+            .copy(properties = properties)
 
-            setOrUpdateUtbetaling(faker.number().numberBetween(10, 99999))
+
+    }
+
+
+    fun lagreNySak(repository: SakRepository, sak: OpprettSakDto = nySakMinimum()): Sak {
+        return withMockedUser {
+            repository.opprettNySak(sak)
         }
-        return sak
-
     }
 
 

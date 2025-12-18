@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.sak
+package no.nav.historisk.superhelt.utbetaling
 
 enum class UtbetalingsType {
     BRUKER,

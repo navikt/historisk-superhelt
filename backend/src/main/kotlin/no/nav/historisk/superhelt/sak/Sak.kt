@@ -12,6 +12,7 @@ import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.Instant
 import java.time.LocalDate

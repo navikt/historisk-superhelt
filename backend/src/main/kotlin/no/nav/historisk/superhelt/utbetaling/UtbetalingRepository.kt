@@ -9,7 +9,7 @@ import java.util.*
 @Repository
 class UtbetalingRepository(private val utbetalingJpaRepository: UtbetalingJpaRepository) {
 
-    fun getUtbetalingByUuid(uuid: UUID): Utbetaling? {
+    fun findByUuid(uuid: UUID): Utbetaling? {
         return utbetalingJpaRepository.findByUuid(uuid)?.toDomain()
     }
 

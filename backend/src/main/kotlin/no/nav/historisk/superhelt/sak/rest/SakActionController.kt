@@ -48,7 +48,7 @@ class SakActionController(
                 .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
                 .checkRettighet(SakRettighet.ATTESTERE)
                 .validate()
-            sakService.gjenapneSak(sak, request.kommentar!!)
+            sakService.endreStatus(sak, SakStatus.UNDER_BEHANDLING)
             endringsloggService.logChange(
                 saksnummer = saksnummer,
                 endringsType = EndringsloggType.ATTESTERING_UNDERKJENT,
@@ -73,9 +73,9 @@ class SakActionController(
         )
         //TODO  håndtere retry
         sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
-        sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it)}
+        sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it) }
 
-        sakService.ferdigstill(sak)
+        sakService.endreStatus(sak, SakStatus.FERDIG)
 
         vedtakService.fattVedtak(saksnummer)
         endringsloggService.logChange(
@@ -94,7 +94,7 @@ class SakActionController(
             .checkCompleted()
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
-        sakService.sendTilAttestering(sak)
+        sakService.endreStatus(sak, SakStatus.TIL_ATTESTERING)
 
         endringsloggService.logChange(
             saksnummer = saksnummer,
@@ -114,10 +114,12 @@ class SakActionController(
             .checkRettighet(SakRettighet.GJENAPNE)
             .validate()
 
-        sakService.gjenapneSak(sak, "Gjenåpnet via API TODO årsak")
-        endringsloggService.logChange(saksnummer = saksnummer,
+        sakService.endreStatus(sak, SakStatus.UNDER_BEHANDLING)
+        endringsloggService.logChange(
+            saksnummer = saksnummer,
             endringsType = EndringsloggType.GJENAPNET_SAK,
-            endring = "Sak er gjenåpnet")
+            endring = "Sak er gjenåpnet"
+        )
         return ResponseEntity.ok().build()
     }
 
