@@ -49,6 +49,7 @@ class BrevJpaEntity(
 
     internal fun toDomain(): Brev {
         return Brev(
+            saksnummer = sak.saksnummer,
             uuid = this.uuid,
             tittel = this.tittel,
             innhold = this.innhold,

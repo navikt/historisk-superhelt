@@ -32,8 +32,8 @@ class BrevRepository(
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
-    internal fun opprettBrev(saksnummer: Saksnummer, brev: Brev): Brev {
-        val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
+    internal fun opprettBrev(brev: Brev): Brev {
+        val sakEntity = sakRepository.getSakEntityOrThrow(brev.saksnummer)
         val brevJpaEntity = BrevJpaEntity(
             uuid = brev.uuid,
             sak = sakEntity,

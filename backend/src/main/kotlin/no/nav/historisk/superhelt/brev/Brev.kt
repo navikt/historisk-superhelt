@@ -1,11 +1,13 @@
 package no.nav.historisk.superhelt.brev
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 
 
 data class Brev(
+    val saksnummer: Saksnummer,
     val uuid: BrevId,
     val tittel: String?,
     /** html innholdet i brevet */

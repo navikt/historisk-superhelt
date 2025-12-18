@@ -5,10 +5,12 @@ import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
-import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.test.*
+import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithLeseBruker
+import no.nav.historisk.superhelt.test.WithSaksbehandler
+import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -50,12 +52,6 @@ class BrevControllerTest {
         )
     }
 
-    fun lagreBrev(sak: Sak, brev: Brev = BrevTestdata.vedtaksbrevBruker()): Brev {
-        return withMockedUser {
-            brevRepository.opprettBrev(sak.saksnummer, brev)
-        }
-    }
-
 
     @WithSaksbehandler
     @Nested
@@ -87,7 +83,7 @@ class BrevControllerTest {
         fun `hent brev om det finnes fra før`() {
 
             val sak = SakTestData.lagreNySak(sakRepository)
-            val brev = lagreBrev(sak)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val request = OpprettBrevRequest(type = BrevType.VEDTAKSBREV, mottaker = BrevMottaker.BRUKER)
 
@@ -125,7 +121,7 @@ class BrevControllerTest {
         @Test
         fun `hent brev ok`() {
             val sak = SakTestData.lagreNySak(sakRepository)
-            val brev = lagreBrev(sak)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
 
@@ -159,7 +155,7 @@ class BrevControllerTest {
         @Test
         fun `html brev ok`() {
             val sak = SakTestData.lagreNySak(sakRepository)
-            val brev = lagreBrev(sak)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
 
@@ -183,7 +179,7 @@ class BrevControllerTest {
         @Test
         fun `oppdater brev ok`() {
             val sak = SakTestData.lagreNySak(sakRepository)
-            val brev = lagreBrev(sak)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
 
@@ -202,7 +198,7 @@ class BrevControllerTest {
         @Test
         fun `oppdater brev valideringsfeil`() {
             val sak = SakTestData.lagreNySak(sakRepository)
-            val brev = lagreBrev(sak)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
 
@@ -221,7 +217,7 @@ class BrevControllerTest {
         @Test
         fun `oppdater brev uten skrivetilgang skal gi feil`() {
             val sak = SakTestData.lagreNySak(sakRepository)
-            val brev = lagreBrev(sak)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
             val request = OppdaterBrevRequest(tittel = "Ny tittel", innhold = "Nytt innhold")
