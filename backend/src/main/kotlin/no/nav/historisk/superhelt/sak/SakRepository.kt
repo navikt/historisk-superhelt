@@ -57,7 +57,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.soknadsDato?.let { entity.soknadsDato = it }
         dto.tildelingsAar?.let { entity.tildelingsAar = it.value }
         dto.vedtaksResultat?.let { entity.vedtaksResultat = it }
-        dto.saksbehandler?.let { if (it == NavUser.NULL_VALUE) null else it }
+        dto.saksbehandler?.let { entity.saksbehandler = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
         dto.utbetalingUpdateDto?.let {
             val belop = it.belop?.value ?: 0

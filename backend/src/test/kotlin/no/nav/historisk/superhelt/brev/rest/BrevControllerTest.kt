@@ -62,7 +62,7 @@ class BrevControllerTest {
     inner class `hent eller opprett brev` {
         @Test
         fun `opprett brev ok`() {
-            SakTestData.nySakMinimum()
+
             val sak = SakTestData.lagreNySak(sakRepository)
             val saksnummer = sak.saksnummer
             val request = OpprettBrevRequest(type = BrevType.VEDTAKSBREV, mottaker = BrevMottaker.BRUKER)
@@ -85,7 +85,7 @@ class BrevControllerTest {
 
         @Test
         fun `hent brev om det finnes fra før`() {
-            SakTestData.nySakMinimum()
+
             val sak = SakTestData.lagreNySak(sakRepository)
             val brev = lagreBrev(sak)
             val saksnummer = sak.saksnummer
@@ -124,7 +124,6 @@ class BrevControllerTest {
     inner class `hent brev` {
         @Test
         fun `hent brev ok`() {
-            SakTestData.nySakMinimum()
             val sak = SakTestData.lagreNySak(sakRepository)
             val brev = lagreBrev(sak)
             val saksnummer = sak.saksnummer
@@ -141,7 +140,6 @@ class BrevControllerTest {
 
         @Test
         fun `hent brev som ikke finnes skal gi feil`() {
-            SakTestData.nySakMinimum()
             val sak = SakTestData.lagreNySak(sakRepository)
             val saksnummer = sak.saksnummer
             val brevId = BrevId.random()
@@ -160,7 +158,6 @@ class BrevControllerTest {
     inner class `html brev` {
         @Test
         fun `html brev ok`() {
-            SakTestData.nySakMinimum()
             val sak = SakTestData.lagreNySak(sakRepository)
             val brev = lagreBrev(sak)
             val saksnummer = sak.saksnummer
@@ -185,7 +182,6 @@ class BrevControllerTest {
     inner class `oppdater brev` {
         @Test
         fun `oppdater brev ok`() {
-            SakTestData.nySakMinimum()
             val sak = SakTestData.lagreNySak(sakRepository)
             val brev = lagreBrev(sak)
             val saksnummer = sak.saksnummer
@@ -205,7 +201,6 @@ class BrevControllerTest {
 
         @Test
         fun `oppdater brev valideringsfeil`() {
-            SakTestData.nySakMinimum()
             val sak = SakTestData.lagreNySak(sakRepository)
             val brev = lagreBrev(sak)
             val saksnummer = sak.saksnummer
@@ -225,7 +220,6 @@ class BrevControllerTest {
         @WithLeseBruker
         @Test
         fun `oppdater brev uten skrivetilgang skal gi feil`() {
-            SakTestData.nySakMinimum()
             val sak = SakTestData.lagreNySak(sakRepository)
             val brev = lagreBrev(sak)
             val saksnummer = sak.saksnummer

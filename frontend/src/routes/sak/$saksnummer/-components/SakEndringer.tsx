@@ -34,7 +34,7 @@ export default function SakEndringer({sak}: SakEndringerProps) {
                 // subtask
                 return undefined
             case "UTBETALING_FEILET":
-                return <SackKronerIcon   />
+                return <SackKronerIcon />
             case "OPPDATERTE_SAKSDETALJER":
                 return <PersonPencilIcon/>;
             case "TIL_ATTESTERING":
@@ -52,8 +52,6 @@ export default function SakEndringer({sak}: SakEndringerProps) {
                 return undefined
             case "OPPRETTET_SAK":
                 return <SparkLargeIcon />
-
-
             default:
                 return <ChevronRightIcon/>;
 

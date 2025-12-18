@@ -89,8 +89,6 @@ object SakTestData {
         )
         return nySakMinimum(fnr)
             .copy(properties = properties)
-
-
     }
 
 
