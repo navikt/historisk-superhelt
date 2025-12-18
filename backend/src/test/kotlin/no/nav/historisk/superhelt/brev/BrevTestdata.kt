@@ -12,6 +12,9 @@ object BrevTestdata {
     fun vedtaksbrevBruker(): Brev {
         return brevUtkast().copy(type = BrevType.VEDTAKSBREV, mottakerType = BrevMottaker.BRUKER)
     }
+    fun fritekstbrevBruker(): Brev {
+        return brevUtkast().copy(type = BrevType.FRITEKSTBREV, mottakerType = BrevMottaker.BRUKER)
+    }
 
     fun brevUtkast(): Brev {
         return Brev(
@@ -28,7 +31,7 @@ object BrevTestdata {
     fun lagreBrev(
         brevRepository: BrevRepository,
         saksnummer: Saksnummer,
-        brev: Brev = BrevTestdata.vedtaksbrevBruker()): Brev {
+        brev: Brev = vedtaksbrevBruker()): Brev {
         return withMockedUser {
             brevRepository.opprettBrev(brev.copy(saksnummer = saksnummer))
         }

@@ -39,9 +39,10 @@ class BrevRepository(
             sak = sakEntity,
             tittel = brev.tittel,
             innhold = brev.innhold,
-            status = BrevStatus.NY,
+            status = brev.status,
             type = brev.type,
             mottakerType = brev.mottakerType,
+            journalpostId = brev.journalpostId,
         )
         return jpaRepository.save(brevJpaEntity).toDomain()
     }
