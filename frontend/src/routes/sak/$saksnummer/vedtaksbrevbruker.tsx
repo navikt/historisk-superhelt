@@ -23,7 +23,4 @@ function BrevPage() {
                               readOnly={!hasSaksbehandleRettighet}
                               onSuccess={gotoOppsummering}/>
 
-
 }
-
-
