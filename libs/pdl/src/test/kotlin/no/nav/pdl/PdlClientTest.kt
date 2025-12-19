@@ -53,7 +53,7 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertEquals(expectedData.hentPerson?.navn?.first()?.fornavn, result?.data?.hentPerson?.navn?.first()?.fornavn)
+        assertEquals(expectedData.hentPerson?.navn?.first()?.fornavn, result.data?.hentPerson?.navn?.first()?.fornavn)
         assertEquals(
             expectedData.hentIdenter?.identer?.first()?.ident,
             result.data?.hentIdenter?.identer?.first()?.ident
@@ -142,8 +142,8 @@ class PdlClientTest {
         assertNotNull(result)
         assertNotNull(result.errors)
         assertEquals(2, result.errors.size)
-        assertEquals("Feil 1", result.errors.get(0)?.message)
-        assertEquals("Feil 2", result.errors.get(1)?.message)
+        assertEquals("Feil 1", result.errors[0].message)
+        assertEquals("Feil 2", result.errors[1].message)
     }
 
     @Test
@@ -203,7 +203,7 @@ class PdlClientTest {
         assertNotNull(result.data.hentPerson.adressebeskyttelse)
         assertEquals(
             AdressebeskyttelseGradering.FORTROLIG,
-            result.data.hentPerson.adressebeskyttelse.first()?.gradering
+            result.data.hentPerson.adressebeskyttelse.first().gradering
         )
     }
 
@@ -304,7 +304,7 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        val identer = result?.data?.hentIdenter?.identer ?: emptyList()
+        val identer = result.data?.hentIdenter?.identer ?: emptyList()
         assertEquals(4, identer.size)
         assertEquals(2, identer.count { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT })
         assertEquals(2, identer.count { it.gruppe == IdentGruppe.AKTORID })
