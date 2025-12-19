@@ -6,14 +6,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.stereotype.Service
-import tools.jackson.databind.ObjectMapper
 import java.time.Instant
 
 
 @Service
 class MockUtbetalingKafkaConsumer(
     private val statusKafkaProducer: MockUtbetalingStatusKafkaProducer,
-    private val objectMapper: ObjectMapper,
     private val taskScheduler: TaskScheduler
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
