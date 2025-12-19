@@ -1,7 +1,5 @@
 package no.nav.pdl
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -13,6 +11,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import tools.jackson.databind.json.JsonMapper
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -21,9 +20,9 @@ class PdlClientTest {
 
     private val behandlingsnummer = "B123"
 
-    private val objectMapper = ObjectMapper().apply {
-        registerModule(JavaTimeModule())
-    }
+    private val objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .build()
 
     private val restTemplate: RestTemplate = RestTemplate()
     private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()
@@ -55,7 +54,10 @@ class PdlClientTest {
         // Then
         assertNotNull(result)
         assertEquals(expectedData.hentPerson?.navn?.first()?.fornavn, result?.data?.hentPerson?.navn?.first()?.fornavn)
-        assertEquals(expectedData.hentIdenter?.identer?.first()?.ident, result?.data?.hentIdenter?.identer?.first()?.ident)
+        assertEquals(
+            expectedData.hentIdenter?.identer?.first()?.ident,
+            result?.data?.hentIdenter?.identer?.first()?.ident
+        )
     }
 
     @Test
@@ -199,8 +201,10 @@ class PdlClientTest {
         assertNotNull(result?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt)
         assertEquals(1, result?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt?.size)
         assertNotNull(result?.data?.hentPerson?.adressebeskyttelse)
-        assertEquals(AdressebeskyttelseGradering.FORTROLIG,
-                    result?.data?.hentPerson?.adressebeskyttelse?.first()?.gradering)
+        assertEquals(
+            AdressebeskyttelseGradering.FORTROLIG,
+            result?.data?.hentPerson?.adressebeskyttelse?.first()?.gradering
+        )
     }
 
     @Test

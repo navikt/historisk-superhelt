@@ -10,8 +10,8 @@ val rolePrefix = "ROLE_"
 fun getCurrentUserRoles(): List<Role> {
     val authentication = getJwtAuthentication()
     return authentication?.authorities
-        ?.filter { it.authority.startsWith(rolePrefix) }
-        ?.map { it.authority.removePrefix(rolePrefix) }
+        ?.filter { it.authority?.startsWith(rolePrefix) ?: false }
+        ?.map { it.authority!!.removePrefix(rolePrefix) }
         ?.mapNotNull { Role.valueOf(it) } ?: emptyList()
 }
 
@@ -29,7 +29,7 @@ fun getCurrentUserPermissions(): List<Permission> {
     val authentication = getJwtAuthentication()
     return authentication?.authorities
         ?.filter { permissionStringValues.contains(it.authority) }
-        ?.map { Permission.valueOf(it.authority) }
+        ?.map { Permission.valueOf(it.authority!!) }
         ?: emptyList()
 }
 
