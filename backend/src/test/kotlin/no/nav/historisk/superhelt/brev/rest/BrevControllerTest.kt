@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.brev.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
@@ -23,6 +22,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import tools.jackson.databind.ObjectMapper
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc

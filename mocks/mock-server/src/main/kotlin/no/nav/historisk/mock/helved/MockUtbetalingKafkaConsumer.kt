@@ -1,12 +1,12 @@
 package no.nav.historisk.mock.helved
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.helved.StatusType
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import java.time.Instant
 
 

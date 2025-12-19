@@ -1,16 +1,15 @@
 package no.nav.oppgave.infrastructure
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.json.JsonMapper
 
 object Serializer {
     @JvmStatic
-    val jacksonObjectMapper: ObjectMapper = jacksonObjectMapper()
-        .findAndRegisterModules()
-        .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    val jacksonObjectMapper: ObjectMapper =   JsonMapper.builder()
+        .findAndAddModules()
+//        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .build()
 }

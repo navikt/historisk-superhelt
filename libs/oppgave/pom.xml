@@ -23,47 +23,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
         </dependency>
 
     </dependencies>
-
-    <build>
-
-        <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.openapitools</groupId>-->
-<!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
-<!--                <version>7.12.0</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>generate</goal>-->
-<!--                        </goals>-->
-
-<!--                        <configuration>-->
-<!--                            <inputSpec>https://oppgave.dev.intern.nav.no/api/openapi.yaml</inputSpec>-->
-<!--                            <generatorName>kotlin</generatorName>-->
-<!--                            <generateModelTests>false</generateModelTests>-->
-<!--                            <configOptions>-->
-<!--                                <sourceFolder>src/main/kotlin</sourceFolder>-->
-<!--                            </configOptions>-->
-
-<!--                            <configurationFile>generator-config.json</configurationFile>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
-
-        </plugins>
-    </build>
 
 
 </project>

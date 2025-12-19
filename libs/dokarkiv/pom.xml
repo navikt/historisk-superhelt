@@ -26,6 +26,10 @@
             <artifactId>spring-boot-starter-restclient-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>tools.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+        </dependency>
 
 
 

@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.sak.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.types.Fnr
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
@@ -27,6 +26,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import tools.jackson.databind.ObjectMapper
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc

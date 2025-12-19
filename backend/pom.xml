@@ -99,6 +99,10 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
+        <dependency>
+            <groupId>tools.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+        </dependency>
 
 
 <!--        <dependency>-->
