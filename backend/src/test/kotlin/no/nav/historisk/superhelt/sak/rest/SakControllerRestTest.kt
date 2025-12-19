@@ -10,8 +10,10 @@ import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.sak.StonadsType
-import no.nav.historisk.superhelt.sak.db.SakJpaEntity
-import no.nav.historisk.superhelt.test.*
+import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithLeseBruker
+import no.nav.historisk.superhelt.test.WithSaksbehandler
+import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -49,13 +51,6 @@ class SakControllerRestTest() {
         )
     }
 
-    fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum()): Sak {
-        return withMockedUser {
-            repository.save(sak)
-        }
-    }
-
-
     @WithSaksbehandler
     @Nested
     inner class `opprett sak` {
@@ -74,7 +69,7 @@ class SakControllerRestTest() {
             verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(fnr)
         }
 
-        @WithMockUser(authorities = ["READ"])
+        @WithLeseBruker
         @Test
         fun `opprett sak uten skrivetilgang skal gi feil`() {
             val fnr = Fnr("32345678901")
@@ -117,7 +112,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `oppdater sak ok`() {
-            val opprettetSak = lagreNySak()
+            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
             val saksnummer = opprettetSak.saksnummer
             val oppdatertTittel = "Ny tittel"
             val oppdatertBegrunnelse = "Ny begrunnelse"
@@ -145,7 +140,7 @@ class SakControllerRestTest() {
         @WithLeseBruker
         @Test
         fun `oppdater sak uten skrivetilgang skal gi feil`() {
-            val opprettetSak = lagreNySak().saksnummer
+            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum()).saksnummer
             assertThat(
                 oppdaterSak(
                     opprettetSak, SakUpdateRequestDto(
@@ -195,7 +190,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `hent sak ok sjekk json`() {
-            val opprettetSak = lagreNySak()
+            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
 
             assertThat(hentSak(opprettetSak.saksnummer))
                 .hasStatus(HttpStatus.OK)
@@ -211,7 +206,7 @@ class SakControllerRestTest() {
                 .hasPathSatisfying("$.valideringsfeil") { assertThat(it).isNotNull }
 
 
-            verify(tilgangsmaskinService).sjekkKomplettTilgang(opprettetSak.fnr)
+            verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(opprettetSak.fnr)
         }
 
         @Test
@@ -225,7 +220,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `hent sak uten tilgang til person skal gi feil`() {
-            val opprettetSak = lagreNySak()
+            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
             whenever(tilgangsmaskinService.sjekkKomplettTilgang(opprettetSak.fnr)) doReturn TilgangsmaskinClient.TilgangResult(
                 harTilgang = false,
                 TilgangsmaskinTestData.problemDetailResponse,
@@ -248,9 +243,9 @@ class SakControllerRestTest() {
         @Test
         fun `finn saker for person ok`() {
             val fnr = Fnr("12345678901")
-            lagreNySak(SakTestData.sakEntityMinimum(fnr))
-            lagreNySak(SakTestData.sakEntityMinimum(fnr))
-            lagreNySak(SakTestData.sakEntityMinimum(Fnr("98765432101")))
+            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
+            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
+            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(Fnr("98765432101")))
 
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.OK)
@@ -260,23 +255,23 @@ class SakControllerRestTest() {
                     assertThat(it).hasSize(2)
                 })
 
-            verify(tilgangsmaskinService).sjekkKomplettTilgang(fnr)
+            verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(fnr)
         }
 
         @WithMockUser()
         @Test
-        fun `finn saker for person uten lesetilgang skal gi feil`() {
+        fun `finn saker for saksbehandler uten lesetilgang skal gi feil`() {
             val fnr = Fnr("22345678901")
-            lagreNySak(SakTestData.sakEntityMinimum(fnr))
+            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.FORBIDDEN)
 
         }
 
         @Test
-        fun `finn saker for person uten rettighet for person skal gi feil`() {
+        fun `finn saker for saksbehandler uten rettighet for person skal gi feil`() {
             val fnr = Fnr("32345678901")
-            lagreNySak(SakTestData.sakEntityMinimum(fnr))
+            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
             whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr)) doReturn TilgangsmaskinClient.TilgangResult(
                 harTilgang = false,
                 TilgangsmaskinTestData.problemDetailResponse,

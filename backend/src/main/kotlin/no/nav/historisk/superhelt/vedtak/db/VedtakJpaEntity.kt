@@ -7,8 +7,8 @@ import no.nav.common.types.Belop
 import no.nav.common.types.Fnr
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.StonadsType
-import no.nav.historisk.superhelt.sak.UtbetalingsType
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.Vedtak
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.hibernate.Hibernate

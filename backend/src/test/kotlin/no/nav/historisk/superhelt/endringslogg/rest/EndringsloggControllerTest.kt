@@ -5,13 +5,10 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggLinje
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType.OPPRETTET_SAK
-import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
-import no.nav.historisk.superhelt.test.withMockedUser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,8 +21,10 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester
 class EndringsloggControllerTest {
     @Autowired
     private lateinit var repository: SakRepository
+
     @Autowired
     private lateinit var endringsloggService: EndringsloggService
+
     @Autowired
     private lateinit var mockMvc: MockMvcTester
 
@@ -33,7 +32,7 @@ class EndringsloggControllerTest {
     @WithSaksbehandler(navIdent = "s12345")
     @Test
     fun `hent endringslogg for sak`() {
-        val sak = lagreNySak(SakTestData.sakEntityMinimum())
+        val sak = SakTestData.lagreNySak(repository)
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
             endringsType = OPPRETTET_SAK,
@@ -65,9 +64,4 @@ class EndringsloggControllerTest {
     private fun hentEndringslogg(saksnummer: Saksnummer?): MockMvcTester.MockMvcRequestBuilder =
         mockMvc.get().uri("/api/sak/{saksnummer}/endringslogg", saksnummer)
 
-    fun lagreNySak(sak: SakJpaEntity = SakTestData.sakEntityMinimum()): Sak {
-        return withMockedUser {
-            repository.save(sak)
-        }
-    }
 }

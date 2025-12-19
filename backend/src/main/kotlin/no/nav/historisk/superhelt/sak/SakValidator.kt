@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.sak
 
 import no.nav.historisk.superhelt.brev.BrevValidator
 import no.nav.historisk.superhelt.infrastruktur.validation.Validator
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 
 

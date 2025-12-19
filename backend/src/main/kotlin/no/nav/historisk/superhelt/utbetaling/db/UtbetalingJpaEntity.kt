@@ -41,9 +41,11 @@ class UtbetalingJpaEntity(
     internal fun toDomain(): Utbetaling? {
         return Utbetaling(
             belop = Belop(this.belop),
+            saksnummer = this.sak.saksnummer,
             uuid = this.uuid,
             utbetalingStatus = this.utbetalingStatus,
             utbetalingTidspunkt = this.utbetalingTidspunkt
+
         )
     }
 }

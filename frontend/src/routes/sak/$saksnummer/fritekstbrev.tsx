@@ -34,7 +34,7 @@ function FritekstBrevPage() {
     }
 
     const onBrevSend = async (brevId: string) => {
-        sendBrev.mutate({
+        await sendBrev.mutateAsync({
             path: {
                 saksnummer: saksnummer,
                 brevId: brevId

@@ -31,7 +31,7 @@ class SakJpaEntity(
     /** Skiller mellom ulike behandlinger på samme sak. Økes med 1 for hver behandling */
     var behandlingsTeller: Int = 1,
 
-    var fnr: Fnr,
+    val fnr: Fnr,
 
     var tittel: String? = null,
 

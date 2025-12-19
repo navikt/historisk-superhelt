@@ -88,12 +88,14 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
 
     }
 
-    async function completedBrev() {
+    async function onActionClick() {
         setLoading(true)
         const lagretBrev = await lagreBrev();
         setShowValidation(true)
         if (lagretBrev && lagretBrev.valideringsfeil.length === 0) {
+            console.log("Starter onSuccess med brevId=", lagretBrev.uuid)
             await onSuccess(brevId)
+            console.log("Ferdig=", lagretBrev.uuid)
         }
         setLoading(false)
     }
@@ -110,7 +112,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
                               readOnly={readOnly}
                               error={getErrorMessage("innhold")}/>
             <HStack gap="8" align="start">
-                <Button type="submit" variant="secondary" onClick={completedBrev} disabled={readOnly}
+                <Button type="submit" variant="secondary" onClick={onActionClick} disabled={readOnly}
                         loading={loading}>{buttonText}</Button>
             </HStack>
             {hasError && <ErrorSummary>

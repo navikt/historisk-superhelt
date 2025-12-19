@@ -13,8 +13,8 @@ class BrevService(
     fun hentEllerOpprettBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev {
         brevRepository.findBySak(sak.saksnummer)
             .findEditableBrev(type = type, mottaker = mottaker)?.let {
-            return it
-        }
+                return it
+            }
         val brevTekstGenerator = BrevTekstGenerator(sak)
 
         val brev = Brev(
@@ -23,8 +23,9 @@ class BrevService(
             innhold = brevTekstGenerator.generateInnhold(type, mottaker),
             type = type,
             mottakerType = mottaker,
+            saksnummer = sak.saksnummer,
         )
-        return brevRepository.opprettBrev(sak.saksnummer, brev)
+        return brevRepository.opprettBrev(brev)
     }
 
 }

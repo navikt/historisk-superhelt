@@ -61,11 +61,11 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly tilstand: SakTilstand;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
 export type SakTilstand = {
@@ -75,6 +75,7 @@ export type SakTilstand = {
 };
 
 export type Utbetaling = {
+    saksnummer: string;
     belop: number;
     uuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
@@ -153,7 +154,7 @@ export type Vedtak = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'OPPRETTET_SAK' | 'OPPDATERTE_SAKSDETALJER' | 'SENDT_BREV' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK';
+    type: 'OPPRETTET_SAK' | 'OPPDATERTE_SAKSDETALJER' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET';
     endring: string;
     beskrivelse?: string;
     endretAv: string;
@@ -378,7 +379,7 @@ export type AttersterSakData = {
         saksnummer: string;
     };
     query?: never;
-    url: '/api/sak/{saksnummer}/status/ferdigstill';
+    url: '/api/sak/{saksnummer}/status/attester';
 };
 
 export type AttersterSakErrors = {

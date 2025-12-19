@@ -17,8 +17,9 @@ class UtbetalingService(
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun sendTilUtbetaling(sak: Sak) {
-        val utbetaling = sak.utbetaling
-        utbetaling?.let { utbetaling ->
+        sak.utbetaling?.let {
+            val utbetaling = utbetalingRepository.findByUuid(it.uuid)
+                ?: throw IllegalStateException("Utbetaling med uuid ${it.uuid} ikke funnet")
 
             if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
                 throw IllegalStateException("Utbetaling med uuid ${utbetaling.uuid} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke sendes til utbetaling")
@@ -30,8 +31,7 @@ class UtbetalingService(
 
         }
     }
-
-
+    //TODO Finne ut av hvordan vi kan kjøre dette som en systembruker
     @Transactional
     fun updateUtbetalingsStatus(utbetaling: Utbetaling, newStatus: UtbetalingStatus) {
         val utbetalingsId = utbetaling.uuid
@@ -57,6 +57,25 @@ class UtbetalingService(
             return
         }
 
+
+        // Legg til endringslogg når vi vet hvordan vi kan kjøre som systembruker
+//        if (newStatus.isFinal()) {
+//            when (newStatus) {
+//                UtbetalingStatus.UTBETALT -> sakEndringsloggService.logChange(
+//                    saksnummer = utbetaling.saksnummer,
+//                    endringsType = EndringsloggType.UTBETALING_OK,
+//                    endring = "Utbetalt ${utbetaling.belop} til bruker"
+//                )
+//
+//                UtbetalingStatus.FEILET -> sakEndringsloggService.logChange(
+//                    saksnummer = utbetaling.saksnummer,
+//                    endringsType = EndringsloggType.UTBETALING_FEILET,
+//                    endring = "Utbetaling til bruker feilet"
+//                )
+//
+//                else -> {}
+//            }
+//        }
 
         utbetalingRepository.setUtbetalingStatus(uuid = utbetalingsId, status = newStatus)
     }

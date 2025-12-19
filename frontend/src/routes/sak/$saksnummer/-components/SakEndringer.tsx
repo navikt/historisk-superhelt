@@ -9,6 +9,7 @@ import {
     ChevronRightIcon,
     HourglassBottomFilledIcon,
     PersonPencilIcon,
+    SackKronerIcon,
     SparkLargeIcon,
     ThumbDownIcon,
     ThumbUpIcon
@@ -29,6 +30,11 @@ export default function SakEndringer({sak}: SakEndringerProps) {
 
     const getBullet = (type: EndringsloggType) => {
         switch (type) {
+            case "UTBETALING_OK":
+                // subtask
+                return undefined
+            case "UTBETALING_FEILET":
+                return <SackKronerIcon />
             case "OPPDATERTE_SAKSDETALJER":
                 return <PersonPencilIcon/>;
             case "TIL_ATTESTERING":
@@ -45,8 +51,7 @@ export default function SakEndringer({sak}: SakEndringerProps) {
                 // subtask
                 return undefined
             case "OPPRETTET_SAK":
-                return <SparkLargeIcon/>
-
+                return <SparkLargeIcon />
             default:
                 return <ChevronRightIcon/>;
 
