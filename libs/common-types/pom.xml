@@ -12,5 +12,13 @@
     <artifactId>common-types</artifactId>
     <description>Lib for felles typer og value objekter</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>tools.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+        </dependency>
+
+    </dependencies>
+
 
 </project>

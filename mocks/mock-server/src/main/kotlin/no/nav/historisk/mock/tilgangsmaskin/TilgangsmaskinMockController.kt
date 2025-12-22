@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("tilgangsmaskin-mock")
 class TilgangsmaskinMockController(private val repository: PersonTestRepository) {
     @PostMapping("/api/v1/komplett", "/api/v1/kjerne")
-    fun komplett(@RequestBody personident: String): ResponseEntity<Any?> {
+    fun komplett(@RequestBody personident: String): ResponseEntity<Any> {
         val person = repository.findOrCreate(personident)
         val avvisningskode = person.avisningskode
 

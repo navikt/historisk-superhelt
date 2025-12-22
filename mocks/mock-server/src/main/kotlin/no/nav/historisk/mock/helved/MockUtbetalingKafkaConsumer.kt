@@ -1,6 +1,5 @@
 package no.nav.historisk.mock.helved
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.helved.StatusType
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -13,7 +12,6 @@ import java.time.Instant
 @Service
 class MockUtbetalingKafkaConsumer(
     private val statusKafkaProducer: MockUtbetalingStatusKafkaProducer,
-    private val objectMapper: ObjectMapper,
     private val taskScheduler: TaskScheduler
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
