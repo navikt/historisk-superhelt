@@ -31,7 +31,6 @@ class TilgangsmaskinServiceTest {
     @WithSaksbehandler(navIdent = "Z999999")
     @Test
     fun `should return from cache if present and not call client`() {
-        val service = TilgangsmaskinService(tilgangsmaskinClient, cache)
         val fnr = Fnr("12345678901")
         val expectedResult = TilgangsmaskinClient.TilgangResult(true)
 
@@ -49,7 +48,6 @@ class TilgangsmaskinServiceTest {
     @WithSaksbehandler(navIdent = "Z888888")
     @Test
     fun `should call client`() {
-        val service = TilgangsmaskinService(tilgangsmaskinClient, cache)
         val fnr = Fnr("12345678901")
         val expectedResult = TilgangsmaskinClient.TilgangResult(true)
 
