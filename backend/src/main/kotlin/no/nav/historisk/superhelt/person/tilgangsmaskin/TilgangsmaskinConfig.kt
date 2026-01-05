@@ -4,9 +4,9 @@ package no.nav.historisk.superhelt.person.tilgangsmaskin
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
-import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.cache.CacheManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestClient
@@ -14,19 +14,23 @@ import org.springframework.web.client.RestClient
 @Configuration
 @EnableConfigurationProperties(TilgangsmaskinProperties::class)
 class TilgangsmaskinConfig() {
-    private val log = LoggerFactory.getLogger(javaClass)
 
     @Bean
-    fun tilgangsmaskinService(properties: TilgangsmaskinProperties, tokenService: NaisTokenService): TilgangsmaskinService {
+    fun tilgangsmaskinService(
+        properties: TilgangsmaskinProperties,
+        tokenService: NaisTokenService,
+        cacheManager: CacheManager): TilgangsmaskinService {
 
         val restClient = RestClient.builder()
             .baseUrl(properties.url)
 //            .requestInterceptor (CallIdClientRequestInterceptor("Nav-Call-Id"))
-            .requestInterceptor (NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))
             .build()
 
         val tilgangsmaskinClient = TilgangsmaskinClient(restClient = restClient)
-        return TilgangsmaskinService(tilgangsmaskinClient)
+        val cache = cacheManager.getCache("tilgangsmaskinCache")
+            ?: throw IllegalStateException("Cache 'tilgangsmaskinCache' not found")
+        return TilgangsmaskinService(tilgangsmaskinClient, cache)
     }
 }
 

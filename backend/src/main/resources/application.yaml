@@ -54,6 +54,10 @@ spring:
 
     consumer:
       group-id: ${spring.application.name}
+  cache:
+    caffeine:
+      spec: maximumSize=5000,expireAfterAccess=10m
+    cache-names: pdlCache,tilgangsmaskinCache
 
 management:
   endpoints:
