@@ -5,8 +5,8 @@ import java.time.LocalDate
 
 data class UtbetalingStatusMelding(
     val status: StatusType,
-    val detaljer: Detaljer?,
-    val error: StatusError?
+    val detaljer: Detaljer?= null,
+    val error: StatusError? = null
 )
 
 /** Status fra hel ved.
