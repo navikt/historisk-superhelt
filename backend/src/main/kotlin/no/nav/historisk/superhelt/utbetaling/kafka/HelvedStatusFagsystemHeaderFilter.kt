@@ -11,8 +11,8 @@ class HelvedStatusFagsystemHeaderFilter : RecordFilterStrategy<String, String> {
      * @return true if the message should be discarded
      */
     override fun filter(consumerRecord: ConsumerRecord<String?, String?>): Boolean {
-        val fagsystemheader = consumerRecord.headers().lastHeader("fagsystem")
-        val discard = fagsystemheader == null || "HISTORISK" != String(fagsystemheader.value())
+        val fagsystemHeader = consumerRecord.headers().lastHeader("fagsystem")
+        val discard = fagsystemHeader == null || "HISTORISK" != String(fagsystemHeader.value())
         return discard
     }
 }

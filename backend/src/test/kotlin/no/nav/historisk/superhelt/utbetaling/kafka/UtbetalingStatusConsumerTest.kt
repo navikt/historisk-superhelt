@@ -72,7 +72,6 @@ class UtbetalingStatusConsumerTest {
         val melding = UtbetalingStatusMelding(status = StatusType.OK)
 
         sendKafkaMessage(uuid, melding, fagsystemHeader = "HISTORISK")
-//        verify(utbetalingRepository ).findByUuid(any())
         verify(utbetalingService, never()).updateUtbetalingsStatus(any(), any())
     }
 
@@ -82,7 +81,7 @@ class UtbetalingStatusConsumerTest {
         val melding = UtbetalingStatusMelding(status = StatusType.OK)
         sendKafkaMessage(uuid, melding, fagsystemHeader = "ANNET_FAGSYSTEM")
 
-        verify(utbetalingRepository, never() ).findByUuid(any())
+        verify(utbetalingRepository, never()).findByUuid(any())
         verify(utbetalingService, never()).updateUtbetalingsStatus(any(), any())
     }
 
@@ -92,7 +91,7 @@ class UtbetalingStatusConsumerTest {
         val melding = UtbetalingStatusMelding(status = StatusType.OK)
         sendKafkaMessage(uuid, melding, fagsystemHeader = null)
 
-        verify(utbetalingRepository, never() ).findByUuid(any())
+        verify(utbetalingRepository, never()).findByUuid(any())
         verify(utbetalingService, never()).updateUtbetalingsStatus(any(), any())
     }
 
