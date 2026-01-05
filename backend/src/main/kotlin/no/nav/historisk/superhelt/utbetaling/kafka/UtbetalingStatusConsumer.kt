@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.utbetaling.kafka
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.helved.StatusType
 import no.nav.helved.UtbetalingStatusMelding
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
@@ -11,6 +10,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import java.util.*
 
 @Service

@@ -1,8 +1,6 @@
 package saf.graphql
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
@@ -21,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import tools.jackson.databind.json.JsonMapper
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -32,11 +31,9 @@ class SafGraphqlClientTest {
     private val restClient = RestClient.builder(restTemplate).build()
     private val safClient = SafGraphqlClient(restClient)
 
-    private val objectMapper =
-        ObjectMapper().apply {
-            registerModule(JavaTimeModule())
-            registerModule(KotlinModule.Builder().build())
-        }
+    private val objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .build()
 
     @Test
     fun `hentJournalpost skal returnere vellykket respons`() {
