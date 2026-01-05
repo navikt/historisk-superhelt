@@ -26,19 +26,19 @@ class UtbetalingStatusConsumer(
         logger.info("Starter utbetaling status consumer for topic: ${properties.statusTopic}")
     }
 
-    //TODO filter på header eller lignende for å kun plukke ut egne meldinger
     @KafkaListener(
         topics = ["\${app.utbetaling.status-topic}"],
-        groupId = "historisk.superhelt.utbetaling.status"
+        groupId = "historisk.superhelt.utbetaling.status",
+        filter = "helvedStatusFagsystemHeaderFilter",
     )
     fun statusMessage(record: ConsumerRecord<String, String>) {
         val utbetalingsId = UUID.fromString(record.key())
         val utbetaling = utbetalingRepository.findByUuid(utbetalingsId)
         if (utbetaling == null) {
-            logger.debug("Fant ikke utbetaling med id: {}. Ignoring message", utbetalingsId)
+            logger.warn("Fant ikke utbetaling med id: {}. Ignoring message", utbetalingsId)
             return
         }
-        logger.info("Mottatt melding på topic: ${record.topic()} med key: ${record.key()} og value: ${record.value()}")
+        logger.debug("Mottatt melding på topic: ${record.topic()} med key: ${record.key()} og value: ${record.value()}")
         val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
         val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
         utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
