@@ -2,6 +2,7 @@ package no.nav.historisk.mock.helved
 
 import no.nav.helved.StatusType
 import no.nav.helved.UtbetalingStatusMelding
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
@@ -35,7 +36,9 @@ class MockUtbetalingStatusKafkaProducer(
             id,
             melding.status
         )
-        kafkaTemplate.send(statusTopic, id, melding).get()
+        val record = ProducerRecord(statusTopic, id, melding)
+        record.headers().add("fagsystem", "HISTORISK".toByteArray())
+        kafkaTemplate.send(record).get()
     }
 
 }
