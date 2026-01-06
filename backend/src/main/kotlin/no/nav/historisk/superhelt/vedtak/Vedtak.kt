@@ -13,7 +13,7 @@ data class Vedtak(
     val behandlingsnummer: Behandlingsnummer,
     val stonadstype: StonadsType,
     val fnr: Fnr,
-    val tittel: String, //?? Usikker på om denne skal være med
+    val beskrivelse: String, //?? Usikker på om denne skal være med
     val soknadsDato: LocalDate,
     val tildelingsAar: Aar?,
     val begrunnelse: String? = null,

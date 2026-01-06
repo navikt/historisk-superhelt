@@ -52,7 +52,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     private fun patchEntity(dto: UpdateSakDto, entity: SakJpaEntity): SakJpaEntity {
         dto.type?.let { entity.type = it }
         dto.status?.let { entity.status = it }
-        dto.tittel?.let { entity.tittel = it }
+        dto.beskrivelse?.let { entity.beskrivelse = it }
         dto.begrunnelse?.let { entity.begrunnelse = it }
         dto.soknadsDato?.let { entity.soknadsDato = it }
         dto.tildelingsAar?.let { entity.tildelingsAar = it.value }
@@ -116,7 +116,7 @@ data class OpprettSakDto(
 data class UpdateSakDto(
     val type: StonadsType? = null,
     val status: SakStatus? = null,
-    val tittel: String? = null,
+    val beskrivelse: String? = null,
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
     val tildelingsAar: Aar? = null,

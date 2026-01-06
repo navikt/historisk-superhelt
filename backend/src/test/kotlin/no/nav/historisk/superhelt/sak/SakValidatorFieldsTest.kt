@@ -28,27 +28,27 @@ class SakValidatorFieldsTest {
         }
 
         @Test
-        fun `should fail when tittel is null or blank`() {
-            val sak = okSak().copy(tittel = null)
+        fun `should fail when beskrivelse is null or blank`() {
+            val sak = okSak().copy(beskrivelse = null)
             val validator = SakValidator(sak)
 
             validator.checkSoknad()
 
             assertThat(validator.validationErrors)
                 .hasSize(1)
-                .anyMatch { it.field == "tittel" && it.message.contains("Tittel må være satt") }
+                .anyMatch { it.field == "beskrivelse" && it.message.contains(" Beskrivelse må være satt") }
         }
 
         @Test
-        fun `should fail when tittel exceeds 200 characters`() {
-            val sak = okSak().copy(tittel = "a".repeat(201))
+        fun `should fail when beskrivelse exceeds 200 characters`() {
+            val sak = okSak().copy(beskrivelse = "a".repeat(201))
             val validator = SakValidator(sak)
 
             validator.checkSoknad()
 
             assertThat(validator.validationErrors)
                 .hasSize(1)
-                .anyMatch { it.field == "tittel" && it.message.contains("Sakstittel kan ikke være lengre enn 200 tegn") }
+                .anyMatch { it.field == "beskrivelse" && it.message.contains("Beskrivelse kan ikke være lengre enn 200 tegn") }
         }
     }
 

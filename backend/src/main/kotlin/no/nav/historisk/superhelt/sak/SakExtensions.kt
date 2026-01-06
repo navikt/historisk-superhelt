@@ -26,7 +26,7 @@ object SakExtensions {
             behandlingsnummer = sak.behandlingsnummer,
             stonadstype = sak.type,
             fnr = sak.fnr,
-            tittel = sak.tittel!!,
+            beskrivelse = sak.beskrivelse!!,
             resultat = sak.vedtaksResultat!!,
             begrunnelse = sak.begrunnelse,
             utbetalingsType = sak.utbetalingsType,

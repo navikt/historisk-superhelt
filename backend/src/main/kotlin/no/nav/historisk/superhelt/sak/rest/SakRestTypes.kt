@@ -15,14 +15,14 @@ data class SakCreateRequestDto(
     @field:Size(min = 11, max = 11)
     @field:Pattern(regexp = "[0-9]*", message = "Fødselsnummer må kun inneholde tall")
     val fnr: Fnr,
-    val tittel: String? = null,
+    val beskrivelse: String? = null,
     val soknadsDato: LocalDate? = null,
 )
 
 data class SakUpdateRequestDto(
     val type: StonadsType? = null,
     @field:Size( max = 200)
-    val tittel: String? = null,
+    val beskrivelse: String? = null,
     @field:Size(max = 1000)
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,

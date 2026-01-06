@@ -53,7 +53,7 @@ export default function SakEditor({sak}: Props) {
     const [updateSakData, setUpdateSakData] = useState<SakUpdateRequestDto>({
         type: sak.type,
         tildelingsAar: sak.tildelingsAar,
-        tittel: sak.tittel,
+        beskrivelse: sak.beskrivelse,
         vedtaksResultat: sak.vedtaksResultat,
         soknadsDato: sak.soknadsDato,
         begrunnelse: sak.begrunnelse
@@ -105,7 +105,7 @@ export default function SakEditor({sak}: Props) {
     const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
 
 
-    function getErrorMessage(field: "tittel" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling" | "tildelingsAar"): string | undefined {
+    function getErrorMessage(field: "beskrivelse" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling" | "tildelingsAar"): string | undefined {
         if (!showValidation || !hasValidationErrors) {
             return undefined
         }
@@ -118,7 +118,7 @@ export default function SakEditor({sak}: Props) {
 
             <VStack gap="6">
                 <Select
-                    label="Stønadstype"
+                    label="Stønad"
                     value={updateSakData.type}
                     onChange={(e) => patchSak({type: e.target.value as StonadType})}
                 >
@@ -147,9 +147,9 @@ export default function SakEditor({sak}: Props) {
 
                 <TextField
                     label="Kort beskrivelse av stønad"
-                    error={getErrorMessage("tittel")}
-                    value={updateSakData.tittel ?? ''}
-                    onChange={(e) => patchSak({tittel: e.target.value})}
+                    error={getErrorMessage("beskrivelse")}
+                    value={updateSakData.beskrivelse ?? ''}
+                    onChange={(e) => patchSak({beskrivelse: e.target.value})}
                 />
 
 
@@ -179,7 +179,7 @@ export default function SakEditor({sak}: Props) {
                     error={getErrorMessage("begrunnelse")}
                     value={updateSakData.begrunnelse ?? ''}
                     onChange={(e) => patchSak({begrunnelse: e.target.value})}
-                    description="Valgfri - vurderinger som er gjort i saken. Kommer ikke med i vedtaksbrev."
+                    description="Begrunnelse for vedtak .... bla bla "
                     minRows={4}
                 />
 

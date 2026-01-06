@@ -33,7 +33,7 @@ class SakJpaEntity(
 
     val fnr: Fnr,
 
-    var tittel: String? = null,
+    var beskrivelse: String? = null,
 
     @Enumerated(EnumType.STRING)
     var status: SakStatus = SakStatus.UNDER_BEHANDLING,
@@ -116,7 +116,7 @@ class SakJpaEntity(
             behandlingsnummer = behandlingsnummer,
             type = this.type,
             fnr = this.fnr,
-            tittel = this.tittel,
+            beskrivelse = this.beskrivelse,
             begrunnelse = this.begrunnelse,
             status = this.status,
             vedtaksResultat = this.vedtaksResultat,

@@ -120,7 +120,7 @@ class SakControllerRestTest() {
             assertThat(
                 oppdaterSak(
                     saksnummer, SakUpdateRequestDto(
-                        tittel = oppdatertTittel,
+                        beskrivelse = oppdatertTittel,
                         begrunnelse = oppdatertBegrunnelse
                     )
                 )
@@ -130,7 +130,7 @@ class SakControllerRestTest() {
                 .convertTo(Sak::class.java)
                 .satisfies({
                     assertThat(it.saksnummer).isEqualTo(saksnummer)
-                    assertThat(it.tittel).isEqualTo(oppdatertTittel)
+                    assertThat(it.beskrivelse).isEqualTo(oppdatertTittel)
                     assertThat(it.begrunnelse).isEqualTo(oppdatertBegrunnelse)
                     assertThat(it.fnr).isNotNull
                 })
@@ -144,7 +144,7 @@ class SakControllerRestTest() {
             assertThat(
                 oppdaterSak(
                     opprettetSak, SakUpdateRequestDto(
-                        tittel = "Ny tittel",
+                        beskrivelse = "Ny tittel",
                         begrunnelse = "Ny begrunnelse"
                     )
                 )
@@ -163,7 +163,7 @@ class SakControllerRestTest() {
             assertThat(
                 oppdaterSak(
                     ikkeFinnsSaksnummer, SakUpdateRequestDto(
-                        tittel = "Ny tittel",
+                        beskrivelse = "Ny tittel",
                         begrunnelse = "Ny begrunnelse"
                     )
                 )
@@ -198,7 +198,7 @@ class SakControllerRestTest() {
                 .hasPathSatisfying("$.saksnummer") { assertThat(it).isEqualTo(opprettetSak.saksnummer.value) }
                 .hasPathSatisfying("$.fnr") { assertThat(it).isEqualTo(opprettetSak.fnr.value) }
                 .hasPathSatisfying("$.type") { assertThat(it).isEqualTo(opprettetSak.type.name) }
-                .hasPathSatisfying("$.tittel") { assertThat(it).isEqualTo(opprettetSak.tittel) }
+                .hasPathSatisfying("$.beskrivelse") { assertThat(it).isEqualTo(opprettetSak.beskrivelse) }
                 // Genererte verdier
                 .hasPathSatisfying("$.maskertPersonIdent") { assertThat(it).isEqualTo(opprettetSak.fnr.toMaskertPersonIdent().value) }
                 .hasPathSatisfying("$.rettigheter") { assertThat(it).isNotEmpty }

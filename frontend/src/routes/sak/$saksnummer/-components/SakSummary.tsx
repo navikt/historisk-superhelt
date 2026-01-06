@@ -18,8 +18,8 @@ export default function SakSummary({sak}: SakSummaryProps) {
                     <FormSummary.Value>{sak.type}</FormSummary.Value>
                 </FormSummary.Answer>
                 <FormSummary.Answer>
-                    <FormSummary.Label>Tittel</FormSummary.Label>
-                    <FormSummary.Value>{sak.tittel}</FormSummary.Value>
+                    <FormSummary.Label>Beskrivelse</FormSummary.Label>
+                    <FormSummary.Value>{sak.beskrivelse}</FormSummary.Value>
                 </FormSummary.Answer>
 
                 <FormSummary.Answer>

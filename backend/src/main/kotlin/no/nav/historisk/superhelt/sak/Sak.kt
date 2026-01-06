@@ -32,10 +32,11 @@ data class Sak(
     val behandlingsnummer: Behandlingsnummer,
 
     val type: StonadsType,
+    // personident d-nummer?
     val fnr: Fnr,
     val status: SakStatus,
 
-    val tittel: String? = null,
+    val beskrivelse: String? = null,
 
     val soknadsDato: LocalDate? = null,
     val tildelingsAar: Aar? = null,

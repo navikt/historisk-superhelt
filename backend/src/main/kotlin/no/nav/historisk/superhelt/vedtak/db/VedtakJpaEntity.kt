@@ -32,7 +32,7 @@ class VedtakJpaEntity(
     val type: StonadsType,
 
     val fnr: Fnr,
-    val tittel: String,
+    val beskrivelse: String,
 
     @Enumerated(EnumType.STRING)
     val resultat: VedtaksResultat,
@@ -80,7 +80,7 @@ class VedtakJpaEntity(
             behandlingsnummer = this.behandlingsnummer,
             stonadstype = this.type,
             fnr = this.fnr,
-            tittel = this.tittel,
+            beskrivelse = this.beskrivelse,
             begrunnelse = this.begrunnelse,
             resultat = this.resultat,
             saksbehandler = this.saksbehandler,

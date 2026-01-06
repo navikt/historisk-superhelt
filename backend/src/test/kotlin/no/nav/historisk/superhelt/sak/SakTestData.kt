@@ -37,7 +37,7 @@ object SakTestData {
             behandlingsnummer = Behandlingsnummer(saksnummer, 1),
             type = faker.options().option(StonadsType::class.java),
             fnr = Fnr(faker.numerify("###########")),
-            tittel = faker.greekPhilosopher().quote(),
+            beskrivelse = faker.greekPhilosopher().quote(),
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
                 ZoneId.systemDefault()
@@ -73,7 +73,7 @@ object SakTestData {
         saksbehandlerIdent: String = faker.bothify("s??###")
     ): OpprettSakDto {
         val properties = UpdateSakDto(
-            tittel = faker.harryPotter().spell(),
+            beskrivelse = faker.harryPotter().spell(),
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
                 ZoneId.systemDefault()
