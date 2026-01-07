@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.person
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.infrastruktur.crypto.CachedEncryptor
 import no.nav.historisk.superhelt.infrastruktur.crypto.SaltedXorEncryptor
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -26,10 +26,10 @@ private object FnrEncryptor {
         return MaskertPersonIdent(encrypt)
     }
 
-    fun decrypt(maskertFnr: String): Fnr {
+    fun decrypt(maskertFnr: String): FolkeregisterIdent {
         try {
             val decrypted = encryptor.decrypt(maskertFnr)
-            val fnr = Fnr(decrypted)
+            val fnr = FolkeregisterIdent(decrypted)
             if (!fnr.isValid()) {
                 logger.info("Feil ved validering av fnr {}", fnr)
                 throw IkkeFunnetException("Ugyldig personident dekryptert for $maskertFnr")
@@ -53,4 +53,4 @@ value class MaskertPersonIdent(val value: String) {
     fun toFnr() = FnrEncryptor.decrypt(this.value)
 }
 
-fun Fnr.toMaskertPersonIdent(): MaskertPersonIdent = FnrEncryptor.encrypt(this.value)
+fun FolkeregisterIdent.toMaskertPersonIdent(): MaskertPersonIdent = FnrEncryptor.encrypt(this.value)

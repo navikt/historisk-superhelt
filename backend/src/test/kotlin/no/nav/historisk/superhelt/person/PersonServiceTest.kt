@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.person
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.pdl.*
 import no.nav.pdl.Person
@@ -35,7 +35,7 @@ class PersonServiceTest {
     @WithSaksbehandler
     @Test
     fun `skal hente fra PDL når cache er tom`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         val pdlResponse = createMockPdlResponse()
 
         whenever(pdlClient.getPersonOgIdenter(fnr.value)).thenReturn(pdlResponse)
@@ -49,7 +49,7 @@ class PersonServiceTest {
     @WithSaksbehandler
     @Test
     fun `skal hente fra cache ved andre kall`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         val pdlResponse = createMockPdlResponse()
 
         whenever(pdlClient.getPersonOgIdenter(fnr.value)).thenReturn(pdlResponse)

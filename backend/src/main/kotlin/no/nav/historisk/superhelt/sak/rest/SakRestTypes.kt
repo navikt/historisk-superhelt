@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
@@ -14,7 +14,7 @@ data class SakCreateRequestDto(
     val type: StonadsType,
     @field:Size(min = 11, max = 11)
     @field:Pattern(regexp = "[0-9]*", message = "Fødselsnummer må kun inneholde tall")
-    val fnr: Fnr,
+    val fnr: FolkeregisterIdent,
     val beskrivelse: String? = null,
     val soknadsDato: LocalDate? = null,
 )

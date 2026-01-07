@@ -36,7 +36,7 @@ object SakTestData {
             saksnummer = Saksnummer(saksnummer),
             behandlingsnummer = Behandlingsnummer(saksnummer, 1),
             type = faker.options().option(StonadsType::class.java),
-            fnr = Fnr(faker.numerify("###########")),
+            fnr = FolkeregisterIdent(faker.numerify("###########")),
             beskrivelse = faker.greekPhilosopher().quote(),
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
@@ -56,7 +56,7 @@ object SakTestData {
 
     private fun navUser(): NavUser = NavUser(NavIdent(faker.bothify("???###")), faker.name().name())
 
-    fun nySakMinimum(fnr: Fnr = Fnr(faker.numerify("###########"))): OpprettSakDto {
+    fun nySakMinimum(fnr: FolkeregisterIdent = FolkeregisterIdent(faker.numerify("###########"))): OpprettSakDto {
         return OpprettSakDto(
             type = faker.options().option(StonadsType::class.java),
             fnr = fnr,
@@ -68,7 +68,7 @@ object SakTestData {
     }
 
     fun nySakCompleteUtbetaling(
-        fnr: Fnr = Fnr(faker.numerify("###########")),
+        fnr: FolkeregisterIdent = FolkeregisterIdent(faker.numerify("###########")),
         sakStatus: SakStatus = SakStatus.UNDER_BEHANDLING,
         saksbehandlerIdent: String = faker.bothify("s??###")
     ): OpprettSakDto {

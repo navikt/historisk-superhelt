@@ -1,15 +1,15 @@
 package no.nav.historisk.superhelt.person
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.person.Persondata
 
 object PersonTestData {
 
     val testPerson = Persondata(
-        fnr = Fnr("12345678901"),
+        fnr = FolkeregisterIdent("12345678901"),
         navn = "Ola Nordmann",
         aktorId = "1234567890123",
-        alleFnr = setOf(Fnr("12345678901")),
+        alleFnr = setOf(FolkeregisterIdent("12345678901")),
         doedsfall = null,
         verge = null,
         harTilgang = true,

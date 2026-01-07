@@ -12,7 +12,7 @@ data class Vedtak(
     val saksnummer: Saksnummer,
     val behandlingsnummer: Behandlingsnummer,
     val stonadstype: StonadsType,
-    val fnr: Fnr,
+    val fnr: FolkeregisterIdent,
     val beskrivelse: String, //?? Usikker på om denne skal være med
     val soknadsDato: LocalDate,
     val tildelingsAar: Aar?,

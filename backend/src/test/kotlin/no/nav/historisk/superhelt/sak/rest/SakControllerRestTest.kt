@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
@@ -56,7 +56,7 @@ class SakControllerRestTest() {
     inner class `opprett sak` {
         @Test
         fun `opprett sak ok`() {
-            val fnr = Fnr("22345678901")
+            val fnr = FolkeregisterIdent("22345678901")
             assertThat(opprettSak(fnr))
                 .hasStatus(HttpStatus.CREATED)
                 .bodyJson()
@@ -72,7 +72,7 @@ class SakControllerRestTest() {
         @WithLeseBruker
         @Test
         fun `opprett sak uten skrivetilgang skal gi feil`() {
-            val fnr = Fnr("32345678901")
+            val fnr = FolkeregisterIdent("32345678901")
             assertThat(opprettSak(fnr))
                 .hasStatus(HttpStatus.FORBIDDEN)
                 .bodyAsProblemDetail()
@@ -83,7 +83,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `opprett sak uten rettighet for person skal gi feil`() {
-            val fnr = Fnr("42345678901")
+            val fnr = FolkeregisterIdent("42345678901")
             whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr)) doReturn TilgangsmaskinClient.TilgangResult(
                 harTilgang = false,
                 TilgangsmaskinTestData.problemDetailResponse,
@@ -93,7 +93,7 @@ class SakControllerRestTest() {
                 .bodyAsProblemDetail()
         }
 
-        private fun opprettSak(fnr: Fnr): MockMvcTester.MockMvcRequestBuilder = mockMvc.post().uri("/api/sak")
+        private fun opprettSak(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder = mockMvc.post().uri("/api/sak")
             .with(csrf())
             .contentType("application/json")
             .content(
@@ -242,10 +242,10 @@ class SakControllerRestTest() {
 
         @Test
         fun `finn saker for person ok`() {
-            val fnr = Fnr("12345678901")
+            val fnr = FolkeregisterIdent("12345678901")
             SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
             SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
-            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(Fnr("98765432101")))
+            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(FolkeregisterIdent("98765432101")))
 
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.OK)
@@ -261,7 +261,7 @@ class SakControllerRestTest() {
         @WithMockUser()
         @Test
         fun `finn saker for saksbehandler uten lesetilgang skal gi feil`() {
-            val fnr = Fnr("22345678901")
+            val fnr = FolkeregisterIdent("22345678901")
             SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.FORBIDDEN)
@@ -270,7 +270,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `finn saker for saksbehandler uten rettighet for person skal gi feil`() {
-            val fnr = Fnr("32345678901")
+            val fnr = FolkeregisterIdent("32345678901")
             SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
             whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr)) doReturn TilgangsmaskinClient.TilgangResult(
                 harTilgang = false,
@@ -281,7 +281,7 @@ class SakControllerRestTest() {
                 .bodyAsProblemDetail()
         }
 
-        private fun finnSakerForPerson(fnr: Fnr): MockMvcTester.MockMvcRequestBuilder =
+        private fun finnSakerForPerson(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder =
             mockMvc.get().uri("/api/sak")
                 .queryParam("maskertPersonId", fnr.toMaskertPersonIdent().value)
     }

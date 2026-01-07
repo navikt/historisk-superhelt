@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Aar
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -102,14 +102,14 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     }
 
     @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
-    fun findSaker(fnr: Fnr): List<Sak> {
+    fun findSaker(fnr: FolkeregisterIdent): List<Sak> {
         return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
     }
 }
 
 data class OpprettSakDto(
     val type: StonadsType,
-    val fnr: Fnr,
+    val fnr: FolkeregisterIdent,
     val properties: UpdateSakDto? = null,
 )
 
