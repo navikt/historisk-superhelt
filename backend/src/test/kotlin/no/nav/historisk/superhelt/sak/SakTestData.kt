@@ -31,9 +31,9 @@ object SakTestData {
     }
 
     fun sakUtenUtbetaling(): Sak {
-        val saksnummer = faker.numerify("Mock-#####")
+        val saksnummer = Saksnummer(faker.numerify("Mock-#####"))
         return Sak(
-            saksnummer = Saksnummer(saksnummer),
+            saksnummer = saksnummer,
             behandlingsnummer = Behandlingsnummer(saksnummer, 1),
             type = faker.options().option(StonadsType::class.java),
             fnr = FolkeregisterIdent(faker.numerify("###########")),

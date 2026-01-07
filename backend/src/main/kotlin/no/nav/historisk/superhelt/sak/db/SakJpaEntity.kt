@@ -87,7 +87,7 @@ class SakJpaEntity(
                 "SakJpaEntity id kan ikke være null ved henting av saksnummer"
             )
     val behandlingsnummer: Behandlingsnummer
-        get() = Behandlingsnummer(saksnummer.value, behandlingsTeller)
+        get() = Behandlingsnummer(saksnummer, behandlingsTeller)
 
 
     fun setOrUpdateUtbetaling(belop: Int) {
