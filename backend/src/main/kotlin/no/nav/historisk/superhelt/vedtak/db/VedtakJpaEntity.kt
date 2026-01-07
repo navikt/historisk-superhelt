@@ -25,8 +25,8 @@ class VedtakJpaEntity(
     @JoinColumn(name = "sak_id", nullable = false)
     val sak: SakJpaEntity,
 
-    @Column(nullable = false, unique = true)
-    val behandlingsnummer: Behandlingsnummer,
+    /** Skiller mellom ulike behandlinger på samme sak. Økes med 1 for hver behandling */
+    val behandlingsTeller: Int,
 
     @Enumerated(EnumType.STRING)
     val type: StonadsType,
@@ -75,9 +75,10 @@ class VedtakJpaEntity(
 
     internal fun toDomain(): Vedtak {
 
+        val saksnummer = this.sak.saksnummer
         return Vedtak(
-            saksnummer = this.sak.saksnummer,
-            behandlingsnummer = this.behandlingsnummer,
+            saksnummer = saksnummer,
+            behandlingsnummer = Behandlingsnummer(saksnummer, this.behandlingsTeller),
             stonadstype = this.type,
             fnr = this.fnr,
             beskrivelse = this.beskrivelse,
