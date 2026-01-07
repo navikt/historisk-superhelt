@@ -36,7 +36,7 @@ class SakValidatorFieldsTest {
 
             assertThat(validator.validationErrors)
                 .hasSize(1)
-                .anyMatch { it.field == "beskrivelse" && it.message.contains(" Beskrivelse må være satt") }
+                .anyMatch { it.field == "beskrivelse" && it.message.contains("Beskrivelse må være satt") }
         }
 
         @Test

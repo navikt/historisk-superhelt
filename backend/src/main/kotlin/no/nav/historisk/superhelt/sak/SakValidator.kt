@@ -42,7 +42,7 @@ class SakValidator(private val sak: Sak): Validator() {
         with(sak) {
 
             check(beskrivelse.isNullOrBlank(), "beskrivelse", "Beskrivelse må være satt")
-            check((beskrivelse?.length ?: 0) > 200, "beskrivelse", "Beskriveslse kan ikke være lengre enn 200 tegn")
+            check((beskrivelse?.length ?: 0) > 200, "beskrivelse", "Beskrivelse kan ikke være lengre enn 200 tegn")
 
             check(soknadsDato == null, "soknadsDato", "Søknadsdato må være satt")
             check(
