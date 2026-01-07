@@ -3,7 +3,6 @@ import {
     Button,
     DatePicker,
     ErrorSummary,
-    Heading,
     HStack,
     Radio,
     RadioGroup,
@@ -114,7 +113,7 @@ export default function SakEditor({sak}: Props) {
     }
 
     return (
-        <Box padding="6" borderWidth="1" borderRadius="medium">
+        <Box.New background={"neutral-soft"} padding="6" borderWidth="1" borderRadius="medium">
 
             <VStack gap="6">
                 <Select
@@ -153,11 +152,8 @@ export default function SakEditor({sak}: Props) {
                 />
 
 
-                <Heading size="small">Fatte vedtak</Heading>
-
-
-                <HStack gap="8" align="start">
-                    <VStack style={{flex: 1}}>
+                <Box.New background={"default"} padding={"space-16"}>
+                    <VStack gap="space-16">
                         <RadioGroup legend="Vedtak" value={updateSakData.vedtaksResultat}
                                     onChange={value => patchSak({vedtaksResultat: value as SakVedtakType})}
                                     error={getErrorMessage("vedtaksResultat")}>
@@ -165,23 +161,24 @@ export default function SakEditor({sak}: Props) {
                             <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
                             <Radio value="AVSLATT">Avslått</Radio>
                         </RadioGroup>
-                    </VStack>
-                    {updateSakData.vedtaksResultat !== 'AVSLATT' && (
-                        <UtbetalingEditor sak={sak}
-                                          errorUtbetaling={getErrorMessage("utbetaling")}
-                                          errorBelop={getErrorMessage("utbetaling.belop")}
-                        />
-                    )}
-                </HStack>
 
-                <Textarea
-                    label="Saksbehandlers vurderinger"
-                    error={getErrorMessage("begrunnelse")}
-                    value={updateSakData.begrunnelse ?? ''}
-                    onChange={(e) => patchSak({begrunnelse: e.target.value})}
-                    description="Begrunnelse for vedtak .... bla bla "
-                    minRows={4}
-                />
+                        {["INNVILGET", "DELVIS_INNVILGET"].includes(updateSakData.vedtaksResultat ?? "") && (
+                            <UtbetalingEditor sak={sak}
+                                              errorUtbetaling={getErrorMessage("utbetaling")}
+                                              errorBelop={getErrorMessage("utbetaling.belop")}
+                            />
+                        )}
+
+                        <Textarea
+                            label="Begrunnelse for vedtak"
+                            error={getErrorMessage("begrunnelse")}
+                            value={updateSakData.begrunnelse ?? ''}
+                            onChange={(e) => patchSak({begrunnelse: e.target.value})}
+                            description="Beskriv kort hva som ligger til grunn for vedtaket"
+                            minRows={4}
+                        />
+                    </VStack>
+                </Box.New>
 
 
                 <HStack gap="8" align="start">
@@ -197,6 +194,6 @@ export default function SakEditor({sak}: Props) {
 
             </VStack>
 
-        </Box>
+        </Box.New>
     )
 }
