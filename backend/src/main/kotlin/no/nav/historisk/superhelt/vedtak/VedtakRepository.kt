@@ -22,7 +22,7 @@ class VedtakRepository(
             behandlingsnummer = vedtak.behandlingsnummer,
             type = vedtak.stonadstype,
             fnr = vedtak.fnr,
-            tittel = vedtak.tittel,
+            beskrivelse = vedtak.beskrivelse,
             resultat = vedtak.resultat,
             begrunnelse = vedtak.begrunnelse,
             utbetalingsType = vedtak.utbetalingsType,

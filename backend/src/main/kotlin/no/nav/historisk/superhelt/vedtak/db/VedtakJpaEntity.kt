@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
@@ -31,8 +31,8 @@ class VedtakJpaEntity(
     @Enumerated(EnumType.STRING)
     val type: StonadsType,
 
-    val fnr: Fnr,
-    val tittel: String,
+    val fnr: FolkeregisterIdent,
+    val beskrivelse: String,
 
     @Enumerated(EnumType.STRING)
     val resultat: VedtaksResultat,
@@ -80,7 +80,7 @@ class VedtakJpaEntity(
             behandlingsnummer = this.behandlingsnummer,
             stonadstype = this.type,
             fnr = this.fnr,
-            tittel = this.tittel,
+            beskrivelse = this.beskrivelse,
             begrunnelse = this.begrunnelse,
             resultat = this.resultat,
             saksbehandler = this.saksbehandler,

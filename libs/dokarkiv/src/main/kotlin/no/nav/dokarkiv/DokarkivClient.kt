@@ -1,6 +1,6 @@
 package no.nav.dokarkiv
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -70,8 +70,8 @@ class DokarkivClient(
         journalPostId: EksternJournalpostId,
         fagsaksnummer: Saksnummer,
         tittel: String,
-        bruker: Fnr,
-        avsender: Fnr,
+        bruker: FolkeregisterIdent,
+        avsender: FolkeregisterIdent,
         tema: EksternFellesKodeverkTema = EksternFellesKodeverkTema.HEL,
         dokumenter: List<DokumentMedTittel>? = null,
     ) {

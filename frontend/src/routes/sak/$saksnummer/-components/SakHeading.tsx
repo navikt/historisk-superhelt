@@ -13,7 +13,7 @@ export default function SakHeading({sak}: Props) {
         <VStack gap="space-4">
             <Detail textColor={"default"}>Sak:{sak.saksnummer}</Detail>
             <SakStatus sak={sak}/>
-            <Heading size={"small"}>{sak.tittel}</Heading>
+            <Heading size={"small"}>{sak.beskrivelse}</Heading>
         </VStack>
         <HStack gap={"space-8"} height={"1.5rem"}>
             <SakMeny sak={sak}/>

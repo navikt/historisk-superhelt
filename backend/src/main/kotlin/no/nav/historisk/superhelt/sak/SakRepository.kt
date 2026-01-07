@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Aar
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.NavUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -52,7 +52,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     private fun patchEntity(dto: UpdateSakDto, entity: SakJpaEntity): SakJpaEntity {
         dto.type?.let { entity.type = it }
         dto.status?.let { entity.status = it }
-        dto.tittel?.let { entity.tittel = it }
+        dto.beskrivelse?.let { entity.beskrivelse = it }
         dto.begrunnelse?.let { entity.begrunnelse = it }
         dto.soknadsDato?.let { entity.soknadsDato = it }
         dto.tildelingsAar?.let { entity.tildelingsAar = it.value }
@@ -102,21 +102,21 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     }
 
     @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
-    fun findSaker(fnr: Fnr): List<Sak> {
+    fun findSaker(fnr: FolkeregisterIdent): List<Sak> {
         return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
     }
 }
 
 data class OpprettSakDto(
     val type: StonadsType,
-    val fnr: Fnr,
+    val fnr: FolkeregisterIdent,
     val properties: UpdateSakDto? = null,
 )
 
 data class UpdateSakDto(
     val type: StonadsType? = null,
     val status: SakStatus? = null,
-    val tittel: String? = null,
+    val beskrivelse: String? = null,
     val begrunnelse: String? = null,
     val soknadsDato: LocalDate? = null,
     val tildelingsAar: Aar? = null,

@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.person.tilgangsmaskin
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -31,7 +31,7 @@ class TilgangsmaskinServiceTest {
     @WithSaksbehandler(navIdent = "Z999999")
     @Test
     fun `should return from cache if present and not call client`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         val expectedResult = TilgangsmaskinClient.TilgangResult(true)
 
         whenever(cache.get(any(), eq(TilgangsmaskinClient.TilgangResult::class.java)))
@@ -48,7 +48,7 @@ class TilgangsmaskinServiceTest {
     @WithSaksbehandler(navIdent = "Z888888")
     @Test
     fun `should call client`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         val expectedResult = TilgangsmaskinClient.TilgangResult(true)
 
         whenever(cache.get(any(), eq(TilgangsmaskinClient.TilgangResult::class.java)))

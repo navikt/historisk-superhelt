@@ -1,6 +1,6 @@
 package no.nav.person
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.pdl.*
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.HttpClientErrorException
@@ -64,12 +64,12 @@ class PdlPersondataParser {
             navn = getSammensattNavnString(listOf(navn.fornavn, navn.mellomnavn, navn.etternavn)),
             fornavn = getSammensattNavnString(listOf(navn.fornavn, navn.mellomnavn)),
             etternavn = navn.etternavn,
-            fnr = Fnr(aktivtFnr),
+            fnr = FolkeregisterIdent(aktivtFnr),
             aktorId = aktorId,
-            alleFnr = alleFnr.map { Fnr(it) }.toSet(),
+            alleFnr = alleFnr.map { FolkeregisterIdent(it) }.toSet(),
             doedsfall = dodsDato,
             adressebeskyttelseGradering = adressebeskyttelse,
-            verge = verge?.let { Fnr(it) },
+            verge = verge?.let { FolkeregisterIdent(it) },
             harTilgang = hentPerson != null
         )
     }

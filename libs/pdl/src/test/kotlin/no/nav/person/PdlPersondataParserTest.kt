@@ -1,6 +1,6 @@
 package no.nav.person
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.pdl.*
 import no.nav.pdl.Doedsfall
 import org.assertj.core.api.Assertions.assertThat
@@ -32,7 +32,7 @@ class PdlPersondataParserTest {
         assertEquals("Ola Nordmann", result?.navn)
         assertEquals("Ola", result?.fornavn)
         assertEquals("Nordmann", result?.etternavn)
-        assertThat(result?.fnr).isEqualTo(Fnr("12345678901"))
+        assertThat(result?.fnr).isEqualTo(FolkeregisterIdent("12345678901"))
         assertEquals("1234567890123", result?.aktorId)
         assertThat(result?.alleFnr?.map { it.value }).contains("12345678901", "10987654321")
         assertNull(result?.doedsfall)
@@ -53,7 +53,7 @@ class PdlPersondataParserTest {
         assertEquals("Hansen", result?.etternavn)
         assertEquals(AdressebeskyttelseGradering.FORTROLIG, result?.adressebeskyttelseGradering)
         assertEquals("2023-01-15", result?.doedsfall)
-        assertThat(result?.verge).isEqualTo(Fnr("98765432109"))
+        assertThat(result?.verge).isEqualTo(FolkeregisterIdent("98765432109"))
         assertThat(result?.doedsfall).isEqualTo("2023-01-15")
     }
 
@@ -99,7 +99,7 @@ class PdlPersondataParserTest {
         val result = parser.parsePdlResponse(response)
 
         // Then
-        assertThat(result?.fnr).isEqualTo(Fnr("12345678901")) // Aktivt FNR
+        assertThat(result?.fnr).isEqualTo(FolkeregisterIdent("12345678901")) // Aktivt FNR
         assertEquals("1234567890123", result?.aktorId) // Aktiv AktørID
         assertThat(result?.alleFnr?.map { it.value }).contains("12345678901", "98765432109", "11111111111") // Alle FNR
     }

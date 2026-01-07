@@ -37,7 +37,7 @@ export function SakerTable({maskertPersonIdent}: SakerTableProps) {
                 <Table.Row>
                     <Table.HeaderCell scope="col">Saksnummer</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Tema</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Tittel</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Beskrivelse</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Status</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Opprettet</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>
@@ -49,7 +49,7 @@ export function SakerTable({maskertPersonIdent}: SakerTableProps) {
                     <Table.Row key={sak.saksnummer}>
                         <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
                         <Table.DataCell>{sak.type}</Table.DataCell>
-                        <Table.DataCell>{sak.tittel}</Table.DataCell>
+                        <Table.DataCell>{sak.beskrivelse}</Table.DataCell>
                         <Table.DataCell>
                             <SakStatus sak={sak}/>
                         </Table.DataCell>

@@ -68,14 +68,14 @@ export default function UtbetalingEditor({sak, errorUtbetaling, errorBelop}: Pro
     }
 
     return (
-        <VStack style={{flex: 1}}>
+        <VStack gap="space-12">
             <RadioGroup
                 legend="Utbetaling"
                 value={utbetalingData.utbetalingsType}
                 onChange={changeUtbetalingsType}
                 error={errorUtbetaling}
             >
-                <Radio value="BRUKER">Utbetaling til bruker</Radio>
+                <Radio value="BRUKER">Direkte til bruker</Radio>
                 <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
 
             </RadioGroup>
@@ -83,7 +83,7 @@ export default function UtbetalingEditor({sak, errorUtbetaling, errorBelop}: Pro
                 value={utbetalingData.belop}
                 error={errorBelop}
                 onChange={belop => changeBelop(belop)}
-                label="Beløp (kr)"
+                label="Beløp som skal utbetales (kr)"
                 onBlur={() => lagreUtbetaling()}
             />
         </VStack>

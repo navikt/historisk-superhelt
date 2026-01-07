@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.person
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
 import no.nav.pdl.PdlClient
 import no.nav.person.PdlPersondataParser
@@ -18,7 +18,7 @@ class PersonService(
         ?: throw IllegalStateException("Cache 'pdlCache' not found")
 
 
-    fun hentPerson(fnr: Fnr): Persondata? {
+    fun hentPerson(fnr: FolkeregisterIdent): Persondata? {
         val cacheKey = "${getCurrentNavIdent()}:${fnr.value}"
 
         return cache.get(cacheKey, Persondata::class.java)
@@ -27,7 +27,7 @@ class PersonService(
             }
     }
 
-    private fun hentFraPdl(fnr: Fnr): Persondata? {
+    private fun hentFraPdl(fnr: FolkeregisterIdent): Persondata? {
         val pdlResponse = pdlClient.getPersonOgIdenter(ident = fnr.value)
         val persondata = pdlParser.parsePdlResponse(pdlResponse)
         return persondata

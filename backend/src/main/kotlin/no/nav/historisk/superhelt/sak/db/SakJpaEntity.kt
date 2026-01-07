@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.sak.db
 import jakarta.persistence.*
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
@@ -31,9 +31,9 @@ class SakJpaEntity(
     /** Skiller mellom ulike behandlinger på samme sak. Økes med 1 for hver behandling */
     var behandlingsTeller: Int = 1,
 
-    val fnr: Fnr,
+    val fnr: FolkeregisterIdent,
 
-    var tittel: String? = null,
+    var beskrivelse: String? = null,
 
     @Enumerated(EnumType.STRING)
     var status: SakStatus = SakStatus.UNDER_BEHANDLING,
@@ -116,7 +116,7 @@ class SakJpaEntity(
             behandlingsnummer = behandlingsnummer,
             type = this.type,
             fnr = this.fnr,
-            tittel = this.tittel,
+            beskrivelse = this.beskrivelse,
             begrunnelse = this.begrunnelse,
             status = this.status,
             vedtaksResultat = this.vedtaksResultat,

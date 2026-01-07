@@ -15,7 +15,7 @@ class SakTilstandTest {
         @Test
         fun `opplysninger er IKKE_STARTET når sak ikke er startet`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
-                tittel = null,
+                beskrivelse = null,
                 begrunnelse = null,
                 utbetaling = null,
                 forhandstilsagn = null,
@@ -28,7 +28,7 @@ class SakTilstandTest {
         @Test
         fun `opplysninger er VALIDERING_FEILET når det finnes valideringsfeil`() {
             val sak = SakTestData.sakMedStatus(SakStatus.UNDER_BEHANDLING).copy(
-                tittel = "",
+                beskrivelse = "",
                 vedtaksResultat = null
             )
             val tilstand = SakTilstand(sak)

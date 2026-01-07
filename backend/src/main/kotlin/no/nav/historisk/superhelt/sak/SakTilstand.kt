@@ -12,7 +12,7 @@ class SakTilstand(private val sak: Sak) {
             val valideringsfeil = sak.valideringsfeil
 
             // Sjekk om det ikke er startet på saken i det hele tatt
-            if (sak.tittel.isNullOrBlank()
+            if (sak.beskrivelse.isNullOrBlank()
                 && sak.begrunnelse.isNullOrBlank()
                 && sak.utbetaling == null
                 && sak.forhandstilsagn == null
