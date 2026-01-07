@@ -22,7 +22,7 @@ class BrevJpaEntity(
     val sak: SakJpaEntity,
 
     var tittel: String?,
-    @Lob
+
     var innhold: String?,
 
     @Enumerated(EnumType.STRING)

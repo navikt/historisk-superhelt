@@ -21,9 +21,6 @@ spring:
   kafka:
     security:
       protocol: PLAINTEXT
-  jpa:
-    hibernate:
-      ddl-auto: update
 
 nais:
   token:
