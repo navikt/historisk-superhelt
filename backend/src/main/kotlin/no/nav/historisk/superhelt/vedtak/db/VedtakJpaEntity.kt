@@ -44,14 +44,14 @@ class VedtakJpaEntity(
 
     @Embedded
     @AttributeOverrides(
-        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_navIdent")),
+        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_nav_ident")),
         AttributeOverride(name = "navn", column = Column(name = "saksbehandler_navn"))
     )
     var saksbehandler: NavUser,
 
     @Embedded
     @AttributeOverrides(
-        AttributeOverride(name = "navIdent", column = Column(name = "attestant_navIdent")),
+        AttributeOverride(name = "navIdent", column = Column(name = "attestant_nav_ident")),
         AttributeOverride(name = "navn", column = Column(name = "attestant_navn"))
     )
     var attestant: NavUser,
