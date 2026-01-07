@@ -8,6 +8,20 @@ metadata:
 spec:
   image: "{{image}}"
   port: 8080
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_17
+        tier: "db-f1-micro"
+        databases:
+          - name: historisk-superhelt
+            envVarPrefix: DB
+        flags:
+          - name: "cloudsql.enable_pgaudit"
+            value: "on"
+          - name: "pgaudit.log"
+            value: "write,ddl,role"
+          - name: "pgaudit.log_parameter"
+            value: "on"
   kafka:
     pool: nav-{{env}}
   azure:
