@@ -23,6 +23,7 @@ class BrevJpaEntity(
 
     var tittel: String?,
 
+    @Column(columnDefinition = "TEXT")
     var innhold: String?,
 
     @Enumerated(EnumType.STRING)
