@@ -7,7 +7,7 @@ package no.nav.common.types
  */
 @JvmInline
 value class Behandlingsnummer(val value: String) {
-    constructor(prefix: String, id: Int) : this("${prefix}-${id}")
+    constructor(saksnummer: Saksnummer, id: Int) : this("${saksnummer}-${id}")
 
     override fun toString(): String {
         return value

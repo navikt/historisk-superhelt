@@ -19,39 +19,43 @@ import java.time.LocalDate
 @Table(name = "vedtak")
 class VedtakJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "vedtak_id")
     var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sak_id", nullable = false)
     val sak: SakJpaEntity,
 
-    @Column(nullable = false, unique = true)
-    val behandlingsnummer: Behandlingsnummer,
+    /** Skiller mellom ulike behandlinger på samme sak. Økes med 1 for hver behandling */
+    val behandlingsTeller: Int,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "stonads_type")
     val type: StonadsType,
 
     val fnr: FolkeregisterIdent,
     val beskrivelse: String,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "vedtaks_resultat")
     val resultat: VedtaksResultat,
     val begrunnelse: String?,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "utbetalings_type")
     val utbetalingsType: UtbetalingsType,
     val belop: Int?,
 
     @Embedded
     @AttributeOverrides(
-        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_navIdent")),
+        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_nav_ident")),
         AttributeOverride(name = "navn", column = Column(name = "saksbehandler_navn"))
     )
     var saksbehandler: NavUser,
 
     @Embedded
     @AttributeOverrides(
-        AttributeOverride(name = "navIdent", column = Column(name = "attestant_navIdent")),
+        AttributeOverride(name = "navIdent", column = Column(name = "attestant_nav_ident")),
         AttributeOverride(name = "navn", column = Column(name = "attestant_navn"))
     )
     var attestant: NavUser,
@@ -75,9 +79,10 @@ class VedtakJpaEntity(
 
     internal fun toDomain(): Vedtak {
 
+        val saksnummer = this.sak.saksnummer
         return Vedtak(
-            saksnummer = this.sak.saksnummer,
-            behandlingsnummer = this.behandlingsnummer,
+            saksnummer = saksnummer,
+            behandlingsnummer = Behandlingsnummer(saksnummer, this.behandlingsTeller),
             stonadstype = this.type,
             fnr = this.fnr,
             beskrivelse = this.beskrivelse,

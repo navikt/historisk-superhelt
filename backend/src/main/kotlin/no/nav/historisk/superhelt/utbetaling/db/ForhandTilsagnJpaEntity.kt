@@ -11,10 +11,18 @@ import java.util.*
 @Entity
 @Table(name = "forhandtilsagn")
 class ForhandTilsagnJpaEntity(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "forhandtilsagn_id")
+    var id: Long? = null,
+
+    @Column(name = "forhandtilsagn_uuid")
     var uuid: UUID = UUID.randomUUID(),
+
     val createdDate: Instant = Instant.now(),
-    @OneToOne(mappedBy = "forhandstilsagn") val sak: SakJpaEntity,
+
+    @OneToOne(mappedBy = "forhandstilsagn")
+    val sak: SakJpaEntity,
+
     var belop: Int,
 ) {
     override fun equals(other: Any?): Boolean {
