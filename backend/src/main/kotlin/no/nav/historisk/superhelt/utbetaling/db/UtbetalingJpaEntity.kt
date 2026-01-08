@@ -13,9 +13,10 @@ import java.util.*
 @Table(name = "utbetaling")
 class UtbetalingJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "utbetaling_id")
     var id: Long? = null,
 
-    @Column(name = "uuid", nullable = false, unique = true)
+    @Column(name = "utbetaling_uuid", nullable = false, unique = true)
     var uuid: UUID = UUID.randomUUID(),
 
     @OneToOne(mappedBy = "utbetaling")
@@ -26,6 +27,7 @@ class UtbetalingJpaEntity(
     var utbetalingTidspunkt: Instant? = null,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "utbetaling_status")
     var utbetalingStatus: UtbetalingStatus = UtbetalingStatus.UTKAST
 ) {
     override fun equals(other: Any?): Boolean {

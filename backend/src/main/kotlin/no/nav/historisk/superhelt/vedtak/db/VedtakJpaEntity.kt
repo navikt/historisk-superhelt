@@ -19,6 +19,7 @@ import java.time.LocalDate
 @Table(name = "vedtak")
 class VedtakJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "vedtak_id")
     var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -29,16 +30,19 @@ class VedtakJpaEntity(
     val behandlingsTeller: Int,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "stonads_type")
     val type: StonadsType,
 
     val fnr: FolkeregisterIdent,
     val beskrivelse: String,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "vedtaks_resultat")
     val resultat: VedtaksResultat,
     val begrunnelse: String?,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "utbetalings_type")
     val utbetalingsType: UtbetalingsType,
     val belop: Int?,
 

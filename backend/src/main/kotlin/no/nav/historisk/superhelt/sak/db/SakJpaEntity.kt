@@ -23,9 +23,11 @@ import java.time.LocalDate
 @Table(name = "sak")
 class SakJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sak_id")
     var id: Long? = null,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "stonads_type")
     var type: StonadsType,
 
     /** Skiller mellom ulike behandlinger på samme sak. Økes med 1 for hver behandling */
@@ -36,9 +38,11 @@ class SakJpaEntity(
     var beskrivelse: String? = null,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "sak_status")
     var status: SakStatus = SakStatus.UNDER_BEHANDLING,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "vedtaks_resultat")
     var vedtaksResultat: VedtaksResultat? = null,
 
     var begrunnelse: String? = null,
@@ -63,9 +67,11 @@ class SakJpaEntity(
     var tildelingsAar: Int? = null,
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "utbetaling_id")
     var utbetaling: UtbetalingJpaEntity? = null,
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "forhandtilsagn_id")
     var forhandstilsagn: ForhandTilsagnJpaEntity? = null,
 
     @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)

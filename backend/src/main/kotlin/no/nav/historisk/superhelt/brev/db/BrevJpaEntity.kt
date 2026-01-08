@@ -11,8 +11,10 @@ import java.time.Instant
 @Table(name = "brev")
 class BrevJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "brev_id")
     var id: Long? = null,
 
+    @Column(name = "brev_uuid")
     val uuid: BrevId,
 
     val createdDate: Instant = Instant.now(),
@@ -27,12 +29,15 @@ class BrevJpaEntity(
     var innhold: String?,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "brev_type")
     val type: BrevType,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "brev_mottaker_type")
     val mottakerType: BrevMottaker,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "brev_status")
     var status: BrevStatus = BrevStatus.NY,
 
     var journalpostId: EksternJournalpostId? = null,
