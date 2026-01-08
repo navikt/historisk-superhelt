@@ -7,4 +7,5 @@
     </root>
     <logger name="no.nav" level="DEBUG"/>
     <!--    <logger name="org.springframework.security" level="debug"/>-->
+    <logger name="org.flywaydb" level="info"/>
 </configuration>
