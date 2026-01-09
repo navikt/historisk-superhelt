@@ -33,17 +33,6 @@ app:
     audience: api://mock.dokdist/.default
 
 spring:
-#  sql:
-#    init:
-#      mode: always
-#  datasource:
-#    url: jdbc:h2:mem:testdb
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password: password
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
   kafka:
     security:
       protocol: PLAINTEXT
