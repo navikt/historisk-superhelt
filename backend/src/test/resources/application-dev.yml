@@ -2,11 +2,9 @@ AZURE_OPENID_CONFIG_ISSUER: http://host.docker.internal:8102/azure-mock
 AZURE_APP_CLIENT_ID: "historisk-superapp"
 KAFKA_BROKERS: localhost:9092
 
-DB_HOST: localhost
-DB_PORT: 5032
-DB_DATABASE: historisk-superhelt
 DB_USERNAME: postgres
 DB_PASSWORD: test
+DB_JDBC_URL: jdbc:postgresql://localhost:5032/historisk-superhelt
 
 # overser audience sjekken i dev miljo pga problemer med mock-oidc og aud i jwt token
 spring:
