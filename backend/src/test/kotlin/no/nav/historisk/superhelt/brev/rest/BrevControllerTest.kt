@@ -99,7 +99,7 @@ class BrevControllerTest {
 
         @Test
         fun `ukjent sak skal gi feil`() {
-            val saksnummer = Saksnummer("SUPER-999999")
+            val saksnummer = Saksnummer(999999)
             val request = OpprettBrevRequest(type = BrevType.VEDTAKSBREV, mottaker = BrevMottaker.BRUKER)
             assertThat(hentEllerOpprettBrev(saksnummer, request))
                 .hasStatus(HttpStatus.NOT_FOUND)
