@@ -14,7 +14,7 @@ class KafkaTestcontainersConfiguration(private val utbetalingProperties: Utbetal
     @Bean
     @ServiceConnection
     fun kafkaContainer(): KafkaContainer {
-        return KafkaContainer(DockerImageName.parse("apache/kafka-native:3.8.0"))
+        return KafkaContainer(DockerImageName.parse("apache/kafka-native:4.1.1"))
     }
 
     /* Lager topics som brukes i testene */
