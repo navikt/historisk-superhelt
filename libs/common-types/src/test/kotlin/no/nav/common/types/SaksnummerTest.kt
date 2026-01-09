@@ -39,7 +39,6 @@ class SaksnummerTest {
         assertThat(saksnummer.id).isEqualTo(789)
     }
 
-
     @Test
     fun `should throw exception for invalid Saksnummer string`() {
         assertThatThrownBy { Saksnummer("INVALID").id }
