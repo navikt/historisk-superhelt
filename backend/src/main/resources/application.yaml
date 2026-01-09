@@ -26,17 +26,10 @@ spring:
 
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+    url: ${DB_JDBC_URL}
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    hikari:
-      data-source-properties:
-        ssl: ${DB_SSL_ENABLED:true}
-        sslmode: ${DB_SSLMODE:disable}
-        sslcert: ${DB_SSLCERT:}
-        sslkey: ${DB_SSLKEY_PK8:}
-        sslrootcert: ${DB_SSLROOTCERT:}
   jpa:
     open-in-view: false
     hibernate:
