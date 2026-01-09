@@ -1,7 +1,7 @@
 AZURE_OPENID_CONFIG_ISSUER: http://junit-azure-mocked
 AZURE_APP_CLIENT_ID: mocked
-#Kafka opplegg med embedded Kafka
-KAFKA_BROKERS: ${spring.embedded.kafka.brokers}
+#Kafka opplegg med testcontainers
+KAFKA_BROKERS: mocked:9092
 
 nais:
   token:
@@ -33,17 +33,8 @@ app:
     audience: api://mock.dokdist/.default
 
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: update
+  main:
+    banner-mode: "off"
   kafka:
     security:
       protocol: PLAINTEXT
-
-

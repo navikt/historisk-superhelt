@@ -13,19 +13,21 @@ import org.mockito.kotlin.timeout
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @MockedSpringBootTest
-@TestPropertySource(properties = ["app.utbetaling.status-topic=test-status-topic"])
+//@TestPropertySource(properties = ["app.utbetaling.status-topic=test-status-topic"])
 @Transactional
 class UtbetalingStatusConsumerTest {
 
 
     @Autowired
     private lateinit var kafkaTemplate: KafkaTemplate<String, UtbetalingStatusMelding>
+
+    @Autowired
+    private lateinit var utbetalingProperties: UtbetalingConfigProperties
 
     @MockitoBean
     private lateinit var utbetalingRepository: UtbetalingRepository
@@ -106,7 +108,7 @@ class UtbetalingStatusConsumerTest {
     }
 
     private fun sendKafkaMessage(uuid: UUID, melding: UtbetalingStatusMelding, fagsystemHeader: String?) {
-        val record = ProducerRecord("test-status-topic", uuid.toString(), melding)
+        val record = ProducerRecord(utbetalingProperties.statusTopic, uuid.toString(), melding)
         fagsystemHeader?.let { record.headers().add("fagsystem", it.toByteArray()) }
         kafkaTemplate.send(record)
     }
