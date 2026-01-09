@@ -4,7 +4,7 @@ KAFKA_BROKERS: localhost:9092
 
 DB_USERNAME: postgres
 DB_PASSWORD: test
-DB_URL: postgresql://localhost:5032/historisk-superhelt
+DB_JDBC_URL: jdbc:postgresql://localhost:5032/historisk-superhelt
 
 # overser audience sjekken i dev miljo pga problemer med mock-oidc og aud i jwt token
 spring:
