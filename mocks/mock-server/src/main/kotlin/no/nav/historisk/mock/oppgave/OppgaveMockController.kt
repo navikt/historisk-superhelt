@@ -1,21 +1,14 @@
 package no.nav.historisk.mock.oppgave
 
 import no.nav.historisk.mock.pdl.fnrFromAktoerId
-import no.nav.oppgave.OppgaveType
+import no.nav.oppgave.OppgaveTypeTemaHel
 import no.nav.oppgave.models.Oppgave
 import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.PatchOppgaveRequest
 import no.nav.oppgave.models.SokOppgaverResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("oppgave-mock")
@@ -25,10 +18,10 @@ class OppgaveMockController() {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     init {
-        generateTestdata(OppgaveType.JFR, 10000)
+        generateTestdata(OppgaveTypeTemaHel.JFR, 10000)
     }
 
-    private fun generateTestdata(type: OppgaveType, id: Long) {
+    private fun generateTestdata(type: OppgaveTypeTemaHel, id: Long) {
         val oppgave = generateOppgave(fnr = "11111111111", tilordnetRessurs = defaultSaksbehandler ).copy(
             oppgavetype = type.oppgavetype,
             id = id,
@@ -64,11 +57,11 @@ class OppgaveMockController() {
 
         // Lager en default jfr oppgave om det er tomt
         val jfrOppgaver = aktiveOppgaver
-            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
+            .filter { it.oppgavetype == OppgaveTypeTemaHel.JFR.oppgavetype }
         if (jfrOppgaver.isEmpty()) {
             val fnr = aktoerId?.let { fnrFromAktoerId(it) }
             val oppgave = generateOppgave(fnr = fnr, tilordnetRessurs = tilordnetRessurs?: defaultSaksbehandler).copy(
-                oppgavetype = OppgaveType.JFR.oppgavetype,
+                oppgavetype = OppgaveTypeTemaHel.JFR.oppgavetype,
             )
             aktiveOppgaver.add(oppgave)
             repository.put(oppgave.id, oppgave)
@@ -101,7 +94,7 @@ class OppgaveMockController() {
         // Steng tilhørende journalføringsoppgave hvis dn er koblet samme journalpostid
         // Simulering av at det gjøres i gosys
         repository.values
-            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
+            .filter { it.oppgavetype == OppgaveTypeTemaHel.JFR.oppgavetype }
             .filter { it.journalpostId == nyOppgave.journalpostId }
             .forEach { repository[it.id] = it.copy(status = Oppgave.Status.FERDIGSTILT) }
 
