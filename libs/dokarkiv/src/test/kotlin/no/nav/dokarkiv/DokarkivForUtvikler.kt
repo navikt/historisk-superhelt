@@ -1,5 +1,6 @@
 package no.nav.dokarkiv
 
+import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import org.junit.jupiter.api.Disabled

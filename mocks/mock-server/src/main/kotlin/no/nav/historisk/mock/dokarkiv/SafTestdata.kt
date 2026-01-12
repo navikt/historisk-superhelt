@@ -1,9 +1,9 @@
 package no.nav.historisk.mock.dokarkiv
 
 import net.datafaker.Faker
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.historisk.mock.classpathAsStream
 import no.nav.saf.graphql.*
 

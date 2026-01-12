@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.brev.db
 
 import jakarta.persistence.*
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import org.hibernate.Hibernate

@@ -1,6 +1,6 @@
 package no.nav.historisk.mock.dokarkiv
 
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 import no.nav.historisk.mock.pdl.GraphqlQuery
 import no.nav.saf.graphql.HentJournalpostData
 import no.nav.saf.graphql.HentJournalpostGraphqlResponse

@@ -1,6 +1,6 @@
 package no.nav.dokdist
 
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hamcrest.Matchers

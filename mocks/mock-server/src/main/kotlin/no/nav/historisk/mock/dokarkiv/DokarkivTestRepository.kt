@@ -1,6 +1,6 @@
 package no.nav.historisk.mock.dokarkiv
 
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 import no.nav.saf.graphql.Journalpost
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

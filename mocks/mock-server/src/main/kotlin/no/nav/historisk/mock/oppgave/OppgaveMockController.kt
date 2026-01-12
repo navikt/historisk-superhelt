@@ -1,11 +1,12 @@
 package no.nav.historisk.mock.oppgave
 
+import no.nav.common.types.NavIdent
 import no.nav.historisk.mock.pdl.fnrFromAktoerId
 import no.nav.oppgave.OppgaveTypeTemaHel
-import no.nav.oppgave.models.Oppgave
-import no.nav.oppgave.models.OpprettOppgaveRequest
-import no.nav.oppgave.models.PatchOppgaveRequest
-import no.nav.oppgave.models.SokOppgaverResponse
+import no.nav.oppgave.model.Oppgave
+import no.nav.oppgave.model.OpprettOppgaveRequest
+import no.nav.oppgave.model.PatchOppgaveRequest
+import no.nav.oppgave.model.SokOppgaverResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -22,7 +23,7 @@ class OppgaveMockController() {
     }
 
     private fun generateTestdata(type: OppgaveTypeTemaHel, id: Long) {
-        val oppgave = generateOppgave(fnr = "11111111111", tilordnetRessurs = defaultSaksbehandler ).copy(
+        val oppgave = generateOppgave(fnr = "11111111111", tilordnetRessurs = NavIdent(defaultSaksbehandler) ).copy(
             oppgavetype = type.oppgavetype,
             id = id,
         )
@@ -40,18 +41,10 @@ class OppgaveMockController() {
         val aktiveOppgaver = repository.values
             .filter { it.status != Oppgave.Status.FERDIGSTILT }
             .filter {
-                if (tilordnetRessurs != null) {
-                    it.tilordnetRessurs.equals(tilordnetRessurs, ignoreCase = true)
-                } else {
-                    true
-                }
+                tilordnetRessurs?.equals(it.tilordnetRessurs?.value, ignoreCase = true) ?: true
             }
             .filter {
-                if (aktoerId != null) {
-                    it.aktoerId.equals(aktoerId, ignoreCase = true)
-                } else {
-                    true
-                }
+                aktoerId?.equals(it.aktoerId?.value, ignoreCase = true) ?: true
             }
             .toMutableList()
 
@@ -60,7 +53,7 @@ class OppgaveMockController() {
             .filter { it.oppgavetype == OppgaveTypeTemaHel.JFR.oppgavetype }
         if (jfrOppgaver.isEmpty()) {
             val fnr = aktoerId?.let { fnrFromAktoerId(it) }
-            val oppgave = generateOppgave(fnr = fnr, tilordnetRessurs = tilordnetRessurs?: defaultSaksbehandler).copy(
+            val oppgave = generateOppgave(fnr = fnr, tilordnetRessurs = NavIdent( tilordnetRessurs?: defaultSaksbehandler)).copy(
                 oppgavetype = OppgaveTypeTemaHel.JFR.oppgavetype,
             )
             aktiveOppgaver.add(oppgave)

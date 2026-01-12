@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.brev
 
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.JournalpostResponse
 import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService

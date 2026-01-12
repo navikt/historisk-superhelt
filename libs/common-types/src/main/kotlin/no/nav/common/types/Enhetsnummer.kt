@@ -1,4 +1,4 @@
-package no.nav.dokarkiv
+package no.nav.common.types
 
 @JvmInline
 value class Enhetsnummer(val value: String) {

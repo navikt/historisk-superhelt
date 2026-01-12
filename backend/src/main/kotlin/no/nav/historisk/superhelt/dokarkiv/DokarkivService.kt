@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.dokarkiv
 
+import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.Enhetsnummer
 import no.nav.dokarkiv.*
 import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DistribuerJournalpostResponse

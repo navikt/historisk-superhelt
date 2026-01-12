@@ -19,7 +19,6 @@ class OppgaveClient(
     fun opprettOppgave(request: OpprettOppgaveRequest): Oppgave {
         return restClient.post()
             .uri("/api/v1/oppgaver")
-
             .body(request)
             .retrieve()
             .body(Oppgave::class.java)!!

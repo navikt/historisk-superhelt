@@ -1,9 +1,9 @@
 package no.nav.saf.graphql
 
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.EksternJournalpostId
 
 data class Journalpost(
     val journalpostId: EksternJournalpostId,

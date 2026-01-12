@@ -1,5 +1,9 @@
 package no.nav.dokarkiv
 
+import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Enhetsnummer
+
 data class JournalpostRequest(
     val tittel: String,
     val journalpostType: JournalpostType,

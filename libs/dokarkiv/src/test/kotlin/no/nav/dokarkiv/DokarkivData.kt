@@ -1,5 +1,7 @@
 package no.nav.dokarkiv
 
+import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.Saksnummer
 import java.io.File
 
