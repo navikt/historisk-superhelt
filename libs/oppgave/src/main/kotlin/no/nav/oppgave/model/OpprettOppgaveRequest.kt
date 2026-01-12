@@ -2,6 +2,7 @@ package no.nav.oppgave.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
+import java.util.*
 
 data class OpprettOppgaveRequest(
     val tema: String,
@@ -15,9 +16,11 @@ data class OpprettOppgaveRequest(
     val opprettetAvEnhetsnr: String? = null,
     val journalpostId: String? = null,
     val behandlesAvApplikasjon: String? = null,
+    val saksreferanse: String? = null,
     val beskrivelse: String? = null,
     val behandlingstema: String? = null,
     val behandlingstype: String? = null,
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    val fristFerdigstillelse: LocalDate? = null
+    val fristFerdigstillelse: LocalDate? = null,
+    val uuid: UUID? = null
 )

@@ -8,6 +8,7 @@ data class PatchOppgaveRequest(
     val orgnr: String? = null,
     val status: Status? = null,
     val endretAvEnhetsnr: String? = null,
+    val beskrivelse: String? = null,
     val tilordnetRessurs: String? = null,
     val tildeltEnhetsnr: String? = null,
     val prioritet: Prioritet? = null,
@@ -22,6 +23,11 @@ data class PatchOppgaveRequest(
     val journalpostId: String? = null,
     val saksreferanse: String? = null,
     val behandlesAvApplikasjon: String? = null,
-    val personident: String? = null,
-    val beskrivelse: String? = null
+    val kommentar: Kommentar? = null,
+    val personident: String? = null
+)
+
+data class Kommentar(
+    val tekst: String,
+    val automatiskGenerert: Boolean? = null
 )

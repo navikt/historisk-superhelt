@@ -17,6 +17,7 @@ data class Oppgave(
     val opprettetAvEnhetsnr: String? = null,
     val journalpostId: String? = null,
     val behandlesAvApplikasjon: String? = null,
+    val saksreferanse: String? = null,
     val aktoerId: String? = null,
     val orgnr: String? = null,
     val tilordnetRessurs: String? = null,
@@ -29,5 +30,19 @@ data class Oppgave(
     val fristFerdigstillelse: LocalDate? = null,
     val opprettetTidspunkt: OffsetDateTime? = null,
     val ferdigstiltTidspunkt: OffsetDateTime? = null,
-    val endretTidspunkt: OffsetDateTime? = null
-)
+    val endretTidspunkt: OffsetDateTime? = null,
+    val bruker: Bruker? = null
+) {
+    data class Bruker (
+        val ident : String,
+        val type : BrukerType
+
+        )
+
+    enum class BrukerType {
+        PERSON,
+        ARBEIDSGIVER,
+        SAMHANDLER
+
+    }
+}
