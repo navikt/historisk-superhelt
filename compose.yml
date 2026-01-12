@@ -79,7 +79,7 @@ services:
       KAFKA_NUM_PARTITIONS: 3
 
   postgres:
-    image: "postgres:17"
+    image: "postgres:18"
     restart: on-failure
     ports:
       - "5032:5432"
