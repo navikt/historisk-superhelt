@@ -1,0 +1,2236 @@
+openapi: 3.0.1
+info:
+  title: Oppgave API
+  description: |+
+    Dokumentasjon av ressurser som er eksponert av Oppgave
+
+    Konsumenter har ansvar for å ivareta behandlingsgrunnlag/hjemmel ved bruk av APIet og kun forholde seg til oppgaver (i.e basert på tema) som sikrer at dette blir ivaretatt.
+    Tilgang gis ved PR. Bruk av on-prem STS skal fases ut, så nye tilganger godkjennes kun for AAD.
+
+    Token hentes enten vha azure-token-generator, eller ida. Testbrukere må ha rollen 0000_GA_GOSYS_NASJONAL for å få tilgang til oppgaver.
+
+    Vi forventer at konsumenter følger tolerant reader-prinsippet (kun lese feltene man benytter, ignorere resten), da vi ved ved behov vil utvide APIet. Det vil nok
+    etter hvert også komme en v2 av APIet der vi tar bort en del legacy-mekanismer. I mellomtiden har vi skjult noen mekanismer som vi anser som deprecated i swagger-doken, slik at
+    den blir mer oversiktelig.
+
+    Merk at vi forventer at Headeren <strong>"X-Correlation-ID"</strong> er angitt for alle tjenestekall. Denne logges i applikasjonen, og benyttes for å kunne sammenstille hendelser på tvers av kallkjeder.
+    Denne skal være unik for hvert tjenestekall, og oppgis når Team oppgavehåndtering skal bistå i feilsøk, analyse etc.
+
+  contact:
+    name: Team Oppgavehåndtering
+  version: "1"
+tags:
+- name: Oppgave
+- name: Mappe
+  description: Operasjoner på mapper
+paths:
+  /api/v1/kodeverk/tema:
+    get:
+      tags:
+      - Kodeverk
+      summary: Henter alle gyldige oppgave-temaer
+      operationId: hentAlleTemaer
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Temaer hentet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tema"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått
+      security:
+      - oidc: []
+  /api/v1/kodeverk/gjelder/{tema}:
+    get:
+      tags:
+      - Kodeverk
+      summary: Henter tilgjengelige gjelderverdier for angitt tema
+      description: |
+        Denne er publisert for å synligjøre tillatte verdier for et gitt tema.
+        Tillatte verdier defineres av fagansvarlig for det aktuelle temaet. Merk forøvrig at
+        disse verdiene gjerne har et spesifikt formål, og egne regler for når de skal benyttes som ikke
+        fremkommer her. APIet vil bli endret, og bør ikke konsumeres av applikasjoner.
+      operationId: hentGjelderverdierForTema
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: tema
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Gjelderverdier hentet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Gjelder"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått
+      security:
+      - oidc: []
+  /api/v1/kodeverk:
+    get:
+      tags:
+      - Kodeverk
+      summary: "Henter komplett internt kodeverk over tillatte temaer, samt oppgavetyper\
+        \ og kombinasjoner av behandlingstema, behandlingstype som er gyldig for hvert\
+        \ tema"
+      operationId: hentInterntKodeverk
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Internt kodeverk hentet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Kodeverkkombinasjon"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått
+      security:
+      - oidc: []
+  /api/v1/kodeverk/oppgavetype/{tema}:
+    get:
+      tags:
+      - Kodeverk
+      summary: Henter tilgjengelige oppgavetyper for angitt tema
+      description: |
+        Denne er publisert for å synligjøre tillatte verdier for et gitt tema.
+        Tillatte verdier defineres av fagansvarlig for det aktuelle temaet. Merk forøvrig at
+        oppgavetyper gjerne har et spesifikt formål, og egne regler for når de skal benyttes som ikke
+        fremkommer her. APIet vil bli endret, og bør ikke konsumeres av applikasjoner
+      operationId: hentOppgavetyperForTema
+      parameters:
+      - name: tema
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Oppgavetyper hentet
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Oppgavetype"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått
+      security:
+      - oidc: []
+  /api/v1/oppgaver/{id}/kommentarer:
+    get:
+      tags:
+      - Oppgave
+      summary: Henter kommentarer for oppgaven
+      description: "Dette er en ny tjeneste for uthenting av strukturerte kommentarer,\
+        \ som tilbys ifm arbeid med å fase ut bruken av beskrivelse/beskrivelseshistorikk.\
+        \ I produksjon er feltet populert med data fra litt før 01.01.2024.Vi anbefaler\
+        \ konsumenter å avvente noe med å ta dette i bruk, da det finnes et stort\
+        \ antall oppgaver som fremdeles ikke vil inneha data her (kun i beskrivelse)Vi\
+        \ arbeider videre med hvordan vi best mulig skal få gjennomført den øvrige\
+        \ migreringen, men det vil være til stor hjelp om dere som i dag registrerer\
+        \ kommentarer/statusoppdateringer i beskrivelsesfeltet også begynner å sende\
+        \ inn kommentar ifm oppdatering av oppgaven ( i første om gang i tillegg til\
+        \ beskrivelsen). Et stort antall av kommmentarene parses i dag fra differansen\
+        \ av forrige og innsendt beskrivelse, og dette ønsker vi slutte med. Ta kontakt\
+        \ med oss dersom dere har gjort dette, slik at vi kan skru av beskrivelsesparsingen\
+        \ for deres app"
+      operationId: hentKommentarer
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Kommentar registrert
+        "400":
+          description: Ugyldig input
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v1/mapper:
+    get:
+      tags:
+      - Mappe
+      summary: Søk etter mapper
+      description: Finner mapper som passer søkekriterie
+      operationId: finnMapper
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: tema
+        in: query
+        description: "Filtrering på tema. Benyttes for å skille mellom mapper i Gosys,\
+          \ Pesys, Bisys"
+        schema:
+          type: array
+          items:
+            type: string
+        example: PEN
+      - name: enhetsnr
+        in: query
+        description: Filtrering på enhet
+        schema:
+          type: string
+        example: "0100"
+      - name: offset
+        in: query
+        description: Offset for paginering i søk
+        schema:
+          type: integer
+          format: int64
+        example: 10
+      - name: limit
+        in: query
+        description: Begrensning i antall returnerte mapper
+        schema:
+          maximum: 5000
+          type: integer
+          format: int64
+          default: 10
+        example: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HentMapperResponse"
+        "400":
+          description: Ugyldig input
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v1/mapper/{id}:
+    get:
+      tags:
+      - Mappe
+      summary: Hent mappe
+      description: Henter en eksisterende mappe
+      operationId: hentMappe
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Mappen som skal hentes
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mappe"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "404":
+          description: Det finnes ingen mappe for angitt id
+        "409":
+          description: Konflikt
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v1/oppgaver:
+    get:
+      tags:
+      - Oppgave
+      summary: Søk etter oppgaver
+      operationId: finnOppgaver
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        description: UUID for feilsøk på tvers av tjenester
+        required: true
+        schema:
+          type: string
+        example: 26b40001-6e93-4678-8d90-f15a99941d52
+      - name: statuskategori
+        in: query
+        description: "Statuskategori er en kategorisering av statuser internt i oppgave,\
+          \ dvs at det kan søkes på enten AAPEN eller AVSLUTTET og de relevante oppgave\
+          \ vil returneres uten at konsument trenger å spesifisere alle statuser som\
+          \ representerer åpne oppgaver eller motsatt (avsluttede oppgaver)"
+        schema:
+          type: string
+        example: AAPEN
+      - name: tema
+        in: query
+        description: Filtrering på aktuelle tema (iht felles kodeverk)
+        schema:
+          type: array
+          items:
+            type: string
+      - name: oppgavetype
+        in: query
+        description: Filtrering på aktuelle oppgavetyper (iht felles kodeverk)
+        schema:
+          type: array
+          items:
+            type: string
+      - name: tildeltEnhetsnr
+        in: query
+        description: "Filtrering på tildelt enhet, enheten som har fått overført oppgaven\
+          \ til behandling"
+        schema:
+          type: string
+      - name: tilordnetRessurs
+        in: query
+        description: Hvilken ressurs (nav-ident) oppgaven er tilordnet
+        schema:
+          type: string
+      - name: behandlingstema
+        in: query
+        description: Filtrering på behandlingstema (iht felles kodeverk)
+        schema:
+          type: string
+      - name: behandlingstype
+        in: query
+        description: Filtrering på behandlingstype (iht felles kodeverk)
+        schema:
+          type: string
+      - name: aktoerId
+        in: query
+        description: "For å hente oppgaver knyttet til en gitt personbruker. 13-sifret\
+          \ aktørid (fnr,dnr,npid kan veksles via PDL)"
+        schema:
+          type: array
+          items:
+            type: string
+      - name: journalpostId
+        in: query
+        description: Angir journalpostId (fra arkivet/joark) oppgaven er knyttet til
+        schema:
+          type: array
+          items:
+            type: string
+      - name: saksreferanse
+        in: query
+        description: Søk etter oppgaver med angitt(e) saksreferanse(r)
+        schema:
+          type: array
+          items:
+            type: string
+      - name: ferdigstiltFom
+        in: query
+        description: Nedre grense for filtrering på ferdigstilt tidspunkt
+        schema:
+          type: string
+          format: yyyy-MM-ddThh:mm:ss
+      - name: ferdigstiltTom
+        in: query
+        description: Øvre grense for filtrering på ferdigstilt tidspunkt
+        schema:
+          type: string
+          format: yyyy-MM-ddThh:mm:ss
+      - name: orgnr
+        in: query
+        description: Orgnr til organisasjonen oppgavene er opprettet for
+        schema:
+          type: array
+          items:
+            type: string
+      - name: limit
+        in: query
+        description: Begrensning i antall returnerte oppgaver
+        schema:
+          maximum: 1000
+          type: integer
+          format: int64
+          default: 10
+        example: 10
+      - name: offset
+        in: query
+        description: Offset for paginering i søk
+        schema:
+          type: integer
+          format: int64
+        example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SokOppgaverResponse"
+        "400":
+          description: Ugyldig input
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+    post:
+      tags:
+      - Oppgave
+      summary: Opprett en ny oppgave
+      description: Oppretter en ny oppgave
+      operationId: opprettOppgave
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        description: UUID for feilsøk på tvers av tjenester
+        required: true
+        schema:
+          type: string
+        example: 26b40001-6e93-4678-8d90-f15a99941d52
+      requestBody:
+        description: "Eksempel på oppgaven en journalføringsoppgave. Merk at disse\
+          \ som hovedregel alltid skal kategoriseres med behandlingstema og/eller\
+          \ behandlingstype iht hvilken kategorisering som samsvarer med brevkoden.\
+          \ For å se alle tillatte felt, trykk \"Schema\""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpprettOppgaveRequest"
+            example:
+              aktoerId: "2280720130426"
+              journalpostId: "437723027"
+              tema: KON
+              behandlingstype: ae0004
+              oppgavetype: JFR
+              prioritet: NORM
+              aktivDato: 2023-01-01
+        required: true
+      responses:
+        "201":
+          description: Oppgave opprettet
+          headers:
+            location:
+              description: Angir URI til den opprettede oppgaven
+              style: simple
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Oppgave"
+              example:
+                id: 357034437
+                aktoerId: "2280720130426"
+                tildeltEnhetsnr: "4863"
+                journalpostId: "437723027"
+                tema: KON
+                behandlingstype: ae0004
+                oppgavetype: JFR
+                versjon: 1
+                opprettetAv: Z991459
+                prioritet: NORM
+                status: OPPRETTET
+                metadata: {}
+                aktivDato: 2023-01-01
+                opprettetTidspunkt: 2023-03-15T11:33:42.747+01:00
+        "400":
+          description: Ugyldig request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v1/oppgaver/{oppgaveId}/hendelser:
+    get:
+      tags:
+      - Oppgave
+      summary: Hent  endringshendelser knyttet til en oppgave
+      description: "Henter endringshendelser tilknyttet en oppgave på strukturert\
+        \ format (i motsetning til endringer som typisk har vært registrert i beskrivelesfeltet).\
+        \ For meta som tradisjonelt har vært lagt i beskrivelsen, har vi lang historikk.\
+        \ Vi har imidlertid nylig utvidet med en god del øvrige felter, så konsument\
+        \ må ta høyde for at felter kan være uten verdi for eldre oppgaver"
+      operationId: hentHendelser
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        description: UUID for feilsøk på tvers av tjenester
+        required: true
+        schema:
+          type: string
+        example: 26b40001-6e93-4678-8d90-f15a99941d52
+      - name: oppgaveId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Liste over hendelser
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HendelseJson"
+        "400":
+          description: Ugyldig request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v1/oppgaver/{id}:
+    get:
+      tags:
+      - Oppgave
+      summary: Hent en oppgave
+      operationId: hentOppgave
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        description: UUID for feilsøk på tvers av tjenester
+        required: true
+        schema:
+          type: string
+        example: 26b40001-6e93-4678-8d90-f15a99941d52
+      - name: id
+        in: path
+        description: Oppgaven som skal hentes
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Oppgave"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "404":
+          description: Fant ikke oppgave for gitt id
+        "409":
+          description: Konflikt
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+    patch:
+      tags:
+      - Oppgave
+      summary: Endre en eksisterende oppgave
+      description: Kun verdier som sendes med i requesten blir endret. Verdier kan
+        nullstilles ved å eksplisitt sette disse til null
+      operationId: patchOppgave
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        description: UUID for feilsøk på tvers av tjenester
+        required: true
+        schema:
+          type: string
+        example: 26b40001-6e93-4678-8d90-f15a99941d52
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: "Eksempel på request for å ferdigstille en oppgave. For å se\
+          \ tillatte felter, trykk på \"Schema\""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchOppgaveRequest"
+            example:
+              versjon: "2"
+              status: FERDIGSTILT
+              endretAvEnhetsnr: "2990"
+        required: true
+      responses:
+        "200":
+          description: Oppgave med oppdaterte verdier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Oppgave"
+        "400":
+          description: Ugyldig request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "409":
+          description: "Konflikt, i.e versjonen som sendes med er utdatert fordi noen\
+            \ andre har endret oppgaven"
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v2/enhet/{enhetsnr}/oppgaver/sok:
+    post:
+      tags:
+      - v2 Enhet (under arbeid)
+      summary: 'Under arbeid! Søk etter åpne oppgaver fordelt angitt enhet '
+      operationId: finnOppgaver_1
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        description: UUID for feilsøk på tvers av tjenester. Påkrevd for konsumenter
+          som ikke benytter otel
+        schema:
+          type: string
+        example: 26b40001-6e93-4678-8d90-f15a99941d52
+      - name: enhetsnr
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Oppgavesok"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listeresultat"
+        "400":
+          description: Ugyldig input
+        "401":
+          description: Token er ugyldig
+        "403":
+          description: Bruker er ikke autorisert operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v2/enhet/{enhetsnr}/oppgaver/restanse:
+    post:
+      tags:
+      - v2 Enhet (under arbeid)
+      summary: 'Under arbeid! Restanse for oppgaver på angitt enhet '
+      operationId: hentRestanse
+      parameters:
+      - name: X-Correlation-ID
+        in: header
+        description: UUID for feilsøk på tvers av tjenester. Påkrevd for konsumenter
+          som ikke benytter otel
+        schema:
+          type: string
+        example: 26b40001-6e93-4678-8d90-f15a99941d52
+      - name: enhetsnr
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Filter"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SokOppgaverResponse"
+        "400":
+          description: Ugyldig input
+        "401":
+          description: Token er ugyldig
+        "403":
+          description: Bruker er ikke autorisert operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v2/enhet/{enhetsnr}/oppgaver/me/tildel:
+    post:
+      tags:
+      - v2 Enhet (under arbeid)
+      summary: 'Under arbeid! Søk etter åpne oppgaver fordelt angitt enhet '
+      operationId: tildelMeg
+      parameters:
+      - name: enhetsnr
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Koekriterier"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SokOppgaverResponse"
+        "400":
+          description: Ugyldig input
+        "401":
+          description: Token er ugyldig
+        "403":
+          description: Bruker er ikke autorisert operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v2/oppgaver/{id}:
+    patch:
+      tags:
+      - v2 Oppgave (under arbeid)
+      summary: Under arbeid! Oppdater oppgave
+      description: "Patcher en oppgave (merge-patch / RFC-7396). I korte trekk: Felt\
+        \ som skal oppdateres sendes med, felt som utelates forblir uendret og felt\
+        \ som eksplsitt settes til null slettes/nullstilles"
+      operationId: endreOppgave
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: include
+        in: query
+        schema:
+          type: string
+      requestBody:
+        description: "Eksempel på request for å ferdigstille en oppgave. For å se\
+          \ tillatte felter, trykk på \"Schema\""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OppdaterOppgaveDto"
+            examples:
+              Endre kategorisering og enhet manuelt:
+                description: Endre kategorisering og enhet manuelt
+                value:
+                  kategorisering:
+                    tema: BIL
+                    oppgavetype: KONT_BRUK
+                    behandlingstema: null
+                    behandlingstype: ae0058
+                  fordeling:
+                    enhetsnr: "4703"
+                    navident: null
+                    mappeId: null
+                  kommentar: Oppgaven ble feilsendt til NAY Hjelpemidler
+                  meta:
+                    utfortAvEnhetsnr: "4485"
+                    versjon: 5
+              Tagg med nøkkelord manuelt:
+                description: Tagg med nøkkelord manuelt
+                value:
+                  nokkelord:
+                  - Ung
+                  meta:
+                    utfortAvEnhetsnr: "0101"
+                    versjon: 2
+              Ferdigstill ifm. automatisk prosess:
+                description: Ferdigstill ifm. automatisk prosess
+                value:
+                  kommentar: Relevant informasjon om hvorfor oppgaven ble automatisk
+                    ferdigstilt
+                  status: FERDIGSTILT
+        required: true
+      responses:
+        "200":
+          description: Oppgave oppdatert
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OppgaveV3Dto"
+              example:
+                id: 357034437
+                aktoerId: "2280720130426"
+                tildeltEnhetsnr: "4863"
+                journalpostId: "437723027"
+                tema: KON
+                behandlingstype: ae0004
+                oppgavetype: JFR
+                versjon: 1
+                opprettetAv: Z991459
+                prioritet: NORM
+                status: OPPRETTET
+                metadata: {}
+                aktivDato: 2023-01-01
+                opprettetTidspunkt: 2023-03-15T11:33:42.747+01:00
+        "400":
+          description: Ugyldig request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+  /api/v2/oppgaver/{enhetsnr}/{navident}:
+    get:
+      tags:
+      - v2 Oppgave (under arbeid)
+      summary: 'Under arbeid! Henter oppgaver tildelt medarbeider ved angitt enhet '
+      operationId: oppgaverTildelt
+      parameters:
+      - name: enhetsnr
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: navident
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: inkluderForhandsvisningAvFritekst
+        in: query
+        description: "Skal som hovedregel ikke tilgjengeliggjøres sluttbruker i lister,\
+          \ da feltet kan inneholde informasjon som medfører krav til audit"
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listeresultat"
+        "400":
+          description: Ugyldig input
+        "401":
+          description: Token er ugyldig
+        "403":
+          description: Bruker er ikke autorisert for operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått. Retry ok
+      security:
+      - oidc: []
+  /api/v2/oppgaver:
+    post:
+      tags:
+      - v2 Oppgave (under arbeid)
+      summary: 'Under arbeid! Oppretter ny oppgave '
+      operationId: opprettOppgave_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpprettOppgaveV2Request"
+      responses:
+        "201":
+          description: Oppgave opprettet
+          headers:
+            location:
+              description: Angir URI til den opprettede oppgaven
+              style: simple
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Oppgave"
+              example:
+                id: 357034437
+                aktoerId: "2280720130426"
+                tildeltEnhetsnr: "4863"
+                journalpostId: "437723027"
+                tema: KON
+                behandlingstype: ae0004
+                oppgavetype: JFR
+                versjon: 1
+                opprettetAv: Z991459
+                prioritet: NORM
+                status: OPPRETTET
+                metadata: {}
+                aktivDato: 2023-01-01
+                opprettetTidspunkt: 2023-03-15T11:33:42.747+01:00
+        "400":
+          description: Ugyldig request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Konsument mangler gyldig token
+        "403":
+          description: Bruker er ikke autorisert for denne operasjonen
+        "500":
+          description: Ukjent feilsituasjon har oppstått i Oppgave
+      security:
+      - oidc: []
+components:
+  schemas:
+    Tema:
+      type: object
+      properties:
+        tema:
+          type: string
+        term:
+          type: string
+    Gjelder:
+      type: object
+      properties:
+        behandlingstema:
+          type: string
+        behandlingstemaTerm:
+          type: string
+        behandlingstype:
+          type: string
+        behandlingstypeTerm:
+          type: string
+    Kodeverkkombinasjon:
+      type: object
+      properties:
+        tema:
+          $ref: "#/components/schemas/Tema"
+        oppgavetyper:
+          type: array
+          items:
+            $ref: "#/components/schemas/Oppgavetype"
+        gjelderverdier:
+          type: array
+          items:
+            $ref: "#/components/schemas/Gjelder"
+    Oppgavetype:
+      required:
+      - oppgavetype
+      - term
+      type: object
+      properties:
+        oppgavetype:
+          type: string
+        term:
+          type: string
+    KommentarJson:
+      type: object
+      properties:
+        tekst:
+          type: string
+        registrertAv:
+          type: string
+        registrertAvEnhet:
+          type: string
+        registrertAvSystem:
+          type: string
+        registrertTidspunkt:
+          type: string
+          format: date-time
+        legacy:
+          type: boolean
+    HentMapperResponse:
+      type: object
+      properties:
+        antallTreffTotalt:
+          type: integer
+          description: Totalt antall mapper funnet med dette søket
+          format: int64
+        mapper:
+          type: array
+          description: Liste over mapper
+          items:
+            $ref: "#/components/schemas/Mappe"
+    Mappe:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        navn:
+          type: string
+          readOnly: true
+      description: "Plasserer oppgaven direkte i en mappe ved enheten. Skal ikke spesifiseres\
+        \ av automatiske prosesser, da mapper utelukkende er beregnet for manuell\
+        \ fordeling. (Kategorisering, nøkkelord, sett på vent, knytning mot applikasjon\
+        \ kan benyttes som erstatning)"
+      nullable: true
+    BrukerDto:
+      type: object
+      properties:
+        ident:
+          type: string
+        type:
+          $ref: "#/components/schemas/Brukertype"
+      description: Bruker oppgaven er tilknyttet
+    Brukertype:
+      type: string
+      enum:
+      - PERSON
+      - ARBEIDSGIVER
+      - SAMHANDLER
+    Oppgave:
+      required:
+      - aktivDato
+      - id
+      - oppgavetype
+      - prioritet
+      - status
+      - tema
+      - tildeltEnhetsnr
+      - versjon
+      type: object
+      properties:
+        personident:
+          type: string
+          description: "ident for person, dvs. fnr, dnr, npid eller aktørid"
+          writeOnly: true
+          example: "12345678911"
+        id:
+          type: integer
+          description: Syntetisk id
+          format: int64
+          example: 5436732
+        tildeltEnhetsnr:
+          maxLength: 4
+          minLength: 4
+          type: string
+          description: Enheten oppgaven er tildelt
+          example: "4488"
+        endretAvEnhetsnr:
+          maxLength: 4
+          minLength: 4
+          type: string
+          description: Enheten som endret oppgaven
+          example: "4488"
+        opprettetAvEnhetsnr:
+          maxLength: 4
+          minLength: 4
+          type: string
+          description: Hvilken enhet som har opprettet oppgaven
+          example: "0200"
+        journalpostId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Id for en journalpostreferanse
+          example: "84938201"
+        behandlesAvApplikasjon:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Hvilken applikasjon oppgaven skal behandles i
+          example: FS22
+        saksreferanse:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Referanse til sak i fagsystem
+        aktoerId:
+          maxLength: 13
+          minLength: 13
+          type: string
+          description: "Syntetisk id for en person, kan hentes fra PDL"
+          example: "1234567891113"
+        orgnr:
+          maxLength: 9
+          minLength: 0
+          type: string
+          description: Organisasjonsnummer. Bedriften oppgaven skal løses på vegne
+            av
+        tilordnetRessurs:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: NavIdent for ressursen som er tilordnet oppgaven.
+        beskrivelse:
+          type: string
+          description: "MERK! Vi arbeider med å migrere bort fra ett stort tekstfelt\
+            \ til strukturerte kommentarer + strukturert endringslogg. Bruken av feltet\
+            \ er under utfasing i Gosys. Dersom ditt system benytter dette feltet\
+            \ ber vi dere følge disse retningslinjene\n\n: 1. Beskrivelse som registreres\
+            \ samtidig som oppgaven blir opprettet, skal _ikke_ ha header\n2. Når\
+            \ beskrivelsen benyttes til status-oppdateringer, kommentarer etc i etterkant\
+            \ så skal header på følgende format benyttes, og legges til foran den\
+            \ eksisterende beskrivelsen:  --- dd.MM.yyyy <navn på ansatt> (<navident/systemnavn>,\
+            \ <enhet endringen utføres på vegne av>)\\n\\n\n3. Ta i bruk kommentar-feltet\
+            \ for å registrere kommentarer fra saksbehandlere og/eller automatiske\
+            \ oppdateringer i tillegg til beskrivelsen, samt gi oss beskjed om at\
+            \ dette er gjort. Kommentaren skal _ikke_ ha headerLegacyfelt som benyttes\
+            \ til mye forskjellig. For å ivareta bakoverkompatibilitet, må konsumenter\
+            \ som ønsker at beskrivelseshistorikken skal være synlig i andre skjermbilder\
+            \ enn så lenge fortsette å benytte dette "
+        tema:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Kategorisering av oppgaven. Hvilket tema/fagområde oppgaven
+            tilhører
+          example: AAP
+        behandlingstema:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: "Kategoriserer oppgaven innenfor angitt tema. Som hovedregel\
+            \ skal det alltid angis enten behandlingstema, behandlingstype eller begge.\
+            \ Tillatte verdier er begrenset per tema, og endringer avklares med fagansvarlig/styringsenhet\
+            \ for området. Se /api/v1/kodeverk/gjelder/{tema}"
+          example: ab0203
+        oppgavetype:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Kategorisering av hva slags oppgavetype det er. Hvilke oppgavetyper
+            som er tillatt for et gitt tema er definert i oppgavekodeverket.
+          example: JFR
+        behandlingstype:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: "Kategoriserer oppgaven innenfor angitt tema. Som hovedregel\
+            \ skal det alltid angis enten behandlingstema, behandlingstype eller begge.\
+            \ Tillatte verdier er begrenset per tema, og endringer avklares med fagansvarlig/styringsenhet\
+            \ for området. Se /api/v1/kodeverk/gjelder/{tema}"
+          example: ae0001
+        versjon:
+          type: integer
+          description: "Brukes for å håndtere optimistisk låsing, hvor to brukere\
+            \ har skrevet på samme oppgave. Hver gang det gjøres til på en oppgave,\
+            \ økes verdien av VERSJON med 1. Når en klient skal lagre til på en oppgave,\
+            \ sendes verdien av VERSJON oppgaven hadde da informasjon om oppgaven\
+            \ som nå er endret ble hentet ut. Dersom verdien av VERSJON er endret,\
+            \ har noen andre lagret oppgaven i mellomtiden, og oppgaven kan ikke lagres.\
+            \ 409 Conflict vil returneres fra tjenesten. Under oppretting av oppgave\
+            \ trenger man ikke å spesifisere noen verdi for dette feltet, oppgaven\
+            \ vil starte på versjon 1"
+          format: int32
+          example: 1
+        mappeId:
+          type: integer
+          description: 'Hvilken mappe oppgaven er plassert i. Mapper administreres
+            av den enkelte enhet. Mapper tilknyttet enheten hentes via eget endepunkt '
+          format: int64
+          example: 848
+        opprettetAv:
+          type: string
+          description: Hvilken bruker eller system som opprettet oppgaven
+          example: Z999999
+        endretAv:
+          type: string
+          description: Hvilken bruker eller system som endret oppgaven sist
+          example: Z998888
+        prioritet:
+          $ref: "#/components/schemas/PrioritetV1"
+        status:
+          $ref: "#/components/schemas/Oppgavestatus"
+        fristFerdigstillelse:
+          type: string
+          description: Oppgavens frist for ferdigstillelse.
+          format: date
+        aktivDato:
+          type: string
+          description: "Angir når det er relevant å ta tak i oppgaven. Settes normalt\
+            \ til samme dato som oppgaven opprettes, men endres fremover i tid dersom\
+            \ oppgaven f.eks settes på vent. I Gosys vil oppgaver på vent som standard\
+            \ skjules, men kan hente frem om ønskelig"
+          format: date
+        opprettetTidspunkt:
+          type: string
+          description: Opprettet tidspunkt iht. ISO-8601
+          format: date-time
+        ferdigstiltTidspunkt:
+          type: string
+          description: Tidspunktet oppgaven ble ferdigstilt iht. ISO-8601
+          format: date-time
+        endretTidspunkt:
+          type: string
+          description: Tidspunktet oppgaven sist ble endret iht. ISO-8601
+          format: date-time
+        bruker:
+          $ref: "#/components/schemas/BrukerDto"
+    Oppgavestatus:
+      type: string
+      description: Hvilken status oppgaven har. Konsumenter bør kun forholde seg til
+        dette ved behov for å skille mellom ferdigstilt og feilregistrert
+      example: OPPRETTET
+      enum:
+      - OPPRETTET
+      - AAPNET
+      - UNDER_BEHANDLING
+      - FERDIGSTILT
+      - FEILREGISTRERT
+    PrioritetV1:
+      type: string
+      description: Angir hvilken prioritet oppgaven har
+      example: NORM
+      enum:
+      - HOY
+      - NORM
+      - LAV
+    SokOppgaverResponse:
+      type: object
+      properties:
+        antallTreffTotalt:
+          type: integer
+          description: Totalt antall oppgaver funnet med dette søket
+          format: int64
+        oppgaver:
+          type: array
+          description: Liste over oppgaver
+          items:
+            $ref: "#/components/schemas/Oppgave"
+    HendelseJson:
+      type: object
+      properties:
+        oppgaveId:
+          type: integer
+          format: int64
+        utfortAv:
+          type: string
+        tildeltEnhetsnr:
+          type: string
+        mappeId:
+          type: integer
+          format: int64
+        tilordnetRessurs:
+          type: string
+        status:
+          type: string
+        tema:
+          type: string
+        oppgavetype:
+          type: string
+        tidspunkt:
+          type: string
+          format: date-time
+        utfortAvEnhetsnr:
+          type: string
+        hendelsestype:
+          $ref: "#/components/schemas/Hendelsestype"
+        behandlingstema:
+          type: string
+        behandlingstype:
+          type: string
+        fristFerdigstillelse:
+          type: string
+          format: date
+        aktivDato:
+          type: string
+          format: date
+        prioritet:
+          $ref: "#/components/schemas/PrioritetV1"
+        journalpostId:
+          type: string
+        saksreferanse:
+          type: string
+        utfortFraSystem:
+          type: string
+    Hendelsestype:
+      type: string
+      enum:
+      - OPPGAVE_OPPRETTET
+      - OPPGAVE_ENDRET
+      - OPPGAVE_FERDIGSTILT
+      - OPPGAVE_FEILREGISTRERT
+    ErrorResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+        feilmelding:
+          type: string
+    OpprettOppgaveRequest:
+      required:
+      - aktivDato
+      - oppgavetype
+      - prioritet
+      - tema
+      type: object
+      properties:
+        personident:
+          maxLength: 13
+          minLength: 11
+          type: string
+          description: "ident for person oppgaven knyttes mot, dvs. fnr, dnr, npid\
+            \ eller aktørid, Kan kun knyttes mot én bruker"
+          example: "12345678911"
+        orgnr:
+          maxLength: 9
+          minLength: 0
+          type: string
+          description: Organisasjonsnummer oppgaven knyttes mot. Kan kun knyttes mot
+            én bruker
+          example: "979312059"
+        samhandlernr:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: "Samnhandlernummer. Ta kontakt med #team-oppgavehåndtering\
+            \ dersom dere ønsker å bruke samhandlernr, da dette skal fases ut"
+          example: "80000999999"
+        tildeltEnhetsnr:
+          maxLength: 4
+          minLength: 4
+          type: string
+          description: "Enheten oppgaven tildeles. Dersom enhet ikke er angitt, så\
+            \ vil oppgaven automatisk bli forsøkt fordeling iht. standard arbeidsfordelingsregler\
+            \ (se norg2)"
+          example: "4820"
+        opprettetAvEnhetsnr:
+          maxLength: 4
+          minLength: 4
+          type: string
+          description: Hvilken enhet som har opprettet oppgaven. Skal alltid angis
+            dersom oppgaven registreres av en medarbeider
+          example: "4820"
+        journalpostId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: "Id for en journalpostreferanse. Benyttes når oppgaven skal\
+            \ kobles mot journalposter, i.e for journalføringsoppgaver"
+          example: "84938201"
+        behandlesAvApplikasjon:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Indikerer hvilken applikasjon oppgaven skal behandles i. Hvis
+            angitt vil dette begrense hva man kan endre på av oppgaven i Gosys
+          example: FS22
+        saksreferanse:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Knytter oppgaven til en sak i et fagsystem
+          example: "84942299"
+        beskrivelse:
+          type: string
+          description: "Kort tekstlig beskrivelse av oppgaven. Vennligst overhold\
+            \ følgende retningslinjer 1. Det skal ikke benyttes header (unngå alle\
+            \ varianter av --- dd.mm.yyyy (XXXXXX, <enhetsnr>) --- 2. Skal ikke væ\
+            re nødvendig informasjon for saksbehandlere til å finne riktig oppgave\
+            \ i en liste. Til dette skal tema, oppgavetype, behandlingstema, behandlingstype\
+            \ benyttes 3. Unngå personsensitiv og/eller lokaliserende informasjon,\
+            \ da dette feltet enn så lenge presenteres i en god del arbeidslister\
+            \ i eldre systemer"
+        tema:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Tema for oppgaven
+          example: KON
+        behandlingstema:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Kategorisering av oppgaven. Som hovedregel skal alltid minst
+            en av behandlingstema og/eller behandlingstype være angitt. Må være tillatt
+            for det aktuelle temaet og i kombinasjon med en ev. behandlingstype. Se
+            api for kodeverk
+          example: ab0335
+        oppgavetype:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Kategorisering av oppgaven. Må være tillatt for det aktuelle
+            temaet. Se api for kodeverk
+          example: JFR
+        behandlingstype:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Kategorisering av oppgaven. Som hovedregel skal alltid minst
+            en av behanlingstema og/eller behandlingstype være angitt. Må være tillatt
+            for det aktuelle temaet og i kombinasjon med et ev. behandlingstema. Se
+            api for kodeverk
+          example: ae0034
+        aktivDato:
+          type: string
+          description: "Benyttes for å legge en oppgave \"på vent\". Sette normalt\
+            \ til dagens dato for nye oppgaver. Styrer visning i arbeidsflater, der\
+            \ oppgaver med dato <= dagens dato vises."
+          format: date
+        fristFerdigstillelse:
+          type: string
+          description: Oppgavens frist for ferdigstillelse.
+          format: date
+        prioritet:
+          $ref: "#/components/schemas/PrioritetV1"
+        uuid:
+          type: string
+          description: Unik identifikator for duplikatkontroll
+          format: uuid
+    JsonNode:
+      type: object
+    PatchOppgaveRequest:
+      required:
+      - versjon
+      type: object
+      properties:
+        versjon:
+          type: integer
+          description: Nåværende versjon på oppgaven
+          format: int32
+          example: 1
+        orgnr:
+          type: string
+          description: "Organisasjonsnummer. Kan ikke nullstilles, men kan endres\
+            \ til personident. Merk at det kun er i helt spesielle tilfeller ident\
+            \ skal endres, i.e ifm journalføring. Kun én av personident eller orgnr\
+            \ kan angis"
+          example: "979312059"
+        status:
+          $ref: "#/components/schemas/Oppgavestatus"
+        endretAvEnhetsnr:
+          maxLength: 4
+          minLength: 4
+          type: string
+          description: "Enhet (eller virtuell enhet, ref. norg2) medarbeider representerer\
+            \ når endringen utføres. Skal alltid angis når utført av en medarbeider\
+            \ (OBO). For maskinelle prosesser skal verdien utelates (dersom en verdi\
+            \ angis, så vil systemet uansett overstyre til null)"
+          example: "2990"
+        beskrivelse:
+          type: string
+          description: "Beskrivelse av oppgaven. Dette feltet skal som hovedregel\
+            \ aldri benyttes lenger ved patching av oppgaver. Endringer av fordeling,\
+            \ kategorier etc populeres automatisk i strukturert endringslogg. Kommentarer\
+            \ kan sendes inn i eget strukturert felt, uten spesifikasjon av hvem som\
+            \ kommenterte, når etc (lagres strukturert ut i fra tidspunkt og token).Systemet\
+            \ vil inntil videre automatisk populere beskrivelseshistorikken med bå\
+            de kommentarer og endringslogg  (endringslogg i beskrivelseshistorikken\
+            \ vil imidlertid kun inneholde informasjon om fordeling av oppgave, og\
+            \ endring av tema og oppgavetype). Dersom det er essensielt at beskrivelseshistorikken\
+            \ avviker fra det automatisk genererte, må denne fortsatt sendes med,\
+            \ da automatikk ved oppdatering av beskrivelse ikke gjennomføres når feltet\
+            \ er med i requesten med eksisternde eller oppdatert data"
+        tilordnetRessurs:
+          type: string
+          description: Navident for ressursen som skal tildeles oppgaven
+          example: Z998323
+        tildeltEnhetsnr:
+          type: string
+          description: Enheten oppgaven skal tildeles
+          example: "4488"
+        prioritet:
+          $ref: "#/components/schemas/PrioritetV1"
+        behandlingstema:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Kategorisering av oppgaven. Må være tillatt for det aktuelle
+            temaet og i kombinasjon med en ev. behandlingstype. Se api for kodeverk
+          example: ab0203
+        behandlingstype:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Kategorisering av oppgaven. Må være tillatt for det aktuelle
+            temaet og i kombinasjon med et ev. behandlingstema. Se api for kodeverk
+          example: ae0001
+        fristFerdigstillelse:
+          type: string
+          description: Oppgavens frist for ferdigstillelse.
+          format: date
+          example: 2018-03-24
+        aktivDato:
+          type: string
+          description: "Benyttes for å legge en oppgave \"på vent\". Styrer visning\
+            \ i arbeidsflater, der oppgaver med dato <= dagens dato vises."
+          format: date
+          example: 2018-03-10
+        oppgavetype:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Mer presis kategorisering av oppgaven. Må være tillatt for
+            det aktuelle temaet. Se api for kodeverk
+          example: JFR
+        tema:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Tema (fagområde) for oppgaven
+          example: AAP
+        journalpostId:
+          type: string
+          description: Angis for å knytte oppgaven til en journalpost i arkivet
+          example: "84938201"
+        saksreferanse:
+          type: string
+          description: Angis for å knytte oppgaven til en sak i et fagsystem
+          example: "11231123"
+        behandlesAvApplikasjon:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Angis for å indikere hvilken applikasjon oppgaven skal behandles
+            i
+          example: FS22
+        kommentar:
+          $ref: "#/components/schemas/RegistrerKommentarJson"
+        personident:
+          maxLength: 13
+          minLength: 11
+          type: string
+          description: "ident for person oppgaven gjelder, dvs. fnr, dnr, npid eller\
+            \ aktørid. Kan ikke nullstilles. Kun én av personident eller orgnr kan\
+            \ angis. Merk at det kun er i helt spesielle tilfeller ident skal endres,\
+            \ i.e ifm journalføring"
+          example: "12345678911"
+    RegistrerKommentarJson:
+      type: object
+      properties:
+        tekst:
+          type: string
+        automatiskGenerert:
+          type: boolean
+          description: "Skal settes til true dersom kommentaren er automatisk generert\
+            \ av et system, og det benyttes OBO-token. Ignoreres ved CCF"
+      description: Kommentar i tilknytning til endringer. Hensyntas kun ved patch
+      example: "Avventer dokumentasjon, lagt på vent til 25.01"
+    Avvisningsaarsak:
+      type: object
+      properties:
+        begrunnelse:
+          type: string
+    Beskrivelse:
+      type: object
+      properties:
+        tekst:
+          type: string
+        legacy:
+          type: boolean
+          description: "Eldre oppgaver (reg. før 01.01.2024) vil returnere beskrivelse\
+            \ som i mange tilfeller også inneholder diverse headere, kommentarer,\
+            \ da dette representerer et tekstfelt som har fått tillagt informasjon\
+            \ under oppgavens livsløp. Når false - beskrivelse av oppgaven som skal\
+            \ utføres (med forbehold om at konsumenter overholder retningslinjene)"
+    Fordeling:
+      required:
+      - enhetsnr
+      type: object
+      properties:
+        enhetsnr:
+          type: string
+          description: Spesifiserer enheten oppgaven skal fordeles til. Må være oppgavebehandlende
+            og aktiv
+        mappe:
+          $ref: "#/components/schemas/Mappe"
+        medarbeider:
+          $ref: "#/components/schemas/Medarbeider"
+      description: Angir hvordan oppgaven skal fordeles
+    Historikk:
+      required:
+      - opprettet
+      type: object
+      properties:
+        opprettet:
+          $ref: "#/components/schemas/SistUtfort"
+        endret:
+          $ref: "#/components/schemas/SistUtfort"
+        lukket:
+          $ref: "#/components/schemas/SistUtfort"
+    Kategorikodeverk:
+      type: object
+      properties:
+        kode:
+          type: string
+        term:
+          type: string
+    KategoriseringDto:
+      required:
+      - oppgavetype
+      - tema
+      type: object
+      properties:
+        tema:
+          $ref: "#/components/schemas/Kategorikodeverk"
+        oppgavetype:
+          $ref: "#/components/schemas/Kategorikodeverk"
+        behandlingstema:
+          $ref: "#/components/schemas/Kategorikodeverk"
+        behandlingstype:
+          $ref: "#/components/schemas/Kategorikodeverk"
+    KommentarDto:
+      type: object
+      properties:
+        tekst:
+          type: string
+        registrert:
+          $ref: "#/components/schemas/Registrert"
+        legacy:
+          type: boolean
+          readOnly: true
+    Listeresultat:
+      required:
+      - oppgaver
+      type: object
+      properties:
+        oppgaver:
+          type: array
+          items:
+            $ref: "#/components/schemas/TilgangskontrollertOppgaveDto"
+        paginering:
+          $ref: "#/components/schemas/Paginering"
+    MappeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        navn:
+          type: string
+        tema:
+          type: string
+    Medarbeider:
+      type: object
+      properties:
+        navident:
+          type: string
+      description: "Spesifiserer navident til medarbeider ved angitt enhet som oppgaven\
+        \ skal fordeles til. Som hovedregel skal oppgaver ikke tildeles medarbeider\
+        \ direkte ifm. automatiske prosesser, men det finnes noen unntak Angitt må\
+        \ ha tilgang til enheten oppgaven fordeles til"
+      nullable: true
+    OppgaveV3Dto:
+      required:
+      - fordeling
+      - historikk
+      - id
+      - kategorisering
+      - nokkelord
+      - prioritet
+      - status
+      - versjon
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        kategorisering:
+          $ref: "#/components/schemas/KategoriseringDto"
+        fordeling:
+          $ref: "#/components/schemas/Fordeling"
+        prioritet:
+          $ref: "#/components/schemas/PrioritetV2"
+        beskrivelse:
+          $ref: "#/components/schemas/Beskrivelse"
+        nokkelord:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        aktivFom:
+          type: string
+          format: date
+        frist:
+          type: string
+          format: date
+        versjon:
+          type: integer
+          format: int32
+        bruker:
+          $ref: "#/components/schemas/BrukerDto"
+        status:
+          type: string
+          enum:
+          - AAPEN
+          - FERDIGSTILT
+          - FEILREGISTRERT
+        historikk:
+          $ref: "#/components/schemas/Historikk"
+        tilknyttet:
+          $ref: "#/components/schemas/Tilknyttet"
+        kommentarer:
+          type: array
+          items:
+            $ref: "#/components/schemas/KommentarDto"
+        fritekstTilForhandsvisning:
+          type: string
+    Paginering:
+      type: object
+      properties:
+        nestePeker:
+          type: string
+    PrioritetV2:
+      type: string
+      description: "Prioritet på oppgaven. Skal normalt sett ikke angis av automatiske\
+        \ prosesser (defaulter til normal prioritet), men økt prioritet kan inngå\
+        \ i rutiner/visse arbeidsprosesser innenfor et gitt fagområde. Høy prioritet,\
+        \ vil fremheves blant oppgaver tildelt en medarbeider og/eller ved visning\
+        \ av oppgaver i en kø, og det kan settes opp egne køer som kun inkluderer\
+        \ oppgaver med spesifisert prioritet "
+      example: HOY
+      enum:
+      - LAV
+      - NORMAL
+      - HOY
+    Registrert:
+      type: object
+      properties:
+        av:
+          type: string
+        enhetsnr:
+          type: string
+        system:
+          type: string
+        tidspunkt:
+          type: string
+          format: date-time
+      readOnly: true
+    SistUtfort:
+      required:
+      - av
+      - tidspunkt
+      type: object
+      properties:
+        tidspunkt:
+          type: string
+          format: date-time
+        av:
+          $ref: "#/components/schemas/UtfortAv"
+    TilgangskontrollertOppgaveDto:
+      required:
+      - oppgave
+      - tilgangskontroll
+      type: object
+      properties:
+        tilgangskontroll:
+          $ref: "#/components/schemas/Tilgangskontrollresultat"
+        oppgave:
+          $ref: "#/components/schemas/OppgaveV3Dto"
+    Tilgangskontrollresultat:
+      type: object
+      properties:
+        harTilgang:
+          type: boolean
+        avvisningsaarsak:
+          $ref: "#/components/schemas/Avvisningsaarsak"
+    Tilknyttet:
+      type: object
+      properties:
+        bruker:
+          $ref: "#/components/schemas/BrukerDto"
+        sakId:
+          type: string
+          description: "Sak oppgaven er tilknyttet. Kan benyttes for å finne igjen\
+            \ oppgaver tilknyttet en spesifikk sak i ettertid. Når angitt, vil tilknytningen\
+            \ fremkomme i genereltbilde for oppgavehåndtering i Gosys - og man kan\
+            \ få opp dokumentene journalført mot saken"
+        journalpostId:
+          type: string
+          description: "En spesifikk journalpost oppgaven er tilknyttet. Når angitt,\
+            \ vil tilknytningen fremkomme i genereltbilde for oppgavehåndtering i\
+            \ Gosys - og dokumentet vil fremheves"
+        system:
+          type: string
+          description: "Et system oppgaven er tilknyttet. Benyttes av systemer som\
+            \ har spesialisert løsning for å løse opppgaven. Muliggjør direktelenking\
+            \ når man benytter Gosys til å plukke oppgaver, samt direktelenking fra\
+            \ det generelle oppgavebildet. Det vil i tillegg settes begrensninger\
+            \ ift. hva man får lov til å gjøre i det generelle oppgavebildet i Gosys\
+            \ (p.t sperres tema, oppgavetype og mulighet til å ferdigstille oppgaven)"
+      description: "Hva/hvem oppgaven er tilknyttet. Merk at det er p.t ingen relasjonssjekk\
+        \ mot arkivet, så det er konsuments ansvar å sikre integritet dersom det oppgis\
+        \ flere tilknytninger (at journalpost er knyttet mot spesifisert bruker, at\
+        \ sak er knyttet til bruker, at journalpost tilhører spesifisert sak osv"
+    UtfortAv:
+      required:
+      - ident
+      type: object
+      properties:
+        ident:
+          type: string
+        enhetsnr:
+          type: string
+    Filter:
+      type: object
+      properties:
+        tema:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kodeverkskode"
+        oppgavetype:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kodeverkskode"
+        behandlingstema:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/NullbarKodeverkskode"
+        behandlingstype:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/NullbarKodeverkskode"
+        kategorisering:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kategorisering"
+        nokkelord:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        mappe:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/IdKriterie"
+        prioritet:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/PrioritetV2"
+        frist:
+          $ref: "#/components/schemas/Periode"
+        opprettet:
+          $ref: "#/components/schemas/Periode"
+        identStartsWith:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        system:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/System"
+        medarbeiderfordeling:
+          $ref: "#/components/schemas/Medarbeiderfordeling"
+        ventestatus:
+          $ref: "#/components/schemas/Ventestatus"
+        not:
+          $ref: "#/components/schemas/Not"
+    IdKriterie:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+    Kategorisering:
+      type: object
+      properties:
+        tema:
+          $ref: "#/components/schemas/Kodeverkskode"
+        oppgavetype:
+          $ref: "#/components/schemas/Kodeverkskode"
+        behandlingstema:
+          $ref: "#/components/schemas/NullbarKodeverkskode"
+        behandlingstype:
+          $ref: "#/components/schemas/NullbarKodeverkskode"
+    Kodeverkskode:
+      required:
+      - kode
+      type: object
+      properties:
+        kode:
+          type: string
+    Medarbeiderfordeling:
+      type: string
+      enum:
+      - FORDELT
+      - IKKE_FORDELT
+    Not:
+      type: object
+      properties:
+        temaer:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kodeverkskode"
+        oppgavetyper:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kodeverkskode"
+        behandlingstema:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/NullbarKodeverkskode"
+        behandlingstype:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/NullbarKodeverkskode"
+        underkategorier:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kategorisering"
+    NullbarKodeverkskode:
+      type: object
+      properties:
+        kode:
+          type: string
+    Oppgavesok:
+      type: object
+      properties:
+        filter:
+          $ref: "#/components/schemas/Filter"
+        paginering:
+          $ref: "#/components/schemas/Paginering"
+        sortering:
+          $ref: "#/components/schemas/Sortering"
+        inkluderKommentarer:
+          type: boolean
+    Periode:
+      type: object
+      properties:
+        fra:
+          type: string
+          format: date
+        til:
+          type: string
+          format: date
+    Sortering:
+      type: object
+      properties:
+        felt:
+          type: string
+          enum:
+          - FRIST
+          - OPPRETTET
+        rekkefolge:
+          type: string
+          enum:
+          - ELDSTE_FORST
+          - NYESTE_FORST
+    System:
+      type: string
+      enum:
+      - GOSYS
+      - EKSTERNT
+    Ventestatus:
+      type: string
+      enum:
+      - SATT_PAA_VENT
+      - IKKE_SATT_PAA_VENT
+    Koefilter:
+      type: object
+      properties:
+        tema:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kodeverkskode"
+        oppgavetype:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kodeverkskode"
+        behandlingstema:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/NullbarKodeverkskode"
+        behandlingstype:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/NullbarKodeverkskode"
+        kategorisering:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Kategorisering"
+        nokkelord:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        mappe:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/IdKriterie"
+        prioritet:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/PrioritetV2"
+        frist:
+          $ref: "#/components/schemas/Periode"
+        opprettet:
+          $ref: "#/components/schemas/Periode"
+        identStartsWith:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        system:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/System"
+        not:
+          $ref: "#/components/schemas/Not"
+    Koekriterier:
+      type: object
+      properties:
+        koefilter:
+          $ref: "#/components/schemas/Koefilter"
+        sortering:
+          $ref: "#/components/schemas/Sortering"
+        antallOppgaver:
+          type: integer
+          format: int64
+        tildelingskriterie:
+          $ref: "#/components/schemas/Tildelingskriterie"
+    Tildelingskriterie:
+      type: string
+      enum:
+      - PRIORITERT_REKKEFOLGE
+      - GEOGRAFI
+      - BRUKER
+    Endringsmeta:
+      type: object
+      properties:
+        utfortAvEnhetsnr:
+          type: string
+          description: Angir enheten medarbeider representerer (Norg2) ifm. endringen.
+            Påkrevd ved OBO. Skal ikke angis ved CCF (defaulter null)
+        versjon:
+          type: integer
+          description: "Versjonen oppgaven ble returnert med. Ivaretar optimistisk\
+            \ låsing. Skal som hovedregel angis, men kan utelates dersom en endring\
+            \ skal utføres uavhengig av oppgavens tilstand (typisk ifm visse automatiske\
+            \ prosesser)"
+          format: int32
+    Kategorikoder:
+      required:
+      - oppgavetype
+      - tema
+      type: object
+      properties:
+        tema:
+          type: string
+        oppgavetype:
+          type: string
+          externalDocs:
+            description: En av gyldige oppgavetyper for temaet
+            url: "https://oppgave.intern.dev.nav.no/api/v1/kodeverk/oppgavetype/{tema}"
+        behandlingstema:
+          type: string
+          description: "See [/my/otherEndpoint](#/api/v1/kodeverk/oppgavetype/myOtherEndpointId)\
+            \ for stuff"
+          nullable: true
+        behandlingstype:
+          type: string
+          nullable: true
+      description: "Angir kategorisering av oppgaven. Denne skal være så presis som\
+        \ mulig for å kunne ivareta god oppgavestyring, enkel identfikasjon- og prioritering\
+        \ av oppgavene. Tillatte verdier for et tema eies av det enkelte fagområdet.\
+        \ Ta kontakt ved behov for endringer for et gitt tema, behov for nye verdier\
+        \ osv. Det er en rask endring teknisk, men endringer her vil i noen tilfeller\
+        \ påvirke eksisterende rutiner etc, så det kan være at det må avklares med\
+        \ f.eks styringsenhet for enkelte fagområder. "
+    OppdaterOppgaveDto:
+      type: object
+      properties:
+        fordeling:
+          $ref: "#/components/schemas/Fordeling"
+        kategorisering:
+          $ref: "#/components/schemas/Kategorikoder"
+        kommentar:
+          $ref: "#/components/schemas/KommentarDto"
+        prioritet:
+          $ref: "#/components/schemas/PrioritetV2"
+        frist:
+          type: string
+          description: Oppgavens frist (ISO-8601). Kan ikke være < aktivFom
+          format: date
+          example: 2025-01-02
+        aktivFom:
+          type: string
+          description: Spesifiseres iht ISO-8601 dersom oppgaven skal settes på /
+            tas av vent. En oppgave med aktivFom frem i tid er satt på vent til den
+            aktuelle datoen. AktivFom <= dd innebærer at oppgaven ikke er på vent.
+            Kan ikke tilbakedateres til før dd
+          format: date
+          example: 2025-01-01
+        nokkelord:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+            description: "Nøkkelord er en form for tagging av oppgaven for å skille\
+              \ oppgaver fra hverandre der kategoriseringen ikke er tilstrekkelig.Dersom\
+              \ taggingen er unik for et fagområde, bør det vurderes om det kan væ\
+              re aktuelt med flere kategorier"
+        status:
+          type: string
+          enum:
+          - AAPEN
+          - FERDIGSTILT
+          - FEILREGISTRERT
+        meta:
+          $ref: "#/components/schemas/Endringsmeta"
+    Meta:
+      type: object
+      properties:
+        utfortAvEnhetsnr:
+          type: string
+          description: 'Kun for endringer utført i kontekst av en bruker. '
+        uuid:
+          type: string
+          description: "Unik identifikator for teknisk duplikatkontroll. Bør angis\
+            \ dersom man har automatisk retry på tjenestekallet. For tilfeller der\
+            \ asynkrone prosesser trigger retry gitt en spesifisert tilstand, i.e.\
+            \ mottatt nytt dokumentbør det alltid utføres en forretningsmessig duplikatkontroll\
+            \ (er dokumentet blitt journalført i mellomtiden, finnes journalføringsoppgave\
+            \ og/eller fordelingsoppgave for dokumentet allerede )"
+          format: uuid
+    OpprettOppgaveV2Request:
+      required:
+      - fordeling
+      - frist
+      - kategorisering
+      - prioritet
+      - tilknyttet
+      type: object
+      properties:
+        fordeling:
+          $ref: "#/components/schemas/Fordeling"
+        kategorisering:
+          $ref: "#/components/schemas/Kategorikoder"
+        beskrivelse:
+          type: string
+          description: "Beskrivelse av oppgaven som skal utføres. Unngå all bruk av\
+            \ egendefinerte headere, hvem, når fra hvor etc, og unngå personopplysninger\
+            \ etc. som ikke er helt nødvendigefor å få utført oppgaven. Tenkt også\
+            \ gjennom mengden informasjon som legges her, at det ikke blir en "
+        kommentar:
+          type: string
+          description: "Det kan legges ved en kommentar til opprettelsen, f.eks hvis\
+            \ medarbeider vil gi en beskjed til den som mottar som ikke passer i beskrivelsen"
+        prioritet:
+          $ref: "#/components/schemas/PrioritetV2"
+        frist:
+          type: string
+          format: date
+        aktivFom:
+          type: string
+          description: "Når oppgaven skal bli aktiv. Dette skal normalt sett ikke\
+            \ angis (oppgaven skal være aktiv umiddelbart), men det finnes tilfeller\
+            \ der man f.eks venter på informasjon der det kan være aktuelt å sette\
+            \ denne frem i tid. Kan ikke tilbakejusteres"
+          format: date
+        nokkelord:
+          uniqueItems: true
+          type: array
+          description: "Nøkkelord er en form for tagging av oppgaven for å skille\
+            \ oppgaver fra hverandre der kategoriseringen ikke er tilstrekkelig. \
+            \ Det bør vurderes om det bør etableres flere kategorier før man tagger\
+            \ med nøkkelord. For automatiske prosesser der det genereres beskrivelse\
+            \ som skiller oppgaver med lik kategorisering fra hverandre, og skillet\
+            \ er relevant ift. oppgavestyringen anbefales det sterkt å ta i bruk nø\
+            kkelord. Kan også i mange tilfeller  vurderes som en erstatning for enhetsmapper,\
+            \ da nøkkelord kan benyttes i automatiske prosesser"
+          items:
+            type: string
+            description: "Nøkkelord er en form for tagging av oppgaven for å skille\
+              \ oppgaver fra hverandre der kategoriseringen ikke er tilstrekkelig.\
+              \  Det bør vurderes om det bør etableres flere kategorier før man tagger\
+              \ med nøkkelord. For automatiske prosesser der det genereres beskrivelse\
+              \ som skiller oppgaver med lik kategorisering fra hverandre, og skillet\
+              \ er relevant ift. oppgavestyringen anbefales det sterkt å ta i bruk\
+              \ nøkkelord. Kan også i mange tilfeller  vurderes som en erstatning\
+              \ for enhetsmapper, da nøkkelord kan benyttes i automatiske prosesser"
+        tilknyttet:
+          $ref: "#/components/schemas/Tilknyttet"
+        meta:
+          $ref: "#/components/schemas/Meta"
+  securitySchemes:
+    oidc:
+      type: http
+      description: "OIDC-token (JWT via OAuth2.0). Vi støtter CCF og OBO (Azure) for\
+        \ nye konsumenter, samt nais-sts for eksisterende konsumenter som ikke enda\
+        \ har hatt mulighet til å ta i bruk Azure CCF"
+      scheme: bearer
