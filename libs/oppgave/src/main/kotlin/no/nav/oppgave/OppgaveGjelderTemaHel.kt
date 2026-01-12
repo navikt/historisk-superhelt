@@ -1,8 +1,13 @@
 package no.nav.oppgave
 
-import no.nav.oppgave.models.Oppgave
+import no.nav.oppgave.model.Oppgave
 
-enum class OppgaveGjelder(
+/** Tema og type for hva oppgaven gjelder, satt sammen av behandlingstema og behandlingstype fra oppgaven
+ *
+ * Hentet fra https://oppgave.intern.dev.nav.no/#/Kodeverk/hentGjelderverdierForTema
+ * */
+
+enum class OppgaveGjelderTemaHel(
     val behandlingstema: String?,
     val behandlingstemaTerm: String?,
     val behandlingstype: String?,
@@ -69,6 +74,6 @@ enum class OppgaveGjelder(
 
 }
 
-val Oppgave.gjelder: OppgaveGjelder
-    get() = OppgaveGjelder.entries.find<OppgaveGjelder> { it.behandlingstema == behandlingstema && it.behandlingstype == behandlingstype }
-        ?: OppgaveGjelder.UKJENT
+val Oppgave.gjelder: OppgaveGjelderTemaHel
+    get() = OppgaveGjelderTemaHel.entries.find<OppgaveGjelderTemaHel> { it.behandlingstema == behandlingstema && it.behandlingstype == behandlingstype }
+        ?: OppgaveGjelderTemaHel.UKJENT

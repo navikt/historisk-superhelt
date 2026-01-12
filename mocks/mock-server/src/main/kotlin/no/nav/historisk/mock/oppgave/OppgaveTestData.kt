@@ -3,7 +3,7 @@ package no.nav.historisk.mock.oppgave
 import net.datafaker.Faker
 
 import no.nav.historisk.mock.pdl.fakeAktoerIdFromFnr
-import no.nav.oppgave.OppgaveType
+import no.nav.oppgave.OppgaveTypeTemaHel
 import no.nav.oppgave.models.BrukerDto
 import no.nav.oppgave.models.Oppgave
 import java.time.LocalDate
@@ -28,7 +28,7 @@ fun generateOppgave(fnr:String?= null, tilordnetRessurs: String?= null): Oppgave
         tema = "HEL",
         behandlingstema = "ab0013",
         behandlingstype = "ae0034",
-        oppgavetype = OppgaveType.JFR.oppgavetype,
+        oppgavetype = OppgaveTypeTemaHel.JFR.oppgavetype,
         status = Oppgave.Status.OPPRETTET,
         prioritet = Oppgave.Prioritet.NORM,
         versjon = 1,
