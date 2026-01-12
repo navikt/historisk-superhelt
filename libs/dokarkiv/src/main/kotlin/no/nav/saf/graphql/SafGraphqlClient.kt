@@ -1,6 +1,6 @@
 package no.nav.saf.graphql
 
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestClient
 

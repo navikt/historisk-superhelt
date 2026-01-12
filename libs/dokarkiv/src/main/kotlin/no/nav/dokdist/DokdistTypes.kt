@@ -1,6 +1,6 @@
 package no.nav.dokdist
 
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 
 data class DistribuerJournalpostRequest(
     val journalpostId: EksternJournalpostId,

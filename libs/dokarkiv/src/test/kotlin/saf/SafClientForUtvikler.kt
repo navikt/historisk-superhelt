@@ -1,7 +1,7 @@
 package saf
 
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.saf.graphql.SafGraphqlClient
 import no.nav.saf.rest.SafRestClient
 import org.junit.jupiter.api.Disabled

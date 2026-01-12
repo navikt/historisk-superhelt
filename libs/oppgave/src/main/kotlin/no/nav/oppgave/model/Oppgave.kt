@@ -1,5 +1,9 @@
 package no.nav.oppgave.model
 
+import no.nav.common.types.AktorId
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Enhetsnummer
+import no.nav.common.types.NavIdent
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
@@ -7,7 +11,7 @@ data class Oppgave(
     /** Syntetisk id */
     val id: Long,
     /** Enheten oppgaven er tildelt */
-    val tildeltEnhetsnr: String,
+    val tildeltEnhetsnr: Enhetsnummer,
     /** Kategorisering av oppgaven. Hvilket tema/fagområde oppgaven tilhører */
     val tema: String,
     /** Kategorisering av hva slags oppgavetype det er. Hvilke oppgavetyper som er tillatt for et gitt tema er definert i oppgavekodeverket. */
@@ -27,17 +31,17 @@ data class Oppgave(
     /** Hvilken enhet som har opprettet oppgaven */
     val opprettetAvEnhetsnr: String? = null,
     /** Id for en journalpostreferanse */
-    val journalpostId: String? = null,
+    val journalpostId: EksternJournalpostId? = null,
     /** Hvilken applikasjon oppgaven skal behandles i */
     val behandlesAvApplikasjon: String? = null,
     /** Referanse til sak i fagsystem */
     val saksreferanse: String? = null,
     /** Syntetisk id for en person, kan hentes fra PDL */
-    val aktoerId: String? = null,
+    val aktoerId: AktorId? = null,
     /** Organisasjonsnummer. Bedriften oppgaven skal løses på vegne av */
     val orgnr: String? = null,
     /** NavIdent for ressursen som er tilordnet oppgaven. */
-    val tilordnetRessurs: String? = null,
+    val tilordnetRessurs: NavIdent? = null,
     /** MERK! Vi arbeider med å migrere bort fra ett stort tekstfelt til strukturerte kommentarer + strukturert endringslogg. Bruken av feltet er under utfasing i Gosys. Dersom ditt system benytter dette feltet ber vi dere følge disse retningslinjene\n\n: 1. Beskrivelse som registreres samtidig som oppgaven blir opprettet, skal _ikke_ ha header\n2. Når beskrivelsen benyttes til status-oppdateringer, kommentarer etc i etterkant så skal header på følgende format benyttes, og legges til foran den eksisterende beskrivelsen:  --- dd.MM.yyyy <navn på ansatt> (<navident/systemnavn>, <enhet endringen utføres på vegne av>)\\n\\n\n3. Ta i bruk kommentar-feltet for å registrere kommentarer fra saksbehandlere og/eller automatiske oppdateringer i tillegg til beskrivelsen, samt gi oss beskjed om at dette er gjort. Kommentaren skal _ikke_ ha headerLegacyfelt som benyttes til mye forskjellig. For å ivareta bakoverkompatibilitet, må konsumenter som ønsker at beskrivelseshistorikken skal være synlig i andre skjermbilder enn så lenge fortsette å benytte dette */
     val beskrivelse: String? = null,
     /** Kategoriserer oppgaven innenfor angitt tema. Som hovedregel skal det alltid angis enten behandlingstema, behandlingstype eller begge. Tillatte verdier er begrenset per tema, og endringer avklares med fagansvarlig/styringsenhet for området. Se /api/v1/kodeverk/gjelder/{tema} */
@@ -66,12 +70,31 @@ data class Oppgave(
         val ident: String,
         /** Bruker type */
         val type: BrukerType
-
-    )
-
-    /** Bruker oppgaven er tilknyttet */
-    enum class BrukerType {
-        PERSON, ARBEIDSGIVER, SAMHANDLER
-
+    ){
+        /** Bruker oppgaven er tilknyttet */
+        enum class BrukerType {
+            PERSON, ARBEIDSGIVER, SAMHANDLER
+        }
     }
+
+
+
+    /** Hvilken status oppgaven har. Konsumenter bør kun forholde seg til dette ved behov for å skille mellom ferdigstilt og feilregistrert */
+    enum class Status {
+        OPPRETTET,
+        AAPNET,
+        UNDER_BEHANDLING,
+        FERDIGSTILT,
+        FEILREGISTRERT
+    }
+
+    /** Angir hvilken prioritet oppgaven har */
+    enum class Prioritet {
+        HOY,
+        NORM,
+        LAV
+    }
+
+
 }
+

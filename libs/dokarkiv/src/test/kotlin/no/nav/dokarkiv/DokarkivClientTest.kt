@@ -1,7 +1,6 @@
 package no.nav.dokarkiv
 
-import no.nav.common.types.FolkeregisterIdent
-import no.nav.common.types.Saksnummer
+import no.nav.common.types.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hamcrest.Matchers

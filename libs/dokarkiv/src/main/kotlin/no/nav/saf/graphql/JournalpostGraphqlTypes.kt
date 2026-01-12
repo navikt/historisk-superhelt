@@ -1,6 +1,6 @@
 package no.nav.saf.graphql
 
-import no.nav.dokarkiv.EksternJournalpostId
+import no.nav.common.types.EksternJournalpostId
 
 data class JournalPostVariables(
     val journalpostId: EksternJournalpostId,

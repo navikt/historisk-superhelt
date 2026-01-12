@@ -1,6 +1,7 @@
 package no.nav.oppgave.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import no.nav.common.types.EksternJournalpostId
 import java.time.LocalDate
 import java.util.*
 
@@ -16,7 +17,7 @@ data class OpprettOppgaveRequest(
     /** Hvilken enhet som har opprettet oppgaven. Skal alltid angis dersom oppgaven registreres av en medarbeider */
     val opprettetAvEnhetsnr: String? = null,
     /** Id for en journalpostreferanse. Benyttes når oppgaven skal kobles mot journalposter, i.e for journalføringsoppgaver */
-    val journalpostId: String? = null,
+    val journalpostId: EksternJournalpostId? = null,
     /** Indikerer hvilken applikasjon oppgaven skal behandles i. Hvis angitt vil dette begrense hva man kan endre på av oppgaven i Gosys */
     val behandlesAvApplikasjon: String? = null,
     /** Knytter oppgaven til en sak i et fagsystem */
@@ -33,12 +34,12 @@ data class OpprettOppgaveRequest(
     val behandlingstype: String? = null,
     /** Benyttes for å legge en oppgave "på vent". Sette normalt til dagens dato for nye oppgaver. Styrer visning i arbeidsflater, der oppgaver med dato <= dagens dato vises. */
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    val aktivDato: LocalDate,
+    val aktivDato: LocalDate= LocalDate.now(),
     /** Oppgavens frist for ferdigstillelse. */
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val fristFerdigstillelse: LocalDate? = null,
     /** Angir hvilken prioritet oppgaven har */
-    val prioritet: Prioritet,
+    val prioritet: Oppgave.Prioritet = Oppgave.Prioritet.NORM,
     /** Unik identifikator for duplikatkontroll */
     val uuid: UUID? = null
 )
