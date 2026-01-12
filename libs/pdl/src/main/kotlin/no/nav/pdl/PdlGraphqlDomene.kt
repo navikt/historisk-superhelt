@@ -15,6 +15,7 @@ data class PdlData(
 data class Person(
     val navn: List<Navn>?,
     val doedsfall: List<Doedsfall>?,
+    val foedselsdato: List<Foedselsdato>?,
     val adressebeskyttelse: List<Adressebeskyttelse>?,
     val vergemaalEllerFremtidsfullmakt: List<VergemaalEllerFremtidsfullmakt>?
 )
@@ -27,6 +28,10 @@ data class Navn(
 
 data class Doedsfall(
     val doedsdato: String?
+)
+
+data class Foedselsdato(
+    val foedselsdato: String?
 )
 
 data class Adressebeskyttelse(
@@ -78,4 +83,3 @@ data class PdlErrorLocation(
 data class PdlErrorExtension(
     val code: String?, val classification: String
 )
-

@@ -11,6 +11,7 @@ object PersonTestData {
         aktorId = "1234567890123",
         alleFnr = setOf(FolkeregisterIdent("12345678901")),
         doedsfall = null,
+        foedselsdato = null,
         verge = null,
         harTilgang = true,
         fornavn = "Ola",

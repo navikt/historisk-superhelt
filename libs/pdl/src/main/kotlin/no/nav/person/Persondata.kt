@@ -11,6 +11,7 @@ data class Persondata(
     val aktorId: AktorId,
     val alleFnr: Set<FolkeregisterIdent>,
     val doedsfall: Doedsfall,
+    val foedselsdato: Foedselsdato,
     val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
     val verge: FolkeregisterIdent?,
     val harTilgang: Boolean
@@ -18,5 +19,4 @@ data class Persondata(
 
 typealias AktorId = String
 typealias Doedsfall = String?
-
-
+typealias Foedselsdato = String?

@@ -211,6 +211,7 @@ class PdlClientTest {
             hentPerson = Person(
                 navn = emptyList(),
                 doedsfall = emptyList(),
+                foedselsdato = emptyList(),
                 adressebeskyttelse = emptyList(),
                 vergemaalEllerFremtidsfullmakt = emptyList()
             ),
@@ -243,6 +244,7 @@ class PdlClientTest {
             hentPerson = Person(
                 navn = listOf(Navn(fornavn = "Deceased", mellomnavn = null, etternavn = "Person")),
                 doedsfall = listOf(Doedsfall(doedsdato = "2023-01-15")),
+                foedselsdato = emptyList(),
                 adressebeskyttelse = emptyList(),
                 vergemaalEllerFremtidsfullmakt = emptyList()
             ),
@@ -276,6 +278,7 @@ class PdlClientTest {
             hentPerson = Person(
                 navn = listOf(Navn(fornavn = "Historical", mellomnavn = null, etternavn = "Person")),
                 doedsfall = emptyList(),
+                foedselsdato = emptyList(),
                 adressebeskyttelse = emptyList(),
                 vergemaalEllerFremtidsfullmakt = emptyList()
             ),
@@ -323,11 +326,46 @@ class PdlClientTest {
         }
     }
 
+    @Test
+    fun `getPersonOgIdenter håndterer person med foedselsdato`() {
+        // Given
+        val ident = "12345678901"
+        val pdlData = PdlData(
+            hentPerson = Person(
+                navn = listOf(Navn(fornavn = "Born", mellomnavn = null, etternavn = "Person")),
+                doedsfall = emptyList(),
+                foedselsdato = listOf(Foedselsdato(foedselsdato = "1990-05-20")),
+                adressebeskyttelse = emptyList(),
+                vergemaalEllerFremtidsfullmakt = emptyList()
+            ),
+            hentIdenter = Identliste(
+                identer = listOf(
+                    IdentInformasjon(ident = ident, gruppe = IdentGruppe.FOLKEREGISTERIDENT, historisk = false)
+                )
+            )
+        )
+        val response = HentPdlResponse(data = pdlData, errors = null)
+
+        mockServer.expect(requestTo("/graphql"))
+            .andExpect(method(HttpMethod.POST))
+            .andExpect(header("Behandlingsnummer", behandlingsnummer))
+            .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON))
+
+        // When
+        val result = pdlClient.getPersonOgIdenter(ident)
+
+        // Then
+        assertNotNull(result)
+        assertEquals(1, result?.data?.hentPerson?.foedselsdato?.size)
+        assertEquals("1990-05-20", result?.data?.hentPerson?.foedselsdato?.first()?.foedselsdato)
+    }
+
     private fun createValidPdlData(ident: String): PdlData {
         return PdlData(
             hentPerson = Person(
                 navn = listOf(Navn(fornavn = "Ola", mellomnavn = null, etternavn = "Nordmann")),
                 doedsfall = emptyList(),
+                foedselsdato = emptyList(),
                 adressebeskyttelse = emptyList(),
                 vergemaalEllerFremtidsfullmakt = emptyList()
             ),
@@ -344,6 +382,7 @@ class PdlClientTest {
             hentPerson = Person(
                 navn = listOf(Navn(fornavn = "Kari", mellomnavn = "Anne", etternavn = "Hansen")),
                 doedsfall = emptyList(),
+                foedselsdato = emptyList(),
                 adressebeskyttelse = listOf(
                     Adressebeskyttelse(gradering = AdressebeskyttelseGradering.FORTROLIG)
                 ),

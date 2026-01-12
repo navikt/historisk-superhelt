@@ -19,6 +19,7 @@ fun pdlData(fnr: String) = PdlData(
             )
         ),
         doedsfall = listOf(),
+        foedselsdato = listOf(),
         adressebeskyttelse = listOf(),
         vergemaalEllerFremtidsfullmakt = listOf()
     ),
