@@ -21,7 +21,7 @@ runs:
 
     - uses: actions/setup-node@v6
       with:
-        node-version: 'lts/*'
+        node-version: '24'
         cache: npm
         cache-dependency-path: frontend/package-lock.json
         registry-url: "https://npm.pkg.github.com"
@@ -35,6 +35,6 @@ runs:
 
     - name: Build artifacts
       shell: bash
-      run: mvn --batch-mode install -Dmaven.test.skip=${{ inputs.skipTests }}
+      run: mvn --batch-mode verify -Dmaven.test.skip=${{ inputs.skipTests }}
       env:
         NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}

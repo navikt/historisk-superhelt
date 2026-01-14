@@ -26,10 +26,28 @@ jobs:
       telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
     steps:
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
+      - uses: actions/setup-java@v5
         with:
-          node-auth-token: ${{ secrets.READER_TOKEN }}
-          skipTests: false
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+          registry-url: "https://npm.pkg.github.com"
+
+      - name: Installere node moduler
+        working-directory: ./frontend
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Build artifacts
+        run: mvn --batch-mode verify
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Bygg og push docker image til GAR
         uses: nais/docker-build-push@791ebb6f74b82849c742a9bc9c97abe44c6c111f #v0
