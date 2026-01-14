@@ -4,11 +4,6 @@ inputs:
   node-auth-token:
     description: 'Token for npm registry'
     required: true
-  skipTests:
-    description: 'Skip tests'
-    required: false
-    default: false
-    type: boolean
     
 runs:
   using: 'composite'
@@ -33,8 +28,4 @@ runs:
       env:
         NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
 
-#    - name: Build artifacts
-#      shell: bash
-#      run: mvn --batch-mode verify -Dmaven.test.skip=${{ inputs.skipTests }}
-#      env:
-#        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
+

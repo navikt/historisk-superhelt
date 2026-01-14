@@ -20,7 +20,6 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           node-auth-token: ${{ secrets.READER_TOKEN }}
-          skipTests: true
      
       - name: Add host.docker.internal to /etc/hosts
         run: echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
