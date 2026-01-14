@@ -33,7 +33,7 @@ jobs:
 
       - name: Start backend
         run: |
-          nohup mvn --batch-mode -pl backend -am -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run  > backend.log 2>&1 &
+          nohup mvn --batch-mode -pl backend -am -DskipTests -Dspring-boot.run.profiles=dev package spring-boot:run  > backend.log 2>&1 &
           echo $! > backend.pid
 
 
@@ -76,7 +76,6 @@ jobs:
       - name: Clean up Docker containers
         if: always()
         run: |
-          docker compose logs mock-server
           docker compose down
       
       - name: Stopp backend
