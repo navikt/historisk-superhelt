@@ -31,7 +31,7 @@ class OppgaveClientTest {
     private val restClient = RestClient.builder(restTemplate).build()
     private val oppgaveClient = OppgaveClient(restClient)
 
-    val oppgave = Oppgave(
+    private val oppgave = Oppgave(
         id = 123456789,
         tildeltEnhetsnr = Enhetsnummer("4100"),
         tema = "OPP",
@@ -168,7 +168,7 @@ class OppgaveClientTest {
         )
 
         val oppgaver = listOf(
-           oppgave.copy(id = 1),
+            oppgave.copy(id = 1),
             oppgave.copy(id = 2),
         )
 
@@ -211,7 +211,7 @@ class OppgaveClientTest {
         val response = SokOppgaverResponse(
             antallTreffTotalt = 1,
             oppgaver = listOf(
-              oppgave
+                oppgave
             )
         )
 
