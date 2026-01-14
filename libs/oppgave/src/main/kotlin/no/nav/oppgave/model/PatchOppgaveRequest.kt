@@ -49,11 +49,12 @@ data class PatchOppgaveRequest(
     val kommentar: Kommentar? = null,
     /** ident for person oppgaven gjelder, dvs. fnr, dnr, npid eller aktørid. Kan ikke nullstilles. Kun én av personident eller orgnr kan angis. Merk at det kun er i helt spesielle tilfeller ident skal endres, i.e ifm journalføring */
     val personident: String? = null
-)
+) {
+    data class Kommentar(
+        /** Tekstinnholdet i kommentaren */
+        val tekst: String,
+        /** Skal settes til true dersom kommentaren er automatisk generert av et system, og det benyttes OBO-token. Ignoreres ved CCF */
+        val automatiskGenerert: Boolean? = null
+    )
+}
 
-data class Kommentar(
-    /** Tekstinnholdet i kommentaren */
-    val tekst: String,
-    /** Skal settes til true dersom kommentaren er automatisk generert av et system, og det benyttes OBO-token. Ignoreres ved CCF */
-    val automatiskGenerert: Boolean? = null
-)
