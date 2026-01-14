@@ -4,7 +4,7 @@ export class SokPage {
    constructor(public readonly page: Page) {}
 
    async goto() {
-      this.page.goto('/')
+      await this.page.goto('/')
    }
 
    async fnr(fnr: string) {
@@ -17,4 +17,3 @@ export class SokPage {
       await expect(this.page.getByText(fnr)).toBeVisible()
    }
 }
-

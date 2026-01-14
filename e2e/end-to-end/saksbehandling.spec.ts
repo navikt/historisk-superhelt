@@ -1,5 +1,5 @@
 import {test} from './test.fixtures'
-import { expect } from '@playwright/test'
+import {expect} from '@playwright/test'
 import {faker} from '@faker-js/faker'
 
 
@@ -18,7 +18,7 @@ test.describe('Superhelt', () => {
         await page.goto('/')
     })
 
-    test('Ny sak', async ({page, auth, sok, accessibilityScan}) => {
+    test('Ny sak', async ({page, auth, sok}) => {
 
         await test.step('Logg in Sara', async () => {
             await auth.loginSara()
