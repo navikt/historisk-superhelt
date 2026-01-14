@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test'
+import {expect, type Page} from '@playwright/test'
 
 export class SokPage {
    constructor(public readonly page: Page) {}
@@ -8,9 +8,9 @@ export class SokPage {
    }
 
    async fnr(fnr: string) {
-      const searchForm= this.page.getByRole('searchbox', { name: 'Søk' });
-      await searchForm.fill(fnr)
-      await searchForm.press('Enter')
+      const searchbox= this.page.getByRole('searchbox', { name: 'Søk' });
+      await searchbox.fill(fnr)
+      await searchbox.press('Enter')
       
       // await this.page.getByRole('button', { name: 'Søk' }).click()
       await expect(this.page.getByRole('heading', { name: 'Personside' })).toBeVisible()

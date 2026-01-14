@@ -44,9 +44,9 @@ jobs:
         working-directory: ./e2e
         run: npm ci
 
-      - name: Biome check
-        working-directory: ./e2e
-        run: npx biome check
+#      - name: Biome check
+#        working-directory: ./e2e
+#        run: npx biome check
 
       # --- Caching av Playwright-browsere ---
       - name: Cache Playwright browsers

@@ -25,7 +25,7 @@ Denne mappen (`/tests`) inneholder Playwright-tester som validerer de viktigste 
 Før du kan kjøre testene, må applikasjonen være i gang og alle avhengigheter installert.
 
 1.  **Start applikasjonen:** Først må du bygge og starte frontend og backend. Se [README](../README.md) i prosjektets rotmappe for 
-fullstendige instruksjoner. Deretter bygg å kjør docker imager:
+fullstendige instruksjoner. Deretter bygg og kjør docker images:
     ```bash
     docker compose up --build --wait
     ```
