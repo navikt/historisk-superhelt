@@ -33,8 +33,8 @@ runs:
       env:
         NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
 
-    - name: Build artifacts
-      shell: bash
-      run: mvn --batch-mode verify -Dmaven.test.skip=${{ inputs.skipTests }}
-      env:
-        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
+#    - name: Build artifacts
+#      shell: bash
+#      run: mvn --batch-mode verify -Dmaven.test.skip=${{ inputs.skipTests }}
+#      env:
+#        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}

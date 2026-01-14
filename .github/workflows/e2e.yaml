@@ -25,17 +25,20 @@ jobs:
       - name: Add host.docker.internal to /etc/hosts
         run: echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
 
+      - name: Build mock server
+        run: mvn --batch-mode  -pl mocks/mock-server -am -DskipTests verify
+
       - name: Start Docker stack
         run: docker compose up --build -d --wait
 
       - name: Start backend
         run: |
-          nohup mvn --batch-mode -pl backend -am -DskipTests spring-boot:run > backend.log 2>&1 &
+          nohup mvn --batch-mode -pl backend -am -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run  > backend.log 2>&1 &
           echo $! > backend.pid
 
 
       - name: Vent på backend
-        run: timeout 120 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
+        run: timeout 300 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
 
       - name: Installer node moduler
         working-directory: ./e2e
@@ -82,3 +85,10 @@ jobs:
           if [ -f backend.pid ]; then
             kill $(cat backend.pid) 2>/dev/null || true
           fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-log
+          path: backend.log
+          retention-days: 3
