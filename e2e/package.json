@@ -1,20 +1,20 @@
 {
-   "name": "tests",
-   "version": "1.0.0",
-   "scripts": {
-      "lint": "biome check .",
-      "format": "biome format .",
-      "format:write": "biome format --write .",
-      "lint:fix": "biome check --write .",
-     "test:e2e": "playwright test",
-     "test:e2e:ui": "playwright test --ui"
-   },
-   "license": "ISC",
-   "devDependencies": {
-      "@axe-core/playwright": "^4.11.0",
-      "@biomejs/biome": "2.3.8",
-      "@faker-js/faker": "^10.1.0",
-      "@playwright/test": "^1.57.0",
-      "dotenv": "^17.2.3"
-   }
+  "name": "e2e-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "biome check .",
+    "format": "biome format .",
+    "format:write": "biome format --write .",
+    "lint:fix": "biome check --write .",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@biomejs/biome": "2.3.8",
+    "@faker-js/faker": "^10.1.0",
+    "@playwright/test": "^1.57.0",
+    "dotenv": "^17.2.3"
+  }
 }

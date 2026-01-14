@@ -6,7 +6,7 @@ import {defineConfig, devices} from '@playwright/test'
  */
 import dotenv from 'dotenv'
 
-dotenv.config({ path: '.env.test' }).parsed
+dotenv.config({ path: '.env.test' })
 
 const baseURL = process.env.BASE_URL ? process.env.BASE_URL : `http://localhost:4000`
 
@@ -22,7 +22,7 @@ export default defineConfig({
    /* Retry on CI only */
    retries: process.env.CI ? 2 : 0,
    /* Opt out of parallel tests on CI. */
-   workers: process.env.CI ? 1 : undefined, //undefined, TODO-filer når tester kjører i parallel lokalt (kan være noe innoggings problmer)
+   workers: process.env.CI ? 1 : undefined, //undefined, TODO-filer når tester kjører i parallel lokalt (kan være noe innloggings problmer)
    /* Reporter to use. See https://playwright.dev/docs/test-reporters */
    reporter: [['list'], ['html', { open: 'never' }]],
    /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

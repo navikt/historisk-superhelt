@@ -1,24 +1,3 @@
-<!-- TOC -->
-* [Playwright Ende-til-Ende Tester for Historisk HelT 🚀](#playwright-ende-til-ende-tester-for-historisk-helt-)
-  * [Kom i Gang](#kom-i-gang)
-  * [Testing og Vedlikehold](#testing-og-vedlikehold)
-    * [Oppdatere Snapshots](#oppdatere-snapshots)
-    * [HTML-rapport](#html-rapport)
-      * [Lokalt](#lokalt)
-      * [Fra GitHub Actions](#fra-github-actions)
-  * [Verktøy for Utvikling](#verktøy-for-utvikling)
-    * [Visual Studio Code (VS Code)](#visual-studio-code-vs-code)
-    * [Spille inn nye tester (Codegen)](#spille-inn-nye-tester-codegen)
-    * [Playwright Inspector](#playwright-inspector)
-  * [Kodingstil og Linting (Biome)](#kodingstil-og-linting-biome)
-<!-- TOC -->
-# Playwright Ende-til-Ende Tester for Historisk HelT 🚀
-
-Velkommen til ende-til-ende testene for **Historisk HelT**-applikasjonen!
-
-Denne mappen (`/tests`) inneholder Playwright-tester som validerer de viktigste brukerflytene i applikasjonen.
-
----
 
 ## Kom i Gang
 
@@ -36,7 +15,7 @@ fullstendige instruksjoner. Deretter bygg og kjør docker images:
     ```bash
     npx playwright install
     ```
-4.  **Kjør alle tester:** Nå kan du starte testene. Kjør følgende kommando fra denne mappen (`/tests`). Testene kjører da i "headless" modus (uten synlig nettleservindu).
+4.  **Kjør alle tester:** Nå kan du starte testene. Kjør følgende kommando fra denne mappen (`/e2e`). Testene kjører da i "headless" modus (uten synlig nettleservindu).
     ```bash
     npx playwright test
     ```
@@ -64,7 +43,7 @@ Etter at testene er kjørt, genereres en detaljert HTML-rapport.
 
 #### Lokalt
 
-Fra denne mappen (`/tests`), kjør:
+Fra denne mappen (`/e2e`), kjør:
 ```bash
 npx playwright show-report
 ```
@@ -122,7 +101,7 @@ PWDEBUG=1 npx playwright test
 
 ## Kodingstil og Linting (Biome)
 
-Prosjektet bruker **Biome** for formattering og linting i `/tests`.
+Prosjektet bruker **Biome** for formattering og linting i `/e2e`.
 
 - Kjør lint-sjekk:
     ```bash
