@@ -1,0 +1,65 @@
+name: E2E Tests
+
+on:
+  workflow_call:
+    secrets:
+      READER_TOKEN:
+        required: true
+        description: 'Token with read access to the repository'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - uses: ./.github/actions/setup
+        with:
+          node-auth-token: ${{ secrets.READER_TOKEN }}
+          skipTests: true
+     
+      - name: Add host.docker.internal to /etc/hosts
+        run: echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+
+      - name: Start Docker stack
+        run: docker compose -f docker-compose.yml up --build -d --wait
+
+      - name: Installer node moduler
+        working-directory: ./e2e
+        run: npm ci
+
+      - name: Biome check
+        working-directory: ./e2e
+        run: npx biome check
+
+      # --- Caching av Playwright-browsere ---
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }} # Endres hvis Playwright-versjonen i package-lock.json endres
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        working-directory: ./e2e
+        run: npx playwright install chromium --with-deps
+
+      - name: Run E2E tests
+        working-directory: ./e2e
+        run: npx playwright test
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: e2e-playwright-report
+          path: ./e2e/playwright-report/
+          retention-days: 3
+
+      - name: Clean up Docker containers
+        if: always()
+        run: docker compose down
