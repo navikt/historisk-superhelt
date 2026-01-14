@@ -27,6 +27,16 @@ jobs:
       - name: Start Docker stack
         run: docker compose -f docker-compose.yml up --build -d --wait
 
+      - name: Start backend
+        run: |
+          nohup mvn --batch-mode -pl backend -am spring-boot:run > backend.log 2>&1 &
+          echo $! > backend.pid
+        env:
+          RUN_E2E_TESTS: "true"
+
+      - name: Vent på backend
+        run: timeout 120 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
+
       - name: Installer node moduler
         working-directory: ./e2e
         run: npm ci
@@ -63,3 +73,10 @@ jobs:
       - name: Clean up Docker containers
         if: always()
         run: docker compose down
+      
+      - name: Stopp backend
+        if: always()
+        run: |
+          if [ -f backend.pid ]; then
+            kill $(cat backend.pid) 2>/dev/null || true
+          fi

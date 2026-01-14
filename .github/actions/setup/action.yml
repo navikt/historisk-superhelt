@@ -36,6 +36,6 @@ runs:
 
     - name: Build artifacts
       shell: bash
-      run: mvn --batch-mode verify -Dmaven.test.skip=${{ inputs.skipTests }}
+      run: mvn --batch-mode install -Dmaven.test.skip=${{ inputs.skipTests }}
       env:
         NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
