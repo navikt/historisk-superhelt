@@ -72,7 +72,9 @@ jobs:
 
       - name: Clean up Docker containers
         if: always()
-        run: docker compose down
+        run: |
+          docker compose logs mock-server
+          docker compose down
       
       - name: Stopp backend
         if: always()
