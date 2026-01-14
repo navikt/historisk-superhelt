@@ -26,12 +26,12 @@ class OppgaveClientForUtvikler {
         <lim inn ditt token her fra ida >
          """.trimIndent()
 
-    private val baseUrl = "https://oppgave.intern.dev.nav.no"
+//    private val baseUrl = "https://oppgave.intern.dev.nav.no"
 
-    //       private val baseUrl = "http://localhost:9080/oppgave-mock"
+    private val baseUrl = "http://localhost:9080/oppgave-mock"
     val client = OppgaveClient(getRestClient())
 
-    @Test // IntelliJ bryr seg ikke om @Disabled defor må denne kommenteres inn før kjøring
+    @Test // IntelliJ bryr seg ikke om @Disabled derfor må denne kommenteres inn før kjøring
     fun `test hent saksbehandlers oppgaver`() {
         val hentet = client.finnOppgaver(
             FinnOppgaverParams(
@@ -43,7 +43,7 @@ class OppgaveClientForUtvikler {
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))
     }
 
-    @Test // IntelliJ bryr seg ikke om @Disabled defor må denne kommenteres inn før kjøring
+    @Test
     fun `test hent oppgaver på sak`() {
         val hentet = client.finnOppgaver(
             FinnOppgaverParams(
@@ -74,7 +74,7 @@ class OppgaveClientForUtvikler {
 
 
     @Test // Bruk en id som finnes
-    fun `Hent og oppdater`() {
+    fun `hent og oppdater`() {
 
         val oppgaveId = 368496L
         val hentet = client.hentOppgave(oppgaveId)
