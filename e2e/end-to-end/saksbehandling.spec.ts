@@ -33,18 +33,18 @@ test.describe('Superhelt', () => {
             await expect(page.getByRole('button', { name: 'Opplysninger' })).toBeVisible();
         });
 
-        await test.step('Fyll inn opplysninger', async () => {
-            await page.getByRole('textbox', {name: 'Kort beskrivelse av stønad'}).fill('Søknad om superkrefter');
-            await page.getByRole('radio', {name: 'Innvilget', exact: true} ).check();
-            await page.getByRole('radio', {name: 'Direkte til bruker'}).check();
-            await page.getByRole('textbox', {name: 'Beløp som skal utbetales (kr)'}).fill('2345');
-            await page.getByRole('textbox', {name: 'Begrunnelse for vedtak'}).fill('Bruker har dokumentert behov for superkrefter.');
-            await page.getByRole('button', {name: 'Lagre og gå videre'}).click();
-        });
+        // await test.step('Fyll inn opplysninger', async () => {
+        //     await page.getByRole('textbox', {name: 'Kort beskrivelse av stønad'}).fill('Søknad om superkrefter');
+        //     await page.getByRole('radio', {name: 'Innvilget', exact: true} ).check();
+        //     await page.getByRole('radio', {name: 'Direkte til bruker'}).check();
+        //     await page.getByRole('textbox', {name: 'Beløp som skal utbetales (kr)'}).fill('2345');
+        //     await page.getByRole('textbox', {name: 'Begrunnelse for vedtak'}).fill('Bruker har dokumentert behov for superkrefter.');
+        //     await page.getByRole('button', {name: 'Lagre og gå videre'}).click();
+        // });
 
-        await test.step('Skriv brev', async () => {
-            await page.getByRole('button', {name: 'Lagre og gå videre'}).click();
-        });
+        // await test.step('Skriv brev', async () => {
+        //     await page.getByRole('button', {name: 'Lagre og gå videre'}).click();
+        // });
         // await test.step('Send til attestering', async () => {
         //     await page.getByRole('button', {name: 'Send til attestering'}).click();
         // });

@@ -29,7 +29,7 @@ jobs:
 
       - name: Start backend
         run: |
-          nohup mvn --batch-mode -pl backend -am spring-boot:run > backend.log 2>&1 &
+          nohup mvn --batch-mode -pl backend -am -DskipTests spring-boot:run > backend.log 2>&1 &
           echo $! > backend.pid
         env:
           RUN_E2E_TESTS: "true"

@@ -13,9 +13,9 @@ spring:
       resourceserver:
         jwt:
           audiences: ""
-  web:
-    resources:
-      static-locations: file:./frontend/dist
+#  web:
+#    resources:
+#      static-locations: file:./frontend/dist
   kafka:
     security:
       protocol: PLAINTEXT
