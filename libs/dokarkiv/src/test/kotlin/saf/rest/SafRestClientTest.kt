@@ -1,7 +1,7 @@
 package saf.rest
 
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.saf.rest.SafRestClient
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

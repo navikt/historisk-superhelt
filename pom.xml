@@ -19,7 +19,7 @@
         <revision>0.0.1-SNAPSHOT</revision>
         <java.version>21</java.version>
         <kotlin.version>2.2.21</kotlin.version>
-        <springdoc.version>2.8.14</springdoc.version>
+        <springdoc.version>2.8.15</springdoc.version>
     </properties>
     <modules>
         <module>backend</module>
@@ -27,5 +27,17 @@
         <module>mocks</module>
         <module>libs</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

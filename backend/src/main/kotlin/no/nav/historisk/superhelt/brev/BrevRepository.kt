@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.brev
 
+import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
-import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.historisk.superhelt.brev.db.BrevJpaEntity
 import no.nav.historisk.superhelt.brev.db.BrevJpaRepository
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException

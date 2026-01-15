@@ -14,6 +14,8 @@ local.env
 /frontend/node/
 
 .DS_Store
+.vscode
+
 
 ### Playwright ###
 frontend/playwright-report/

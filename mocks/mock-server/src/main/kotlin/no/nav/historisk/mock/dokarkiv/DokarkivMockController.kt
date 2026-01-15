@@ -1,5 +1,6 @@
 package no.nav.historisk.mock.dokarkiv
 
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.*
 import no.nav.saf.graphql.JournalStatus
 import no.nav.saf.graphql.JournalpostAvsenderMottaker

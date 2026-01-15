@@ -1,0 +1,29 @@
+name: 'Setup'
+description: 'Setup Java, Node, og bygg app'
+inputs:
+  node-auth-token:
+    description: 'Token for npm registry'
+    required: true
+    
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: '21'
+        cache: maven
+
+    - uses: actions/setup-node@v6
+      with:
+        node-version: '24'
+        cache: npm
+        cache-dependency-path: frontend/package-lock.json
+        registry-url: "https://npm.pkg.github.com"
+
+    - name: Installere node moduler
+      shell: bash
+      working-directory: ./frontend
+      run: npm ci
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}

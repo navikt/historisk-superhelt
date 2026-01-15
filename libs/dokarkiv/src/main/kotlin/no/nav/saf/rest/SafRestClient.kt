@@ -1,7 +1,7 @@
 package no.nav.saf.rest
 
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.EksternJournalpostId
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestClient
 

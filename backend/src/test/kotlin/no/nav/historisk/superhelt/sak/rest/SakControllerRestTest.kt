@@ -93,17 +93,18 @@ class SakControllerRestTest() {
                 .bodyAsProblemDetail()
         }
 
-        private fun opprettSak(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder = mockMvc.post().uri("/api/sak")
-            .with(csrf())
-            .contentType("application/json")
-            .content(
-                objectMapper.writeValueAsString(
-                    SakCreateRequestDto(
-                        type = StonadsType.BRYSTPROTESE,
-                        fnr = fnr
+        private fun opprettSak(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder =
+            mockMvc.post().uri("/api/sak")
+                .with(csrf())
+                .contentType("application/json")
+                .content(
+                    objectMapper.writeValueAsString(
+                        SakCreateRequestDto(
+                            type = StonadsType.BRYSTPROTESE,
+                            fnr = fnr
+                        )
                     )
                 )
-            )
     }
 
     @WithSaksbehandler
@@ -158,7 +159,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `oppdater sak som ikke finnes skal gi feil`() {
-            val ikkeFinnsSaksnummer = Saksnummer("SUPER-999999")
+            val ikkeFinnsSaksnummer = Saksnummer(999999)
 
             assertThat(
                 oppdaterSak(
@@ -211,7 +212,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `hent sak som ikke finnes skal gi feil`() {
-            val ikkeFinnsSaksnummer = Saksnummer("SUPER-999999")
+            val ikkeFinnsSaksnummer = Saksnummer(999999)
 
             assertThat(hentSak(ikkeFinnsSaksnummer))
                 .hasStatus(HttpStatus.NOT_FOUND)
