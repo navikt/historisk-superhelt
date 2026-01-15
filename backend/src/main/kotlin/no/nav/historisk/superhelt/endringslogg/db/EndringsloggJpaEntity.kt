@@ -12,6 +12,7 @@ import java.time.Instant
 @Table(name = "endringslogg")
 class EndringsloggJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "endringslogg_id")
     var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -21,6 +22,7 @@ class EndringsloggJpaEntity(
     val tidspunkt: Instant = Instant.now(),
     val endretAv: NavIdent,
     @Enumerated(EnumType.STRING)
+    @Column(name = "endringslogg_type")
     val type: EndringsloggType,
     val endring: String,
     val beskrivelse: String? = null,

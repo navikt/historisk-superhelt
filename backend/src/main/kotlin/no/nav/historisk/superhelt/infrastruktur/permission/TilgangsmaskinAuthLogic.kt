@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.infrastruktur.permission
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.springframework.security.authorization.AuthorizationDecision
 import org.springframework.security.authorization.AuthorizationDeniedException
@@ -13,7 +13,7 @@ class TilgangsmaskinAuthLogic(private val tilgangsmaskinService: TilgangsmaskinS
         if (fnr == null || fnr.isBlank()) {
             return null
         }
-        val (granted, response) = tilgangsmaskinService.sjekkKomplettTilgang(Fnr(fnr))
+        val (granted, response) = tilgangsmaskinService.sjekkKomplettTilgang(FolkeregisterIdent(fnr))
 
 //         return TilgangsmaskinAuthorizationDecision(granted, response?.begrunnelse)
         if (!granted) {

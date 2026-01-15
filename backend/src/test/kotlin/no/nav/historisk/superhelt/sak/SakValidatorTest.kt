@@ -46,7 +46,7 @@ class SakValidatorTest {
 
         @Test
         fun `should throw ValideringException when validation errors exist`() {
-            val sak = SakTestData.sakMedUtbetaling().copy(tittel = null)
+            val sak = SakTestData.sakMedUtbetaling().copy(beskrivelse = null)
             val validator = SakValidator(sak)
 
             validator.checkSoknad()

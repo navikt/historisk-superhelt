@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.person
 
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.person.Persondata
@@ -37,7 +37,7 @@ class PersonControllerTest {
 
     @Test
     fun `skal hente person `() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
         mockPerson(fnr, testPerson)
 
@@ -62,7 +62,7 @@ class PersonControllerTest {
 
     @Test
     fun `skal returnere person med tilgang når fnr er gyldig`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
         mockPerson(fnr, testPerson)
 
@@ -81,7 +81,7 @@ class PersonControllerTest {
 
     @Test
     fun `skal returnere person med avvisningskode når bruker mangler tilgang`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         val testPerson = PersonTestData.testPerson.copy(fnr = fnr, navn = "***", harTilgang = false)
         mockPerson(fnr, testPerson, Avvisningskode.AVVIST_HABILITET)
 
@@ -99,7 +99,7 @@ class PersonControllerTest {
 
     @Test
     fun `skal returnere 404 når person ikke finnes i PDL`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         mockPerson(fnr, null, Avvisningskode.UKJENT_PERSON)
 
         assertThat(findPersonByFnr(fnr))
@@ -109,30 +109,30 @@ class PersonControllerTest {
     @WithMockUser()
     @Test
     fun `Må ha lese rettighet for å gjøre kall til get `() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         assertThat(getPersonByMaskertId(fnr))
             .hasStatus(HttpStatus.FORBIDDEN)
     }
 
-    private fun getPersonByMaskertId(fnr: Fnr): MockMvcTester.MockMvcRequestBuilder =
+    private fun getPersonByMaskertId(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder =
         mockMvc.get().uri("/api/person/{maskertPersonident}", fnr.toMaskertPersonIdent().value)
 
     @WithMockUser()
     @Test
     fun `Må ha lese rettighet for å gjøre kall til post`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         assertThat(findPersonByFnr(fnr))
             .hasStatus(HttpStatus.FORBIDDEN)
     }
 
-    private fun findPersonByFnr(fnr: Fnr): MockMvcTester.MockMvcRequestBuilder = mockMvc.post().uri("/api/person")
+    private fun findPersonByFnr(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder = mockMvc.post().uri("/api/person")
         .with(csrf())
         .contentType("application/json")
         .content("""{"fnr": "${fnr.value}"}""")
 
     @Test
     fun `Validering av fnr`() {
-        val fnr = Fnr("1234")
+        val fnr = FolkeregisterIdent("1234")
         assertThat(findPersonByFnr(fnr))
             .hasStatus(HttpStatus.BAD_REQUEST)
             .bodyText()
@@ -141,7 +141,7 @@ class PersonControllerTest {
 
 
     private fun mockPerson(
-        fnr: Fnr,
+        fnr: FolkeregisterIdent,
         testPerson: Persondata? = PersonTestData.testPerson,
         avvisningskode: Avvisningskode? = null
     ) {

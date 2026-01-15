@@ -31,13 +31,13 @@ object SakTestData {
     }
 
     fun sakUtenUtbetaling(): Sak {
-        val saksnummer = faker.numerify("Mock-#####")
+        val saksnummer = Saksnummer(faker.numerify("Mock-#####"))
         return Sak(
-            saksnummer = Saksnummer(saksnummer),
+            saksnummer = saksnummer,
             behandlingsnummer = Behandlingsnummer(saksnummer, 1),
             type = faker.options().option(StonadsType::class.java),
-            fnr = Fnr(faker.numerify("###########")),
-            tittel = faker.greekPhilosopher().quote(),
+            fnr = FolkeregisterIdent(faker.numerify("###########")),
+            beskrivelse = faker.greekPhilosopher().quote(),
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
                 ZoneId.systemDefault()
@@ -56,7 +56,7 @@ object SakTestData {
 
     private fun navUser(): NavUser = NavUser(NavIdent(faker.bothify("???###")), faker.name().name())
 
-    fun nySakMinimum(fnr: Fnr = Fnr(faker.numerify("###########"))): OpprettSakDto {
+    fun nySakMinimum(fnr: FolkeregisterIdent = FolkeregisterIdent(faker.numerify("###########"))): OpprettSakDto {
         return OpprettSakDto(
             type = faker.options().option(StonadsType::class.java),
             fnr = fnr,
@@ -68,12 +68,12 @@ object SakTestData {
     }
 
     fun nySakCompleteUtbetaling(
-        fnr: Fnr = Fnr(faker.numerify("###########")),
+        fnr: FolkeregisterIdent = FolkeregisterIdent(faker.numerify("###########")),
         sakStatus: SakStatus = SakStatus.UNDER_BEHANDLING,
         saksbehandlerIdent: String = faker.bothify("s??###")
     ): OpprettSakDto {
         val properties = UpdateSakDto(
-            tittel = faker.harryPotter().spell(),
+            beskrivelse = faker.harryPotter().spell(),
             soknadsDato = LocalDate.ofInstant(
                 faker.timeAndDate().past(30, TimeUnit.DAYS),
                 ZoneId.systemDefault()

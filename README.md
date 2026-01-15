@@ -16,6 +16,10 @@ Målet med appen er å erstatte infotrygd rutiner  HT-MV, SB-SA og GE-PP
 
 ## Lokal utvikling
 
+### TestContainers
+For å kjøre tester lokalt må du ha Docker installert og kjørende på maskinen din. TestContainers vil automatisk laste ned og starte nødvendige containere for testene.
+
+For Colima på Mac, sjekk https://golang.testcontainers.org/system_requirements/using_colima/
 
 ### Tjenester som appen trenger
 ```shell

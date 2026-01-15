@@ -2,7 +2,7 @@ package no.nav.historisk.pdfgen
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import java.time.LocalDate
 
 
@@ -33,7 +33,7 @@ enum class PdfgenBrevtype {
 }
 
 data class Personalia(
-    val ident: Fnr,
+    val ident: FolkeregisterIdent,
     val fornavn: String,
     val etternavn: String,
 )

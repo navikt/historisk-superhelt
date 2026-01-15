@@ -3,7 +3,6 @@ import {
     Button,
     DatePicker,
     ErrorSummary,
-    Heading,
     HStack,
     Radio,
     RadioGroup,
@@ -53,7 +52,7 @@ export default function SakEditor({sak}: Props) {
     const [updateSakData, setUpdateSakData] = useState<SakUpdateRequestDto>({
         type: sak.type,
         tildelingsAar: sak.tildelingsAar,
-        tittel: sak.tittel,
+        beskrivelse: sak.beskrivelse,
         vedtaksResultat: sak.vedtaksResultat,
         soknadsDato: sak.soknadsDato,
         begrunnelse: sak.begrunnelse
@@ -105,7 +104,7 @@ export default function SakEditor({sak}: Props) {
     const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors)
 
 
-    function getErrorMessage(field: "tittel" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling" | "tildelingsAar"): string | undefined {
+    function getErrorMessage(field: "beskrivelse" | "vedtaksResultat" | "soknadsDato" | "begrunnelse" | "utbetaling.belop" | "utbetaling" | "tildelingsAar"): string | undefined {
         if (!showValidation || !hasValidationErrors) {
             return undefined
         }
@@ -114,11 +113,11 @@ export default function SakEditor({sak}: Props) {
     }
 
     return (
-        <Box padding="6" borderWidth="1" borderRadius="medium">
+        <Box.New background={"neutral-soft"} padding="6" borderWidth="1" borderRadius="medium">
 
             <VStack gap="6">
                 <Select
-                    label="Stønadstype"
+                    label="Stønad"
                     value={updateSakData.type}
                     onChange={(e) => patchSak({type: e.target.value as StonadType})}
                 >
@@ -147,17 +146,14 @@ export default function SakEditor({sak}: Props) {
 
                 <TextField
                     label="Kort beskrivelse av stønad"
-                    error={getErrorMessage("tittel")}
-                    value={updateSakData.tittel ?? ''}
-                    onChange={(e) => patchSak({tittel: e.target.value})}
+                    error={getErrorMessage("beskrivelse")}
+                    value={updateSakData.beskrivelse ?? ''}
+                    onChange={(e) => patchSak({beskrivelse: e.target.value})}
                 />
 
 
-                <Heading size="small">Fatte vedtak</Heading>
-
-
-                <HStack gap="8" align="start">
-                    <VStack style={{flex: 1}}>
+                <Box.New background={"default"} padding={"space-16"}>
+                    <VStack gap="space-16">
                         <RadioGroup legend="Vedtak" value={updateSakData.vedtaksResultat}
                                     onChange={value => patchSak({vedtaksResultat: value as SakVedtakType})}
                                     error={getErrorMessage("vedtaksResultat")}>
@@ -165,23 +161,24 @@ export default function SakEditor({sak}: Props) {
                             <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
                             <Radio value="AVSLATT">Avslått</Radio>
                         </RadioGroup>
-                    </VStack>
-                    {updateSakData.vedtaksResultat !== 'AVSLATT' && (
-                        <UtbetalingEditor sak={sak}
-                                          errorUtbetaling={getErrorMessage("utbetaling")}
-                                          errorBelop={getErrorMessage("utbetaling.belop")}
-                        />
-                    )}
-                </HStack>
 
-                <Textarea
-                    label="Saksbehandlers vurderinger"
-                    error={getErrorMessage("begrunnelse")}
-                    value={updateSakData.begrunnelse ?? ''}
-                    onChange={(e) => patchSak({begrunnelse: e.target.value})}
-                    description="Valgfri - vurderinger som er gjort i saken. Kommer ikke med i vedtaksbrev."
-                    minRows={4}
-                />
+                        {["INNVILGET", "DELVIS_INNVILGET"].includes(updateSakData.vedtaksResultat ?? "") && (
+                            <UtbetalingEditor sak={sak}
+                                              errorUtbetaling={getErrorMessage("utbetaling")}
+                                              errorBelop={getErrorMessage("utbetaling.belop")}
+                            />
+                        )}
+
+                        <Textarea
+                            label="Begrunnelse for vedtak"
+                            error={getErrorMessage("begrunnelse")}
+                            value={updateSakData.begrunnelse ?? ''}
+                            onChange={(e) => patchSak({begrunnelse: e.target.value})}
+                            description="Beskriv kort hva som ligger til grunn for vedtaket"
+                            minRows={4}
+                        />
+                    </VStack>
+                </Box.New>
 
 
                 <HStack gap="8" align="start">
@@ -197,6 +194,6 @@ export default function SakEditor({sak}: Props) {
 
             </VStack>
 
-        </Box>
+        </Box.New>
     )
 }

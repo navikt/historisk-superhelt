@@ -43,7 +43,7 @@ class SakController(
                 type = sak.type,
                 fnr = sak.fnr,
                 properties = UpdateSakDto(
-                    tittel = sak.tittel,
+                    beskrivelse = sak.beskrivelse,
                     soknadsDato = soknadsDato,
                     saksbehandler = getCurrentNavUser(),
                     tildelingsAar = soknadsDato?.let { Aar(it.year) },
@@ -73,7 +73,7 @@ class SakController(
         val updated = sakRepository.updateSak(
             saksnummer, UpdateSakDto(
                 type = req.type,
-                tittel = req.tittel,
+                beskrivelse = req.beskrivelse,
                 begrunnelse = req.begrunnelse,
                 soknadsDato = req.soknadsDato,
                 tildelingsAar = req.tildelingsAar,

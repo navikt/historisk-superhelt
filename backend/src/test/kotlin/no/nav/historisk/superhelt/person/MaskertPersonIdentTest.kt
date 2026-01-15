@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.person
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -10,7 +10,7 @@ class MaskertPersonIdentTest {
 
     @Test
     fun `skal kryptere og dekryptere gyldig fnr`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
 
         val maskert = fnr.toMaskertPersonIdent()
         val dekryptert = maskert.toFnr()
@@ -20,7 +20,7 @@ class MaskertPersonIdentTest {
 
     @Test
     fun `kryptert verdi skal være forskjellig fra original fnr`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
 
         val maskert = fnr.toMaskertPersonIdent()
 
@@ -39,8 +39,8 @@ class MaskertPersonIdentTest {
 
     @Test
     fun `forskjellige fnr skal gi forskjellige krypterte verdier`() {
-        val fnr1 = Fnr("12345678901")
-        val fnr2 = Fnr("10987654321")
+        val fnr1 = FolkeregisterIdent("12345678901")
+        val fnr2 = FolkeregisterIdent("10987654321")
 
         val maskert1 = fnr1.toMaskertPersonIdent()
         val maskert2 = fnr2.toMaskertPersonIdent()

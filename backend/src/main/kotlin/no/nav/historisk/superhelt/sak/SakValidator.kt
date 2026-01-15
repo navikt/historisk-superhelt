@@ -41,8 +41,8 @@ class SakValidator(private val sak: Sak): Validator() {
         // TODO vurdere å bruke enum for felt for mer strukturert validering
         with(sak) {
 
-            check(tittel.isNullOrBlank(), "tittel", "Tittel må være satt")
-            check((tittel?.length ?: 0) > 200, "tittel", "Sakstittel kan ikke være lengre enn 200 tegn")
+            check(beskrivelse.isNullOrBlank(), "beskrivelse", "Beskrivelse må være satt")
+            check((beskrivelse?.length ?: 0) > 200, "beskrivelse", "Beskrivelse kan ikke være lengre enn 200 tegn")
 
             check(soknadsDato == null, "soknadsDato", "Søknadsdato må være satt")
             check(

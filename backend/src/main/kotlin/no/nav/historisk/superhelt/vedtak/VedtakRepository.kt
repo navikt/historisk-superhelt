@@ -19,10 +19,10 @@ class VedtakRepository(
         val sakEntity = sakRepository.getSakEntityOrThrow(vedtak.saksnummer)
         val vedtakJpaEntity = VedtakJpaEntity(
             sak = sakEntity,
-            behandlingsnummer = vedtak.behandlingsnummer,
+            behandlingsTeller = sakEntity.behandlingsTeller,
             type = vedtak.stonadstype,
             fnr = vedtak.fnr,
-            tittel = vedtak.tittel,
+            beskrivelse = vedtak.beskrivelse,
             resultat = vedtak.resultat,
             begrunnelse = vedtak.begrunnelse,
             utbetalingsType = vedtak.utbetalingsType,

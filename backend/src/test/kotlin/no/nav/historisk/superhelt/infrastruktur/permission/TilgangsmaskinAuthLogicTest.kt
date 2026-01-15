@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.infrastruktur.permission
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
@@ -35,7 +35,7 @@ class TilgangsmaskinAuthLogicTest {
 
     @Test
     fun `PreAuthorize skal gi tilgang tilgangsmaskin godkjenner`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr))
             .thenReturn(TilgangsmaskinClient.TilgangResult(true))
         testService.testPreAuthorize(fnr.value)
@@ -44,7 +44,7 @@ class TilgangsmaskinAuthLogicTest {
 
     @Test
     fun `PreAuthorize skal gi exception om tilgangsmaskin gir feil`() {
-        val fnr = Fnr("12345678901")
+        val fnr = FolkeregisterIdent("12345678901")
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr))
             .thenReturn(
                 TilgangsmaskinClient.TilgangResult(
@@ -64,8 +64,8 @@ class TilgangsmaskinAuthLogicTest {
 
     @Test
     fun `PostAuthorize skal gi ok svar ved tilgang`() {
-        val fnr = Fnr("12345678901")
-        val reversed = Fnr(fnr.value.reversed())
+        val fnr = FolkeregisterIdent("12345678901")
+        val reversed = FolkeregisterIdent(fnr.value.reversed())
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(reversed))
             .thenReturn(TilgangsmaskinClient.TilgangResult(true))
 
@@ -76,8 +76,8 @@ class TilgangsmaskinAuthLogicTest {
 
     @Test
     fun `PostAuthorize skal gi exception om tilgangsmaskin gir feil`() {
-        val fnr = Fnr("12345678901")
-        val reversed = Fnr(fnr.value.reversed())
+        val fnr = FolkeregisterIdent("12345678901")
+        val reversed = FolkeregisterIdent(fnr.value.reversed())
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(reversed))
             .thenReturn(
                 TilgangsmaskinClient.TilgangResult(
@@ -114,7 +114,7 @@ class TilgangsmaskinAuthLogicTest {
     fun `PostFilter skal  filtere ut elementer som ikke er lov`() {
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(any()))
             .thenReturn(TilgangsmaskinClient.TilgangResult(true))
-        whenever(tilgangsmaskinService.sjekkKomplettTilgang(Fnr("222")))
+        whenever(tilgangsmaskinService.sjekkKomplettTilgang(FolkeregisterIdent("222")))
             .thenReturn(TilgangsmaskinClient.TilgangResult(false))
 
         testService.testPostFilter().also {

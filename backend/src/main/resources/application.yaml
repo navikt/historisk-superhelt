@@ -24,15 +24,16 @@ spring:
       static-locations:
         - classpath:/static
 
+
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
+    url: ${DB_JDBC_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   mvc:
     problemdetails:
       enabled: true
@@ -54,6 +55,10 @@ spring:
 
     consumer:
       group-id: ${spring.application.name}
+  cache:
+    caffeine:
+      spec: maximumSize=5000,expireAfterWrite=20m
+    cache-names: pdlCache,tilgangsmaskinCache
 
 management:
   endpoints:

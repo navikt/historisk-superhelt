@@ -1,0 +1,40 @@
+AZURE_OPENID_CONFIG_ISSUER: http://junit-azure-mocked
+AZURE_APP_CLIENT_ID: mocked
+#Kafka opplegg med testcontainers
+KAFKA_BROKERS: mocked:9092
+
+nais:
+  token:
+    endpoint: http://token-junit-mocked
+    exchange:
+      endpoint: http://token-exchange-junit-mocked
+
+app:
+  gruppe:
+    saksbehandler: gr_saksbehandler
+    attestant: gr_attestant
+    les: gr_les
+  pdl:
+    audience: api://mock.pdl.pdl-api/.default
+    url: http://pdl-junit.mocked
+  tilgangsmaskin:
+    url: https://tilgangsmaskin-junit.mocked
+    audience: api://mock.tilgangsmaskin/.default
+  pdfgen:
+    url: https://pdfgen-junit.mocked
+  dokarkiv:
+    url: http://dokarkiv-junit.mocked
+    audience: api://mock.dokarkiv/.default
+  saf:
+    url: http://saf-junit.mocked
+    audience: api://mock.saf/.default
+  dokdist:
+    url: http://dokdist-junit.mocked
+    audience: api://mock.dokdist/.default
+
+spring:
+  main:
+    banner-mode: "off"
+  kafka:
+    security:
+      protocol: PLAINTEXT

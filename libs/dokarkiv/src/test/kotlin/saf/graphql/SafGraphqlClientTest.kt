@@ -1,10 +1,9 @@
 package saf.graphql
 
-
+import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.EksternJournalpostId
 import no.nav.saf.graphql.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

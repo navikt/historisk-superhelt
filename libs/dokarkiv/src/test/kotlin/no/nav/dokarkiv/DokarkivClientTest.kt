@@ -1,7 +1,6 @@
 package no.nav.dokarkiv
 
-import no.nav.common.types.Fnr
-import no.nav.common.types.Saksnummer
+import no.nav.common.types.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hamcrest.Matchers
@@ -101,8 +100,8 @@ class DokarkivClientTest {
         val journalPostId = EksternJournalpostId("123")
         val fagsaksnummer = Saksnummer("sak123")
         val tittel = "Tittel"
-        val bruker = Fnr("12345678901")
-        val avsender = Fnr("09876543210")
+        val bruker = FolkeregisterIdent("12345678901")
+        val avsender = FolkeregisterIdent("09876543210")
 
         mockServer
             .expect(requestTo("/rest/journalpostapi/v1/journalpost/123"))

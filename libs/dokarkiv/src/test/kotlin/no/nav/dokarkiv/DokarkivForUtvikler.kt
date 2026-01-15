@@ -1,6 +1,7 @@
 package no.nav.dokarkiv
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -47,8 +48,8 @@ class DokarkivForUtvikler {
             journalPostId = journalPostId,
             fagsaksnummer = Saksnummer("124"),
             tittel = "Test tittel " + LocalDateTime.now(),
-            bruker = Fnr("28497016101"),
-            avsender = Fnr("28497016101"),
+            bruker = FolkeregisterIdent("28497016101"),
+            avsender = FolkeregisterIdent("28497016101"),
             dokumenter = listOf(DokumentMedTittel(dokumentInfoId = mainDokumentID, tittel = "Oppdatert tittel")),
         )
         println("Journalpost oppdatert:" + journalPostId)

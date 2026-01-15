@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.sak.db
 import jakarta.persistence.*
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Fnr
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
@@ -23,36 +23,40 @@ import java.time.LocalDate
 @Table(name = "sak")
 class SakJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sak_id")
     var id: Long? = null,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "stonads_type")
     var type: StonadsType,
 
     /** Skiller mellom ulike behandlinger på samme sak. Økes med 1 for hver behandling */
     var behandlingsTeller: Int = 1,
 
-    val fnr: Fnr,
+    val fnr: FolkeregisterIdent,
 
-    var tittel: String? = null,
+    var beskrivelse: String? = null,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "sak_status")
     var status: SakStatus = SakStatus.UNDER_BEHANDLING,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "vedtaks_resultat")
     var vedtaksResultat: VedtaksResultat? = null,
 
     var begrunnelse: String? = null,
 
     @Embedded
     @AttributeOverrides(
-        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_navIdent")),
+        AttributeOverride(name = "navIdent", column = Column(name = "saksbehandler_nav_ident")),
         AttributeOverride(name = "navn", column = Column(name = "saksbehandler_navn"))
     )
     var saksbehandler: NavUser,
 
     @Embedded
     @AttributeOverrides(
-        AttributeOverride(name = "navIdent", column = Column(name = "attestant_navIdent")),
+        AttributeOverride(name = "navIdent", column = Column(name = "attestant_nav_ident")),
         AttributeOverride(name = "navn", column = Column(name = "attestant_navn"))
     )
     var attestant: NavUser? = null,
@@ -63,9 +67,11 @@ class SakJpaEntity(
     var tildelingsAar: Int? = null,
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "utbetaling_id")
     var utbetaling: UtbetalingJpaEntity? = null,
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "forhandtilsagn_id")
     var forhandstilsagn: ForhandTilsagnJpaEntity? = null,
 
     @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
@@ -87,7 +93,7 @@ class SakJpaEntity(
                 "SakJpaEntity id kan ikke være null ved henting av saksnummer"
             )
     val behandlingsnummer: Behandlingsnummer
-        get() = Behandlingsnummer(saksnummer.value, behandlingsTeller)
+        get() = Behandlingsnummer(saksnummer, behandlingsTeller)
 
 
     fun setOrUpdateUtbetaling(belop: Int) {
@@ -116,7 +122,7 @@ class SakJpaEntity(
             behandlingsnummer = behandlingsnummer,
             type = this.type,
             fnr = this.fnr,
-            tittel = this.tittel,
+            beskrivelse = this.beskrivelse,
             begrunnelse = this.begrunnelse,
             status = this.status,
             vedtaksResultat = this.vedtaksResultat,

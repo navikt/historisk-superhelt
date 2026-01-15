@@ -1,6 +1,8 @@
 package no.nav.dokarkiv
 
-import no.nav.common.types.Fnr
+import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -21,7 +23,11 @@ class DokarkivClient(
             .body(req)
             .retrieve()
             .onStatus({ it.value() == 409 }) { _, _ ->
-                logger.info("Journalpost med ref {} i sak {} er allerede opprettet. Ignorerer", req.eksternReferanseId, req.sak.fagsakId)
+                logger.info(
+                    "Journalpost med ref {} i sak {} er allerede opprettet. Ignorerer",
+                    req.eksternReferanseId,
+                    req.sak.fagsakId
+                )
             }
             .body(JournalpostResponse::class.java)!!
 
@@ -70,8 +76,8 @@ class DokarkivClient(
         journalPostId: EksternJournalpostId,
         fagsaksnummer: Saksnummer,
         tittel: String,
-        bruker: Fnr,
-        avsender: Fnr,
+        bruker: FolkeregisterIdent,
+        avsender: FolkeregisterIdent,
         tema: EksternFellesKodeverkTema = EksternFellesKodeverkTema.HEL,
         dokumenter: List<DokumentMedTittel>? = null,
     ) {
