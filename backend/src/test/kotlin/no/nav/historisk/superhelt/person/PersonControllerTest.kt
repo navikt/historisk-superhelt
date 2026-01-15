@@ -38,7 +38,8 @@ class PersonControllerTest {
     @Test
     fun `skal hente person `() {
         val fnr = FolkeregisterIdent("12345678901")
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
+        val foedselsdato = "2000-01-01"
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, foedselsdato = foedselsdato)
         mockPerson(fnr, testPerson)
 
         assertThat(getPersonByMaskertId(fnr))
@@ -50,7 +51,8 @@ class PersonControllerTest {
                 assertThat(it.navn).isEqualTo(testPerson.navn)
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isNull()
-                //TODO flere felter som vi kanskje trenger
+                assertThat(it.foedselsdato).isEqualTo(java.time.LocalDate.parse(foedselsdato))
+                assertThat(it.alder).isEqualTo(26)
             })
     }
 
@@ -63,7 +65,8 @@ class PersonControllerTest {
     @Test
     fun `skal returnere person med tilgang når fnr er gyldig`() {
         val fnr = FolkeregisterIdent("12345678901")
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
+        val foedselsdato = "2000-01-01"
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, foedselsdato = foedselsdato)
         mockPerson(fnr, testPerson)
 
         assertThat(findPersonByFnr(fnr))
@@ -75,14 +78,16 @@ class PersonControllerTest {
                 assertThat(it.navn).isEqualTo(testPerson.navn)
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isNull()
-                //TODO flere felter som vi kanskje trenger
+                assertThat(it.foedselsdato).isEqualTo(java.time.LocalDate.parse(foedselsdato))
+                assertThat(it.alder).isEqualTo(26)
             })
     }
 
     @Test
     fun `skal returnere person med avvisningskode når bruker mangler tilgang`() {
         val fnr = FolkeregisterIdent("12345678901")
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, navn = "***", harTilgang = false)
+        val foedselsdato = "2000-01-01"
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, navn = "***", harTilgang = false, foedselsdato = foedselsdato)
         mockPerson(fnr, testPerson, Avvisningskode.AVVIST_HABILITET)
 
         assertThat(findPersonByFnr(fnr))
@@ -94,6 +99,8 @@ class PersonControllerTest {
                 assertThat(it.navn).contains("***")
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isEqualTo(Avvisningskode.AVVIST_HABILITET)
+                assertThat(it.foedselsdato).isEqualTo(java.time.LocalDate.parse(foedselsdato))
+                assertThat(it.alder).isEqualTo(26)
             })
     }
 
@@ -160,5 +167,4 @@ class PersonControllerTest {
     }
 
 }
-
 

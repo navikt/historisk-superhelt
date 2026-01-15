@@ -64,8 +64,8 @@ export type Sak = {
     vedtaksbrevBruker?: Brev;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
 };
 
@@ -128,6 +128,8 @@ export type Person = {
     verge: boolean;
     avvisningsKode?: 'AVVIST_STRENGT_FORTROLIG_ADRESSE' | 'AVVIST_STRENGT_FORTROLIG_UTLAND' | 'AVVIST_AVDØD' | 'AVVIST_PERSON_UTLAND' | 'AVVIST_SKJERMING' | 'AVVIST_FORTROLIG_ADRESSE' | 'AVVIST_UKJENT_BOSTED' | 'AVVIST_GEOGRAFISK' | 'AVVIST_HABILITET' | 'UKJENT_PERSON';
     avvisningsBegrunnelse?: string;
+    foedselsdato?: string;
+    alder?: number;
 };
 
 export type User = {

@@ -23,8 +23,13 @@ export function PersonHeader({maskertPersonId}: Props) {
 
             <HStack gap="space-4" align="center" justify={"space-between"}>
                 <PersonIcon fontSize="1.5rem"/>
-                <Link as={RouterLink} to={"/person/" + person.maskertPersonident} underline={false}> <BodyShort
-                    size={"large"}>{person?.navn}</BodyShort></Link>
+                <Link as={RouterLink} to={"/person/" + person.maskertPersonident} underline={false}>
+                    <BodyShort size={"large"}>
+                        {person?.navn}
+                        {person?.alder !== undefined && person?.alder !== null &&
+                            ` (${person.alder})`}
+                    </BodyShort>
+                </Link>
                 <BodyShort size={"small"}>{person.fnr}</BodyShort>
                 <CopyButton copyText={person.fnr}/>
             </HStack>

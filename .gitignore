@@ -11,7 +11,11 @@ build/
 
 local.env
 
-
 /frontend/node/
 
 .DS_Store
+
+### Playwright ###
+frontend/playwright-report/
+frontend/playwright/.cache/
+frontend/test-results/

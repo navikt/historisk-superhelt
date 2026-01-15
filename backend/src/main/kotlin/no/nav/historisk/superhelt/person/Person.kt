@@ -7,6 +7,8 @@ import no.nav.pdl.AdressebeskyttelseGradering
 import no.nav.person.Persondata
 import no.nav.tilgangsmaskin.Avvisningskode
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
+import java.time.LocalDate
+import java.time.Period
 
 data class PersonRequest(
     @field:Size(min = 11, max = 11, message = "Fødselsnummer må være 11 tegn")
@@ -22,18 +24,25 @@ data class Person(
     val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
     val verge: Boolean = false,
     val avvisningsKode: Avvisningskode? = null,
-    val avvisningsBegrunnelse: String? = null
-)
+    val avvisningsBegrunnelse: String? = null,
+    val foedselsdato: LocalDate? = null
+) {
+    val alder: Int?
+        get() = foedselsdato?.let { Period.between(it, LocalDate.now()).years }
+}
 
-fun Persondata.toDto(maskertPersonident: MaskertPersonIdent, tilgang: TilgangsmaskinClient.TilgangResult) = Person(
-    navn = this.navn,
-    maskertPersonident = maskertPersonident,
-    fnr = this.fnr,
-    doed = this.doedsfall != null,
-    adressebeskyttelseGradering = this.adressebeskyttelseGradering,
-    verge = this.verge != null,
-    avvisningsKode = tilgang.response?.title,
-    avvisningsBegrunnelse = tilgang.response?.begrunnelse
-
-)
-
+fun Persondata.toDto(maskertPersonident: MaskertPersonIdent, tilgang: TilgangsmaskinClient.TilgangResult): Person {
+    val foedselsdatoStr = this.foedselsdato // assumes Persondata has foedselsdato: String?
+    val foedselsdato = foedselsdatoStr?.let { LocalDate.parse(it) }
+    return Person(
+        navn = this.navn,
+        maskertPersonident = maskertPersonident,
+        fnr = this.fnr,
+        doed = this.doedsfall != null,
+        adressebeskyttelseGradering = this.adressebeskyttelseGradering,
+        verge = this.verge != null,
+        avvisningsKode = tilgang.response?.title,
+        avvisningsBegrunnelse = tilgang.response?.begrunnelse,
+        foedselsdato = foedselsdato
+    )
+}

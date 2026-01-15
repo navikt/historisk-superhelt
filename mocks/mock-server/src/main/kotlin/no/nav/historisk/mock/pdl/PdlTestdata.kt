@@ -19,7 +19,7 @@ fun pdlData(fnr: String) = PdlData(
             )
         ),
         doedsfall = listOf(),
-        foedselsdato = listOf(),
+        foedselsdato = listOf(Foedselsdato(faker.timeAndDate().birthday().toString())),
         adressebeskyttelse = listOf(),
         vergemaalEllerFremtidsfullmakt = listOf()
     ),
