@@ -33,6 +33,8 @@ test.describe('Superhelt', () => {
             await expect(page.getByRole('button', { name: 'Opplysninger' })).toBeVisible();
         });
 
+        //TODO  Foreløpig feiler det lokalt i playwright med   'X-Frame-Options' to 'deny'
+
         // await test.step('Fyll inn opplysninger', async () => {
         //     await page.getByRole('textbox', {name: 'Kort beskrivelse av stønad'}).fill('Søknad om superkrefter');
         //     await page.getByRole('radio', {name: 'Innvilget', exact: true} ).check();
