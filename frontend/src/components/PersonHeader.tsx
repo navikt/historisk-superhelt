@@ -27,7 +27,7 @@ export function PersonHeader({maskertPersonId}: Props) {
                     <BodyShort size={"large"}>
                         {person?.navn}
                         {person?.alder !== undefined && person?.alder !== null &&
-                            ` (${person.alder})`}
+                            ` (${person.alder} år)`}
                     </BodyShort>
                 </Link>
                 <BodyShort size={"small"}>{person.fnr}</BodyShort>
