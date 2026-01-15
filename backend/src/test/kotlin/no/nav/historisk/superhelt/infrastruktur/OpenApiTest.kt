@@ -25,8 +25,9 @@ class OpenApiTest {
         assertThat(mockMvc.get().uri("/swagger-ui/index.html"))
             .hasStatusOk()
     }
+
     @Test
-    fun `kotlin inline types should be ok`() {
+    fun `kotlin inline types should be ok as component`() {
         assertThat(mockMvc.get().uri("/v3/api-docs"))
             .hasStatusOk()
             .hasContentType(MediaType.APPLICATION_JSON)
@@ -35,6 +36,18 @@ class OpenApiTest {
                 assertThat(type).isEqualTo("string")
             }
     }
+
+    @Test
+    fun `kotlin inline types should be ok in path`() {
+        assertThat(mockMvc.get().uri("/v3/api-docs"))
+            .hasStatusOk()
+            .hasContentType(MediaType.APPLICATION_JSON)
+            .bodyJson()
+            .hasPathSatisfying("paths./api/sak/{saksnummer}.get.parameters[0].schema.type ") { type ->
+                assertThat(type).isEqualTo("string")
+            }
+    }
+
     @Test
     fun `normal types should be ok`() {
         assertThat(mockMvc.get().uri("/v3/api-docs"))
