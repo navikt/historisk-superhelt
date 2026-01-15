@@ -31,7 +31,7 @@ class OpenApiTest {
             .hasStatusOk()
             .hasContentType(MediaType.APPLICATION_JSON)
             .bodyJson()
-            .hasPathSatisfying("components.schemas.Sak.properties.saksummer.type") { type ->
+            .hasPathSatisfying("components.schemas.Sak.properties.saksnummer.type") { type ->
                 assertThat(type).isEqualTo("string")
             }
     }
