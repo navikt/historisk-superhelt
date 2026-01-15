@@ -1,0 +1,91 @@
+name: E2E Tests
+
+on:
+  workflow_call:
+    secrets:
+      READER_TOKEN:
+        required: true
+        description: 'Token with read access to the repository'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          node-auth-token: ${{ secrets.READER_TOKEN }}
+     
+      - name: Add host.docker.internal to /etc/hosts
+        run: echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+
+      - name: Build mock server
+        run: mvn --batch-mode  -pl mocks/mock-server -am -DskipTests verify
+
+      - name: Start Docker stack
+        run: docker compose up --build -d --wait
+
+      - name: Start backend
+        run: |
+          nohup mvn --batch-mode -pl backend -am -DskipTests -Dspring-boot.run.profiles=dev package spring-boot:run  > backend.log 2>&1 &
+          echo $! > backend.pid
+
+      - name: Installer node moduler
+        working-directory: ./e2e
+        run: npm ci
+
+#      - name: Biome check
+#        working-directory: ./e2e
+#        run: npx biome check
+
+      # --- Caching av Playwright-browsere ---
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }} # Endres hvis Playwright-versjonen i package-lock.json endres
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        working-directory: ./e2e
+        run: npx playwright install chromium --with-deps
+
+      - name: Vent på backend
+        run: timeout 300 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
+
+      - name: Run E2E tests
+        working-directory: ./e2e
+        run: npx playwright test
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: e2e-playwright-report
+          path: ./e2e/playwright-report/
+          retention-days: 3
+
+      - name: Clean up Docker containers
+        if: always()
+        run: |
+          docker compose down
+      
+      - name: Stopp backend
+        if: always()
+        run: |
+          if [ -f backend.pid ]; then
+            kill $(cat backend.pid) 2>/dev/null || true
+          fi
+
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: backend-log
+          path: backend.log
+          retention-days: 3

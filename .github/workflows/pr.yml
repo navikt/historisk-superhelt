@@ -11,3 +11,10 @@ jobs:
       packages: write
       contents: read
       id-token: write
+  e2e:
+    uses: ./.github/workflows/e2e.yaml
+    secrets: inherit
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
