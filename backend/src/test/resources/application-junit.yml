@@ -31,6 +31,9 @@ app:
   dokdist:
     url: http://dokdist-junit.mocked
     audience: api://mock.dokdist/.default
+  oppgave:
+    url: http://oppgave-junit.mocked
+    audience: api://mock.oppgave/.default
 
 spring:
   main:

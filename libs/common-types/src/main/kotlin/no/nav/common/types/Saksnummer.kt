@@ -1,5 +1,7 @@
 package no.nav.common.types
+import io.swagger.v3.oas.annotations.media.Schema
 
+@Schema(type = "string")
 @JvmInline
 value class Saksnummer(val value: String) {
     constructor(id: Long) : this("SH-${id.toString().padStart(6, '0')}")

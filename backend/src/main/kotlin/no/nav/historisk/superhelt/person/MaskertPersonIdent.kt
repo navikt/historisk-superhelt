@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.person
 
+import io.swagger.v3.oas.annotations.media.Schema
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.infrastruktur.crypto.CachedEncryptor
 import no.nav.historisk.superhelt.infrastruktur.crypto.SaltedXorEncryptor
@@ -43,6 +44,7 @@ private object FnrEncryptor {
     }
 }
 
+@Schema(type = "string")
 @JvmInline
 value class MaskertPersonIdent(val value: String) {
     /**

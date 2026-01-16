@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt
 
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.infrastruktur.Role
+import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
 import no.nav.historisk.superhelt.infrastruktur.getCurrentUserRoles
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -16,9 +18,10 @@ class UserController {
     @GetMapping
     fun getUserInfo(auth: Authentication): User {
         val roles = getCurrentUserRoles()
-        return User(name=auth.name, roles= roles )
+        val user = getCurrentNavUser()
+        return User(name=user.navn, ident = user.navIdent, roles= roles )
     }
     
-    data class User(val name: String, val roles: List<Role>)
+    data class User(val name: String, val ident: NavIdent, val roles: List<Role>)
 }
 
