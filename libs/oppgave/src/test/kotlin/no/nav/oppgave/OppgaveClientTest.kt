@@ -1,8 +1,5 @@
 package no.nav.oppgave
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.*
@@ -16,14 +13,14 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import tools.jackson.databind.json.JsonMapper
 import java.time.LocalDate
 
 class OppgaveClientTest {
 
-    private val objectMapper = ObjectMapper().apply {
-        registerModule(JavaTimeModule())
-        registerModule(KotlinModule.Builder().build())
-    }
+    private val objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .build()
 
     private val restTemplate: RestTemplate = RestTemplate()
     private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()

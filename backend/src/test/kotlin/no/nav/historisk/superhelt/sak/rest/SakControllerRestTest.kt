@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.sak.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
@@ -21,12 +20,13 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import tools.jackson.databind.ObjectMapper
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc

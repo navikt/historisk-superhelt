@@ -1,7 +1,5 @@
 package no.nav.pdl
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -15,6 +13,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import java.time.LocalDate
+import tools.jackson.databind.json.JsonMapper
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -23,9 +22,9 @@ class PdlClientTest {
 
     private val behandlingsnummer = "B123"
 
-    private val objectMapper = ObjectMapper().apply {
-        registerModule(JavaTimeModule())
-    }
+    private val objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .build()
 
     private val restTemplate: RestTemplate = RestTemplate()
     private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()
@@ -56,8 +55,11 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertEquals(expectedData.hentPerson?.navn?.first()?.fornavn, result?.data?.hentPerson?.navn?.first()?.fornavn)
-        assertEquals(expectedData.hentIdenter?.identer?.first()?.ident, result?.data?.hentIdenter?.identer?.first()?.ident)
+        assertEquals(expectedData.hentPerson?.navn?.first()?.fornavn, result.data?.hentPerson?.navn?.first()?.fornavn)
+        assertEquals(
+            expectedData.hentIdenter?.identer?.first()?.ident,
+            result.data?.hentIdenter?.identer?.first()?.ident
+        )
     }
 
     @Test
@@ -84,10 +86,10 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertNotNull(result?.errors)
-        assertEquals(1, result?.errors?.size)
-        assertEquals("Ikke tilgang", result?.errors?.first()?.message)
-        assertEquals(PdlFeilkoder.UNAUTHORIZED, result?.errors?.first()?.extensions?.code)
+        assertNotNull(result.errors)
+        assertEquals(1, result.errors.size)
+        assertEquals("Ikke tilgang", result.errors.first().message)
+        assertEquals(PdlFeilkoder.UNAUTHORIZED, result.errors.first().extensions.code)
     }
 
     @Test
@@ -106,8 +108,8 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertNull(result?.data)
-        assertNull(result?.errors)
+        assertNull(result.data)
+        assertNull(result.errors)
     }
 
     @Test
@@ -140,10 +142,10 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertNotNull(result?.errors)
-        assertEquals(2, result?.errors?.size)
-        assertEquals("Feil 1", result?.errors?.get(0)?.message)
-        assertEquals("Feil 2", result?.errors?.get(1)?.message)
+        assertNotNull(result.errors)
+        assertEquals(2, result.errors.size)
+        assertEquals("Feil 1", result.errors[0].message)
+        assertEquals("Feil 2", result.errors[1].message)
     }
 
     @Test
@@ -198,11 +200,13 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertNotNull(result?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt)
-        assertEquals(1, result?.data?.hentPerson?.vergemaalEllerFremtidsfullmakt?.size)
-        assertNotNull(result?.data?.hentPerson?.adressebeskyttelse)
-        assertEquals(AdressebeskyttelseGradering.FORTROLIG,
-                    result?.data?.hentPerson?.adressebeskyttelse?.first()?.gradering)
+        assertNotNull(result.data?.hentPerson?.vergemaalEllerFremtidsfullmakt)
+        assertEquals(1, result.data.hentPerson.vergemaalEllerFremtidsfullmakt.size)
+        assertNotNull(result.data.hentPerson.adressebeskyttelse)
+        assertEquals(
+            AdressebeskyttelseGradering.FORTROLIG,
+            result.data.hentPerson.adressebeskyttelse.first().gradering
+        )
     }
 
     @Test
@@ -235,7 +239,7 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertEquals(emptyList(), result?.data?.hentPerson?.navn)
+        assertEquals(emptyList(), result.data?.hentPerson?.navn)
     }
 
     @Test
@@ -268,8 +272,8 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        assertEquals(1, result?.data?.hentPerson?.doedsfall?.size)
-        assertEquals("2023-01-15", result?.data?.hentPerson?.doedsfall?.first()?.doedsdato)
+        assertEquals(1, result.data?.hentPerson?.doedsfall?.size)
+        assertEquals("2023-01-15", result.data?.hentPerson?.doedsfall?.first()?.doedsdato)
     }
 
     @Test
@@ -305,7 +309,7 @@ class PdlClientTest {
 
         // Then
         assertNotNull(result)
-        val identer = result?.data?.hentIdenter?.identer ?: emptyList()
+        val identer = result.data?.hentIdenter?.identer ?: emptyList()
         assertEquals(4, identer.size)
         assertEquals(2, identer.count { it.gruppe == IdentGruppe.FOLKEREGISTERIDENT })
         assertEquals(2, identer.count { it.gruppe == IdentGruppe.AKTORID })

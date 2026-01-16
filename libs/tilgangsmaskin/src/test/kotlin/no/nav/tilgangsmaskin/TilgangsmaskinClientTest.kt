@@ -1,7 +1,6 @@
 package no.nav.tilgangsmaskin
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -10,15 +9,17 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
-import org.springframework.test.web.client.response.MockRestResponseCreators.*
+import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import tools.jackson.databind.json.JsonMapper
 
 class TilgangsmaskinClientTest {
 
-    private val objectMapper = ObjectMapper().apply {
-        registerModule(JavaTimeModule())
-    }
+    private val objectMapper = JsonMapper.builder()
+        .findAndAddModules()
+        .build()
+
 
     private val restTemplate: RestTemplate = RestTemplate()
     private var mockServer: MockRestServiceServer = MockRestServiceServer.bindTo(restTemplate).build()
