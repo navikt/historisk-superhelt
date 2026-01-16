@@ -2,7 +2,7 @@ import {BodyShort, Box, Button, GlobalAlert, Heading, HStack, Table, Tag, VStack
 import {useNavigate} from '@tanstack/react-router'
 import {findPersonByFnr as findPerson} from "@generated";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
+import {getUserInfoOptions, hentOppgaverForSaksbehandlerOptions} from "@generated/@tanstack/react-query.gen";
 
 export function OppgaveTabell() {
     const navigate = useNavigate()
@@ -10,6 +10,7 @@ export function OppgaveTabell() {
         ...getUserInfoOptions()
     })
 
+    const {data: oppgaver} = useSuspenseQuery({...hentOppgaverForSaksbehandlerOptions()});
 
     async function doSearch(fnr: string) {
 
@@ -26,39 +27,7 @@ export function OppgaveTabell() {
 
     }
 
-    // Mock data for oppgaver
-    const oppgaver = [
-        {
-            id: 'OPP001',
-            fnr: '28498914510',
-            navn: 'Overfølsom Kjendis',
-            tema: 'Reiseutgifter',
-            oppgavetype: 'Behandle søknad',
-            frist: '2024-02-15',
-            status: 'Under behandling',
-            saksbehandler: 'Anne Hansen'
-        },
-        {
-            id: 'OPP002',
-            fnr: '02437832318',
-            navn: 'Sjelden Motvind',
-            tema: 'Fottøy i ulik størrelse',
-            oppgavetype: 'Vurder dokument',
-            frist: '2024-02-10',
-            status: 'Ny',
-            saksbehandler: null
-        },
-        {
-            id: 'OPP003',
-            fnr: '28497016101',
-            navn: 'Gretten Fart',
-            tema: 'Parykk',
-            oppgavetype: 'Behandle klage',
-            frist: '2024-02-20',
-            status: 'Venter på bruker',
-            saksbehandler: 'Kari Nilsen'
-        }
-    ]
+
 
     const getStatusVariant = (status: string) => {
         switch (status) {
@@ -114,22 +83,21 @@ export function OppgaveTabell() {
                                 <Table.HeaderCell scope="row">{oppgave.id}</Table.HeaderCell>
                                 <Table.DataCell>
                                     <VStack gap="1">
-                                        <BodyShort weight="semibold">{oppgave.navn}</BodyShort>
-                                        <BodyShort size="small">{oppgave.fnr}</BodyShort>
+                                        <BodyShort size="small">{oppgave.bruker?.ident}</BodyShort>
                                     </VStack>
                                 </Table.DataCell>
                                 <Table.DataCell>{oppgave.tema}</Table.DataCell>
                                 <Table.DataCell>{oppgave.oppgavetype}</Table.DataCell>
-                                <Table.DataCell>{oppgave.frist}</Table.DataCell>
+                                <Table.DataCell>{oppgave.fristFerdigstillelse}</Table.DataCell>
                                 <Table.DataCell>
                                     <Tag variant={getStatusVariant(oppgave.status)} size="small">
                                         {oppgave.status}
                                     </Tag>
                                 </Table.DataCell>
-                                <Table.DataCell>{oppgave.saksbehandler || 'Ikke tildelt'}</Table.DataCell>
+                                <Table.DataCell>{oppgave.tilordnetRessurs || 'Ikke tildelt'}</Table.DataCell>
                                 <Table.DataCell>
                                     <HStack gap="2">
-                                        <Button size="small" variant="secondary" onClick={() => doSearch(oppgave.fnr)}>
+                                        <Button size="small" variant="secondary" onClick={() => doSearch(oppgave.bruker?.ident || '')}>
                                             Se person
                                         </Button>
                                     </HStack>

@@ -18,6 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import java.time.LocalDate
 
 
 @MockedSpringBootTest
@@ -38,7 +39,8 @@ class PersonControllerTest {
     @Test
     fun `skal hente person `() {
         val fnr = FolkeregisterIdent("12345678901")
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
+        val foedselsdato = LocalDate.now().minusYears(26)
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr,foedselsdato = foedselsdato)
         mockPerson(fnr, testPerson)
 
         assertThat(getPersonByMaskertId(fnr))
@@ -50,7 +52,8 @@ class PersonControllerTest {
                 assertThat(it.navn).isEqualTo(testPerson.navn)
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isNull()
-                //TODO flere felter som vi kanskje trenger
+                assertThat(it.foedselsdato).isEqualTo(foedselsdato)
+                assertThat(it.alder).isEqualTo(26)
             })
     }
 
@@ -75,7 +78,6 @@ class PersonControllerTest {
                 assertThat(it.navn).isEqualTo(testPerson.navn)
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isNull()
-                //TODO flere felter som vi kanskje trenger
             })
     }
 
@@ -160,5 +162,4 @@ class PersonControllerTest {
     }
 
 }
-
 

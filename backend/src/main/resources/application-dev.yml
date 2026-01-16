@@ -48,3 +48,6 @@ app:
   dokdist:
     url: http://localhost:9080/dokdist-mock
     audience: api://mock.dokdist/.default
+  oppgave:
+    url: http://localhost:9080/oppgave-mock
+    audience: api://mock.oppgave/.default

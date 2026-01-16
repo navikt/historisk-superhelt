@@ -5,7 +5,10 @@ query($ident: ID!) {
         },
         doedsfall{
             doedsdato
-        }
+        },
+        foedselsdato{
+            foedselsdato
+        },
         adressebeskyttelse(historikk: false) {
             gradering
         }
