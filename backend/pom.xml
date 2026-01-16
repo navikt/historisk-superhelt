@@ -51,6 +51,11 @@
             <artifactId>dokarkiv</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>oppgave</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Spring boot dependencies -->
         <dependency>

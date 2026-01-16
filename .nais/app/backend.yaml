@@ -110,6 +110,10 @@ spec:
       value: "https://saf{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
     - name: APP_SAF_AUDIENCE
       value: "api://{{env}}-fss.teamdokumenthandtering.saf/.default"
+    - name: APP_OPPGAVE_URL
+      value: "https://oppgave.{{env}}-fss-pub.nais.io"
+    - name: APP_OPPGAVE_AUDIENCE
+      value: "api://{{env}}-fss.oppgavehandtering.oppgave/.default"
 
 
 
