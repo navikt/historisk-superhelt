@@ -1,5 +1,7 @@
 package no.nav.pdl
 
+import java.time.LocalDate
+
 /** Domene for GraphQL-respons fra PDL  generert fra hentPersonOgIdenter.graphql*/
 
 data class HentPdlResponse(
@@ -15,6 +17,7 @@ data class PdlData(
 data class Person(
     val navn: List<Navn>?,
     val doedsfall: List<Doedsfall>?,
+    val foedselsdato: List<Foedselsdato>?,
     val adressebeskyttelse: List<Adressebeskyttelse>?,
     val vergemaalEllerFremtidsfullmakt: List<VergemaalEllerFremtidsfullmakt>?
 )
@@ -27,6 +30,10 @@ data class Navn(
 
 data class Doedsfall(
     val doedsdato: String?
+)
+
+data class Foedselsdato(
+    val foedselsdato: LocalDate?
 )
 
 data class Adressebeskyttelse(
@@ -78,4 +85,3 @@ data class PdlErrorLocation(
 data class PdlErrorExtension(
     val code: String?, val classification: String
 )
-

@@ -69,6 +69,7 @@ class PersonServiceTest {
                 hentPerson = Person(
                     navn = listOf(Navn("Ola", null, "Nordmann")),
                     doedsfall = null,
+                    foedselsdato = null,
                     adressebeskyttelse = null,
                     vergemaalEllerFremtidsfullmakt = null
                 ),
