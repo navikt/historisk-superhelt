@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
+import java.time.LocalDate
 
 class PdlPersondataParserTest {
 
@@ -268,7 +269,7 @@ class PdlPersondataParserTest {
                 hentPerson = Person(
                     navn = listOf(Navn("Kari", "Anne", "Hansen")),
                     doedsfall = listOf(Doedsfall("2023-01-15")),
-                    foedselsdato = listOf(Foedselsdato("1990-05-20")),
+                    foedselsdato = listOf(Foedselsdato(LocalDate.of(1990, 5, 20))),
                     adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)),
                     vergemaalEllerFremtidsfullmakt = listOf(
                         VergemaalEllerFremtidsfullmakt(

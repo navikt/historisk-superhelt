@@ -32,8 +32,6 @@ data class Person(
 }
 
 fun Persondata.toDto(maskertPersonident: MaskertPersonIdent, tilgang: TilgangsmaskinClient.TilgangResult): Person {
-    val foedselsdatoStr = this.foedselsdato // assumes Persondata has foedselsdato: String?
-    val foedselsdato = foedselsdatoStr?.let { LocalDate.parse(it) }
     return Person(
         navn = this.navn,
         maskertPersonident = maskertPersonident,
@@ -43,6 +41,6 @@ fun Persondata.toDto(maskertPersonident: MaskertPersonIdent, tilgang: Tilgangsma
         verge = this.verge != null,
         avvisningsKode = tilgang.response?.title,
         avvisningsBegrunnelse = tilgang.response?.begrunnelse,
-        foedselsdato = foedselsdato
+        foedselsdato = this.foedselsdato
     )
 }

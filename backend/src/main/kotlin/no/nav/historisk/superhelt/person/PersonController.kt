@@ -31,7 +31,8 @@ class PersonController(
     @GetMapping("/{maskertPersonident}")
     fun getPerson(@PathVariable maskertPersonident: MaskertPersonIdent): ResponseEntity<Person> {
         val fnr = maskertPersonident.toFnr()
-        return findPerson(PersonRequest(fnr = fnr))
+        val findPerson = findPerson(PersonRequest(fnr = fnr))
+        return findPerson
     }
 
 }

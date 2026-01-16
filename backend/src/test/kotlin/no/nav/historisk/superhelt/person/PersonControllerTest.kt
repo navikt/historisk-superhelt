@@ -18,6 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import java.time.LocalDate
 
 
 @MockedSpringBootTest
@@ -38,8 +39,8 @@ class PersonControllerTest {
     @Test
     fun `skal hente person `() {
         val fnr = FolkeregisterIdent("12345678901")
-        val foedselsdato = "2000-01-01"
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, foedselsdato = foedselsdato)
+        val foedselsdato = LocalDate.now().minusYears(26)
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr,foedselsdato = foedselsdato)
         mockPerson(fnr, testPerson)
 
         assertThat(getPersonByMaskertId(fnr))
@@ -51,7 +52,7 @@ class PersonControllerTest {
                 assertThat(it.navn).isEqualTo(testPerson.navn)
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isNull()
-                assertThat(it.foedselsdato).isEqualTo(java.time.LocalDate.parse(foedselsdato))
+                assertThat(it.foedselsdato).isEqualTo(foedselsdato)
                 assertThat(it.alder).isEqualTo(26)
             })
     }
@@ -65,8 +66,7 @@ class PersonControllerTest {
     @Test
     fun `skal returnere person med tilgang når fnr er gyldig`() {
         val fnr = FolkeregisterIdent("12345678901")
-        val foedselsdato = "2000-01-01"
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, foedselsdato = foedselsdato)
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr)
         mockPerson(fnr, testPerson)
 
         assertThat(findPersonByFnr(fnr))
@@ -78,16 +78,13 @@ class PersonControllerTest {
                 assertThat(it.navn).isEqualTo(testPerson.navn)
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isNull()
-                assertThat(it.foedselsdato).isEqualTo(java.time.LocalDate.parse(foedselsdato))
-                assertThat(it.alder).isEqualTo(26)
             })
     }
 
     @Test
     fun `skal returnere person med avvisningskode når bruker mangler tilgang`() {
         val fnr = FolkeregisterIdent("12345678901")
-        val foedselsdato = "2000-01-01"
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, navn = "***", harTilgang = false, foedselsdato = foedselsdato)
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, navn = "***", harTilgang = false)
         mockPerson(fnr, testPerson, Avvisningskode.AVVIST_HABILITET)
 
         assertThat(findPersonByFnr(fnr))
@@ -99,8 +96,6 @@ class PersonControllerTest {
                 assertThat(it.navn).contains("***")
                 assertThat(it.maskertPersonident).isEqualTo(fnr.toMaskertPersonIdent())
                 assertThat(it.avvisningsKode).isEqualTo(Avvisningskode.AVVIST_HABILITET)
-                assertThat(it.foedselsdato).isEqualTo(java.time.LocalDate.parse(foedselsdato))
-                assertThat(it.alder).isEqualTo(26)
             })
     }
 

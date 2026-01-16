@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.person
 
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.person.Persondata
+import java.time.LocalDate
 
 object PersonTestData {
 
@@ -11,7 +12,7 @@ object PersonTestData {
         aktorId = "1234567890123",
         alleFnr = setOf(FolkeregisterIdent("12345678901")),
         doedsfall = null,
-        foedselsdato = null,
+        foedselsdato = LocalDate.now().minusYears(30),
         verge = null,
         harTilgang = true,
         fornavn = "Ola",

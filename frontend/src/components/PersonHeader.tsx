@@ -25,9 +25,7 @@ export function PersonHeader({maskertPersonId}: Props) {
                 <PersonIcon fontSize="1.5rem"/>
                 <Link as={RouterLink} to={"/person/" + person.maskertPersonident} underline={false}>
                     <BodyShort size={"large"}>
-                        {person?.navn}
-                        {person?.alder !== undefined && person?.alder !== null &&
-                            ` (${person.alder} år)`}
+                        {person?.navn} ({person.alder??'-'} år)
                     </BodyShort>
                 </Link>
                 <BodyShort size={"small"}>{person.fnr}</BodyShort>

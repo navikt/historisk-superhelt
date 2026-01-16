@@ -2,6 +2,7 @@ package no.nav.pdl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -13,6 +14,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators.wit
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -334,7 +336,7 @@ class PdlClientTest {
             hentPerson = Person(
                 navn = listOf(Navn(fornavn = "Born", mellomnavn = null, etternavn = "Person")),
                 doedsfall = emptyList(),
-                foedselsdato = listOf(Foedselsdato(foedselsdato = "1990-05-20")),
+                foedselsdato = listOf(Foedselsdato(foedselsdato = LocalDate.of(1990,5,10))),
                 adressebeskyttelse = emptyList(),
                 vergemaalEllerFremtidsfullmakt = emptyList()
             ),
@@ -357,7 +359,7 @@ class PdlClientTest {
         // Then
         assertNotNull(result)
         assertEquals(1, result?.data?.hentPerson?.foedselsdato?.size)
-        assertEquals("1990-05-20", result?.data?.hentPerson?.foedselsdato?.first()?.foedselsdato)
+        assertThat(result?.data?.hentPerson?.foedselsdato?.first()?.foedselsdato).isEqualTo("1990-05-10")
     }
 
     private fun createValidPdlData(ident: String): PdlData {

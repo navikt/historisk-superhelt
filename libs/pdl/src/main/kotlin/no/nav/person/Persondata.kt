@@ -2,6 +2,7 @@ package no.nav.person
 
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.pdl.AdressebeskyttelseGradering
+import java.time.LocalDate
 
 data class Persondata(
     val navn: String,
@@ -11,7 +12,7 @@ data class Persondata(
     val aktorId: AktorId,
     val alleFnr: Set<FolkeregisterIdent>,
     val doedsfall: Doedsfall,
-    val foedselsdato: Foedselsdato,
+    val foedselsdato: LocalDate?,
     val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
     val verge: FolkeregisterIdent?,
     val harTilgang: Boolean
@@ -19,4 +20,3 @@ data class Persondata(
 
 typealias AktorId = String
 typealias Doedsfall = String?
-typealias Foedselsdato = String?
