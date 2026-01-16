@@ -62,17 +62,17 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -128,17 +128,14 @@ export type Person = {
     verge: boolean;
     avvisningsKode?: 'AVVIST_STRENGT_FORTROLIG_ADRESSE' | 'AVVIST_STRENGT_FORTROLIG_UTLAND' | 'AVVIST_AVDØD' | 'AVVIST_PERSON_UTLAND' | 'AVVIST_SKJERMING' | 'AVVIST_FORTROLIG_ADRESSE' | 'AVVIST_UKJENT_BOSTED' | 'AVVIST_GEOGRAFISK' | 'AVVIST_HABILITET' | 'UKJENT_PERSON';
     avvisningsBegrunnelse?: string;
+    foedselsdato?: string;
+    alder?: number;
 };
 
 export type User = {
     name: string;
     ident: string;
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
-};
-
-export type Regex = {
-    pattern: string;
-    options: Array<'IGNORE_CASE' | 'MULTILINE' | 'LITERAL' | 'UNIX_LINES' | 'COMMENTS' | 'DOT_MATCHES_ALL' | 'CANON_EQ'>;
 };
 
 export type Vedtak = {
@@ -242,14 +239,8 @@ export type SakWritable = {
 export type SakTilstandWritable = {
     sak?: SakWritable;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-};
-
-export type RegexWritable = {
-    nativePattern?: unknown;
-    pattern: string;
-    options: Array<'IGNORE_CASE' | 'MULTILINE' | 'LITERAL' | 'UNIX_LINES' | 'COMMENTS' | 'DOT_MATCHES_ALL' | 'CANON_EQ'>;
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type GetSakBySaksnummerData = {
@@ -532,7 +523,7 @@ export type FindSakerForPersonData = {
     body?: never;
     path?: never;
     query: {
-        maskertPersonId: RegexWritable;
+        maskertPersonId: string;
     };
     url: '/api/sak';
 };
@@ -873,7 +864,7 @@ export type GetKodeverkStonadTypeResponse = GetKodeverkStonadTypeResponses[keyof
 export type GetPersonByMaskertIdentData = {
     body?: never;
     path: {
-        maskertPersonident: RegexWritable;
+        maskertPersonident: string;
     };
     query?: never;
     url: '/api/person/{maskertPersonident}';
