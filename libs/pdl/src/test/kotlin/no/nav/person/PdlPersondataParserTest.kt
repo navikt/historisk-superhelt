@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
+import java.time.LocalDate
 
 class PdlPersondataParserTest {
 
@@ -39,6 +40,7 @@ class PdlPersondataParserTest {
         assertNull(result?.adressebeskyttelseGradering)
         assertNull(result?.verge)
         assertThat(result?.verge).isNull()
+        assertNull(result?.foedselsdato)
     }
 
     @Test
@@ -55,6 +57,7 @@ class PdlPersondataParserTest {
         assertEquals("2023-01-15", result?.doedsfall)
         assertThat(result?.verge).isEqualTo(FolkeregisterIdent("98765432109"))
         assertThat(result?.doedsfall).isEqualTo("2023-01-15")
+        assertThat(result?.foedselsdato).isEqualTo("1990-05-20")
     }
 
     @Test
@@ -244,6 +247,7 @@ class PdlPersondataParserTest {
                 hentPerson = Person(
                     navn = listOf(Navn("Ola", null, "Nordmann")),
                     doedsfall = emptyList(),
+                    foedselsdato = emptyList(),
                     adressebeskyttelse = emptyList(),
                     vergemaalEllerFremtidsfullmakt = emptyList()
                 ),
@@ -265,6 +269,7 @@ class PdlPersondataParserTest {
                 hentPerson = Person(
                     navn = listOf(Navn("Kari", "Anne", "Hansen")),
                     doedsfall = listOf(Doedsfall("2023-01-15")),
+                    foedselsdato = listOf(Foedselsdato(LocalDate.of(1990, 5, 20))),
                     adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)),
                     vergemaalEllerFremtidsfullmakt = listOf(
                         VergemaalEllerFremtidsfullmakt(
@@ -289,6 +294,7 @@ class PdlPersondataParserTest {
                 hentPerson = Person(
                     navn = listOf(Navn("Test", null, "Person")),
                     doedsfall = emptyList(),
+                    foedselsdato = emptyList(),
                     adressebeskyttelse = listOf(Adressebeskyttelse(gradering)),
                     vergemaalEllerFremtidsfullmakt = emptyList()
                 ),
@@ -309,6 +315,7 @@ class PdlPersondataParserTest {
                 hentPerson = Person(
                     navn = listOf(Navn("Ola", null, "Nordmann")),
                     doedsfall = emptyList(),
+                    foedselsdato = emptyList(),
                     adressebeskyttelse = emptyList(),
                     vergemaalEllerFremtidsfullmakt = emptyList()
                 ),
@@ -329,6 +336,7 @@ class PdlPersondataParserTest {
                 hentPerson = Person(
                     navn = listOf(Navn("Historical", null, "Person")),
                     doedsfall = emptyList(),
+                    foedselsdato = emptyList(),
                     adressebeskyttelse = emptyList(),
                     vergemaalEllerFremtidsfullmakt = emptyList()
                 ),

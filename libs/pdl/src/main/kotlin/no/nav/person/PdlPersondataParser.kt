@@ -58,6 +58,7 @@ class PdlPersondataParser {
         val adressebeskyttelse =
             hentPerson?.adressebeskyttelse?.firstOrNull()?.gradering
         val dodsDato = hentPerson?.doedsfall?.firstOrNull()?.doedsdato
+        val fodselsDato = hentPerson?.foedselsdato?.firstOrNull()?.foedselsdato
         val verge = hentPerson?.vergemaalEllerFremtidsfullmakt?.firstOrNull()?.vergeEllerFullmektig?.motpartsPersonident
 
         return Persondata(
@@ -68,6 +69,7 @@ class PdlPersondataParser {
             aktorId = aktorId,
             alleFnr = alleFnr.map { FolkeregisterIdent(it) }.toSet(),
             doedsfall = dodsDato,
+            foedselsdato = fodselsDato,
             adressebeskyttelseGradering = adressebeskyttelse,
             verge = verge?.let { FolkeregisterIdent(it) },
             harTilgang = hentPerson != null
