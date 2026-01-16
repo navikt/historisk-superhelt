@@ -12,5 +12,13 @@
     <artifactId>common-types</artifactId>
     <description>Lib for felles typer og value objekter</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.35</version>
+        </dependency>
+    </dependencies>
+
 
 </project>
