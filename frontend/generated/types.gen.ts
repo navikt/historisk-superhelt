@@ -62,17 +62,17 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
-    readonly valideringsfeil: Array<ValidationFieldError>;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
-    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -132,7 +132,13 @@ export type Person = {
 
 export type User = {
     name: string;
+    ident: string;
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
+};
+
+export type Regex = {
+    pattern: string;
+    options: Array<'IGNORE_CASE' | 'MULTILINE' | 'LITERAL' | 'UNIX_LINES' | 'COMMENTS' | 'DOT_MATCHES_ALL' | 'CANON_EQ'>;
 };
 
 export type Vedtak = {
@@ -167,6 +173,42 @@ export type StonadsTypeDto = {
     beskrivelse?: string;
 };
 
+export type Bruker = {
+    ident: string;
+    type: 'PERSON' | 'ARBEIDSGIVER' | 'SAMHANDLER';
+};
+
+export type Oppgave = {
+    id: number;
+    tildeltEnhetsnr: string;
+    tema: string;
+    oppgavetype: string;
+    versjon: number;
+    prioritet: 'HOY' | 'NORM' | 'LAV';
+    status: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
+    aktivDato: string;
+    personident?: string;
+    endretAvEnhetsnr?: string;
+    opprettetAvEnhetsnr?: string;
+    journalpostId?: string;
+    behandlesAvApplikasjon?: string;
+    saksreferanse?: string;
+    aktoerId?: string;
+    orgnr?: string;
+    tilordnetRessurs?: string;
+    beskrivelse?: string;
+    behandlingstema?: string;
+    behandlingstype?: string;
+    mappeId?: number;
+    opprettetAv?: string;
+    endretAv?: string;
+    fristFerdigstillelse?: string;
+    opprettetTidspunkt?: string;
+    ferdigstiltTidspunkt?: string;
+    endretTidspunkt?: string;
+    bruker?: Bruker;
+};
+
 export type BrevWritable = {
     saksnummer: string;
     uuid: string;
@@ -198,10 +240,16 @@ export type SakWritable = {
 };
 
 export type SakTilstandWritable = {
-    sak?: unknown;
-    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    sak?: SakWritable;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+};
+
+export type RegexWritable = {
+    nativePattern?: unknown;
+    pattern: string;
+    options: Array<'IGNORE_CASE' | 'MULTILINE' | 'LITERAL' | 'UNIX_LINES' | 'COMMENTS' | 'DOT_MATCHES_ALL' | 'CANON_EQ'>;
 };
 
 export type GetSakBySaksnummerData = {
@@ -484,7 +532,7 @@ export type FindSakerForPersonData = {
     body?: never;
     path?: never;
     query: {
-        maskertPersonId: string;
+        maskertPersonId: RegexWritable;
     };
     url: '/api/sak';
 };
@@ -825,7 +873,7 @@ export type GetKodeverkStonadTypeResponse = GetKodeverkStonadTypeResponses[keyof
 export type GetPersonByMaskertIdentData = {
     body?: never;
     path: {
-        maskertPersonident: string;
+        maskertPersonident: RegexWritable;
     };
     query?: never;
     url: '/api/person/{maskertPersonident}';
@@ -856,3 +904,36 @@ export type GetPersonByMaskertIdentResponses = {
 };
 
 export type GetPersonByMaskertIdentResponse = GetPersonByMaskertIdentResponses[keyof GetPersonByMaskertIdentResponses];
+
+export type HentOppgaverForSaksbehandlerData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/oppgave/saksbehandler';
+};
+
+export type HentOppgaverForSaksbehandlerErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentOppgaverForSaksbehandlerError = HentOppgaverForSaksbehandlerErrors[keyof HentOppgaverForSaksbehandlerErrors];
+
+export type HentOppgaverForSaksbehandlerResponses = {
+    /**
+     * OK
+     */
+    200: Array<Oppgave>;
+};
+
+export type HentOppgaverForSaksbehandlerResponse = HentOppgaverForSaksbehandlerResponses[keyof HentOppgaverForSaksbehandlerResponses];
