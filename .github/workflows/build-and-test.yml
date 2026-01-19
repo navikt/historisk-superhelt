@@ -36,7 +36,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Bygg og push docker image til GAR
-        uses: nais/docker-build-push@791ebb6f74b82849c742a9bc9c97abe44c6c111f #v0
+        uses: nais/docker-build-push@87f920b0411b987d9a1fd4113aa384e1e3b54f2c #v0
         id: docker-build-push
         with:
           team: historisk
