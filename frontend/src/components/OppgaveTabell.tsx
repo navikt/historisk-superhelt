@@ -1,8 +1,9 @@
 import {BodyShort, Box, Button, GlobalAlert, Heading, HStack, Table, Tag, VStack} from '@navikt/ds-react'
-import {useNavigate} from '@tanstack/react-router'
+import {Link as RouterLink, useNavigate} from '@tanstack/react-router'
 import {findPersonByFnr as findPerson} from "@generated";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getUserInfoOptions, hentOppgaverForSaksbehandlerOptions} from "@generated/@tanstack/react-query.gen";
+import {SakStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 export function OppgaveTabell() {
     const navigate = useNavigate()
@@ -29,16 +30,14 @@ export function OppgaveTabell() {
 
 
 
-    const getStatusVariant = (status: string) => {
+    const getStatusVariant = (status?: SakStatusType) => {
         switch (status) {
-            case 'Ny':
+            case "UNDER_BEHANDLING":
                 return 'info'
-            case 'Under behandling':
-                return 'warning'
-            case 'Venter på bruker':
-                return 'neutral'
-            case 'Ferdig':
+            case "TIL_ATTESTERING":
                 return 'success'
+            case "FERDIG":
+                return 'warning'
             default:
                 return 'neutral'
         }
@@ -69,7 +68,6 @@ export function OppgaveTabell() {
                         <Table.Row>
                             <Table.HeaderCell scope="col">Oppgave-ID</Table.HeaderCell>
                             <Table.HeaderCell scope="col">Person</Table.HeaderCell>
-                            <Table.HeaderCell scope="col">Tema</Table.HeaderCell>
                             <Table.HeaderCell scope="col">Oppgavetype</Table.HeaderCell>
                             <Table.HeaderCell scope="col">Frist</Table.HeaderCell>
                             <Table.HeaderCell scope="col">Status</Table.HeaderCell>
@@ -79,25 +77,24 @@ export function OppgaveTabell() {
                     </Table.Header>
                     <Table.Body>
                         {oppgaver.map((oppgave) => (
-                            <Table.Row key={oppgave.id}>
-                                <Table.HeaderCell scope="row">{oppgave.id}</Table.HeaderCell>
+                            <Table.Row key={oppgave.oppgaveId}>
+                                <Table.HeaderCell scope="row">{oppgave.oppgaveId}</Table.HeaderCell>
                                 <Table.DataCell>
                                     <VStack gap="1">
-                                        <BodyShort size="small">{oppgave.bruker?.ident}</BodyShort>
+                                        <BodyShort size="small">{oppgave.fnr}</BodyShort>
                                     </VStack>
                                 </Table.DataCell>
-                                <Table.DataCell>{oppgave.tema}</Table.DataCell>
                                 <Table.DataCell>{oppgave.oppgavetype}</Table.DataCell>
                                 <Table.DataCell>{oppgave.fristFerdigstillelse}</Table.DataCell>
                                 <Table.DataCell>
-                                    <Tag variant={getStatusVariant(oppgave.status)} size="small">
-                                        {oppgave.status}
+                                    <Tag variant={getStatusVariant(oppgave.sakStatus)} size="small">
+                                        {oppgave.sakStatus?? "-"}
                                     </Tag>
                                 </Table.DataCell>
                                 <Table.DataCell>{oppgave.tilordnetRessurs || 'Ikke tildelt'}</Table.DataCell>
                                 <Table.DataCell>
                                     <HStack gap="2">
-                                        <Button size="small" variant="secondary" onClick={() => doSearch(oppgave.bruker?.ident || '')}>
+                                        <Button as={RouterLink} size="small" variant="secondary" to={`/person/${oppgave.maskertPersonIdent}` }>
                                             Se person
                                         </Button>
                                     </HStack>

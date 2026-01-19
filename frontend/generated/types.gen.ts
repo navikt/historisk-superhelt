@@ -62,11 +62,11 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
@@ -170,40 +170,21 @@ export type StonadsTypeDto = {
     beskrivelse?: string;
 };
 
-export type Bruker = {
-    ident: string;
-    type: 'PERSON' | 'ARBEIDSGIVER' | 'SAMHANDLER';
-};
-
-export type Oppgave = {
-    id: number;
-    tildeltEnhetsnr: string;
-    tema: string;
-    oppgavetype: string;
-    versjon: number;
-    prioritet: 'HOY' | 'NORM' | 'LAV';
-    status: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
-    aktivDato: string;
-    personident?: string;
-    endretAvEnhetsnr?: string;
-    opprettetAvEnhetsnr?: string;
+export type OppgaveMedSak = {
+    fnr: string;
+    oppgaveId: number;
+    oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
+    oppgavetype: 'BEH_SED' | 'VURD_NOTAT' | 'VURD_BREV' | 'BEH_SAK' | 'BEH_SAK_MK' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_HENV' | 'BEH_AVV_ADR' | 'FDR' | 'GOD_VED' | 'BEH_UND_VED' | 'UKJENT';
+    oppgaveGjelder: 'ORTOPEDISKE_HJELPEMIDLER_SOKNAD' | 'ANKE' | 'KLAGE' | 'ORTOPEDISKE_HJELPEMIDLER_UTLAND' | 'TIDLIGERE_HJEMSENDT_SAK' | 'HJEMSENDT_TIL_NY_BEHANDLING' | 'ORTOPEDISKE_HJELPEMIDLER' | 'REISEUTGIFTER' | 'BIDRAG_EKSKL_FARSKAP' | 'ANSIKTSDEFEKTSPROTESE' | 'BRYSTPROTESE_PROTESEBH' | 'FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER' | 'OYEPROTESE' | 'PARYKK_HODEPLAGG' | 'REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER' | 'PARTSINNSYN' | 'MEDLEMSKAP' | 'UKJENT';
     journalpostId?: string;
-    behandlesAvApplikasjon?: string;
-    saksreferanse?: string;
-    aktoerId?: string;
-    orgnr?: string;
     tilordnetRessurs?: string;
     beskrivelse?: string;
-    behandlingstema?: string;
-    behandlingstype?: string;
-    mappeId?: number;
-    opprettetAv?: string;
-    endretAv?: string;
     fristFerdigstillelse?: string;
-    opprettetTidspunkt?: string;
-    ferdigstiltTidspunkt?: string;
-    endretTidspunkt?: string;
-    bruker?: Bruker;
+    behandlesAvApplikasjon?: string;
+    tildeltEnhetsnr?: string;
+    saksnummer?: string;
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    readonly maskertPersonIdent: string;
 };
 
 export type BrevWritable = {
@@ -241,6 +222,22 @@ export type SakTilstandWritable = {
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+};
+
+export type OppgaveMedSakWritable = {
+    fnr: string;
+    oppgaveId: number;
+    oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
+    oppgavetype: 'BEH_SED' | 'VURD_NOTAT' | 'VURD_BREV' | 'BEH_SAK' | 'BEH_SAK_MK' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_HENV' | 'BEH_AVV_ADR' | 'FDR' | 'GOD_VED' | 'BEH_UND_VED' | 'UKJENT';
+    oppgaveGjelder: 'ORTOPEDISKE_HJELPEMIDLER_SOKNAD' | 'ANKE' | 'KLAGE' | 'ORTOPEDISKE_HJELPEMIDLER_UTLAND' | 'TIDLIGERE_HJEMSENDT_SAK' | 'HJEMSENDT_TIL_NY_BEHANDLING' | 'ORTOPEDISKE_HJELPEMIDLER' | 'REISEUTGIFTER' | 'BIDRAG_EKSKL_FARSKAP' | 'ANSIKTSDEFEKTSPROTESE' | 'BRYSTPROTESE_PROTESEBH' | 'FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER' | 'OYEPROTESE' | 'PARYKK_HODEPLAGG' | 'REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER' | 'PARTSINNSYN' | 'MEDLEMSKAP' | 'UKJENT';
+    journalpostId?: string;
+    tilordnetRessurs?: string;
+    beskrivelse?: string;
+    fristFerdigstillelse?: string;
+    behandlesAvApplikasjon?: string;
+    tildeltEnhetsnr?: string;
+    saksnummer?: string;
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
 };
 
 export type GetSakBySaksnummerData = {
@@ -924,7 +921,7 @@ export type HentOppgaverForSaksbehandlerResponses = {
     /**
      * OK
      */
-    200: Array<Oppgave>;
+    200: Array<OppgaveMedSak>;
 };
 
 export type HentOppgaverForSaksbehandlerResponse = HentOppgaverForSaksbehandlerResponses[keyof HentOppgaverForSaksbehandlerResponses];
