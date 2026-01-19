@@ -7,7 +7,7 @@ import no.nav.oppgave.model.OppgaveDto
  * Hentet fra https://oppgave.intern.dev.nav.no/#/Kodeverk/hentGjelderverdierForTema
  * */
 
-enum class OppgaveGjelderTemaHel(
+enum class OppgaveGjelder(
     val behandlingstema: String?,
     val behandlingstemaTerm: String?,
     val behandlingstype: String?,
@@ -74,6 +74,6 @@ enum class OppgaveGjelderTemaHel(
 
 }
 
-val OppgaveDto.gjelder: OppgaveGjelderTemaHel
-    get() = OppgaveGjelderTemaHel.entries.find<OppgaveGjelderTemaHel> { it.behandlingstema == behandlingstema && it.behandlingstype == behandlingstype }
-        ?: OppgaveGjelderTemaHel.UKJENT
+val OppgaveDto.gjelder: OppgaveGjelder
+    get() = OppgaveGjelder.entries.find<OppgaveGjelder> { it.behandlingstema == behandlingstema && it.behandlingstype == behandlingstype }
+        ?: OppgaveGjelder.UKJENT

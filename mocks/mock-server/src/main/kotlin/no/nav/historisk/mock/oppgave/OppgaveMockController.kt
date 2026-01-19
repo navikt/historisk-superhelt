@@ -3,7 +3,7 @@ package no.nav.historisk.mock.oppgave
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
 import no.nav.historisk.mock.pdl.fnrFromAktoerId
-import no.nav.oppgave.OppgaveTypeTemaHel
+import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.OppgaveDto
 import no.nav.oppgave.model.OpprettOppgaveRequest
 import no.nav.oppgave.model.PatchOppgaveRequest
@@ -20,10 +20,10 @@ class OppgaveMockController() {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     init {
-        generateTestdata(OppgaveTypeTemaHel.JFR, 10000)
+        generateTestdata(OppgaveType.JFR, 10000)
     }
 
-    private fun generateTestdata(type: OppgaveTypeTemaHel, id: Long) {
+    private fun generateTestdata(type: OppgaveType, id: Long) {
         val oppgave = generateOppgave(fnr = "11111111111", tilordnetRessurs = NavIdent(defaultSaksbehandler) ).copy(
             oppgavetype = type.oppgavetype,
             id = EksternOppgaveId(id),
@@ -51,11 +51,11 @@ class OppgaveMockController() {
 
         // Lager en default jfr oppgave om det er tomt
         val jfrOppgaver = aktiveOppgaver
-            .filter { it.oppgavetype == OppgaveTypeTemaHel.JFR.oppgavetype }
+            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
         if (jfrOppgaver.isEmpty()) {
             val fnr = aktoerId?.let { fnrFromAktoerId(it) }
             val oppgave = generateOppgave(fnr = fnr, tilordnetRessurs = NavIdent( tilordnetRessurs?: defaultSaksbehandler)).copy(
-                oppgavetype = OppgaveTypeTemaHel.JFR.oppgavetype,
+                oppgavetype = OppgaveType.JFR.oppgavetype,
             )
             aktiveOppgaver.add(oppgave)
             repository[oppgave.id] = oppgave
@@ -87,7 +87,7 @@ class OppgaveMockController() {
         // Steng tilhørende journalføringsoppgave hvis dn er koblet samme journalpostid
         // Simulering av at det gjøres i gosys
         repository.values
-            .filter { it.oppgavetype == OppgaveTypeTemaHel.JFR.oppgavetype }
+            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
             .filter { it.journalpostId == nyOppgave.journalpostId }
             .forEach { repository[it.id] = it.copy(status = OppgaveDto.Status.FERDIGSTILT) }
 

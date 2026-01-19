@@ -21,8 +21,6 @@ data class OppgaveDto(
     val status: Status,
     /** Angir når det er relevant å ta tak i oppgaven. Settes normalt til samme dato som oppgaven opprettes, men endres fremover i tid dersom oppgaven f.eks settes på vent. I Gosys vil oppgaver på vent som standard skjules, men kan hente frem om ønskelig */
     val aktivDato: LocalDate,
-    /** ident for person, dvs. fnr, dnr, npid eller aktørid */
-    val personident: String? = null,
     /** Enheten som endret oppgaven */
     val endretAvEnhetsnr: String? = null,
     /** Hvilken enhet som har opprettet oppgaven */

@@ -63,9 +63,9 @@ class OppgaveClientForUtvikler {
                 OpprettOppgaveRequest(
                     personident = "28497016101",
                     tema = EksternFellesKodeverkTema.HEL.name,
-                    oppgavetype = OppgaveTypeTemaHel.BEH_SAK.oppgavetype,
-                    behandlingstema = OppgaveGjelderTemaHel.REISEUTGIFTER.behandlingstema,
-                    behandlingstype = OppgaveGjelderTemaHel.REISEUTGIFTER.behandlingstype,
+                    oppgavetype = OppgaveType.BEH_SAK.oppgavetype,
+                    behandlingstema = OppgaveGjelder.REISEUTGIFTER.behandlingstema,
+                    behandlingstype = OppgaveGjelder.REISEUTGIFTER.behandlingstype,
                     beskrivelse = "Test oppgave fra utvikler",
                     uuid = UUID.randomUUID(),
                 )

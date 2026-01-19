@@ -7,7 +7,7 @@ import no.nav.oppgave.model.OppgaveDto
  * Oppgavetyper for Tema HEL hentet fra /api/v1/kodeverk/oppgavetype/{tema}
  */
 
-enum class OppgaveTypeTemaHel(val oppgavetype: String, val term: String) {
+enum class OppgaveType(val oppgavetype: String, val beskrivelse: String) {
     BEH_SED("BEH_SED", "Behandle SED"),
     VURD_NOTAT("VURD_NOTAT", "Vurder notat"),
     VURD_BREV("VURD_BREV", "Vurder brev"),
@@ -32,4 +32,4 @@ enum class OppgaveTypeTemaHel(val oppgavetype: String, val term: String) {
 
 }
 
-val OppgaveDto.type: OppgaveTypeTemaHel get() = OppgaveTypeTemaHel.entries.find<OppgaveTypeTemaHel> { it.oppgavetype == oppgavetype } ?: OppgaveTypeTemaHel.UKJENT
+val OppgaveDto.type: OppgaveType get() = OppgaveType.entries.find<OppgaveType> { it.oppgavetype == oppgavetype } ?: OppgaveType.UKJENT

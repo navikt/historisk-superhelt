@@ -1,9 +1,8 @@
-package no.nav.historisk.innsyn.saksbehandling.oppgave.model
-
+package no.nav.historisk.superhelt.oppgave.db
 import jakarta.persistence.*
 import no.nav.common.types.EksternOppgaveId
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
-import no.nav.oppgave.OppgaveTypeTemaHel
+import no.nav.oppgave.OppgaveType
 
 @Entity
 @Table(name = "oppgave")
@@ -22,7 +21,7 @@ class OppgaveEntity(
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    val type: OppgaveTypeTemaHel,
+    val type: OppgaveType,
 ) {}
 
 
