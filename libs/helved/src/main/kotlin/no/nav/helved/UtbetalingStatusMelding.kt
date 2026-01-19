@@ -41,7 +41,7 @@ data class Linje(
     val fom: LocalDate,
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val tom: LocalDate,
-    val vedtakssats: Int,
+    val vedtakssats: Int?,
     val beløp: Int,
     val klassekode: String
 )
