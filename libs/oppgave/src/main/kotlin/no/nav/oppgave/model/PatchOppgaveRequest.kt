@@ -14,7 +14,7 @@ data class PatchOppgaveRequest(
     /** Organisasjonsnummer. Kan ikke nullstilles, men kan endres til personident. Merk at det kun er i helt spesielle tilfeller ident skal endres, i.e ifm journalføring. Kun én av personident eller orgnr kan angis */
     val orgnr: String? = null,
     /** Hvilken status oppgaven har. Konsumenter bør kun forholde seg til dette ved behov for å skille mellom ferdigstilt og feilregistrert */
-    val status: Oppgave.Status? = null,
+    val status: OppgaveDto.Status? = null,
     /** Enhet (eller virtuell enhet, ref. norg2) medarbeider representerer når endringen utføres. Skal alltid angis når utført av en medarbeider (OBO). For maskinelle prosesser skal verdien utelates (dersom en verdi angis, så vil systemet uansett overstyre til null) */
     val endretAvEnhetsnr: Enhetsnummer? = null,
     /** Beskrivelse av oppgaven. Dette feltet skal som hovedregel aldri benyttes lenger ved patching av oppgaver. Endringer av fordeling, kategorier etc populeres automatisk i strukturert endringslogg. Kommentarer kan sendes inn i eget strukturert felt, uten spesifikasjon av hvem som kommenterte, når etc (lagres strukturert ut i fra tidspunkt og token).Systemet vil inntil videre automatisk populere beskrivelseshistorikken med bå de kommentarer og endringslogg  (endringslogg i beskrivelseshistorikken vil imidlertid kun inneholde informasjon om fordeling av oppgave, og endring av tema og oppgavetype). Dersom det er essensielt at beskrivelseshistorikken avviker fra det automatisk genererte, må denne fortsatt sendes med, da automatikk ved oppdatering av beskrivelse ikke gjennomføres når feltet er med i requesten med eksisternde eller oppdatert data */
@@ -24,7 +24,7 @@ data class PatchOppgaveRequest(
     /** Enheten oppgaven skal tildeles */
     val tildeltEnhetsnr: Enhetsnummer? = null,
     /** Angir hvilken prioritet oppgaven har */
-    val prioritet: Oppgave.Prioritet? = null,
+    val prioritet: OppgaveDto.Prioritet? = null,
     /** Kategorisering av oppgaven. Må være tillatt for det aktuelle temaet og i kombinasjon med en ev. behandlingstype. Se api for kodeverk */
     val behandlingstema: String? = null,
     /** Kategorisering av oppgaven. Må være tillatt for det aktuelle temaet og i kombinasjon med et ev. behandlingstema. Se api for kodeverk */

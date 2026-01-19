@@ -1,6 +1,7 @@
 package no.nav.oppgave
 
 import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.FinnOppgaverParams
 import no.nav.oppgave.model.OpprettOppgaveRequest
@@ -76,7 +77,7 @@ class OppgaveClientForUtvikler {
     @Test // Bruk en id som finnes
     fun `hent og oppdater`() {
 
-        val oppgaveId = 368496L
+        val oppgaveId = EksternOppgaveId(368496)
         val hentet = client.hentOppgave(oppgaveId)
         println(hentet)
 

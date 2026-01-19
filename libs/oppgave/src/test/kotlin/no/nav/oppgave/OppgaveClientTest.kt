@@ -1,5 +1,6 @@
 package no.nav.oppgave
 
+import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.*
@@ -28,14 +29,14 @@ class OppgaveClientTest {
     private val restClient = RestClient.builder(restTemplate).build()
     private val oppgaveClient = OppgaveClient(restClient)
 
-    private val oppgave = Oppgave(
-        id = 123456789,
+    private val oppgave = OppgaveDto(
+        id = EksternOppgaveId(123456789),
         tildeltEnhetsnr = Enhetsnummer("4100"),
         tema = "OPP",
         oppgavetype = "JFR",
         versjon = 1,
-        prioritet = Oppgave.Prioritet.NORM,
-        status = Oppgave.Status.OPPRETTET,
+        prioritet = OppgaveDto.Prioritet.NORM,
+        status = OppgaveDto.Status.OPPRETTET,
         aktivDato = LocalDate.now()
     )
     // ==================== opprettOppgave tests ====================
@@ -73,16 +74,16 @@ class OppgaveClientTest {
     @Test
     fun `hentOppgave returnerer oppgave`() {
         // Arrange
-        val oppgaveId = 123456789L
+        val oppgaveId = EksternOppgaveId(123456789)
 
-        val oppgave = Oppgave(
+        val oppgave = OppgaveDto(
             id = oppgaveId,
             tildeltEnhetsnr = Enhetsnummer("4100"),
             tema = "OPP",
             oppgavetype = "JFR",
             versjon = 1,
-            prioritet = Oppgave.Prioritet.NORM,
-            status = Oppgave.Status.AAPNET,
+            prioritet = OppgaveDto.Prioritet.NORM,
+            status = OppgaveDto.Status.AAPNET,
             aktivDato = LocalDate.now()
         )
 
@@ -106,10 +107,10 @@ class OppgaveClientTest {
     @Test
     fun `patchOppgave oppdaterer oppgave`() {
         // Arrange
-        val oppgaveId = 123456789L
+        val oppgaveId = EksternOppgaveId(123456789)
         val request = PatchOppgaveRequest(
             versjon = 1,
-            status = Oppgave.Status.FERDIGSTILT
+            status = OppgaveDto.Status.FERDIGSTILT
         )
 
         mockServer.expect(requestTo("/api/v1/oppgaver/$oppgaveId"))
@@ -134,10 +135,10 @@ class OppgaveClientTest {
     @Test
     fun `patchOppgave kaster exception ved konflikt (409 Conflict)`() {
         // Arrange
-        val oppgaveId = 123456789L
+        val oppgaveId = EksternOppgaveId(123456789)
         val request = PatchOppgaveRequest(
             versjon = 1,
-            status = Oppgave.Status.FERDIGSTILT
+            status = OppgaveDto.Status.FERDIGSTILT
         )
 
         mockServer.expect(requestTo("/api/v1/oppgaver/$oppgaveId"))
@@ -165,8 +166,8 @@ class OppgaveClientTest {
         )
 
         val oppgaver = listOf(
-            oppgave.copy(id = 1),
-            oppgave.copy(id = 2),
+            oppgave.copy(id = EksternOppgaveId(1)),
+            oppgave.copy(id = EksternOppgaveId(2)),
         )
 
         val response = SokOppgaverResponse(

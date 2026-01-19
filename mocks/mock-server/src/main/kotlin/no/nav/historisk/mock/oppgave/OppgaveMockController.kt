@@ -1,9 +1,10 @@
 package no.nav.historisk.mock.oppgave
 
+import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
 import no.nav.historisk.mock.pdl.fnrFromAktoerId
 import no.nav.oppgave.OppgaveTypeTemaHel
-import no.nav.oppgave.model.Oppgave
+import no.nav.oppgave.model.OppgaveDto
 import no.nav.oppgave.model.OpprettOppgaveRequest
 import no.nav.oppgave.model.PatchOppgaveRequest
 import no.nav.oppgave.model.SokOppgaverResponse
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("oppgave-mock")
 class OppgaveMockController() {
 
-    private val repository = mutableMapOf<Long, Oppgave>()
+    private val repository = mutableMapOf<EksternOppgaveId, OppgaveDto>()
     private val logger = LoggerFactory.getLogger(javaClass)
 
     init {
@@ -25,13 +26,13 @@ class OppgaveMockController() {
     private fun generateTestdata(type: OppgaveTypeTemaHel, id: Long) {
         val oppgave = generateOppgave(fnr = "11111111111", tilordnetRessurs = NavIdent(defaultSaksbehandler) ).copy(
             oppgavetype = type.oppgavetype,
-            id = id,
+            id = EksternOppgaveId(id),
         )
         repository.put(oppgave.id, oppgave)
     }
 
     @GetMapping()
-    fun info(): MutableMap<Long, Oppgave> {
+    fun info(): MutableMap<EksternOppgaveId, OppgaveDto> {
         return repository
     }
 
@@ -39,7 +40,7 @@ class OppgaveMockController() {
     @GetMapping("/api/v1/oppgaver")
     fun finnOppgaver(@RequestParam tilordnetRessurs: String?, @RequestParam aktoerId: String?): SokOppgaverResponse {
         val aktiveOppgaver = repository.values
-            .filter { it.status != Oppgave.Status.FERDIGSTILT }
+            .filter { it.status != OppgaveDto.Status.FERDIGSTILT }
             .filter {
                 tilordnetRessurs?.equals(it.tilordnetRessurs?.value, ignoreCase = true) ?: true
             }
@@ -57,21 +58,20 @@ class OppgaveMockController() {
                 oppgavetype = OppgaveTypeTemaHel.JFR.oppgavetype,
             )
             aktiveOppgaver.add(oppgave)
-            repository.put(oppgave.id, oppgave)
+            repository[oppgave.id] = oppgave
         }
 
         return SokOppgaverResponse(antallTreffTotalt = aktiveOppgaver.size.toLong(), oppgaver = aktiveOppgaver)
     }
 
     @GetMapping("/api/v1/oppgaver/{id}")
-    fun hentOppgave(@PathVariable("id") id: Long): ResponseEntity<Oppgave> {
-        val oppgave = repository.get(id)
-        if (oppgave == null) return ResponseEntity.notFound().build()
+    fun hentOppgave(@PathVariable("id") id: EksternOppgaveId): ResponseEntity<OppgaveDto> {
+        val oppgave = repository[id] ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(oppgave)
     }
 
     @PostMapping("/api/v1/oppgaver")
-    fun opprettOppgave(@RequestBody request: OpprettOppgaveRequest): Oppgave {
+    fun opprettOppgave(@RequestBody request: OpprettOppgaveRequest): OppgaveDto {
         logger.info("Oppretter oppgave {}", request)
         val aktoerId = request.personident?: throw IllegalStateException("Fant ikke personident i oppgaver")
         val fnr= fnrFromAktoerId(aktoerId)
@@ -89,21 +89,21 @@ class OppgaveMockController() {
         repository.values
             .filter { it.oppgavetype == OppgaveTypeTemaHel.JFR.oppgavetype }
             .filter { it.journalpostId == nyOppgave.journalpostId }
-            .forEach { repository[it.id] = it.copy(status = Oppgave.Status.FERDIGSTILT) }
+            .forEach { repository[it.id] = it.copy(status = OppgaveDto.Status.FERDIGSTILT) }
 
 
         return nyOppgave
     }
 
     @PatchMapping("/api/v1/oppgaver/{id}")
-    fun patchOppgave(@PathVariable id: Long, @RequestBody request: PatchOppgaveRequest): ResponseEntity<Oppgave> {
+    fun patchOppgave(@PathVariable id: EksternOppgaveId, @RequestBody request: PatchOppgaveRequest): ResponseEntity<OppgaveDto> {
         logger.info("Patch oppgave {} {}", id, request)
-        val oppgave = repository.get(id)
-        if (oppgave == null) return ResponseEntity.notFound().build()
+        val oppgave = repository[id] ?: return ResponseEntity.notFound().build()
+
         val patchOppgaveGjelder= !request.behandlingstema.isNullOrBlank()  || !request.behandlingstype.isNullOrBlank()
         val patchedOppgave = oppgave.copy(
             versjon = request.versjon,
-            status = request.status?.let { Oppgave.Status.valueOf(it.name) } ?: oppgave.status,
+            status = request.status?.let { OppgaveDto.Status.valueOf(it.name) } ?: oppgave.status,
             tildeltEnhetsnr = request.tildeltEnhetsnr ?: oppgave.tildeltEnhetsnr,
             tilordnetRessurs = request.tilordnetRessurs ?: oppgave.tilordnetRessurs,
             fristFerdigstillelse = request.fristFerdigstillelse ?: oppgave.fristFerdigstillelse,
@@ -113,7 +113,7 @@ class OppgaveMockController() {
             behandlingstema = if(patchOppgaveGjelder) request.behandlingstema else oppgave.behandlingstema,
             behandlingstype = if(patchOppgaveGjelder) request.behandlingstype else oppgave.behandlingstype,
         )
-        repository.put(patchedOppgave.id, patchedOppgave)
+        repository[patchedOppgave.id] = patchedOppgave
 
         return ResponseEntity.ok(patchedOppgave)
     }

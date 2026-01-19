@@ -39,7 +39,7 @@ data class OpprettOppgaveRequest(
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val fristFerdigstillelse: LocalDate? = null,
     /** Angir hvilken prioritet oppgaven har */
-    val prioritet: Oppgave.Prioritet = Oppgave.Prioritet.NORM,
+    val prioritet: OppgaveDto.Prioritet = OppgaveDto.Prioritet.NORM,
     /** Unik identifikator for duplikatkontroll */
     val uuid: UUID? = null
 )

@@ -1,5 +1,6 @@
 package no.nav.oppgave
 
+import no.nav.common.types.EksternOppgaveId
 import no.nav.oppgave.model.*
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestClient
@@ -16,27 +17,27 @@ class OppgaveClient(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun opprettOppgave(request: OpprettOppgaveRequest): Oppgave {
+    fun opprettOppgave(request: OpprettOppgaveRequest): OppgaveDto {
         return restClient.post()
             .uri("/api/v1/oppgaver")
             .body(request)
             .retrieve()
-            .body(Oppgave::class.java)!!
+            .body(OppgaveDto::class.java)!!
     }
 
-    fun hentOppgave(oppgaveId: Long): Oppgave {
+    fun hentOppgave(oppgaveId: EksternOppgaveId): OppgaveDto {
         return restClient.get()
             .uri("/api/v1/oppgaver/{id}", oppgaveId)
             .retrieve()
-            .body(Oppgave::class.java)!!
+            .body(OppgaveDto::class.java)!!
     }
 
-    fun patchOppgave(oppgaveId: Long, request: PatchOppgaveRequest): Oppgave {
+    fun patchOppgave(oppgaveId: EksternOppgaveId, request: PatchOppgaveRequest): OppgaveDto {
         return restClient.patch()
             .uri("/api/v1/oppgaver/{id}", oppgaveId)
             .body(request)
             .retrieve()
-            .body(Oppgave::class.java)!!
+            .body(OppgaveDto::class.java)!!
     }
 
     fun finnOppgaver(params: FinnOppgaverParams): SokOppgaverResponse {

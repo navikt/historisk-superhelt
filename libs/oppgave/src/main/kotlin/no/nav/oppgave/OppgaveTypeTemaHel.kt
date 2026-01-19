@@ -1,6 +1,6 @@
 package no.nav.oppgave
 
-import no.nav.oppgave.model.Oppgave
+import no.nav.oppgave.model.OppgaveDto
 
 
 /**
@@ -32,4 +32,4 @@ enum class OppgaveTypeTemaHel(val oppgavetype: String, val term: String) {
 
 }
 
-val Oppgave.type: OppgaveTypeTemaHel get() = OppgaveTypeTemaHel.entries.find<OppgaveTypeTemaHel> { it.oppgavetype == oppgavetype } ?: OppgaveTypeTemaHel.UKJENT
+val OppgaveDto.type: OppgaveTypeTemaHel get() = OppgaveTypeTemaHel.entries.find<OppgaveTypeTemaHel> { it.oppgavetype == oppgavetype } ?: OppgaveTypeTemaHel.UKJENT

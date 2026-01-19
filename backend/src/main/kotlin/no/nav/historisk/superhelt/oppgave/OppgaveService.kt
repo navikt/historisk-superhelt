@@ -3,13 +3,13 @@ package no.nav.historisk.superhelt.oppgave
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.OppgaveClient
 import no.nav.oppgave.model.FinnOppgaverParams
-import no.nav.oppgave.model.Oppgave
+import no.nav.oppgave.model.OppgaveDto
 import org.springframework.stereotype.Service
 
 @Service
 class OppgaveService(private val oppgaveClient: OppgaveClient) {
 
-    fun hentOppgaverForSaksbehandler(navident: NavIdent): List<Oppgave> {
+    fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveDto> {
         return oppgaveClient.finnOppgaver(
             FinnOppgaverParams(
                 tilordnetRessurs = navident,

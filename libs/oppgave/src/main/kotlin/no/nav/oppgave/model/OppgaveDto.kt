@@ -1,15 +1,12 @@
 package no.nav.oppgave.model
 
-import no.nav.common.types.AktorId
-import no.nav.common.types.EksternJournalpostId
-import no.nav.common.types.Enhetsnummer
-import no.nav.common.types.NavIdent
+import no.nav.common.types.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-data class Oppgave(
+data class OppgaveDto(
     /** Syntetisk id */
-    val id: Long,
+    val id: EksternOppgaveId,
     /** Enheten oppgaven er tildelt */
     val tildeltEnhetsnr: Enhetsnummer,
     /** Kategorisering av oppgaven. Hvilket tema/fagområde oppgaven tilhører */
