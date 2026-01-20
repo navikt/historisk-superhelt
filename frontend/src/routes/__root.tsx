@@ -17,14 +17,15 @@ function RootComponent() {
 
     return <Theme theme={"light"}>
         <Page footer={<Footer/>}>
-            <RfcErrorBoundary>
-                <Page.Block as="header" gutters>
-                    <Header/>
-                </Page.Block>
-                <Page.Block as="main" gutters>
+            <Page.Block as="header" gutters>
+                <Header/>
+            </Page.Block>
+            <Page.Block as="main" gutters>
+                <RfcErrorBoundary>
                     <MainContent/>
-                </Page.Block>
-            </RfcErrorBoundary>
+                </RfcErrorBoundary>
+            </Page.Block>
+
         </Page>
         <TanStackRouterDevtools/>
         <ReactQueryDevtools buttonPosition="bottom-right"/>
