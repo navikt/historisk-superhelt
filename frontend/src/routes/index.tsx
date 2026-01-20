@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { OppgaveTabell } from '~/components/OppgaveTabell'
+import {createFileRoute} from '@tanstack/react-router'
+import {SaksbehandlersOppgaveTabell} from './-components/SaksbehandlersOppgaveTabell'
 
 export const Route = createFileRoute('/')({
-  component: Index,
+    component: Index,
 })
 
 function Index() {
-  return <OppgaveTabell />
+    return <SaksbehandlersOppgaveTabell/>
 }
