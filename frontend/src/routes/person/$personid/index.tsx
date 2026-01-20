@@ -1,9 +1,9 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
 import {Box, Button, Heading, HStack, Tabs, VStack} from '@navikt/ds-react'
 import {PlusIcon} from '@navikt/aksel-icons'
-import {RfcErrorBoundary} from "~/components/error/RfcErrorBoundary";
+import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {SakerTable} from "./-components/SakerTable";
-import {PersonHeader} from "~/components/PersonHeader";
+import {PersonHeader} from "~/common/PersonHeader";
 import {DokumenterTable} from "~/routes/person/$personid/-components/DokumenterTable";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getPersonByMaskertIdentOptions} from "@generated/@tanstack/react-query.gen";

@@ -4,7 +4,7 @@ import {Theme} from "@navikt/ds-react/Theme";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import {Box, GlobalAlert, Page} from "@navikt/ds-react";
 import {Header} from "./-components/Header";
-import {RfcErrorBoundary} from "~/components/error/RfcErrorBoundary";
+import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {RouterContext} from "~/main";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";

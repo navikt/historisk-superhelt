@@ -1,14 +1,14 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {Box, HGrid, Tabs, VStack} from '@navikt/ds-react'
-import {PersonHeader} from "~/components/PersonHeader";
+import {PersonHeader} from "~/common/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
 import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
-import {ErrorAlert} from "~/components/error/ErrorAlert";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
-import {StepType} from "~/components/ProcessMenu/StepType";
-import {ProcessMenuItem} from "~/components/ProcessMenu/ProcessMenuItem";
-import {ProcessMenu} from "~/components/ProcessMenu/ProcessMenu";
+import {StepType} from "~/common/ProcessMenu/StepType";
+import {ProcessMenuItem} from "~/common/ProcessMenu/ProcessMenuItem";
+import {ProcessMenu} from "~/common/ProcessMenu/ProcessMenu";
 import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 import {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
 

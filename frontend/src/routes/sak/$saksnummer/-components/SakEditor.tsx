@@ -17,12 +17,12 @@ import {Sak, SakUpdateRequestDto} from "@generated";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
 import {oppdaterSakMutation} from "@generated/@tanstack/react-query.gen";
-import {dateTilIsoDato} from "~/components/dato.utils";
+import {dateTilIsoDato} from "~/common/dato.utils";
 import {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
-import useDebounce from "~/components/useDebounce";
+import useDebounce from "~/common/useDebounce";
 import UtbetalingEditor from "~/routes/sak/$saksnummer/-components/UtbetalingEditor";
 import {useNavigate} from "@tanstack/react-router";
-import {NumericInput} from "~/components/NumericInput";
+import {NumericInput} from "~/common/NumericInput";
 
 
 interface Props {

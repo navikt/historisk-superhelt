@@ -1,7 +1,7 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
-import {ErrorAlert} from "~/components/error/ErrorAlert";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
 import SakEditor from "~/routes/sak/$saksnummer/-components/SakEditor";
 import SakSummary from "~/routes/sak/$saksnummer/-components/SakSummary";
 

@@ -1,5 +1,5 @@
 import React, {Component, ErrorInfo, ReactNode} from 'react';
-import {ErrorAlert} from "~/components/error/ErrorAlert";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
 import {ProblemDetail} from "@generated";
 
 

@@ -2,7 +2,7 @@ import {BodyLong, Process} from '@navikt/ds-react';
 import {Sak} from '@generated';
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {hentEndringsloggForSakOptions} from "@generated/@tanstack/react-query.gen";
-import {isoTilLokal} from "~/components/dato.utils";
+import {isoTilLokal} from "~/common/dato.utils";
 import {
     ArrowCirclepathReverseIcon,
     CheckmarkCircleIcon,
