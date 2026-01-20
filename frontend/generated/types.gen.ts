@@ -64,14 +64,14 @@ export type Sak = {
     vedtaksbrevBruker?: Brev;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
-    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -182,6 +182,7 @@ export type OppgaveMedSak = {
     fristFerdigstillelse?: string;
     behandlesAvApplikasjon?: string;
     tildeltEnhetsnr?: string;
+    opprettetAv?: string;
     saksnummer?: string;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     readonly maskertPersonIdent: string;
@@ -219,8 +220,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
-    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -236,6 +237,7 @@ export type OppgaveMedSakWritable = {
     fristFerdigstillelse?: string;
     behandlesAvApplikasjon?: string;
     tildeltEnhetsnr?: string;
+    opprettetAv?: string;
     saksnummer?: string;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
 };

@@ -22,6 +22,7 @@ data class OppgaveMedSak(
     val fristFerdigstillelse: LocalDate?,
     val behandlesAvApplikasjon: String?,
     val tildeltEnhetsnr: Enhetsnummer?,
+    val opprettetAv: String?,
 
     val saksnummer: Saksnummer?,
     val sakStatus: SakStatus?,

@@ -6,9 +6,9 @@ import {getSakOptions} from "./-api/sak.query";
 import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
-import {StepType} from "~/common/ProcessMenu/StepType";
-import {ProcessMenuItem} from "~/common/ProcessMenu/ProcessMenuItem";
-import {ProcessMenu} from "~/common/ProcessMenu/ProcessMenu";
+import {StepType} from "~/common/process-menu/StepType";
+import {ProcessMenuItem} from "~/common/process-menu/ProcessMenuItem";
+import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
 import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 import {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
 

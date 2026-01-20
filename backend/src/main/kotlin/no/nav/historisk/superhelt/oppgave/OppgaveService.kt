@@ -53,8 +53,9 @@ class OppgaveService(
             fristFerdigstillelse = dto.fristFerdigstillelse,
             behandlesAvApplikasjon = dto.behandlesAvApplikasjon,
             tildeltEnhetsnr = dto.tildeltEnhetsnr,
+            opprettetAv = dto.opprettetAv,
             saksnummer = sak?.saksnummer,
-            sakStatus = sak?.status
+            sakStatus = sak?.status,
         )
     }
 
