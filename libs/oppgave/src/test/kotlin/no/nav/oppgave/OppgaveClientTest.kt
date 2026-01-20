@@ -4,6 +4,7 @@ import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.*
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod
@@ -97,6 +98,27 @@ class OppgaveClientTest {
 
         // Act
         oppgaveClient.hentOppgave(oppgaveId)
+
+        // Assert
+        mockServer.verify()
+    }
+
+    @Test
+    fun `hentOppgave returnerer null ved oppgave ikke funnet`() {
+        // Arrange
+        val oppgaveId = EksternOppgaveId(123456789)
+
+
+        mockServer.expect(requestTo("/api/v1/oppgaver/$oppgaveId"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(
+                withStatus(HttpStatus.NOT_FOUND)
+            )
+
+        // Act
+        val oppgave = oppgaveClient.hentOppgave(oppgaveId)
+
+        assertThat(oppgave).isNull()
 
         // Assert
         mockServer.verify()

@@ -78,7 +78,7 @@ class OppgaveClientForUtvikler {
     fun `hent og oppdater`() {
 
         val oppgaveId = EksternOppgaveId(368496)
-        val hentet = client.hentOppgave(oppgaveId)
+        val hentet = client.hentOppgave(oppgaveId)!!
         println(hentet)
 
         client.patchOppgave(

@@ -55,7 +55,7 @@ export function SaksbehandlersOppgaveTabell() {
                                 <Table.DataCell>{oppgave.tilordnetRessurs || 'Ikke tildelt'}</Table.DataCell>
                                 <Table.DataCell>
                                     <HStack gap="2">
-                                        <Button size="small" variant="secondary"  >
+                                        <Button as={RouterLink} size="small" variant="secondary" to={`/oppgave/${oppgave.oppgaveId}`} >
                                            Journalfør
                                         </Button>
                                     </HStack>

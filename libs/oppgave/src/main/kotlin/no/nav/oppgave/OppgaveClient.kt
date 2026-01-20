@@ -4,6 +4,7 @@ import no.nav.common.types.EksternOppgaveId
 import no.nav.oppgave.model.*
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.body
 
 /**
  *  Client for Oppgave API. Hentet fra https://oppgave.intern.dev.nav.no/
@@ -22,14 +23,15 @@ class OppgaveClient(
             .uri("/api/v1/oppgaver")
             .body(request)
             .retrieve()
-            .body(OppgaveDto::class.java)!!
+            .body<OppgaveDto>()!!
     }
 
-    fun hentOppgave(oppgaveId: EksternOppgaveId): OppgaveDto {
+    fun hentOppgave(oppgaveId: EksternOppgaveId): OppgaveDto? {
         return restClient.get()
             .uri("/api/v1/oppgaver/{id}", oppgaveId)
             .retrieve()
-            .body(OppgaveDto::class.java)!!
+            .onStatus({ status -> status.value() == 404 }) { _, _ -> }
+            .body<OppgaveDto>()
     }
 
     fun patchOppgave(oppgaveId: EksternOppgaveId, request: PatchOppgaveRequest): OppgaveDto {
@@ -37,7 +39,7 @@ class OppgaveClient(
             .uri("/api/v1/oppgaver/{id}", oppgaveId)
             .body(request)
             .retrieve()
-            .body(OppgaveDto::class.java)!!
+            .body<OppgaveDto>()!!
     }
 
     fun finnOppgaver(params: FinnOppgaverParams): SokOppgaverResponse {
@@ -62,7 +64,7 @@ class OppgaveClient(
                 builder.build()
             }
             .retrieve()
-            .body(SokOppgaverResponse::class.java)!!
+            .body<SokOppgaverResponse>()!!
     }
 }
 

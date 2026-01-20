@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { attersterSak, createSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, sendBrev, sendTilAttestering } from '../sdk.gen';
-import type { AttersterSakData, AttersterSakError, CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
+import { attersterSak, createSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, sendBrev, sendTilAttestering } from '../sdk.gen';
+import type { AttersterSakData, AttersterSakError, CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -324,6 +324,21 @@ export const getPersonByMaskertIdentOptions = (options: Options<GetPersonByMaske
         return data;
     },
     queryKey: getPersonByMaskertIdentQueryKey(options)
+});
+
+export const getOppgaveQueryKey = (options: Options<GetOppgaveData>) => createQueryKey('getOppgave', options);
+
+export const getOppgaveOptions = (options: Options<GetOppgaveData>) => queryOptions<GetOppgaveResponse, GetOppgaveError, GetOppgaveResponse, ReturnType<typeof getOppgaveQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getOppgave({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getOppgaveQueryKey(options)
 });
 
 export const hentOppgaverForSaksbehandlerQueryKey = (options?: Options<HentOppgaverForSaksbehandlerData>) => createQueryKey('hentOppgaverForSaksbehandler', options);

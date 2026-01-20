@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.oppgave
 
+import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -26,7 +27,13 @@ class OppgaveService(
         ).oppgaver ?: emptyList()
 
         return oppgaver.map { toOppgaveMedSak(it) }
+    }
 
+    fun getOppgave(oppgaveId: EksternOppgaveId): OppgaveMedSak {
+        val dto = oppgaveClient.hentOppgave(oppgaveId)
+            ?: throw IkkeFunnetException("Fant ikke oppgave med id $oppgaveId")
+
+        return toOppgaveMedSak(dto)
     }
 
     private fun toOppgaveMedSak(dto: OppgaveDto): OppgaveMedSak {
@@ -50,4 +57,6 @@ class OppgaveService(
             sakStatus = sak?.status
         )
     }
+
+
 }

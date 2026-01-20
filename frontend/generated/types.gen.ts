@@ -70,8 +70,8 @@ export type Sak = {
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -219,8 +219,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -892,6 +892,41 @@ export type GetPersonByMaskertIdentResponses = {
 };
 
 export type GetPersonByMaskertIdentResponse = GetPersonByMaskertIdentResponses[keyof GetPersonByMaskertIdentResponses];
+
+export type GetOppgaveData = {
+    body?: never;
+    path: {
+        oppgaveId: number;
+    };
+    query?: never;
+    url: '/api/oppgave/{oppgaveId}';
+};
+
+export type GetOppgaveErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetOppgaveError = GetOppgaveErrors[keyof GetOppgaveErrors];
+
+export type GetOppgaveResponses = {
+    /**
+     * OK
+     */
+    200: OppgaveMedSak;
+};
+
+export type GetOppgaveResponse = GetOppgaveResponses[keyof GetOppgaveResponses];
 
 export type HentOppgaverForSaksbehandlerData = {
     body?: never;
