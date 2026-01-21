@@ -13,10 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SakSaksnummerRouteRouteImport } from './routes/sak/$saksnummer/route'
 import { Route as SakSaksnummerIndexRouteImport } from './routes/sak/$saksnummer/index'
 import { Route as PersonPersonidIndexRouteImport } from './routes/person/$personid/index'
+import { Route as OppgaveOppgaveidIndexRouteImport } from './routes/oppgave/$oppgaveid/index'
 import { Route as SakSaksnummerVedtaksbrevbrukerRouteImport } from './routes/sak/$saksnummer/vedtaksbrevbruker'
 import { Route as SakSaksnummerOppsummeringRouteImport } from './routes/sak/$saksnummer/oppsummering'
 import { Route as SakSaksnummerOpplysningerRouteImport } from './routes/sak/$saksnummer/opplysninger'
 import { Route as SakSaksnummerFritekstbrevRouteImport } from './routes/sak/$saksnummer/fritekstbrev'
+import { Route as OppgaveOppgaveidJournalforRouteImport } from './routes/oppgave/$oppgaveid/journalfor'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,6 +38,11 @@ const SakSaksnummerIndexRoute = SakSaksnummerIndexRouteImport.update({
 const PersonPersonidIndexRoute = PersonPersonidIndexRouteImport.update({
   id: '/person/$personid/',
   path: '/person/$personid/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OppgaveOppgaveidIndexRoute = OppgaveOppgaveidIndexRouteImport.update({
+  id: '/oppgave/$oppgaveid/',
+  path: '/oppgave/$oppgaveid/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SakSaksnummerVedtaksbrevbrukerRoute =
@@ -62,23 +69,33 @@ const SakSaksnummerFritekstbrevRoute =
     path: '/fritekstbrev',
     getParentRoute: () => SakSaksnummerRouteRoute,
   } as any)
+const OppgaveOppgaveidJournalforRoute =
+  OppgaveOppgaveidJournalforRouteImport.update({
+    id: '/oppgave/$oppgaveid/journalfor',
+    path: '/oppgave/$oppgaveid/journalfor',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
+  '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
   '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
+  '/oppgave/$oppgaveid': typeof OppgaveOppgaveidIndexRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
   '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
+  '/oppgave/$oppgaveid': typeof OppgaveOppgaveidIndexRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer': typeof SakSaksnummerIndexRoute
 }
@@ -86,10 +103,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
+  '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
   '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
+  '/oppgave/$oppgaveid/': typeof OppgaveOppgaveidIndexRoute
   '/person/$personid/': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
@@ -98,29 +117,35 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/sak/$saksnummer'
+    | '/oppgave/$oppgaveid/journalfor'
     | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
+    | '/oppgave/$oppgaveid'
     | '/person/$personid'
     | '/sak/$saksnummer/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/oppgave/$oppgaveid/journalfor'
     | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
+    | '/oppgave/$oppgaveid'
     | '/person/$personid'
     | '/sak/$saksnummer'
   id:
     | '__root__'
     | '/'
     | '/sak/$saksnummer'
+    | '/oppgave/$oppgaveid/journalfor'
     | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
+    | '/oppgave/$oppgaveid/'
     | '/person/$personid/'
     | '/sak/$saksnummer/'
   fileRoutesById: FileRoutesById
@@ -128,6 +153,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SakSaksnummerRouteRoute: typeof SakSaksnummerRouteRouteWithChildren
+  OppgaveOppgaveidJournalforRoute: typeof OppgaveOppgaveidJournalforRoute
+  OppgaveOppgaveidIndexRoute: typeof OppgaveOppgaveidIndexRoute
   PersonPersonidIndexRoute: typeof PersonPersonidIndexRoute
 }
 
@@ -161,6 +188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonPersonidIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/oppgave/$oppgaveid/': {
+      id: '/oppgave/$oppgaveid/'
+      path: '/oppgave/$oppgaveid'
+      fullPath: '/oppgave/$oppgaveid'
+      preLoaderRoute: typeof OppgaveOppgaveidIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sak/$saksnummer/vedtaksbrevbruker': {
       id: '/sak/$saksnummer/vedtaksbrevbruker'
       path: '/vedtaksbrevbruker'
@@ -189,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SakSaksnummerFritekstbrevRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
+    '/oppgave/$oppgaveid/journalfor': {
+      id: '/oppgave/$oppgaveid/journalfor'
+      path: '/oppgave/$oppgaveid/journalfor'
+      fullPath: '/oppgave/$oppgaveid/journalfor'
+      preLoaderRoute: typeof OppgaveOppgaveidJournalforRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -214,6 +255,8 @@ const SakSaksnummerRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SakSaksnummerRouteRoute: SakSaksnummerRouteRouteWithChildren,
+  OppgaveOppgaveidJournalforRoute: OppgaveOppgaveidJournalforRoute,
+  OppgaveOppgaveidIndexRoute: OppgaveOppgaveidIndexRoute,
   PersonPersonidIndexRoute: PersonPersonidIndexRoute,
 }
 export const routeTree = rootRouteImport

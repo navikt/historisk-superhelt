@@ -1,6 +1,7 @@
 package no.nav.oppgave
 
 import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.FinnOppgaverParams
 import no.nav.oppgave.model.OpprettOppgaveRequest
@@ -62,9 +63,9 @@ class OppgaveClientForUtvikler {
                 OpprettOppgaveRequest(
                     personident = "28497016101",
                     tema = EksternFellesKodeverkTema.HEL.name,
-                    oppgavetype = OppgaveTypeTemaHel.BEH_SAK.oppgavetype,
-                    behandlingstema = OppgaveGjelderTemaHel.REISEUTGIFTER.behandlingstema,
-                    behandlingstype = OppgaveGjelderTemaHel.REISEUTGIFTER.behandlingstype,
+                    oppgavetype = OppgaveType.BEH_SAK.oppgavetype,
+                    behandlingstema = OppgaveGjelder.REISEUTGIFTER.behandlingstema,
+                    behandlingstype = OppgaveGjelder.REISEUTGIFTER.behandlingstype,
                     beskrivelse = "Test oppgave fra utvikler",
                     uuid = UUID.randomUUID(),
                 )
@@ -76,8 +77,8 @@ class OppgaveClientForUtvikler {
     @Test // Bruk en id som finnes
     fun `hent og oppdater`() {
 
-        val oppgaveId = 368496L
-        val hentet = client.hentOppgave(oppgaveId)
+        val oppgaveId = EksternOppgaveId(368496)
+        val hentet = client.hentOppgave(oppgaveId)!!
         println(hentet)
 
         client.patchOppgave(

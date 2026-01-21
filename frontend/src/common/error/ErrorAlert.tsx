@@ -13,7 +13,7 @@ export function ErrorAlert({error}: ErrorAlertProps) {
         return null;
     }
     const isProblemDetail = (err: ErrorAlertType): err is ProblemDetail =>
-        'type' in err && 'title' in err && 'status' in err;
+        'detail' in err && 'title' in err && 'status' in err;
 
     const problemDetails = isProblemDetail(error);
 

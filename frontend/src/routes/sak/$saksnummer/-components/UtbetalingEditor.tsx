@@ -2,7 +2,7 @@ import {Radio, RadioGroup, VStack} from '@navikt/ds-react'
 import {useState} from "react";
 import {Sak, UtbetalingRequestDto} from "@generated";
 import {UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
-import {NumericInput} from "~/components/NumericInput";
+import {NumericInput} from "~/common/NumericInput";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {oppdaterUtbetalingMutation} from "@generated/@tanstack/react-query.gen";
 import {sakQueryKey} from "~/routes/sak/$saksnummer/-api/sak.query";

@@ -4,5 +4,5 @@ data class SokOppgaverResponse(
     /** Totalt antall oppgaver funnet med dette søket */
     val antallTreffTotalt: Long? = null,
     /** Liste over oppgaver */
-    val oppgaver: List<Oppgave>? = null
+    val oppgaver: List<OppgaveDto>? = null
 )

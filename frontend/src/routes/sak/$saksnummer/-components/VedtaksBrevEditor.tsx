@@ -4,7 +4,7 @@ import {useState} from "react";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {getOrCreateBrevOptions, getOrCreateBrevQueryKey} from "~/routes/sak/$saksnummer/-api/brev.query";
 import {htmlBrevOptions, oppdaterBrevMutation} from "@generated/@tanstack/react-query.gen";
-import {useAutoSave} from "~/components/useAutosave";
+import {useAutoSave} from "~/common/useAutosave";
 import {Brev, Sak} from "@generated";
 import {BrevMottakerType, BrevType} from "~/routes/sak/$saksnummer/-types/brev.types";
 

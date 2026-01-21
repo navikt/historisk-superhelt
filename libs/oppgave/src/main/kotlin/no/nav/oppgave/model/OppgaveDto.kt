@@ -1,15 +1,12 @@
 package no.nav.oppgave.model
 
-import no.nav.common.types.AktorId
-import no.nav.common.types.EksternJournalpostId
-import no.nav.common.types.Enhetsnummer
-import no.nav.common.types.NavIdent
+import no.nav.common.types.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-data class Oppgave(
+data class OppgaveDto(
     /** Syntetisk id */
-    val id: Long,
+    val id: EksternOppgaveId,
     /** Enheten oppgaven er tildelt */
     val tildeltEnhetsnr: Enhetsnummer,
     /** Kategorisering av oppgaven. Hvilket tema/fagområde oppgaven tilhører */
@@ -24,8 +21,6 @@ data class Oppgave(
     val status: Status,
     /** Angir når det er relevant å ta tak i oppgaven. Settes normalt til samme dato som oppgaven opprettes, men endres fremover i tid dersom oppgaven f.eks settes på vent. I Gosys vil oppgaver på vent som standard skjules, men kan hente frem om ønskelig */
     val aktivDato: LocalDate,
-    /** ident for person, dvs. fnr, dnr, npid eller aktørid */
-    val personident: String? = null,
     /** Enheten som endret oppgaven */
     val endretAvEnhetsnr: String? = null,
     /** Hvilken enhet som har opprettet oppgaven */

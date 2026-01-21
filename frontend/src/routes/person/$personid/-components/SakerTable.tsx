@@ -1,10 +1,10 @@
 import {Button, Heading, Skeleton, Table, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {ErrorAlert} from "~/components/error/ErrorAlert";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
 import {finnSakerForPersonOptions} from "~/routes/person/$personid/-api/person.query";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
-import {isoTilLokal} from "~/components/dato.utils";
+import {isoTilLokal} from "~/common/dato.utils";
 
 
 interface SakerTableProps {
