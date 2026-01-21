@@ -22,7 +22,7 @@ class OppgaveEntity(
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     val type: OppgaveType,
-) {}
+)
 
 
 

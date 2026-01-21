@@ -39,7 +39,8 @@ class OppgaveService(
     private fun toOppgaveMedSak(dto: OppgaveDto): OppgaveMedSak {
         val sak = oppgaveRepository.finnSakForOppgave(dto.id)
 
-        val ident= dto.bruker?.ident ?: sak?.fnr?.value ?: throw IkkeFunnetException("Fant ikke personident for oppgave ${dto.id}")
+        val ident = dto.bruker?.ident ?: sak?.fnr?.value
+        ?: throw IkkeFunnetException("Fant ikke personident for oppgave ${dto.id}")
 
         return OppgaveMedSak(
             fnr = FolkeregisterIdent(ident),

@@ -1,11 +1,16 @@
 package no.nav.historisk.superhelt.oppgave.rest
 
-import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
+import no.nav.historisk.superhelt.oppgave.OppgaveRepository
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
+import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveClient
+import no.nav.oppgave.gjelder
 import no.nav.oppgave.model.SokOppgaverResponse
+import no.nav.oppgave.type
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -29,16 +34,12 @@ class OppgaveControllerTest {
 
     @MockitoBean
     private lateinit var oppgaveClient: OppgaveClient
-//    @MockitoBean
-//    private lateinit var tilgangsmaskinService: TilgangsmaskinService
 
+    @Autowired
+    private lateinit var oppgaveRepository: OppgaveRepository
 
-//    @BeforeEach
-//    fun setup() {
-//        whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
-//            harTilgang = true
-//        )
-//    }
+    @Autowired
+    private lateinit var sakRepository: SakRepository
 
     @WithSaksbehandler(navIdent = "Z123456")
     @Test
@@ -60,8 +61,53 @@ class OppgaveControllerTest {
             })
     }
 
-    private fun hentSak(saksnummer: Saksnummer?): MockMvcTester.MockMvcRequestBuilder =
-        mockMvc.get().uri("/api/oppgave/saksbehandler")
+    @WithSaksbehandler
+    @Test
+    fun `hent oppgave uten sak`() {
+        val oppgave = OppgaveTestdata.opprettOppgave()
+        whenever(oppgaveClient.hentOppgave(any())) doReturn oppgave
 
+        assertThat(mockMvc.get().uri("/api/oppgave/${oppgave.id}"))
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(OppgaveMedSak::class.java)
+            .satisfies({
+                assertThat(it.saksnummer).isNull()
+                assertThat(it.sakStatus).isNull()
+                assertThat(it.oppgaveId).isEqualTo(oppgave.id)
+                assertThat(it.fnr.value).isEqualTo(oppgave.bruker?.ident)
+                assertThat(it.oppgavestatus).isEqualTo(oppgave.status)
+                assertThat(it.oppgavetype.oppgavetype).isEqualTo(oppgave.oppgavetype)
+                assertThat(it.oppgaveGjelder).isEqualTo(oppgave.gjelder)
+                assertThat(it.journalpostId).isEqualTo(oppgave.journalpostId)
+                assertThat(it.tilordnetRessurs).isEqualTo(oppgave.tilordnetRessurs)
+                assertThat(it.beskrivelse).isEqualTo(oppgave.beskrivelse)
+                assertThat(it.fristFerdigstillelse).isEqualTo(oppgave.fristFerdigstillelse)
+                assertThat(it.behandlesAvApplikasjon).isEqualTo(oppgave.behandlesAvApplikasjon)
+                assertThat(it.tildeltEnhetsnr).isEqualTo(oppgave.tildeltEnhetsnr)
+                assertThat(it.opprettetAv).isEqualTo(oppgave.opprettetAv)
+                assertThat(it.maskertPersonIdent).isNotNull()
+            })
+    }
 
+    @WithSaksbehandler
+    @Test
+    fun `hent oppgave med sak`() {
+        val oppgave = OppgaveTestdata.opprettOppgave()
+        val sak= SakTestData.lagreNySak(sakRepository)
+        oppgaveRepository.save(saksnummer = sak.saksnummer, oppgaveId = oppgave.id, oppgaveType = oppgave.type)
+
+        whenever(oppgaveClient.hentOppgave(any())) doReturn oppgave
+
+        assertThat(mockMvc.get().uri("/api/oppgave/${oppgave.id}"))
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(OppgaveMedSak::class.java)
+            .satisfies({
+                assertThat(it.oppgaveId).isEqualTo(oppgave.id)
+                assertThat(it.saksnummer).isEqualTo(sak.saksnummer)
+                assertThat(it.sakStatus).isEqualTo(sak.status)
+
+            })
+    }
 }
