@@ -6,10 +6,10 @@ import {HGrid, VStack} from "@navikt/ds-react";
 import {PdfViewer} from "~/common/pdf/PdfViewer";
 
 export const Route = createFileRoute('/oppgave/$oppgaveid')({
-    component: RouteComponent,
+    component: OppgaveLayout,
 })
 
-function RouteComponent() {
+function OppgaveLayout() {
     const oppgaveId = Route.useParams().oppgaveid;
     const {data: oppgave} = useSuspenseQuery(getOppgaveOptions({path: {oppgaveId: Number(oppgaveId)}}))
     const journalpostId = oppgave.journalpostId;
@@ -21,7 +21,6 @@ function RouteComponent() {
             <VStack gap="space-16">
 
              <PdfViewer journalpostId={journalpostId} />
-
 
             </VStack>
         </HGrid>

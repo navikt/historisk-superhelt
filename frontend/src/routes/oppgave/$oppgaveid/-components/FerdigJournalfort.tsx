@@ -2,18 +2,18 @@ import {Alert, BodyShort, Heading, HStack, Link} from '@navikt/ds-react'
 import {Link as RouterLink} from '@tanstack/react-router'
 
 interface Props {
-   behandlingsnummer?: string
+   saksnummer?: string
 }
 
-export function FerdigJournalfort({ behandlingsnummer }: Props) {
+export function FerdigJournalfort({ saksnummer }: Props) {
    return (
       <Alert variant={'success'}>
          <HStack gap={'space-16'}>
             <Heading size={'small'} level="3">
                Ferdig journalført
             </Heading>
-            <BodyShort>Journalposten er ferdig og knyttet til behandling {behandlingsnummer}</BodyShort>
-            <Link as={RouterLink} to={`/behandling/${behandlingsnummer}`}>
+            <BodyShort>Journalposten er ferdig og knyttet til behandling {saksnummer}</BodyShort>
+            <Link as={RouterLink} to={`/behandling/${saksnummer}`}>
                Gå til behandling
             </Link>
          </HStack>

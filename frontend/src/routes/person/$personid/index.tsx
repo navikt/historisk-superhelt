@@ -6,8 +6,8 @@ import {SakerTable} from "./-components/SakerTable";
 import {PersonHeader} from "~/common/PersonHeader";
 import {DokumenterTable} from "~/routes/person/$personid/-components/DokumenterTable";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getPersonByMaskertIdentOptions} from "@generated/@tanstack/react-query.gen";
 import {createSak} from "@generated";
+import {finnPersonQuery} from "~/common/person/person.query";
 
 export const Route = createFileRoute('/person/$personid/')({
     component: PersonPage,
@@ -15,14 +15,8 @@ export const Route = createFileRoute('/person/$personid/')({
 
 function PersonPage() {
     const {personid} = Route.useParams()
-    const {data: person} = useSuspenseQuery(
-        {
-            ...getPersonByMaskertIdentOptions({
-                path: {
-                    maskertPersonident: personid
-                }
-            })
-        })
+    const {data: person} = useSuspenseQuery(finnPersonQuery(personid))
+
     const navigate = useNavigate()
 
 
