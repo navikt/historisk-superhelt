@@ -1,5 +1,5 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
-import {PersonHeader} from "~/common/PersonHeader";
+import {PersonHeader} from "~/common/person/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getOppgaveOptions} from "@generated/@tanstack/react-query.gen";
 import {HGrid, VStack} from "@navikt/ds-react";
