@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.dokarkiv.rest
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.EksternDokumentInfoId
@@ -20,31 +21,33 @@ import org.springframework.web.bind.annotation.RestController
 class JournalpostController(
     private val journalpostService: JournalpostService
 
-    ) {
-   private val logger = LoggerFactory.getLogger(javaClass)
+) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
-   @GetMapping("/{journalpostId}/{dokumentId}", produces = ["application/pdf"])
-   fun lastNedEttDokument(
-      @PathVariable journalpostId: EksternJournalpostId,
-      @PathVariable("dokumentId") dokumentId: EksternDokumentInfoId,
-   ): ResponseEntity<ByteArray> {
-      val dokument = journalpostService.lastNedEttDokument(journalpostId, dokumentId)
-      return ResponseEntity
-         .status(HttpStatus.OK)
-         .contentType(dokument.contentType)
-         .contentLength(dokument.data.size.toLong())
-         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${dokument.fileName}\"")
-         .body(dokument.data)
-   }
+    @Operation(operationId = "lastnedDokumentFraJournalpost")
+    @GetMapping("/{journalpostId}/{dokumentId}", produces = ["application/pdf"])
+    fun lastNedEttDokument(
+        @PathVariable journalpostId: EksternJournalpostId,
+        @PathVariable("dokumentId") dokumentId: EksternDokumentInfoId,
+    ): ResponseEntity<ByteArray> {
+        val dokument = journalpostService.lastNedEttDokument(journalpostId, dokumentId)
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .contentType(dokument.contentType)
+            .contentLength(dokument.data.size.toLong())
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${dokument.fileName}\"")
+            .body(dokument.data)
+    }
 
-   @GetMapping("/{journalpostId}/metadata")
-   fun hentMetaData(
-      @PathVariable journalpostId: EksternJournalpostId,
-   ): Journalpost? {
+    @Operation(operationId = "hentJournalpostMetaData")
+    @GetMapping("/{journalpostId}/metadata")
+    fun hentMetaData(
+        @PathVariable journalpostId: EksternJournalpostId,
+    ): Journalpost? {
 //      behandlingskontekstService.ny("Hent metadata for journalpostId=$journalpostId")
 //      tilgangskontrollService.validerTilgang(Ressurs.SAKSBEHANDLING, Tilgangstype.LES)
-      return journalpostService.hentJournalpost(journalpostId)
-   }
+        return journalpostService.hentJournalpost(journalpostId)
+    }
 
 //   @GetMapping("/metadataMedBehandlingsnummer/{behandlingsnummer}")
 //   fun hentMetaDataMedBehandlingsnummer(
