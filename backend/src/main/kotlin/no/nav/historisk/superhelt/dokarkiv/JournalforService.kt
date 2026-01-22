@@ -9,6 +9,7 @@ import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.OpprettSakDto
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.UpdateSakDto
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,6 +20,8 @@ class JournalforService (
 ){
 
 
+
+    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#request.bruker)")
     @Transactional
      fun lagNySakOgKnyttDenTilOppgave(
         request: JournalforRequest,

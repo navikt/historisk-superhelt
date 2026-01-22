@@ -13,6 +13,7 @@ import no.nav.oppgave.model.OppgaveDto
 import no.nav.oppgave.model.OpprettOppgaveRequest
 import no.nav.oppgave.model.PatchOppgaveRequest
 import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -28,6 +29,7 @@ class OppgaveService(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    @PreAuthorize("hasAuthority('READ')")
     fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
 
         val oppgaver = oppgaveClient.finnOppgaver(
@@ -46,6 +48,7 @@ class OppgaveService(
         }
     }
 
+    @PreAuthorize("hasAuthority('READ')")
     @Transactional(readOnly = true)
     fun getOppgave(oppgaveId: EksternOppgaveId): OppgaveMedSak {
         val dto = oppgaveClient.hentOppgave(oppgaveId)
@@ -55,11 +58,13 @@ class OppgaveService(
         return dto.toOppgaveMedSak(sak)
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
     fun knyttOppgaveTilSak(saksnummer: Saksnummer, oppgaveId: EksternOppgaveId, oppgaveType: OppgaveType) {
         oppgaveRepository.save(saksnummer, oppgaveId, oppgaveType)
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
     fun ferdigstillOppgave(oppgaveId: EksternOppgaveId) {
         val oppgave = oppgaveClient.hentOppgave(oppgaveId)
@@ -71,6 +76,7 @@ class OppgaveService(
 
         if (oppgave.status == OppgaveDto.Status.FERDIGSTILT) {
             logger.debug("Oppgave {} er allerede ferdigstilt, ingen mulighet å oppdatere", oppgave.id)
+            return
         }
 
         oppgaveClient.patchOppgave(
@@ -91,15 +97,7 @@ class OppgaveService(
     }
 
 
-    @Transactional
-    fun opprettOppgave(
-        type: OppgaveType,
-        saksnummer: Saksnummer,
-        tilordneSaksbehandler: Boolean = true): OppgaveMedSak {
-        val sak = sakRepository.getSak(saksnummer)
-        return opprettOppgave(type, sak, tilordneSaksbehandler)
-    }
-
+    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#sak.fnr)")
     @Transactional
     fun opprettOppgave(type: OppgaveType, sak: Sak, tilordneSaksbehandler: Boolean = true): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()

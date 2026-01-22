@@ -13,6 +13,7 @@ import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
 import no.nav.historisk.superhelt.sak.Sak
 import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
@@ -22,7 +23,9 @@ class DokarkivService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    @PreAuthorize("hasAuthority('WRITE')")
     fun arkiver(sak: Sak, brev: Brev, pdf: ByteArray): JournalpostResponse {
+
         val req = JournalpostRequest(
             tittel = brev.tittel!!,
             journalpostType = JournalpostType.UTGAAENDE,
@@ -61,6 +64,7 @@ class DokarkivService(
         return dokarkivClient.opprett(req, forsokFerdigstill = true)
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     fun distribuerBrev(sak: Sak, brev: Brev): DistribuerJournalpostResponse {
         val journalPostId = brev.journalpostId
             ?: throw IllegalStateException("Kan ikke distribuere brev uten journalpostId. BrevId=${brev.uuid}")
@@ -79,7 +83,7 @@ class DokarkivService(
         )
 
     }
-
+    @PreAuthorize("hasAuthority('WRITE')")
     fun journalførIArkivet(
         journalPostId: EksternJournalpostId,
         fagsaksnummer: Saksnummer,
