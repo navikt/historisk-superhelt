@@ -18,8 +18,10 @@ class OppgaveRepository(
         return oppgaveJpaRepository.findByEksternOppgaveId(oppgaveId)?.sak?.toDomain()
     }
 
-    internal fun finnOppgaverForSak(saksnummer: Saksnummer): List<EksternOppgaveId> {
-        return oppgaveJpaRepository.findAllBySakId(saksnummer.id).map { it.eksternOppgaveId }
+    internal fun finnOppgaverForSak(saksnummer: Saksnummer, type: OppgaveType? = null): List<EksternOppgaveId> {
+        return oppgaveJpaRepository.findAllBySakId(saksnummer.id)
+            .filter { type == null || it.type == type }
+            .map { it.eksternOppgaveId }
     }
 
     internal fun save(saksnummer: Saksnummer, oppgaveId: EksternOppgaveId, oppgaveType: OppgaveType) {

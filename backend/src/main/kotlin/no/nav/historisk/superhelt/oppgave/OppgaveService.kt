@@ -63,10 +63,14 @@ class OppgaveService(
     @Transactional
     fun ferdigstillOppgave(oppgaveId: EksternOppgaveId) {
         val oppgave = oppgaveClient.hentOppgave(oppgaveId)
-            ?: throw IkkeFunnetException("Fant ikke oppgave med id $oppgaveId")
+
+        if (oppgave == null) {
+            logger.warn("Fant ikke oppgave med id {}, kan ikke ferdigstille", oppgaveId)
+            return
+        }
 
         if (oppgave.status == OppgaveDto.Status.FERDIGSTILT) {
-            logger.info("Oppgave {} er allerede ferdigstilt, ingen mulighet å oppdatere", oppgave.id)
+            logger.debug("Oppgave {} er allerede ferdigstilt, ingen mulighet å oppdatere", oppgave.id)
         }
 
         oppgaveClient.patchOppgave(
@@ -76,6 +80,14 @@ class OppgaveService(
                 status = OppgaveDto.Status.FERDIGSTILT
             )
         )
+        logger.info("Ferdigstiller oppgave med id {}", oppgave.id)
+    }
+
+    fun ferdigstillOppgaver(saksnummer: Saksnummer, type: OppgaveType?) {
+        val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
+        oppgaveIds.forEach { oppgaveId ->
+            ferdigstillOppgave(oppgaveId)
+        }
     }
 
 
