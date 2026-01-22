@@ -8,10 +8,9 @@ import {useNavigate} from "@tanstack/react-router";
 import {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {hasSize, isValidFnr} from "~/common/validation.utils";
 import {AnnetInnholdCombox} from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
+import {useMutation} from "@tanstack/react-query";
+import {journalforMutation} from "@generated/@tanstack/react-query.gen";
 
-type JfrData = Partial<JournalforRequest> & {
-    journalpostId?: string
-}
 
 interface DokumentError {
     dokumentInfoId: string
@@ -41,7 +40,8 @@ export function JournalforForm({
                                    defaultStonadstype,
                                    onBrukerUpdate,
                                }: Props) {
-    const navigation = useNavigate()
+    const navigate = useNavigate()
+    const journalfor = useMutation({...journalforMutation()})
     const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype)
     const [bruker, setBruker] = useState<PersonValue>({fnr: person.fnr, navn: person.navn})
     const [avsender, setAvsender] = useState<PersonValue>({
@@ -67,7 +67,8 @@ export function JournalforForm({
         }
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+    async function validateAndSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
 // TODO se om dette kan forenkles ved å bruke state direkte
@@ -120,15 +121,23 @@ export function JournalforForm({
             stonadsType: stonadstype!,
             dokumenter: dokumenter,
         }
-        // Submit the form data to the server
+        await sendToBackend(jfrRequest);
+    }
 
+    async function sendToBackend(jfrRequest: JournalforRequest) {
 
-        console.log("Submitting", jfrRequest, dokumenter[0])
-
+        const saksnummer = await journalfor.mutateAsync({
+            path: {
+                journalpostId: journalPost.journalpostId
+            },
+            body: jfrRequest
+        });
+        //TODO håndter feil
+        await navigate({to: "/sak/$saksnummer", params: {saksnummer}})
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={validateAndSubmit}>
             <VStack gap="space-24">
                 <input type="hidden" name="journalpostId" value={journalPost.journalpostId}/>
                 <input type="hidden" name="jfrOppgave" value={oppgaveMedSak.oppgaveId}/>

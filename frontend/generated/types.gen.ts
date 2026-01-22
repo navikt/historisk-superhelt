@@ -62,11 +62,11 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
@@ -572,7 +572,7 @@ export type OppdaterBrevResponses = {
 
 export type OppdaterBrevResponse = OppdaterBrevResponses[keyof OppdaterBrevResponses];
 
-export type JournalforSc1bRx4Data = {
+export type JournalforData = {
     body: JournalforRequest;
     path: {
         journalpostId: string;
@@ -581,7 +581,7 @@ export type JournalforSc1bRx4Data = {
     url: '/api/dokarkiv/{journalpostId}/journalfor';
 };
 
-export type JournalforSc1bRx4Errors = {
+export type JournalforErrors = {
     /**
      * Bad Request
      */
@@ -596,16 +596,16 @@ export type JournalforSc1bRx4Errors = {
     500: ProblemDetail;
 };
 
-export type JournalforSc1bRx4Error = JournalforSc1bRx4Errors[keyof JournalforSc1bRx4Errors];
+export type JournalforError = JournalforErrors[keyof JournalforErrors];
 
-export type JournalforSc1bRx4Responses = {
+export type JournalforResponses = {
     /**
      * OK
      */
     200: string;
 };
 
-export type JournalforSc1bRx4Response = JournalforSc1bRx4Responses[keyof JournalforSc1bRx4Responses];
+export type JournalforResponse = JournalforResponses[keyof JournalforResponses];
 
 export type FindSakerForPersonData = {
     body?: never;

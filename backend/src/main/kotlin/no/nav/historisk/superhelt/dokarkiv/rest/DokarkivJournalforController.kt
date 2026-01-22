@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.dokarkiv.rest
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import no.nav.common.types.EksternJournalpostId
@@ -25,7 +26,7 @@ class DokarkivJournalforController(
     ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-
+    @Operation(operationId = "journalfor", summary = "Journalfør en journalpost i dokarkiv")
     @PutMapping("{journalpostId}/journalfor")
     fun journalfor(
         @PathVariable journalpostId: EksternJournalpostId,
