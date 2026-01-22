@@ -1,29 +1,25 @@
 import {TextField, VStack} from '@navikt/ds-react'
-import {AnnetInnholdCombox} from './AnnetInnholdCombobox'
 
 interface Props {
-   dokument: { dokumentInfoId: string; tittel?: string }
-   error?: string
-   showAnnetInnhold?: boolean
+    value?: string
+    index?: number
+    name?: string
+    error?: string
 }
 
-function getDokumentLabel(dokumentInfoId: string): string {
-   const match = dokumentInfoId.match(/-?(\d+)$/)
-   const number = match ? Number.parseInt(match[1], 10) : 0
-   return number > 1 ? `Dokumenttittel ${number}` : 'Dokumenttittel'
+function getDokumentLabel(index: number): string {
+    return index > 0 ? `Dokumenttittel ${index + 1}` : 'Dokumenttittel'
 }
 
-export function DokumentTittelFelt({ dokument, error, showAnnetInnhold = false }: Props) {
-   return (
-      <VStack gap="space-16">
-         <TextField
-            label={getDokumentLabel(dokument.dokumentInfoId)}
-            name={`dokumenttittel_${dokument.dokumentInfoId}`}
-            minLength={5}
-            error={error}
-            defaultValue={dokument.tittel}
-         />
-         {showAnnetInnhold && <AnnetInnholdCombox name="annetInnhold" />}
-      </VStack>
-   )
+export function DokumentTittelFelt({value, error, name, index = 1}: Props) {
+    return (
+        <VStack gap="space-16">
+            <TextField
+                label={getDokumentLabel(index)}
+                name={name}
+                error={error}
+                defaultValue={value}
+            />
+        </VStack>
+    )
 }

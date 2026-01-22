@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.dokarkiv.rest
 
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.Saksnummer
@@ -28,7 +29,7 @@ class DokarkivJournalforController(
     @PutMapping("{journalpostId}/journalfor")
     fun journalfor(
         @PathVariable journalpostId: EksternJournalpostId,
-        @RequestBody request: JournalforRequest,
+        @RequestBody @Valid request: JournalforRequest,
     ): Saksnummer {
 //      tilgangskontrollService.validerTilgang(Ressurs.SAKSBEHANDLING, Tilgangstype.OPPRETT)
 
@@ -36,7 +37,7 @@ class DokarkivJournalforController(
             journalpostService.hentJournalpost(journalpostId)
                 ?: throw IkkeFunnetException("Fant ikke journalpost med id $journalpostId")
 
-        val jfrOppgave = oppgaveService.getOppgave(request.jfrOppgave)
+        val jfrOppgave = oppgaveService.getOppgave(request.jfrOppgaveId)
 
 
         val saksnummer = jfrOppgave.saksnummer ?: journalforService.lagNySakOgKnyttDenTilOppgave(request, jfrOppgave)
@@ -53,7 +54,7 @@ class DokarkivJournalforController(
         }
 
         // Denne er allerede idempotent og vil ikke ferdigstille oppgaven hvis den er ferdigstilt fra før
-        oppgaveService.ferdigstillOppgave(request.jfrOppgave)
+        oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
 
         return saksnummer
 

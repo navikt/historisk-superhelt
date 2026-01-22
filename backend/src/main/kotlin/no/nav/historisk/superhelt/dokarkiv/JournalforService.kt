@@ -26,7 +26,7 @@ class JournalforService (
         val soknadsDato = jfrOppgave.opprettetTidspunkt
         val nySak = sakRepository.opprettNySak(
             req = OpprettSakDto(
-                type = request.behandlingstype,
+                type = request.stonadsType,
                 fnr = request.bruker,
                 properties = UpdateSakDto(
                     soknadsDato = soknadsDato?.toLocalDate(),

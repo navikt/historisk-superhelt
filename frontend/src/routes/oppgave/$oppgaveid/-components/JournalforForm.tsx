@@ -3,129 +3,180 @@ import {useState} from 'react'
 import {StonadsTypeVelger} from './StonadsTypeVelger'
 import {DokumentTittelFelt} from './DokumentTittelFelt'
 import {type PersonValue, PersonVelger} from './PersonVelger'
-import {Journalpost, OppgaveMedSak, Person} from "@generated";
+import {JournalforDokument, JournalforRequest, Journalpost, OppgaveMedSak, Person} from "@generated";
 import {useNavigate} from "@tanstack/react-router";
 import {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {hasSize, isValidFnr} from "~/common/validation.utils";
+import {AnnetInnholdCombox} from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
+
+type JfrData = Partial<JournalforRequest> & {
+    journalpostId?: string
+}
 
 interface DokumentError {
-   dokumentInfoId: string
-   tittel?: string
+    dokumentInfoId: string
+    tittel?: string
 }
 
 interface FormErrors {
-   bruker?: string
-   avsender?: string
-   dokumenter?: DokumentError[]
-   behandlingstype?: string
-   fagsaksnummer?: string
+    bruker?: string
+    avsender?: string
+    dokumenter?: DokumentError[]
+    stonadstype?: string
+    fagsaksnummer?: string
 }
 
 interface Props {
-   person: Person
-   oppgaveMedSak: OppgaveMedSak
-   journalPost: Journalpost
-   errors?: FormErrors
-   defaultStonadstype?: StonadType
-   onBrukerUpdate: (updated: Person) => void
+    person: Person
+    oppgaveMedSak: OppgaveMedSak
+    journalPost: Journalpost
+    defaultStonadstype?: StonadType
+    onBrukerUpdate: (updated: Person) => void
 }
 
 export function JournalforForm({
-   person,
-   oppgaveMedSak,
-   journalPost,
-   errors,
-   defaultStonadstype,
-   onBrukerUpdate,
-}: Props) {
-   const navigation = useNavigate()
-   const [stonadstypeState, setStonadstypeState] = useState<StonadType | undefined>(defaultStonadstype)
-   const [bruker, setBruker] = useState<PersonValue>({ fnr: person.fnr, navn: person.navn })
-   const [avsender, setAvsender] = useState<PersonValue>({
-      fnr: journalPost?.avsenderMottaker?.id || person.fnr,
-      navn: journalPost?.avsenderMottaker?.navn || person.navn,
-   })
-   const [validationErrors, setValidationErrors] = useState<{ bruker?: string; avsender?: string }>({})
+                                   person,
+                                   oppgaveMedSak,
+                                   journalPost,
+                                   defaultStonadstype,
+                                   onBrukerUpdate,
+                               }: Props) {
+    const navigation = useNavigate()
+    const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype)
+    const [bruker, setBruker] = useState<PersonValue>({fnr: person.fnr, navn: person.navn})
+    const [avsender, setAvsender] = useState<PersonValue>({
+        fnr: journalPost?.avsenderMottaker?.id || person.fnr,
+        navn: journalPost?.avsenderMottaker?.navn || person.navn,
+    })
+    const [logiskeVedlegg, setLogiskeVedlegg] = useState<string[]>([])
 
-   const handleBrukerChange = (value: PersonValue) => {
-      setBruker(value)
-      if (value.fnr && value.navn) {
-         onBrukerUpdate({ fnr: value.fnr, navn: value.navn } as Person)
-         setValidationErrors((prev) => ({ ...prev, bruker: undefined }))
-      }
-   }
+    const [validationErrors, setValidationErrors] = useState<FormErrors>({})
 
-   const handleAvsenderChange = (value: PersonValue) => {
-      setAvsender(value)
-      if (value.fnr && value.navn) {
-         setValidationErrors((prev) => ({ ...prev, avsender: undefined }))
-      }
-   }
+    const handleBrukerChange = (value: PersonValue) => {
+        setBruker(value)
+        if (value.fnr && value.navn) {
+            onBrukerUpdate({fnr: value.fnr, navn: value.navn} as Person)
+            setValidationErrors((prev) => ({...prev, bruker: undefined}))
+        }
+    }
 
-   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-      const errors: { bruker?: string; avsender?: string } = {}
+    const handleAvsenderChange = (value: PersonValue) => {
+        setAvsender(value)
+        if (value.fnr && value.navn) {
+            setValidationErrors((prev) => ({...prev, avsender: undefined}))
+        }
+    }
 
-      if (!bruker.navn) {
-         errors.bruker = 'Du må velge en person før du kan journalføre'
-      }
-      if (!avsender.navn) {
-         errors.avsender = 'Du må velge en person før du kan journalføre'
-      }
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+// TODO se om dette kan forenkles ved å bruke state direkte
+        const dokumenter: JournalforDokument[] = []
+        for (const [key, value] of formData.entries()) {
+            if (key.startsWith('dokumenttittel_')) {
+                const dokumentInfoId = key.replace('dokumenttittel_', '')
+                dokumenter.push({
+                    dokumentInfoId,
+                    tittel: value as string,
+                    logiskeVedlegg: logiskeVedlegg,
+                })
+            }
+        }
 
-      if (Object.keys(errors).length > 0) {
-         e.preventDefault()
-         setValidationErrors(errors)
-         return
-      }
+        const errors: FormErrors = {}
 
-      setValidationErrors({})
-   }
+        if (!stonadstype) {
+            errors.stonadstype = 'Stønadstype er påkrevd'
+        }
+        if (!isValidFnr(bruker.fnr)) {
+            errors.bruker = 'Bruker må være et gyldig fødselsnummer'
+        }
+        if (!bruker.navn) {
+            errors.bruker = 'Du må velge en person før du kan journalføre'
+        }
+        if (!isValidFnr(avsender.fnr)) {
+            errors.avsender = 'Avsender må være et gyldig fødselsnummer'
+        }
+        if (!avsender.navn) {
+            errors.avsender = 'Du må velge en person før du kan journalføre'
+        }
 
-   return (
-      <form method="POST"  onSubmit={handleSubmit}>
-         <VStack gap="space-24">
-            <input type="hidden" name="journalpostId" value={journalPost.journalpostId} />
-            <input type="hidden" name="jfrOppgave" value={oppgaveMedSak.oppgaveId} />
+        const dokumentErrors = dokumenter
+            ?.filter((d) => !hasSize(d.tittel, 5))
+            .map((d) => ({dokumentInfoId: d.dokumentInfoId, tittel: 'Tittel må være minst 5 tegn'}))
+        if (dokumentErrors && dokumentErrors.length > 0) {
+            errors.dokumenter = dokumentErrors
+        }
 
-            <PersonVelger
-               label="Bruker"
-               name="bruker"
-               value={bruker}
-               error={errors?.bruker || validationErrors.bruker}
-               onChange={handleBrukerChange}
-            />
-            <PersonVelger
-               label="Avsender"
-               name="avsender"
-               value={avsender}
-               error={errors?.avsender || validationErrors.avsender}
-               onChange={handleAvsenderChange}
-            />
 
-            <Heading level="3" size={'medium'}>
-               Dokumenter
-            </Heading>
-            {journalPost?.dokumenter?.map((dok, index: number) => (
-               <DokumentTittelFelt
-                  key={dok.dokumentInfoId}
-                  dokument={dok}
-                  error={errors?.dokumenter?.find((d) => d.dokumentInfoId === dok.dokumentInfoId)?.tittel}
-                  showAnnetInnhold={index === 0}
-               />
-            ))}
+        setValidationErrors(errors)
+        if (Object.keys(errors).length > 0) {
+            return
+        }
+        const jfrRequest: JournalforRequest = {
+            jfrOppgaveId: oppgaveMedSak.oppgaveId,
+            bruker: bruker.fnr,
+            avsender: avsender.fnr,
+            stonadsType: stonadstype!,
+            dokumenter: dokumenter,
+        }
+        // Submit the form data to the server
 
-            <Heading level="3" size={'medium'}>
-               Sak
-            </Heading>
-            <StonadsTypeVelger
-               name="stonadstype"
-               value={stonadstypeState}
-               error={errors?.behandlingstype}
-               onChange={setStonadstypeState}
-            />
-            <Button type="submit">
-               Journalfør og start behandling
-            </Button>
-         </VStack>
-      </form>
-   )
+
+        console.log("Submitting", jfrRequest, dokumenter[0])
+
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <VStack gap="space-24">
+                <input type="hidden" name="journalpostId" value={journalPost.journalpostId}/>
+                <input type="hidden" name="jfrOppgave" value={oppgaveMedSak.oppgaveId}/>
+
+                <PersonVelger
+                    label="Bruker"
+                    name="bruker"
+                    value={bruker}
+                    error={validationErrors?.bruker}
+                    onChange={handleBrukerChange}
+                />
+                <PersonVelger
+                    label="Avsender"
+                    name="avsender"
+                    value={avsender}
+                    error={validationErrors?.avsender}
+                    onChange={handleAvsenderChange}
+                />
+
+                <Heading level="3" size={'medium'}>
+                    Dokumenter
+                </Heading>
+                {journalPost?.dokumenter?.map((dok, index: number) => (
+                    <>
+                        <DokumentTittelFelt
+                            key={dok.dokumentInfoId}
+                            index={index}
+                            value={dok.tittel}
+                            name={`dokumenttittel_${dok.dokumentInfoId}`}
+                            error={validationErrors?.dokumenter?.find((d) => d.dokumentInfoId === dok.dokumentInfoId)?.tittel}
+                        />
+                        {index == 0 && <AnnetInnholdCombox name="annetInnhold" onChange={setLogiskeVedlegg}/>}
+                    </>
+                ))}
+
+                <Heading level="3" size={'medium'}>
+                    Sak
+                </Heading>
+                <StonadsTypeVelger
+                    name="stonadstype"
+                    value={stonadstype}
+                    error={validationErrors?.stonadstype}
+                    onChange={setStonadstype}
+                />
+                <Button type="submit">
+                    Journalfør og start behandling
+                </Button>
+            </VStack>
+        </form>
+    )
 }

@@ -62,11 +62,11 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
@@ -110,8 +110,8 @@ export type JournalforDokument = {
 };
 
 export type JournalforRequest = {
-    behandlingstype: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
-    jfrOppgave: number;
+    stonadsType: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    jfrOppgaveId: number;
     bruker: string;
     avsender: string;
     dokumenter: Array<JournalforDokument>;
@@ -1052,7 +1052,7 @@ export type HentOppgaverForSaksbehandlerResponses = {
 
 export type HentOppgaverForSaksbehandlerResponse = HentOppgaverForSaksbehandlerResponses[keyof HentOppgaverForSaksbehandlerResponses];
 
-export type LasdtnedDokumentFraJournalpostData = {
+export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
@@ -1062,7 +1062,7 @@ export type LasdtnedDokumentFraJournalpostData = {
     url: '/api/journalpost/{journalpostId}/{dokumentId}';
 };
 
-export type LasdtnedDokumentFraJournalpostErrors = {
+export type LastnedDokumentFraJournalpostErrors = {
     /**
      * Bad Request
      */
@@ -1077,16 +1077,16 @@ export type LasdtnedDokumentFraJournalpostErrors = {
     500: ProblemDetail;
 };
 
-export type LasdtnedDokumentFraJournalpostError = LasdtnedDokumentFraJournalpostErrors[keyof LasdtnedDokumentFraJournalpostErrors];
+export type LastnedDokumentFraJournalpostError = LastnedDokumentFraJournalpostErrors[keyof LastnedDokumentFraJournalpostErrors];
 
-export type LasdtnedDokumentFraJournalpostResponses = {
+export type LastnedDokumentFraJournalpostResponses = {
     /**
      * OK
      */
     200: string;
 };
 
-export type LasdtnedDokumentFraJournalpostResponse = LasdtnedDokumentFraJournalpostResponses[keyof LasdtnedDokumentFraJournalpostResponses];
+export type LastnedDokumentFraJournalpostResponse = LastnedDokumentFraJournalpostResponses[keyof LastnedDokumentFraJournalpostResponses];
 
 export type HentJournalpostMetaDataData = {
     body?: never;

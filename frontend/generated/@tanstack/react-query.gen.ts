@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { attersterSak, createSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentJournalpostMetaData, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalforSc1bRx4, lasdtnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, sendBrev, sendTilAttestering } from '../sdk.gen';
-import type { AttersterSakData, AttersterSakError, CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforSc1bRx4Data, JournalforSc1bRx4Error, JournalforSc1bRx4Response, LasdtnedDokumentFraJournalpostData, LasdtnedDokumentFraJournalpostError, LasdtnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
+import { attersterSak, createSak, findPersonByFnr, findSakerForPerson, getKodeverkStonadType, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentJournalpostMetaData, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalforSc1bRx4, lastnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, sendBrev, sendTilAttestering } from '../sdk.gen';
+import type { AttersterSakData, AttersterSakError, CreateSakData, CreateSakError, CreateSakResponse, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforSc1bRx4Data, JournalforSc1bRx4Error, JournalforSc1bRx4Response, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -370,11 +370,11 @@ export const hentOppgaverForSaksbehandlerOptions = (options?: Options<HentOppgav
     queryKey: hentOppgaverForSaksbehandlerQueryKey(options)
 });
 
-export const lasdtnedDokumentFraJournalpostQueryKey = (options: Options<LasdtnedDokumentFraJournalpostData>) => createQueryKey('lasdtnedDokumentFraJournalpost', options);
+export const lastnedDokumentFraJournalpostQueryKey = (options: Options<LastnedDokumentFraJournalpostData>) => createQueryKey('lastnedDokumentFraJournalpost', options);
 
-export const lasdtnedDokumentFraJournalpostOptions = (options: Options<LasdtnedDokumentFraJournalpostData>) => queryOptions<LasdtnedDokumentFraJournalpostResponse, LasdtnedDokumentFraJournalpostError, LasdtnedDokumentFraJournalpostResponse, ReturnType<typeof lasdtnedDokumentFraJournalpostQueryKey>>({
+export const lastnedDokumentFraJournalpostOptions = (options: Options<LastnedDokumentFraJournalpostData>) => queryOptions<LastnedDokumentFraJournalpostResponse, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, ReturnType<typeof lastnedDokumentFraJournalpostQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await lasdtnedDokumentFraJournalpost({
+        const { data } = await lastnedDokumentFraJournalpost({
             ...options,
             ...queryKey[0],
             signal,
@@ -382,7 +382,7 @@ export const lasdtnedDokumentFraJournalpostOptions = (options: Options<LasdtnedD
         });
         return data;
     },
-    queryKey: lasdtnedDokumentFraJournalpostQueryKey(options)
+    queryKey: lastnedDokumentFraJournalpostQueryKey(options)
 });
 
 export const hentJournalpostMetaDataQueryKey = (options: Options<HentJournalpostMetaDataData>) => createQueryKey('hentJournalpostMetaData', options);
