@@ -10,7 +10,7 @@ interface Props {
 
 export function PdfViewer({journalpostId}: Props) {
     if (!journalpostId) {
-        return <InlineMessage status="warning">Det er ikke noe dokument å vise frem 1</InlineMessage>
+        return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>
     }
     return <PdfViewer2 journalpostId={journalpostId}/>
 }

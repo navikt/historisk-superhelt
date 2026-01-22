@@ -54,7 +54,7 @@ class SecurityConfig(
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
             headers {
-                frameOptions {sameOrigin = true }
+                frameOptions {sameOrigin = true}
             }
         }
         return http.build()

@@ -7,7 +7,7 @@ interface Props {
    defaultValue?: Array<string>
 }
 
-export function AnnetInnholdCombox({ onChange, name, defaultValue = [] }: Props) {
+export function AnnetInnholdCombobox({ onChange, name, defaultValue = [] }: Props) {
    const [selectedOptions, setSelectedOptions] = useState<Array<string>>(defaultValue)
 
    const onToggleSelected = (option: string, isSelected: boolean) => {

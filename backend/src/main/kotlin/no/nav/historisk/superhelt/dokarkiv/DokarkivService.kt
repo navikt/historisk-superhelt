@@ -100,7 +100,7 @@ class DokarkivService(
                     )
                 },
         )
-        // Må sette logiske vedlegg i egen tjenenste
+        // Må sette logiske vedlegg i egen tjeneste
         request.dokumenter.forEach {
             dokarkivClient.setLogiskeVedlegg(
                 dokumentInfoId = it.dokumentInfoId,

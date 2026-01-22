@@ -68,7 +68,7 @@ function JournalforPage() {
     return <VStack gap={"6"}>
         <Heading size="xlarge">Journalfør oppgave {oppgave.oppgaveId}</Heading>
 
-        <pre>
+        <>
             {completed && <FerdigJournalfort saksnummer={oppgave.saksnummer}/>}
             {!completed && (
                 <JournalforForm
@@ -79,6 +79,6 @@ function JournalforPage() {
                     onBrukerUpdate={oppdaterBruker}
                 />
             )}
-    </pre>
+    </>
     </VStack>
 }

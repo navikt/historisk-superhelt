@@ -7,7 +7,7 @@ import {JournalforDokument, JournalforRequest, Journalpost, OppgaveMedSak, Perso
 import {useNavigate} from "@tanstack/react-router";
 import {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {hasSize, isValidFnr} from "~/common/validation.utils";
-import {AnnetInnholdCombox} from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
+import {AnnetInnholdCombobox} from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
 import {useMutation} from "@tanstack/react-query";
 import {journalforMutation} from "@generated/@tanstack/react-query.gen";
 
@@ -169,7 +169,7 @@ export function JournalforForm({
                             name={`dokumenttittel_${dok.dokumentInfoId}`}
                             error={validationErrors?.dokumenter?.find((d) => d.dokumentInfoId === dok.dokumentInfoId)?.tittel}
                         />
-                        {index == 0 && <AnnetInnholdCombox name="annetInnhold" onChange={setLogiskeVedlegg}/>}
+                        {index === 0 && <AnnetInnholdCombobox name="annetInnhold" onChange={setLogiskeVedlegg}/>}
                     </div>
                 ))}
 

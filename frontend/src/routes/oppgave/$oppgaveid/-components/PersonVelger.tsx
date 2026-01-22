@@ -72,7 +72,12 @@ export function PersonVelger(props: Props) {
                     onChange={(e) => setSearchFnr(e.currentTarget.value)}
                     error={props.error || searchError}
                     maxLength={11}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleSearch()
+                        }
+                    }}
                 />
                 <Button variant="primary" type="button" size="small" onClick={handleSearch}>
                     Velg
