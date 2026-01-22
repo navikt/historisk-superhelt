@@ -11,6 +11,7 @@ import no.nav.historisk.superhelt.dokarkiv.JournalforService
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
+import no.nav.oppgave.OppgaveType
 import no.nav.saf.graphql.JournalStatus
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -23,7 +24,7 @@ class DokarkivJournalforController(
     private val dokArkivService: DokarkivService,
     private val oppgaveService: OppgaveService,
     private val journalforService: JournalforService,
-    ) {
+) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Operation(operationId = "journalfor", summary = "Journalfør en journalpost i dokarkiv")
@@ -40,7 +41,6 @@ class DokarkivJournalforController(
 
         val jfrOppgave = oppgaveService.getOppgave(request.jfrOppgaveId)
 
-
         val saksnummer = jfrOppgave.saksnummer ?: journalforService.lagNySakOgKnyttDenTilOppgave(request, jfrOppgave)
 
         if (journalpost.journalstatus != JournalStatus.JOURNALFOERT) {
@@ -56,6 +56,7 @@ class DokarkivJournalforController(
 
         // Denne er allerede idempotent og vil ikke ferdigstille oppgaven hvis den er ferdigstilt fra før
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
+        oppgaveService.opprettOppgave(OppgaveType.BEH_SAK, saksnummer)
 
         return saksnummer
 

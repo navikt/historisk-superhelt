@@ -77,12 +77,10 @@ function JournalforPage() {
                     person={person}
                     oppgaveMedSak={oppgave}
                     journalPost={journalPost}
-                    errors={errors}
                     defaultStonadstype={guessStonadsType(oppgave.oppgaveGjelder)}
                     onBrukerUpdate={oppdaterBruker}
                 />
             )}
-            {JSON.stringify(oppgave, null, 2)}
 
     </pre>
     </VStack>

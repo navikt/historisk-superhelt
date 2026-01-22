@@ -32,6 +32,7 @@ class JournalforService (
                     soknadsDato = soknadsDato?.toLocalDate(),
                     tildelingsAar = soknadsDato?.let { Aar(it.year) },
                     saksbehandler = getCurrentNavUser(),
+                    //TODO lagre journalpostid i sak
 
                     )
             )
