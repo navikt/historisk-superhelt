@@ -161,16 +161,16 @@ export function JournalforForm({
                     Dokumenter
                 </Heading>
                 {journalPost?.dokumenter?.map((dok, index: number) => (
-                    <>
+                    <div
+                        key={dok.dokumentInfoId}>
                         <DokumentTittelFelt
-                            key={dok.dokumentInfoId}
                             index={index}
                             value={dok.tittel}
                             name={`dokumenttittel_${dok.dokumentInfoId}`}
                             error={validationErrors?.dokumenter?.find((d) => d.dokumentInfoId === dok.dokumentInfoId)?.tittel}
                         />
                         {index == 0 && <AnnetInnholdCombox name="annetInnhold" onChange={setLogiskeVedlegg}/>}
-                    </>
+                    </div>
                 ))}
 
                 <Heading level="3" size={'medium'}>

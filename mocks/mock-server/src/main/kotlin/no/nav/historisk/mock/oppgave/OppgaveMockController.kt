@@ -1,6 +1,7 @@
 package no.nav.historisk.mock.oppgave
 
 import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.NavIdent
 import no.nav.historisk.mock.pdl.fnrFromAktoerId
 import no.nav.oppgave.OppgaveType
@@ -11,6 +12,7 @@ import no.nav.oppgave.model.SokOppgaverResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.OffsetDateTime
 
 @RestController
 @RequestMapping("oppgave-mock")
@@ -83,6 +85,11 @@ class OppgaveMockController() {
             beskrivelse = request.beskrivelse,
             behandlingstema = request.behandlingstema,
             behandlingstype = request.behandlingstype,
+            fristFerdigstillelse = request.fristFerdigstillelse,
+            behandlesAvApplikasjon = request.behandlesAvApplikasjon,
+            saksreferanse = request.saksreferanse,
+            tildeltEnhetsnr = request.tildeltEnhetsnr?.let { Enhetsnummer(it) } ?: Enhetsnummer("1234"),
+            opprettetTidspunkt = OffsetDateTime.now(),
         )
         repository.put(nyOppgave.id, nyOppgave)
         // Steng tilhørende journalføringsoppgave hvis dn er koblet samme journalpostid

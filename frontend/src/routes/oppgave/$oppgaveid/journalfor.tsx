@@ -60,10 +60,8 @@ function JournalforPage() {
         oppgave.oppgavestatus === 'FERDIGSTILT' &&
         !!oppgave.saksnummer
 
-
-    const errors = {}
-
     function oppdaterBruker() {
+       // TODO hvordan bytte bruker i header
         console.log("Bruker oppdatert")
     }
 
@@ -81,7 +79,6 @@ function JournalforPage() {
                     onBrukerUpdate={oppdaterBruker}
                 />
             )}
-
     </pre>
     </VStack>
 }
