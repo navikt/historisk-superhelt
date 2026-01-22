@@ -39,7 +39,7 @@ function PdfViewer2({journalpostId}: { journalpostId: string }) {
                 ))}
             </Select>
             <embed
-                src={`/api/journalpost/${journalpostId}/${dokId}`}
+                src={`/api/journalpost/${encodeURIComponent(journalpostId)}/${encodeURIComponent(dokId)}`}
                 width="100%"
                 height="1200px"
                 type="application/pdf"
