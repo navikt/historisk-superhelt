@@ -20,7 +20,9 @@ updates:
           - "*"
 
   - package-ecosystem: "npm"
-    directory: "/frontend"
+    directories:
+    - "/frontend"
+    - "/e2e"
     schedule:
       interval: "weekly"
     cooldown:
@@ -42,7 +44,9 @@ updates:
           - "*"
 
   - package-ecosystem: "docker"
-    directory: "/backend"
+    directories:
+    - "/backend"
+    - "/mocks/mock-server"
     schedule:
       interval: "weekly"
  
