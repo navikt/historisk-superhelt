@@ -16,7 +16,7 @@ export type ProblemDetail = {
 };
 
 export type SakUpdateRequestDto = {
-    type?: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    type?: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     beskrivelse?: string;
     begrunnelse?: string;
     soknadsDato?: string;
@@ -48,7 +48,7 @@ export type NavUser = {
 export type Sak = {
     saksnummer: string;
     behandlingsnummer: string;
-    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     beskrivelse?: string;
@@ -62,11 +62,11 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
@@ -104,7 +104,7 @@ export type OppdaterBrevRequest = {
 };
 
 export type SakCreateRequestDto = {
-    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     fnr: string;
     beskrivelse?: string;
     soknadsDato?: string;
@@ -141,7 +141,7 @@ export type User = {
 export type Vedtak = {
     saksnummer: string;
     behandlingsnummer: string;
-    stonadstype: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    stonadstype: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     fnr: string;
     beskrivelse: string;
     soknadsDato: string;
@@ -165,7 +165,7 @@ export type EndringsloggLinje = {
 };
 
 export type StonadsTypeDto = {
-    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     navn: string;
     beskrivelse?: string;
 };
@@ -202,7 +202,7 @@ export type BrevWritable = {
 export type SakWritable = {
     saksnummer: string;
     behandlingsnummer: string;
-    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     beskrivelse?: string;
