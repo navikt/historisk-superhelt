@@ -89,6 +89,7 @@ class OppgaveService(
         logger.info("Ferdigstiller oppgave med id {}", oppgave.id)
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     fun ferdigstillOppgaver(saksnummer: Saksnummer, type: OppgaveType?) {
         val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
         oppgaveIds.forEach { oppgaveId ->

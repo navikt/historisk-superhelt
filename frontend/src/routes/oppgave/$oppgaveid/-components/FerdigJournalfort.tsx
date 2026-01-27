@@ -13,7 +13,7 @@ export function FerdigJournalfort({ saksnummer }: Props) {
                Ferdig journalført
             </Heading>
             <BodyShort>Journalposten er ferdig og knyttet til behandling {saksnummer}</BodyShort>
-            <Link as={RouterLink} to={`/behandling/${saksnummer}`}>
+            <Link as={RouterLink} to={`/sak/${saksnummer}`}>
                Gå til behandling
             </Link>
          </HStack>

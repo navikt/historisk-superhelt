@@ -3,13 +3,14 @@ import {useState} from 'react'
 import {StonadsTypeVelger} from './StonadsTypeVelger'
 import {DokumentTittelFelt} from './DokumentTittelFelt'
 import {type PersonValue, PersonVelger} from './PersonVelger'
-import {JournalforDokument, JournalforRequest, Journalpost, OppgaveMedSak, Person} from "@generated";
+import {JournalforDokument, JournalforRequest, Journalpost, OppgaveMedSak, Person, ProblemDetail} from "@generated";
 import {useNavigate} from "@tanstack/react-router";
 import {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {hasSize, isValidFnr} from "~/common/validation.utils";
 import {AnnetInnholdCombobox} from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
 import {useMutation} from "@tanstack/react-query";
 import {journalforMutation} from "@generated/@tanstack/react-query.gen";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
 
 
 interface DokumentError {
@@ -41,7 +42,14 @@ export function JournalforForm({
                                    onBrukerUpdate,
                                }: Props) {
     const navigate = useNavigate()
-    const journalfor = useMutation({...journalforMutation()})
+    const [backendError, setBackendError] = useState<ProblemDetail| undefined>()
+    const journalfor = useMutation({
+        ...journalforMutation(),
+        onError: (error) => {
+        setBackendError(error)
+        }
+
+    })
     const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype)
     const [bruker, setBruker] = useState<PersonValue>({fnr: person.fnr, navn: person.navn})
     const [avsender, setAvsender] = useState<PersonValue>({
@@ -132,7 +140,6 @@ export function JournalforForm({
             },
             body: jfrRequest
         });
-        //TODO håndter feil
         await navigate({to: "/sak/$saksnummer", params: {saksnummer}})
     }
 
@@ -185,6 +192,7 @@ export function JournalforForm({
                 <Button type="submit">
                     Journalfør og start behandling
                 </Button>
+                {backendError && (<ErrorAlert error={backendError}/>)}
             </VStack>
         </form>
     )
