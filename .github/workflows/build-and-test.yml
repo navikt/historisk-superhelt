@@ -31,7 +31,7 @@ jobs:
           node-auth-token: ${{ secrets.READER_TOKEN }}
 
       - name: Build artifacts
-        run: mvn --batch-mode verify
+        run: mvn --batch-mode clean verify
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 

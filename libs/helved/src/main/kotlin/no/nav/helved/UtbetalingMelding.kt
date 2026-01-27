@@ -29,10 +29,6 @@ data class Periode(
     val beløp: Int
 )
 
-enum class KlasseKode {
-    TILSKUDD_SMÅHJELPEMIDLER // HJRIM
-}
-
 enum class Periodetype {
     EN_GANG
 }

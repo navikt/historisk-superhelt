@@ -18,9 +18,6 @@ fun StonadsType.tilOppgaveGjelder(): OppgaveGjelder =
         StonadsType.BRYSTPROTESE -> OppgaveGjelder.BRYSTPROTESE_PROTESEBH
         StonadsType.FOTTOY -> OppgaveGjelder.ORTOPEDISKE_HJELPEMIDLER
         StonadsType.REISEUTGIFTER -> OppgaveGjelder.REISEUTGIFTER
-        // TODO sjekke disse kodene
-        StonadsType.FOLKEHOYSKOLE -> OppgaveGjelder.UKJENT
-        StonadsType.GRUNNMONSTER -> OppgaveGjelder.UKJENT
     }
 
 fun OppgaveDto.toOppgaveMedSak( sak: Sak?): OppgaveMedSak {
