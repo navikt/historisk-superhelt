@@ -44,19 +44,8 @@ class JournalpostController(
     fun hentMetaData(
         @PathVariable journalpostId: EksternJournalpostId,
     ): Journalpost? {
-//      behandlingskontekstService.ny("Hent metadata for journalpostId=$journalpostId")
-//      tilgangskontrollService.validerTilgang(Ressurs.SAKSBEHANDLING, Tilgangstype.LES)
         return journalpostService.hentJournalpost(journalpostId)
     }
-
-//   @GetMapping("/metadataMedBehandlingsnummer/{behandlingsnummer}")
-//   fun hentMetaDataMedBehandlingsnummer(
-//      @PathVariable behandlingsnummer: Behandlingsnummer,
-//   ): Journalpost? {
-//      behandlingskontekstService.ny("Hent metadata for journalpostId=$behandlingsnummer")
-//      tilgangskontrollService.validerTilgang(Ressurs.SAKSBEHANDLING, Tilgangstype.LES)
-//      return journalpostService.hentJournalpostMedBehandlingsnummer(behandlingsnummer)
-//   }
 
 
 }
