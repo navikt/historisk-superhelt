@@ -9,6 +9,7 @@ import no.nav.oppgave.OppgaveGjelder
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.OppgaveDto
 import java.time.LocalDate
+import java.time.OffsetDateTime
 
 data class OppgaveMedSak(
     val fnr: FolkeregisterIdent,
@@ -20,12 +21,14 @@ data class OppgaveMedSak(
     val tilordnetRessurs: NavIdent?,
     val beskrivelse: String?,
     val fristFerdigstillelse: LocalDate?,
+    val opprettetTidspunkt: OffsetDateTime?,
     val behandlesAvApplikasjon: String?,
     val tildeltEnhetsnr: Enhetsnummer?,
     val opprettetAv: String?,
 
     val saksnummer: Saksnummer?,
     val sakStatus: SakStatus?,
+
 ){
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent

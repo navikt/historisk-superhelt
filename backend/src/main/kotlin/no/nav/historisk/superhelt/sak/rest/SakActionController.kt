@@ -7,9 +7,11 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
+import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakService
+import no.nav.oppgave.OppgaveType
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -22,7 +24,8 @@ class SakActionController(
     private val endringsloggService: EndringsloggService,
     private val utbetalingService: UtbetalingService,
     private val vedtakService: VedtakService,
-    private val brevSendingService: BrevSendingService
+    private val brevSendingService: BrevSendingService,
+    private val oppgaveService: OppgaveService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -95,6 +98,11 @@ class SakActionController(
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
         sakService.endreStatus(sak, SakStatus.TIL_ATTESTERING)
+
+        oppgaveService.ferdigstillOppgaver(
+            saksnummer = saksnummer,
+            type = OppgaveType.BEH_SAK
+        )
 
         endringsloggService.logChange(
             saksnummer = saksnummer,

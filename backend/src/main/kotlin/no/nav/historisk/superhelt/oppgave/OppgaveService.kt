@@ -1,63 +1,136 @@
 package no.nav.historisk.superhelt.oppgave
 
 import no.nav.common.types.EksternOppgaveId
-import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.oppgave.OppgaveClient
-import no.nav.oppgave.gjelder
+import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.FinnOppgaverParams
 import no.nav.oppgave.model.OppgaveDto
-import no.nav.oppgave.type
+import no.nav.oppgave.model.OpprettOppgaveRequest
+import no.nav.oppgave.model.PatchOppgaveRequest
+import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
+
+private const val TEMA_HEL = "HEL"
 
 @Service
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
-    private val oppgaveRepository: OppgaveRepository) {
+    private val oppgaveRepository: OppgaveRepository,
+    private val sakRepository: SakRepository
+) {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    @PreAuthorize("hasAuthority('READ')")
     fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
 
         val oppgaver = oppgaveClient.finnOppgaver(
             FinnOppgaverParams(
                 tilordnetRessurs = navident,
                 statuskategori = "AAPEN",
-                tema = listOf("HEL")
+                tema = listOf(TEMA_HEL),
+                limit = 50L
             )
         ).oppgaver ?: emptyList()
 
-        return oppgaver.map { toOppgaveMedSak(it) }
+        return oppgaver.map {
+            it.toOppgaveMedSak(
+                sak = oppgaveRepository.finnSakForOppgave(it.id)
+            )
+        }
     }
 
+    @PreAuthorize("hasAuthority('READ')")
+    @Transactional(readOnly = true)
     fun getOppgave(oppgaveId: EksternOppgaveId): OppgaveMedSak {
         val dto = oppgaveClient.hentOppgave(oppgaveId)
             ?: throw IkkeFunnetException("Fant ikke oppgave med id $oppgaveId")
 
-        return toOppgaveMedSak(dto)
+        val sak = oppgaveRepository.finnSakForOppgave(dto.id)
+        return dto.toOppgaveMedSak(sak)
     }
 
-    private fun toOppgaveMedSak(dto: OppgaveDto): OppgaveMedSak {
-        val sak = oppgaveRepository.finnSakForOppgave(dto.id)
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun knyttOppgaveTilSak(saksnummer: Saksnummer, oppgaveId: EksternOppgaveId, oppgaveType: OppgaveType) {
+        oppgaveRepository.save(saksnummer, oppgaveId, oppgaveType)
+    }
 
-        val ident = dto.bruker?.ident ?: sak?.fnr?.value
-        ?: throw IkkeFunnetException("Fant ikke personident for oppgave ${dto.id}")
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun ferdigstillOppgave(oppgaveId: EksternOppgaveId) {
+        val oppgave = oppgaveClient.hentOppgave(oppgaveId)
 
-        return OppgaveMedSak(
-            fnr = FolkeregisterIdent(ident),
-            oppgaveId = dto.id,
-            oppgavestatus = dto.status,
-            oppgavetype = dto.type,
-            oppgaveGjelder = dto.gjelder,
-            journalpostId = dto.journalpostId,
-            tilordnetRessurs = dto.tilordnetRessurs,
-            beskrivelse = dto.beskrivelse,
-            fristFerdigstillelse = dto.fristFerdigstillelse,
-            behandlesAvApplikasjon = dto.behandlesAvApplikasjon,
-            tildeltEnhetsnr = dto.tildeltEnhetsnr,
-            opprettetAv = dto.opprettetAv,
-            saksnummer = sak?.saksnummer,
-            sakStatus = sak?.status,
+        if (oppgave == null) {
+            logger.warn("Fant ikke oppgave med id {}, kan ikke ferdigstille", oppgaveId)
+            return
+        }
+
+        if (oppgave.status == OppgaveDto.Status.FERDIGSTILT) {
+            logger.debug("Oppgave {} er allerede ferdigstilt, ingen mulighet å oppdatere", oppgave.id)
+            return
+        }
+
+        oppgaveClient.patchOppgave(
+            oppgaveId = oppgaveId,
+            request = PatchOppgaveRequest(
+                versjon = oppgave.versjon,
+                status = OppgaveDto.Status.FERDIGSTILT
+            )
         )
+        logger.info("Ferdigstiller oppgave med id {}", oppgave.id)
+    }
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    fun ferdigstillOppgaver(saksnummer: Saksnummer, type: OppgaveType?) {
+        val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
+        oppgaveIds.forEach { oppgaveId ->
+            ferdigstillOppgave(oppgaveId)
+        }
+    }
+
+
+    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#sak.fnr)")
+    @Transactional
+    fun opprettOppgave(type: OppgaveType, sak: Sak, tilordneSaksbehandler: Boolean = true): OppgaveMedSak {
+        val gjelder = sak.type.tilOppgaveGjelder()
+        val oppgave = oppgaveClient.opprettOppgave(
+            OpprettOppgaveRequest(
+                tema = TEMA_HEL,
+                oppgavetype = type.oppgavetype,
+//                journalpostId = journalpostId,
+                beskrivelse = "Saksbehandling i superhelt",
+                personident = sak.fnr.value,
+                saksreferanse = sak.saksnummer.value,
+                behandlesAvApplikasjon = "SUPERHELT",
+                behandlingstype = gjelder.behandlingstype,
+                behandlingstema = gjelder.behandlingstema,
+                fristFerdigstillelse = LocalDate.now().plusDays(5),
+            )
+        )
+
+        knyttOppgaveTilSak(sak.saksnummer, oppgave.id, type)
+
+        if (tilordneSaksbehandler) {
+            oppgaveClient.patchOppgave(
+                oppgaveId = oppgave.id,
+                request = PatchOppgaveRequest(
+                    versjon = oppgave.versjon,
+                    tilordnetRessurs = sak.saksbehandler.navIdent
+                )
+            )
+        }
+        logger.info("Oppretter oppgave {}:{} for sak {}", type, oppgave.id, sak.saksnummer)
+        return oppgave.toOppgaveMedSak(sak)
+
     }
 
 

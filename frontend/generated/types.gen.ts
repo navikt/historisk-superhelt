@@ -103,6 +103,20 @@ export type OppdaterBrevRequest = {
     innhold?: string;
 };
 
+export type JournalforDokument = {
+    tittel: string;
+    dokumentInfoId: string;
+    logiskeVedlegg?: Array<string>;
+};
+
+export type JournalforRequest = {
+    stonadsType: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    jfrOppgaveId: number;
+    bruker: string;
+    avsender: string;
+    dokumenter: Array<JournalforDokument>;
+};
+
 export type SakCreateRequestDto = {
     type: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
     fnr: string;
@@ -180,12 +194,51 @@ export type OppgaveMedSak = {
     tilordnetRessurs?: string;
     beskrivelse?: string;
     fristFerdigstillelse?: string;
+    opprettetTidspunkt?: string;
     behandlesAvApplikasjon?: string;
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
     saksnummer?: string;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
     readonly maskertPersonIdent: string;
+};
+
+export type Journalpost = {
+    journalpostId: string;
+    journalstatus: 'MOTTATT' | 'JOURNALFOERT' | 'FERDIGSTILT' | 'EKSPEDERT' | 'UNDER_ARBEID' | 'FEILREGISTRERT' | 'UTGAAR' | 'AVBRUTT' | 'UKJENT_BRUKER' | 'RESERVERT' | 'OPPLASTING_DOKUMENT' | 'UKJENT';
+    tittel?: string;
+    sak?: JournalpostSak;
+    bruker?: JournalpostBruker;
+    avsenderMottaker?: JournalpostAvsenderMottaker;
+    dokumenter?: Array<JournalpostDokumentInfo>;
+};
+
+export type JournalpostAvsenderMottaker = {
+    id?: string;
+    type?: 'FNR' | 'ORGNR' | 'HPRNR' | 'UTL_ORG' | 'NULL' | 'UKJENT';
+    navn?: string;
+};
+
+export type JournalpostBruker = {
+    id?: string;
+    type?: 'FNR' | 'ORGNR' | 'AKTOERID';
+};
+
+export type JournalpostDokumentInfo = {
+    tittel?: string;
+    dokumentInfoId: string;
+    dokumentvarianter?: Array<JournalpostDokumentVariant>;
+};
+
+export type JournalpostDokumentVariant = {
+    filtype?: string;
+    filnavn?: string;
+    saksbehandlerHarTilgang: boolean;
+};
+
+export type JournalpostSak = {
+    fagsaksystem?: string;
+    fagsakId?: string;
 };
 
 export type BrevWritable = {
@@ -235,6 +288,7 @@ export type OppgaveMedSakWritable = {
     tilordnetRessurs?: string;
     beskrivelse?: string;
     fristFerdigstillelse?: string;
+    opprettetTidspunkt?: string;
     behandlesAvApplikasjon?: string;
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
@@ -517,6 +571,41 @@ export type OppdaterBrevResponses = {
 };
 
 export type OppdaterBrevResponse = OppdaterBrevResponses[keyof OppdaterBrevResponses];
+
+export type JournalforData = {
+    body: JournalforRequest;
+    path: {
+        journalpostId: string;
+    };
+    query?: never;
+    url: '/api/dokarkiv/{journalpostId}/journalfor';
+};
+
+export type JournalforErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type JournalforError = JournalforErrors[keyof JournalforErrors];
+
+export type JournalforResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type JournalforResponse = JournalforResponses[keyof JournalforResponses];
 
 export type FindSakerForPersonData = {
     body?: never;
@@ -962,3 +1051,74 @@ export type HentOppgaverForSaksbehandlerResponses = {
 };
 
 export type HentOppgaverForSaksbehandlerResponse = HentOppgaverForSaksbehandlerResponses[keyof HentOppgaverForSaksbehandlerResponses];
+
+export type LastnedDokumentFraJournalpostData = {
+    body?: never;
+    path: {
+        journalpostId: string;
+        dokumentId: string;
+    };
+    query?: never;
+    url: '/api/journalpost/{journalpostId}/{dokumentId}';
+};
+
+export type LastnedDokumentFraJournalpostErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type LastnedDokumentFraJournalpostError = LastnedDokumentFraJournalpostErrors[keyof LastnedDokumentFraJournalpostErrors];
+
+export type LastnedDokumentFraJournalpostResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type LastnedDokumentFraJournalpostResponse = LastnedDokumentFraJournalpostResponses[keyof LastnedDokumentFraJournalpostResponses];
+
+export type HentJournalpostMetaDataData = {
+    body?: never;
+    path: {
+        journalpostId: string;
+    };
+    query?: never;
+    url: '/api/journalpost/{journalpostId}/metadata';
+};
+
+export type HentJournalpostMetaDataErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentJournalpostMetaDataError = HentJournalpostMetaDataErrors[keyof HentJournalpostMetaDataErrors];
+
+export type HentJournalpostMetaDataResponses = {
+    /**
+     * OK
+     */
+    200: Journalpost;
+};
+
+export type HentJournalpostMetaDataResponse = HentJournalpostMetaDataResponses[keyof HentJournalpostMetaDataResponses];
