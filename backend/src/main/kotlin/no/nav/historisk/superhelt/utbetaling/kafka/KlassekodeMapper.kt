@@ -11,6 +11,6 @@ val StonadsType.klassekode: KlasseKode get() = when (this) {
     StonadsType.BRYSTPROTESE -> KlasseKode.BRYSTPROTESE
     StonadsType.FOTTOY -> KlasseKode.VANLIGE_SKO
     StonadsType.REISEUTGIFTER -> KlasseKode.REISEUTGIFTER
-    StonadsType.FOLKEHOYSKOLE -> throw IllegalArgumentException("$this har ikke klassekode i Helved")
-    StonadsType.GRUNNMONSTER -> throw IllegalArgumentException("$this har ikke klassekode i Helved")
+//    StonadsType.FOLKEHOYSKOLE -> throw IllegalArgumentException("$this har ikke klassekode i Helved")
+//    StonadsType.GRUNNMONSTER -> throw IllegalArgumentException("$this har ikke klassekode i Helved")
 }
