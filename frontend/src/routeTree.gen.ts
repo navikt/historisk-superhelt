@@ -41,9 +41,9 @@ const PersonPersonidIndexRoute = PersonPersonidIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const OppgaveOppgaveidIndexRoute = OppgaveOppgaveidIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => OppgaveOppgaveidRouteRoute,
+  id: '/oppgave/$oppgaveid/',
+  path: '/oppgave/$oppgaveid/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SakSaksnummerVedtaksbrevbrukerRoute =
   SakSaksnummerVedtaksbrevbrukerRouteImport.update({
@@ -84,7 +84,7 @@ export interface FileRoutesByFullPath {
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
-  '/oppgave/$oppgaveid/': typeof OppgaveOppgaveidIndexRoute
+  '/oppgave/$oppgaveid': typeof OppgaveOppgaveidIndexRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
@@ -122,7 +122,7 @@ export interface FileRouteTypes {
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
-    | '/oppgave/$oppgaveid/'
+    | '/oppgave/$oppgaveid'
     | '/person/$personid'
     | '/sak/$saksnummer/'
   fileRoutesByTo: FileRoutesByTo
@@ -154,6 +154,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SakSaksnummerRouteRoute: typeof SakSaksnummerRouteRouteWithChildren
   OppgaveOppgaveidJournalforRoute: typeof OppgaveOppgaveidJournalforRoute
+  OppgaveOppgaveidIndexRoute: typeof OppgaveOppgaveidIndexRoute
   PersonPersonidIndexRoute: typeof PersonPersonidIndexRoute
 }
 
@@ -189,10 +190,10 @@ declare module '@tanstack/react-router' {
     }
     '/oppgave/$oppgaveid/': {
       id: '/oppgave/$oppgaveid/'
-      path: '/'
-      fullPath: '/oppgave/$oppgaveid/'
+      path: '/oppgave/$oppgaveid'
+      fullPath: '/oppgave/$oppgaveid'
       preLoaderRoute: typeof OppgaveOppgaveidIndexRouteImport
-      parentRoute: typeof OppgaveOppgaveidRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/sak/$saksnummer/vedtaksbrevbruker': {
       id: '/sak/$saksnummer/vedtaksbrevbruker'
@@ -255,6 +256,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SakSaksnummerRouteRoute: SakSaksnummerRouteRouteWithChildren,
   OppgaveOppgaveidJournalforRoute: OppgaveOppgaveidJournalforRoute,
+  OppgaveOppgaveidIndexRoute: OppgaveOppgaveidIndexRoute,
   PersonPersonidIndexRoute: PersonPersonidIndexRoute,
 }
 export const routeTree = rootRouteImport
