@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.utbetaling.kafka
 import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.sak.StonadsType
 
-val StonadsType.klassekode: KlasseKode get() = when (this) {
+internal val StonadsType.klassekode: KlasseKode get() = when (this) {
     StonadsType.PARYKK -> KlasseKode.PARYKK
     StonadsType.ORTOPEDI -> KlasseKode.ORTOPEDISK_PROTESE
     StonadsType.ANSIKT_PROTESE -> KlasseKode.ANSIKTSDEFEKTPROTESE

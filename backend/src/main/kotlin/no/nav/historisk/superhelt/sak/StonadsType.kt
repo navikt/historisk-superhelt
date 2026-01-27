@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.sak
 
 enum class StonadsType(val navn: String, val beskrivelse: String?= null) {
     PARYKK("Parykk/hodeplagg", "Dekker kostnader til parykk og hodeplagg"),
-    ORTOPEDI("Ortopedi", "Støtte til ortopedi med utbetalinger. Fottøy, protese, ortose spesialsko " ),
+    ORTOPEDI("Ortopedi", "Støtte til ortopedi med utbetalinger. Fottøy, protese, ortose spesialsko"),
     ANSIKT_PROTESE("Ansiktdefektprotese", ),
     OYE_PROTESE("Øyeprotese", ),
     BRYSTPROTESE("Brystprotese/spesial-bh"),

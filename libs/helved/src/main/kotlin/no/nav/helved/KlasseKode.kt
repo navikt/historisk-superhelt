@@ -6,8 +6,8 @@ package no.nav.helved
  * https://github.com/navikt/helved-utbetaling/blob/main/models/main/models/Utbetalinger.kt#L425
  */
 
-enum class KlasseKode(private val klassekode: String) {
-    @Deprecated("Brukes ikke lenger i helved") // HJRI
+enum class KlasseKode(internal val klassekode: String) {
+    @Deprecated("Brukes ikke lenger i helved")
     TILSKUDD_SMÅHJELPEMIDLER("HJRIM"),// HJRIM
 
     REISEUTGIFTER("HTRUTR"),
