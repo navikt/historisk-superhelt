@@ -10,7 +10,8 @@ data class DokarkivBruker(
 data class DokArkivSak(
     val sakstype: Sakstype = Sakstype.FAGSAK,
     val fagsakId: Saksnummer,
-    val fagsaksystem: String = "SUPERHELT"
+    // TODO Få inn superhelt eller lage noe mer generisk her
+    val fagsaksystem: String = "HELT"
 )
 
 data class AvsenderMottaker(

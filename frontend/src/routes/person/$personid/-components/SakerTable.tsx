@@ -2,9 +2,9 @@ import {Button, Heading, Skeleton, Table, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {finnSakerForPersonOptions} from "~/routes/person/$personid/-api/person.query";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 import {isoTilLokal} from "~/common/dato.utils";
+import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
 
 
 interface SakerTableProps {
@@ -13,7 +13,10 @@ interface SakerTableProps {
 
 export function SakerTable({maskertPersonIdent}: SakerTableProps) {
 
-    const {data, isPending, error} = useSuspenseQuery(finnSakerForPersonOptions(maskertPersonIdent))
+    const {data, isPending, error} = useSuspenseQuery(({
+        ...findSakerForPersonOptions({query: {maskertPersonId: maskertPersonIdent}}),
+        retry: false,
+    }))
 
     if (error) {
         return <ErrorAlert error={error}/>

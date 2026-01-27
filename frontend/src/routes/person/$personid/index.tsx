@@ -3,11 +3,11 @@ import {Box, Button, Heading, HStack, Tabs, VStack} from '@navikt/ds-react'
 import {PlusIcon} from '@navikt/aksel-icons'
 import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {SakerTable} from "./-components/SakerTable";
-import {PersonHeader} from "~/common/PersonHeader";
+import {PersonHeader} from "~/common/person/PersonHeader";
 import {DokumenterTable} from "~/routes/person/$personid/-components/DokumenterTable";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getPersonByMaskertIdentOptions} from "@generated/@tanstack/react-query.gen";
 import {createSak} from "@generated";
+import {finnPersonQuery} from "~/common/person/person.query";
 
 export const Route = createFileRoute('/person/$personid/')({
     component: PersonPage,
@@ -15,14 +15,8 @@ export const Route = createFileRoute('/person/$personid/')({
 
 function PersonPage() {
     const {personid} = Route.useParams()
-    const {data: person} = useSuspenseQuery(
-        {
-            ...getPersonByMaskertIdentOptions({
-                path: {
-                    maskertPersonident: personid
-                }
-            })
-        })
+    const {data: person} = useSuspenseQuery(finnPersonQuery(personid))
+
     const navigate = useNavigate()
 
 

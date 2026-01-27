@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.oppgave.rest
 
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
-import no.nav.historisk.superhelt.oppgave.OppgaveRepository
+import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -36,7 +36,7 @@ class OppgaveControllerTest {
     private lateinit var oppgaveClient: OppgaveClient
 
     @Autowired
-    private lateinit var oppgaveRepository: OppgaveRepository
+    private lateinit var oppgaveService: OppgaveService
 
     @Autowired
     private lateinit var sakRepository: SakRepository
@@ -95,7 +95,7 @@ class OppgaveControllerTest {
     fun `hent oppgave med sak`() {
         val oppgave = OppgaveTestdata.opprettOppgave()
         val sak= SakTestData.lagreNySak(sakRepository)
-        oppgaveRepository.save(saksnummer = sak.saksnummer, oppgaveId = oppgave.id, oppgaveType = oppgave.type)
+        oppgaveService.knyttOppgaveTilSak(saksnummer = sak.saksnummer, oppgaveId = oppgave.id, oppgaveType = oppgave.type)
 
         whenever(oppgaveClient.hentOppgave(any())) doReturn oppgave
 

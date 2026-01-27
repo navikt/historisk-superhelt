@@ -31,7 +31,7 @@ enum class Permission {
 enum class Role(private vararg val _permissions: Permission) {
     LES(Permission.READ),
     SAKSBEHANDLER(Permission.READ, Permission.WRITE),
-    ATTESTANT(Permission.READ), ;
+    ATTESTANT(Permission.READ, Permission.WRITE), ;
 
     val permissions: List<Permission>
         get() = _permissions.toList()

@@ -26,8 +26,6 @@ class TilgangsmaskinAuthLogic(private val tilgangsmaskinService: TilgangsmaskinS
 
     }
 
-    class Til
-
     class TilgangsmaskinAuthorizationDecision(granted: Boolean, val reason: String? = null) :
         AuthorizationDecision(granted) {
         override fun toString(): String {

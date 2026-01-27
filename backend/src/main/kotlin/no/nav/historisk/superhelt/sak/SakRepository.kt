@@ -24,7 +24,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
-    internal fun opprettNySak(req: OpprettSakDto): Sak {
+     fun opprettNySak(req: OpprettSakDto): Sak {
         val properties = req.properties
         val saksbehandler = properties?.saksbehandler ?: getCurrentNavUser()
         val sakEntity = patchEntity(

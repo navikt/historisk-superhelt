@@ -1,6 +1,6 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {Box, HGrid, Tabs, VStack} from '@navikt/ds-react'
-import {PersonHeader} from "~/common/PersonHeader";
+import {PersonHeader} from "~/common/person/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
 import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";

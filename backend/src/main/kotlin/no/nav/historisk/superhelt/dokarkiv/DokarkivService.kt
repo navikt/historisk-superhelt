@@ -1,23 +1,31 @@
 package no.nav.historisk.superhelt.dokarkiv
 
 import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Enhetsnummer
+import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.*
 import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevType
+import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
 import no.nav.historisk.superhelt.sak.Sak
+import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
 class DokarkivService(
     private val dokarkivClient: DokarkivClient,
     private val dokdistClient: DokdistClient
-
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    @PreAuthorize("hasAuthority('WRITE')")
     fun arkiver(sak: Sak, brev: Brev, pdf: ByteArray): JournalpostResponse {
+
         val req = JournalpostRequest(
             tittel = brev.tittel!!,
             journalpostType = JournalpostType.UTGAAENDE,
@@ -56,6 +64,7 @@ class DokarkivService(
         return dokarkivClient.opprett(req, forsokFerdigstill = true)
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
     fun distribuerBrev(sak: Sak, brev: Brev): DistribuerJournalpostResponse {
         val journalPostId = brev.journalpostId
             ?: throw IllegalStateException("Kan ikke distribuere brev uten journalpostId. BrevId=${brev.uuid}")
@@ -74,5 +83,38 @@ class DokarkivService(
         )
 
     }
+    @PreAuthorize("hasAuthority('WRITE')")
+    fun journalførIArkivet(
+        journalPostId: EksternJournalpostId,
+        fagsaksnummer: Saksnummer,
+        journalfoerendeEnhet: Enhetsnummer,
+        request: JournalforRequest,
+    ) {
+        dokarkivClient.oppdaterJournalpost(
+            journalPostId = journalPostId,
+            fagsaksnummer = fagsaksnummer,
+            tittel = request.dokumenter.firstOrNull()?.tittel ?: "Ukjent innhold",
+            bruker = request.bruker,
+            avsender = request.avsender,
+            dokumenter =
+                request.dokumenter.map {
+                    DokumentMedTittel(
+                        tittel = it.tittel,
+                        dokumentInfoId = it.dokumentInfoId,
+                    )
+                },
+        )
+        // Må sette logiske vedlegg i egen tjeneste
+        request.dokumenter.forEach {
+            dokarkivClient.setLogiskeVedlegg(
+                dokumentInfoId = it.dokumentInfoId,
+                titler = it.logiskeVedlegg ?: emptyList(),
+            )
+        }
+
+        dokarkivClient.ferdigstill(journalPostId, journalfoerendeEnhet = journalfoerendeEnhet.value)
+        logger.info("Journalført og ferdigstilt journalpost $journalPostId på fagsak $fagsaksnummer")
+    }
+
 
 }
