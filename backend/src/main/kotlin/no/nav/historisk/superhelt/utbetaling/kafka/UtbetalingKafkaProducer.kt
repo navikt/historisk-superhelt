@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.utbetaling.kafka
 
-import no.nav.helved.KlasseKode
 import no.nav.helved.Periode
 import no.nav.helved.Periodetype
 import no.nav.helved.UtbetalingMelding
@@ -36,7 +35,7 @@ class UtbetalingKafkaProducer(
                 sakId = sak.saksnummer.value,
                 behandlingId = id.take(30), // max 30 tegn TODO Innføre ett
                 personident = sak.fnr.value,
-                stønad = KlasseKode.TILSKUDD_SMÅHJELPEMIDLER,
+                stønad =sak.type.klassekode,
 
                 vedtakstidspunkt = vedtaksTidspunkt,
                 periodetype = Periodetype.EN_GANG,
