@@ -1,5 +1,5 @@
 import {Box, InlineMessage, Select} from '@navikt/ds-react'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import styles from './PdfViewer.module.css'
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {hentJournalpostMetaDataOptions} from "@generated/@tanstack/react-query.gen";
@@ -23,7 +23,10 @@ function PdfViewer2({journalpostId}: { journalpostId: string }) {
     }))
     const [dokId, setDokId] = useState<string | undefined>(journalpost.dokumenter?.at(0)?.dokumentInfoId)
 
-    const dokumenter = journalpost?.dokumenter || []
+    useEffect(() => {
+        setDokId(journalpost.dokumenter?.at(0)?.dokumentInfoId)
+    }, [journalpostId, journalpost.dokumenter])
+
 
     if (!dokId) {
         return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>
@@ -32,9 +35,9 @@ function PdfViewer2({journalpostId}: { journalpostId: string }) {
     return (
         <Box className={styles.pdfViewer}>
             <Select label="Velg dokument" value={dokId} hideLabel onChange={(e) => setDokId(e.target.value)}>
-                {dokumenter.map((d, index) => (
+                {(journalpost?.dokumenter || []).map((d, index) => (
                     <option key={d.dokumentInfoId} value={d.dokumentInfoId}>
-                        Dokument {index + 1} av {dokumenter.length} - {d.tittel}
+                        Dokument {index + 1} av {(journalpost?.dokumenter || []).length} - {d.tittel}
                     </option>
                 ))}
             </Select>
