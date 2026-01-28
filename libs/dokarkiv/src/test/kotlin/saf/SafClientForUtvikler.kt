@@ -1,6 +1,7 @@
 package saf
 
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.saf.graphql.SafGraphqlClient
 import no.nav.saf.rest.SafRestClient
@@ -22,7 +23,6 @@ class SafClientForUtvikler {
 
     val accessToken =
         """
-      
       """.trimIndent()
 
     private val baseUrl = "https://saf.dev.intern.nav.no"
@@ -60,6 +60,12 @@ class SafClientForUtvikler {
         file.writeBytes(doc.data)
         println("Dokument saved to: ${file.absolutePath}")
         println(doc)
+    }
+
+    @Test
+    fun `journalposter for sak`() {
+        val journalPoster = graphqlClient.dokumentoversiktFagsak(Saksnummer(1))
+        println(journalPoster)
     }
 
     private fun getRestClient(): RestClient =

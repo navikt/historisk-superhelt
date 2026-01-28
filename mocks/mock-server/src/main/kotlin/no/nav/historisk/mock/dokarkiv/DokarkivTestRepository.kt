@@ -23,6 +23,9 @@ class DokarkivTestRepository {
         repository[journalpostId]
             ?: generateAndCacheResponse(journalpostId)
 
+    fun finnJournalposterForSak(saksnummer: String): List<Journalpost> =
+        repository.values.filter { it.sak?.fagsakId == saksnummer }
+
     private fun generateAndCacheResponse(journalpostId: EksternJournalpostId): Journalpost {
         val harVedlegg = faker.number().numberBetween(0, 100) > 70
         val response = generateJournalpost(journalpostId, if (harVedlegg) 2 else 0)

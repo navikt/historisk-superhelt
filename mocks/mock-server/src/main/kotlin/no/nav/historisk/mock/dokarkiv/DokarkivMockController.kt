@@ -2,10 +2,7 @@ package no.nav.historisk.mock.dokarkiv
 
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.*
-import no.nav.saf.graphql.JournalStatus
-import no.nav.saf.graphql.JournalpostAvsenderMottaker
-import no.nav.saf.graphql.JournalpostBruker
-import no.nav.saf.graphql.JournalpostDokumentInfo
+import no.nav.saf.graphql.*
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 
@@ -28,6 +25,12 @@ class DokarkivController(
                 .copy(
                     journalstatus = JournalStatus.JOURNALFOERT,
                     tittel = req.tittel,
+                    sak = req.sak.let {
+                        JournalpostSak(
+                            fagsakId = it.fagsakId.value,
+                            fagsaksystem = it.fagsaksystem,
+                        )
+                    },
                     bruker =
                         req.bruker.let {
                             JournalpostBruker(
@@ -57,12 +60,14 @@ class DokarkivController(
             journalpost.copy(
                 tittel = req.tittel,
                 bruker =
-                    req.bruker.let {
-                        JournalpostBruker(
-                            id = it.id,
-                            type = BrukerIdType.FNR,
-                        )
-                    },
+                    JournalpostBruker(
+                        id = req.bruker.id,
+                        type = BrukerIdType.FNR,
+                    ),
+                sak = JournalpostSak(
+                    fagsakId = req.sak.fagsakId.value,
+                    fagsaksystem = req.sak.fagsaksystem,
+                ),
                 avsenderMottaker =
                     req.avsenderMottaker.let {
                         JournalpostAvsenderMottaker(

@@ -110,7 +110,7 @@ export type JournalforDokument = {
 };
 
 export type JournalforRequest = {
-    stonadsType: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOLKEHOYSKOLE' | 'GRUNNMONSTER';
+    stonadsType: 'PARYKK' | 'ORTOPEDI' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER';
     jfrOppgaveId: number;
     bruker: string;
     avsender: string;
@@ -1056,7 +1056,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';
@@ -1122,3 +1122,38 @@ export type HentJournalpostMetaDataResponses = {
 };
 
 export type HentJournalpostMetaDataResponse = HentJournalpostMetaDataResponses[keyof HentJournalpostMetaDataResponses];
+
+export type FinnJournalposterForSakData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/journalpost/sak/{saksnummer}';
+};
+
+export type FinnJournalposterForSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FinnJournalposterForSakError = FinnJournalposterForSakErrors[keyof FinnJournalposterForSakErrors];
+
+export type FinnJournalposterForSakResponses = {
+    /**
+     * OK
+     */
+    200: Array<Journalpost>;
+};
+
+export type FinnJournalposterForSakResponse = FinnJournalposterForSakResponses[keyof FinnJournalposterForSakResponses];

@@ -11,6 +11,8 @@ import {ProcessMenuItem} from "~/common/process-menu/ProcessMenuItem";
 import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
 import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 import {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import DokumenterList from "~/routes/sak/$saksnummer/-components/dokumenter/DokumenterList";
+import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -84,13 +86,7 @@ function SakLayout() {
                         </Tabs.List>
                         <Tabs.Panel value="soknad">
                             <Box width="100%" height="6rem" padding="space-16">
-                                <embed
-                                    src="/soknad.pdf"
-                                    width="100%"
-                                    height="1200px"
-                                    type="application/pdf"
-                                    title="Embedded PDF Viewer"
-                                />
+                              <DokumentViewer saksnummer={saksnummer} />
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
@@ -101,7 +97,7 @@ function SakLayout() {
 
                         <Tabs.Panel value="dokumenter">
                             <Box width="100%" height="6rem" padding="space-16">
-                                Her kommer det kanskje dokumenter fra joark?
+                               <DokumenterList saksnummer={sak.saksnummer} />
                             </Box>
                         </Tabs.Panel>
                     </Tabs>
