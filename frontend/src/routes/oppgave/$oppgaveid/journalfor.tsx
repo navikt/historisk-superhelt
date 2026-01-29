@@ -33,15 +33,17 @@ function guessStonadsType(oppgaveGjelder: OppgaveGjelder): StonadType | undefine
         case "REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER":
             return "REISEUTGIFTER"
 
-        case "BIDRAG_EKSKL_FARSKAP":
         case "FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER":
         case "ORTOPEDISKE_HJELPEMIDLER_SOKNAD":
+        case "ORTOPEDISKE_HJELPEMIDLER_UTLAND":
+        case "ORTOPEDISKE_HJELPEMIDLER":
+            return "FOTSENG"
+
+        case "BIDRAG_EKSKL_FARSKAP":
         case "ANKE":
         case "KLAGE":
-        case "ORTOPEDISKE_HJELPEMIDLER_UTLAND":
         case "TIDLIGERE_HJEMSENDT_SAK":
         case "HJEMSENDT_TIL_NY_BEHANDLING":
-        case "ORTOPEDISKE_HJELPEMIDLER":
         case "PARTSINNSYN":
         case "MEDLEMSKAP":
         case "UKJENT":

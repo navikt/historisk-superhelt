@@ -12,7 +12,8 @@ import no.nav.oppgave.type
 fun StonadsType.tilOppgaveGjelder(): OppgaveGjelder =
     when (this) {
         StonadsType.PARYKK -> OppgaveGjelder.PARYKK_HODEPLAGG
-        StonadsType.ORTOPEDI -> OppgaveGjelder.ORTOPEDISKE_HJELPEMIDLER
+        StonadsType.PROTESE, StonadsType.SPESIALSKO,
+        StonadsType.ORTOSE, StonadsType.FOTSENG -> OppgaveGjelder.ORTOPEDISKE_HJELPEMIDLER
         StonadsType.ANSIKT_PROTESE -> OppgaveGjelder.ANSIKTSDEFEKTSPROTESE
         StonadsType.OYE_PROTESE -> OppgaveGjelder.OYEPROTESE
         StonadsType.BRYSTPROTESE -> OppgaveGjelder.BRYSTPROTESE_PROTESEBH
@@ -20,7 +21,7 @@ fun StonadsType.tilOppgaveGjelder(): OppgaveGjelder =
         StonadsType.REISEUTGIFTER -> OppgaveGjelder.REISEUTGIFTER
     }
 
-fun OppgaveDto.toOppgaveMedSak( sak: Sak?): OppgaveMedSak {
+fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
     val ident = this.bruker?.ident ?: sak?.fnr?.value
     ?: throw IkkeFunnetException("Fant ikke personident for oppgave ${this.id}")
 

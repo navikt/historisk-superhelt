@@ -1,13 +1,19 @@
 package no.nav.historisk.superhelt.sak
 
-enum class StonadsType(val navn: String, val beskrivelse: String?= null) {
-    PARYKK("Parykk/hodeplagg", "Dekker kostnader til parykk og hodeplagg"),
-    ORTOPEDI("Ortopedi", "Støtte til ortopedi med utbetalinger. Fottøy, protese, ortose spesialsko"),
-    ANSIKT_PROTESE("Ansiktdefektprotese", ),
-    OYE_PROTESE("Øyeprotese", ),
-    BRYSTPROTESE("Brystprotese/spesial-bh"),
-    FOTTOY("Allminnelig fottøy i ulik størrelse"),
-    REISEUTGIFTER("Reiseutgifter"),
+import no.nav.helved.KlasseKode
+
+enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskrivelse: String? = null) {
+    PARYKK(navn = "Parykk/hodeplagg", klassekode = KlasseKode.PARYKK, "Dekker kostnader til parykk og hodeplagg"),
+    ANSIKT_PROTESE("Ansiktdefektprotese", KlasseKode.ANSIKTSDEFEKTPROTESE),
+    OYE_PROTESE("Øyeprotese", KlasseKode.ØYEPROTESE),
+    BRYSTPROTESE("Brystprotese/spesial-bh", KlasseKode.BRYSTPROTESE),
+    FOTTOY("Allminnelig fottøy i ulik størrelse", KlasseKode.VANLIGE_SKO),
+    REISEUTGIFTER("Reiseutgifter", KlasseKode.REISEUTGIFTER),
+    FOTSENG("Fotseng", KlasseKode.FOTSENG),
+    PROTESE("Ortopedisk protese", KlasseKode.ORTOPEDISK_PROTESE),
+    ORTOSE("Ortopedisk ortose", KlasseKode.ORTOSE),
+    SPESIALSKO("Ortopediske spesialsko", KlasseKode.SPESIALSKO),
+
 //    FOLKEHOYSKOLE("Folkehøyskole/tilpassningskurs"),
 //    GRUNNMONSTER("Grunnmønster"),
 
