@@ -52,7 +52,7 @@ export function MultiPdfViewer({journalPoster}: Props) {
 
     return (
         <Box width={"100%"}>
-            <Select label="Dokumenter i saken" value={selected} onChange={(e) => setSelected(e.target.value)}>
+            <Select label="Dokumenter i saken" hideLabel value={selected} onChange={(e) => setSelected(e.target.value)}>
                 {dokumenter.map((d, index) => (
                     <option key={generateDokId(d)} value={generateDokId(d)}>
                         {getTitle(d, index)}
