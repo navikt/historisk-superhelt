@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.dokarkiv
 
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.saf.graphql.Journalpost
@@ -41,6 +42,14 @@ class JournalpostService(
     fun hentJournalpost(journalpostId: EksternJournalpostId): Journalpost? {
         val journalpost = safGraphqlClient.hentJournalpost(journalpostId).data?.journalpost
         return journalpost
+    }
+
+    @PreAuthorize("hasAuthority('READ')")
+    fun finnJournalposter(saksnummer: Saksnummer): List<Journalpost> {
+        val journalposter =
+            safGraphqlClient.dokumentoversiktFagsak(saksnummer).data?.dokumentoversiktFagsak?.journalposter
+                ?: emptyList()
+        return journalposter
     }
 
 

@@ -1,0 +1,31 @@
+query fagsakQuery($fagsakId: String!, $fagsaksystem: String!, $tema: [Tema]!, $foerste: Int = 10) {
+    dokumentoversiktFagsak( fagsak:{fagsakId:$fagsakId, fagsaksystem:$fagsaksystem}, tema: $tema, foerste: $foerste) {
+        journalposter {
+            journalpostId
+            tittel
+            journalstatus
+            sak{
+                fagsaksystem
+                fagsakId
+            }
+            bruker {
+                id
+                type
+            }
+            avsenderMottaker {
+                id
+                type
+                navn
+            }
+            dokumenter{
+                tittel
+                dokumentInfoId
+                dokumentvarianter{
+                    filtype
+                    filnavn
+                    saksbehandlerHarTilgang
+                }
+            }
+        }
+    }
+}

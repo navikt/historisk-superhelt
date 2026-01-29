@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.saf.graphql.Journalpost
@@ -45,6 +46,14 @@ class JournalpostController(
         @PathVariable journalpostId: EksternJournalpostId,
     ): Journalpost? {
         return journalpostService.hentJournalpost(journalpostId)
+    }
+
+    @Operation(operationId = "finnJournalposterForSak")
+    @GetMapping("/sak/{saksnummer}")
+    fun finnJournalposterForSak(
+        @PathVariable saksnummer: Saksnummer,
+    ): List<Journalpost> {
+        return journalpostService.finnJournalposter(saksnummer)
     }
 
 

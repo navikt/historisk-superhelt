@@ -3,7 +3,7 @@ import {Box, HGrid, Tabs, VStack} from '@navikt/ds-react'
 import {PersonHeader} from "~/common/person/PersonHeader";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "./-api/sak.query";
-import {FilePdfIcon, FilesIcon, TasklistIcon} from "@navikt/aksel-icons";
+import {FilePdfIcon, TasklistIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
 import {StepType} from "~/common/process-menu/StepType";
@@ -11,6 +11,7 @@ import {ProcessMenuItem} from "~/common/process-menu/ProcessMenuItem";
 import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
 import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 import {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -63,11 +64,11 @@ function SakLayout() {
                 </VStack>
                 <VStack gap="space-16">
                     <SakHeading sak={sak}/>
-                    <Tabs defaultValue="soknad">
+                    <Tabs defaultValue="dokumenter">
                         <Tabs.List>
                             <Tabs.Tab
-                                value="soknad"
-                                label="Søknad"
+                                value="dokumenter"
+                                label="Dokumenter"
                                 icon={<FilePdfIcon aria-hidden/>}
                             />
                             <Tabs.Tab
@@ -76,36 +77,18 @@ function SakLayout() {
                                 icon={<TasklistIcon aria-hidden/>}
                             />
 
-                            <Tabs.Tab
-                                value="dokumenter"
-                                label="Dokumenter"
-                                icon={<FilesIcon aria-hidden/>}
-                            />
                         </Tabs.List>
-                        <Tabs.Panel value="soknad">
+                        <Tabs.Panel value="dokumenter">
                             <Box width="100%" height="6rem" padding="space-16">
-                                <embed
-                                    src="/soknad.pdf"
-                                    width="100%"
-                                    height="1200px"
-                                    type="application/pdf"
-                                    title="Embedded PDF Viewer"
-                                />
+                                <DokumentViewer saksnummer={saksnummer}/>
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
                             <Box width="100%" height="6rem" padding="space-16">
-                                <SakerTable maskertPersonIdent={sak.maskertPersonIdent} />
-                            </Box>
-                        </Tabs.Panel>
-
-                        <Tabs.Panel value="dokumenter">
-                            <Box width="100%" height="6rem" padding="space-16">
-                                Her kommer det kanskje dokumenter fra joark?
+                                <SakerTable maskertPersonIdent={sak.maskertPersonIdent}/>
                             </Box>
                         </Tabs.Panel>
                     </Tabs>
-
                 </VStack>
 
             </HGrid>

@@ -2,8 +2,7 @@ package no.nav.historisk.mock.dokarkiv
 
 import no.nav.common.types.EksternJournalpostId
 import no.nav.historisk.mock.pdl.GraphqlQuery
-import no.nav.saf.graphql.HentJournalpostData
-import no.nav.saf.graphql.HentJournalpostGraphqlResponse
+import no.nav.saf.graphql.*
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -41,15 +40,36 @@ class SafMockController(
     @PostMapping(value = ["/graphql"], produces = ["application/json"])
     fun graphql(
         @RequestBody body: GraphqlQuery<Variables>,
-    ): HentJournalpostGraphqlResponse {
-        val journalpostId = body.variables.journalpostId
-        logger.debug("søker etter journalpost: {}", journalpostId)
-        val data = repository.findOrCreate(journalpostId)
-        return HentJournalpostGraphqlResponse(data = HentJournalpostData(data))
+    ): ResponseEntity<Any> {
+        val query = body.query
+        if (query.contains("dokumentoversiktFagsak")) {
+            val fagsakId = body.variables.fagsakId ?: throw IllegalArgumentException("fagsakId må være satt")
+            logger.debug("søker etter journalposter for fagsak: {}", fagsakId)
+            val data = repository.finnJournalposterForSak(fagsakId)
+            return ResponseEntity.ok(
+                DokumentoversiktGraphqlResponse(
+                    data = DokumentoversiktData(
+                        dokumentoversiktFagsak = DokumentoversiktFagsakResult(
+                            data
+                        )
+                    )
+                )
+            )
+        }
+        if (query.contains("hentJournalpost")) {
+            val journalpostId =
+                body.variables.journalpostId ?: throw IllegalArgumentException("journalpostId må være satt")
+            logger.debug("søker etter journalpost: {}", journalpostId)
+            val data = repository.findOrCreate(journalpostId)
+            return ResponseEntity.ok(HentJournalpostGraphqlResponse(data = HentJournalpostData(data)))
+        }
+        throw IllegalArgumentException("Ukjent query")
     }
 
+
     data class Variables(
-        val journalpostId: EksternJournalpostId,
+        val journalpostId: EksternJournalpostId?,
+        val fagsakId: String?
     )
 
 }
