@@ -13,10 +13,8 @@ data class DokumentoversiktGraphqlResponse(
 )
 
 data class DokumentoversiktData(
-    val dokumentoversiktFagsak: DokumentoversiktFagsakResult,
-
-    )
-
+    val dokumentoversiktFagsak: DokumentoversiktFagsakResult
+)
 data class DokumentoversiktFagsakResult(
     val journalposter: List<Journalpost>
 )

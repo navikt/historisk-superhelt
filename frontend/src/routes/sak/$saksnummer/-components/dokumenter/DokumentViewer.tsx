@@ -3,11 +3,11 @@ import {finnJournalposterForSakOptions} from "@generated/@tanstack/react-query.g
 import {HStack} from "@navikt/ds-react";
 import {MultiPdfViewer} from "~/routes/sak/$saksnummer/-components/dokumenter/MultiPdfViewer";
 
-interface DokumnetViewerProps {
+interface DokumentViewerProps {
     saksnummer: string;
 }
 
-export default function DokumentViewer({saksnummer}: DokumnetViewerProps) {
+export default function DokumentViewer({saksnummer}: DokumentViewerProps) {
     const {data: journalposter} = useSuspenseQuery(({
         ...finnJournalposterForSakOptions({path: {saksnummer: saksnummer}}),
     }))

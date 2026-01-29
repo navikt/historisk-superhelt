@@ -328,12 +328,12 @@ class SafGraphqlClientTest {
     }
 
     @Nested
-    inner class DokumentOversiktBruker {
+    inner class DokumentOversiktFagsak {
 
         @Test
         fun `dokumentoversiktBruker skal returnere vellykket respons`() {
             val journalpostId = EksternJournalpostId("123456789")
-            val saksnummer= Saksnummer(1234)
+            val saksnummer = Saksnummer(1234)
             val jsonResponse =
                 """
          {
