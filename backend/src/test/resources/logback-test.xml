@@ -2,6 +2,12 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- Sporbarhetslog  Sett til info for å skru på igjen-->
+    <logger name="audit" level="warn">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
     <root level="WARN">
         <appender-ref ref="CONSOLE"/>
     </root>

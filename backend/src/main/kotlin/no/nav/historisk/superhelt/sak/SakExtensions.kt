@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Belop
+import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.Vedtak
 import java.time.Instant
@@ -36,6 +37,14 @@ object SakExtensions {
             soknadsDato = sak.soknadsDato!!,
             tildelingsAar = sak.tildelingsAar,
             vedtaksTidspunkt = vedtaksTidspunkt,
+        )
+    }
+
+    fun Sak.auditLog(message : String) {
+        AuditLog.log(
+            fnr = this.fnr,
+            message = message,
+            customIdentifierAndValue = Pair("Saksnummer", this.saksnummer.value)
         )
     }
 

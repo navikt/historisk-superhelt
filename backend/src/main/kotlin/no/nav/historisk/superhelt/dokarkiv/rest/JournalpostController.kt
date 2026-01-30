@@ -3,9 +3,11 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
+import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
 import no.nav.saf.graphql.Journalpost
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -45,7 +47,19 @@ class JournalpostController(
     fun hentMetaData(
         @PathVariable journalpostId: EksternJournalpostId,
     ): Journalpost? {
-        return journalpostService.hentJournalpost(journalpostId)
+        val journalpost = journalpostService.hentJournalpost(journalpostId)
+        if (journalpost != null) {
+            val fnr = journalpost.bruker?.id?.let { FolkeregisterIdent(it) }
+            if (fnr != null) {
+                AuditLog.log(
+                    fnr = fnr,
+                    message = "Hentet metadata for journalpost fra arkivet",
+                    customIdentifierAndValue = Pair("journalpostId", journalpostId.value)
+                )
+            }
+        }
+
+        return journalpost
     }
 
     @Operation(operationId = "finnJournalposterForSak")

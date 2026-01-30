@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.vedtak.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.vedtak.Vedtak
 import no.nav.historisk.superhelt.vedtak.VedtakRepository
@@ -23,8 +24,8 @@ class VedtakController(
     @Operation(operationId = "hentVedtakForSak")
     @GetMapping
     fun hentVedtakForSak(@PathVariable saksnummer: Saksnummer): List<Vedtak> {
-        // Henter sak for å verifisere at den eksisterer og sjekke tilgang
         val sak = sakRepository.getSak(saksnummer)
+        sak.auditLog("Hener opp vedtak for sak")
         logger.info("Henter vedtak for sak $saksnummer")
         return vedtakRepository.findBySak(sak.saksnummer)
     }

@@ -4,6 +4,7 @@ package no.nav.historisk.superhelt.person
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithLeseBruker
 import no.nav.person.Persondata
 import no.nav.tilgangsmaskin.Avvisningskode
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
@@ -23,7 +24,7 @@ import java.time.LocalDate
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(authorities = ["READ"])
+@WithLeseBruker
 class PersonControllerTest {
 
     @MockitoBean

@@ -9,6 +9,7 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -105,6 +106,7 @@ class SakController(
         SakValidator(sak)
             .checkRettighet(SakRettighet.LES)
             .validate()
+        sak.auditLog("Hentet opp sak")
         return ResponseEntity.ok(sak)
 
     }

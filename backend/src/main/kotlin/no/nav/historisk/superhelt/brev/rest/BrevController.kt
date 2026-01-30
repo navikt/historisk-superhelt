@@ -5,6 +5,7 @@ import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
+import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
 import no.nav.historisk.superhelt.sak.SakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -28,7 +29,7 @@ class BrevController(
         @PathVariable saksnummer: Saksnummer,
         @Valid @RequestBody request: OpprettBrevRequest): ResponseEntity<Brev> {
         val sak = sakRepository.getSak(saksnummer)
-
+        sak.auditLog("Henter brev for sak")
         val brev = brevService.hentEllerOpprettBrev(sak, request.type, request.mottaker)
         return ResponseEntity.ok(brev)
     }
@@ -36,6 +37,8 @@ class BrevController(
     @Operation(operationId = "hentBrev")
     @GetMapping("{brevId}")
     fun hentBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): Brev {
+        val sak = sakRepository.getSak(saksnummer)
+        sak.auditLog("Henter brev for sak")
         return brevRepository.getByUUid(brevId)
     }
 
@@ -44,6 +47,7 @@ class BrevController(
     fun htmlBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): ByteArray {
         val brev = brevRepository.getByUUid(brevId)
         val sak = sakRepository.getSak(saksnummer)
+        sak.auditLog("Henter htmlbrev for sak")
         return pdfgenService.genererHtml(sak, brev)
     }
 
