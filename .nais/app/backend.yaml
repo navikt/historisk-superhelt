@@ -38,6 +38,7 @@ spec:
           - id: {{gruppe.saksbehandler}}
           - id: {{gruppe.attestant}}
           - id: {{gruppe.les}}
+          - id: {{gruppe.drift}}
 
   liveness:
     path: /actuator/health/liveness
