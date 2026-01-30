@@ -16,7 +16,6 @@
     <!-- Only audit logs goes to AuditLogger (naudit) -->
     <logger name="audit" level="info" additivity="false">
         <appender-ref ref="AuditLogger"/>
-        <appender-ref ref="json"/>
     </logger>
 
 
