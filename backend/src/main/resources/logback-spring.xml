@@ -1,8 +1,22 @@
 <configuration>
 
-        <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-        </appender>
+    <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <!-- Sporbarhetslog -->
+    <appender name="AuditLogger" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>audit.nais:6514</destination>
+        <writeBufferSize>128000</writeBufferSize>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${HOSTNAME} ${NAIS_APP_NAME}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Only audit logs goes to AuditLogger (naudit) -->
+    <logger name="audit" level="info" additivity="false">
+        <appender-ref ref="AuditLogger"/>
+    </logger>
 
 
     <root level="WARN">

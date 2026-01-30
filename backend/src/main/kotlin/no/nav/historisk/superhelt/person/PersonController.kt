@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.person
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
+import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.springframework.http.ResponseEntity
@@ -24,6 +25,7 @@ class PersonController(
         if (persondata == null) {
             throw IkkeFunnetException("Ingen person funnet med ident ${request.fnr}")
         }
+        AuditLog.log(persondata.fnr,"Hentet opp persondata fra PDL")
         return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang))
     }
 
