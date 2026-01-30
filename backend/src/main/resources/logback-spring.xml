@@ -1,8 +1,8 @@
 <configuration>
 
-        <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-        </appender>
+    <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
 
     <!-- Sporbarhetslog -->
     <appender name="AuditLogger" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
@@ -15,7 +15,8 @@
 
     <!-- Only audit logs goes to AuditLogger (naudit) -->
     <logger name="audit" level="info" additivity="false">
-        <appender-ref ref="AuditLogger" />
+        <appender-ref ref="AuditLogger"/>
+        <appender-ref ref="json"/>
     </logger>
 
 

@@ -4,7 +4,7 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
     <!-- Sporbarhetslogg  Sett til info for å skru på igjen-->
-    <logger name="audit" level="warn">
+    <logger name="audit" level="off" additivity="false">
         <appender-ref ref="CONSOLE" />
     </logger>
 
