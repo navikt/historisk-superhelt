@@ -29,8 +29,8 @@ class BrevController(
         @PathVariable saksnummer: Saksnummer,
         @Valid @RequestBody request: OpprettBrevRequest): ResponseEntity<Brev> {
         val sak = sakRepository.getSak(saksnummer)
-        sak.auditLog("Henter brev for sak")
         val brev = brevService.hentEllerOpprettBrev(sak, request.type, request.mottaker)
+        sak.auditLog("Henter brev ${brev.uuid} for sak")
         return ResponseEntity.ok(brev)
     }
 
@@ -38,8 +38,9 @@ class BrevController(
     @GetMapping("{brevId}")
     fun hentBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): Brev {
         val sak = sakRepository.getSak(saksnummer)
-        sak.auditLog("Henter brev for sak")
-        return brevRepository.getByUUid(brevId)
+        val brev = brevRepository.getByUUid(brevId)
+        sak.auditLog("Henter brev ${brev.uuid} for sak")
+        return brev
     }
 
     @Operation(operationId = "htmlBrev")
@@ -47,8 +48,9 @@ class BrevController(
     fun htmlBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): ByteArray {
         val brev = brevRepository.getByUUid(brevId)
         val sak = sakRepository.getSak(saksnummer)
-        sak.auditLog("Henter htmlbrev for sak")
-        return pdfgenService.genererHtml(sak, brev)
+        val html = pdfgenService.genererHtml(sak, brev)
+        sak.auditLog("Henter htmlbrev ${brev.uuid} for sak")
+        return html
     }
 
     @Operation(operationId = "oppdaterBrev")
