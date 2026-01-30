@@ -54,7 +54,7 @@ object AuditLog {
             "flexString1=${decision.key}",
         )
         customIdentifierAndValue?.let {
-            extentionList.add("flexString2Label=${it.first} flexString2=${it.second}}")
+            extentionList.add("flexString2Label=${it.first} flexString2=${it.second}")
         }
 
 

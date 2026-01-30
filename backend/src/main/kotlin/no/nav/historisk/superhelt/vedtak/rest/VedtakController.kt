@@ -25,7 +25,7 @@ class VedtakController(
     @GetMapping
     fun hentVedtakForSak(@PathVariable saksnummer: Saksnummer): List<Vedtak> {
         val sak = sakRepository.getSak(saksnummer)
-        sak.auditLog("Hener opp vedtak for sak")
+        sak.auditLog("Henter opp vedtak for sak")
         logger.info("Henter vedtak for sak $saksnummer")
         return vedtakRepository.findBySak(sak.saksnummer)
     }
