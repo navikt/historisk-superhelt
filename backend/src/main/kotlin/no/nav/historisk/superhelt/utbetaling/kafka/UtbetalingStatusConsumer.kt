@@ -2,6 +2,8 @@ package no.nav.historisk.superhelt.utbetaling.kafka
 
 import no.nav.helved.StatusType
 import no.nav.helved.UtbetalingStatusMelding
+import no.nav.historisk.superhelt.infrastruktur.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
@@ -38,10 +40,18 @@ class UtbetalingStatusConsumer(
             logger.warn("Fant ikke utbetaling med id: {}. Ignoring message", utbetalingsId)
             return
         }
-        logger.debug("Mottatt melding på topic: ${record.topic()} med key: ${record.key()} og value: ${record.value()}")
-        val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
-        val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
-        utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
+        SecurityContextUtils.runAsSystemuser(
+            listOf(
+                Permission.READ,
+                Permission.WRITE,
+                Permission.IGNORE_TILGANGSMASKIN
+            )
+        ) {
+            logger.debug("Mottatt melding på topic: ${record.topic()} med key: ${record.key()}")
+            val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
+            val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
+            utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
+        }
     }
 
     private fun calculateNewStatus(

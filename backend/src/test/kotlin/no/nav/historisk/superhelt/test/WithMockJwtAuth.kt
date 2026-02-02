@@ -2,11 +2,8 @@ package no.nav.historisk.superhelt.test
 
 import no.nav.historisk.superhelt.infrastruktur.Permission
 import no.nav.historisk.superhelt.infrastruktur.Role
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.security.test.context.support.WithSecurityContext
 import org.springframework.security.test.context.support.WithSecurityContextFactory
 
@@ -22,27 +19,17 @@ annotation class WithMockJwtAuth(
     class Factory : WithSecurityContextFactory<WithMockJwtAuth> {
         override fun createSecurityContext(annotation: WithMockJwtAuth): SecurityContext {
             val context = SecurityContextHolder.createEmptyContext()
-
-            val navIdent = if (annotation.navIdent.isEmpty()) "test456" else annotation.navIdent
-            val name = if (annotation.name.isEmpty()) "Test User" else annotation.name
-
             val claimsMap = annotation.claims.associate {
                 val parts = it.split("=", limit = 2)
                 if (parts.size == 2) parts[0] to parts[1] else parts[0] to ""
-            }.toMutableMap()
-            claimsMap["sub"] = navIdent
-            claimsMap["name"] = name
-
-            val jwt = Jwt.withTokenValue("mock-token")
-                .header("alg", "none")
-                .claims { it.putAll(claimsMap) }
-                .build()
-
-            val roleAuthorities = annotation.roles.map { SimpleGrantedAuthority("ROLE_${it.name}") }
-            val permissionAuthorities = annotation.permissions.map { SimpleGrantedAuthority(it.name) }
-            val allAuthorities = roleAuthorities + permissionAuthorities
-            val authentication = JwtAuthenticationToken(jwt, allAuthorities, navIdent)
-
+            }
+            val authentication = mockedJwtAutenticationToken(
+                claims = claimsMap,
+                navIdent = annotation.navIdent,
+                username = annotation.name,
+                roles = annotation.roles.toList(),
+                permissions = annotation.permissions.toList()
+            )
             context.authentication = authentication
             return context
         }
