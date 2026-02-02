@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.utbetaling.kafka
 
 import no.nav.helved.StatusType
 import no.nav.helved.UtbetalingStatusMelding
-import no.nav.historisk.superhelt.infrastruktur.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository

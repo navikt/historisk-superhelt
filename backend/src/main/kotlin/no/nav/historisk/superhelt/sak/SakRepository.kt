@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.sak
 import no.nav.common.types.Aar
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.infrastruktur.NavUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity

@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.infrastruktur.permission
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.historisk.superhelt.infrastruktur.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.hasPermission
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.slf4j.LoggerFactory

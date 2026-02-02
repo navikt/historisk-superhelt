@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.infrastruktur.authentication
 
 import no.nav.common.types.NavIdent
-import no.nav.historisk.superhelt.infrastruktur.NavUser
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 

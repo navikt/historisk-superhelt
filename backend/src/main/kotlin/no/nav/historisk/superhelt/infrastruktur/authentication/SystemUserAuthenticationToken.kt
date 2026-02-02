@@ -4,6 +4,7 @@ import no.nav.common.types.NavIdent
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
+/** Authentication token som representerer en systembruker (ikke en ekte bruker) */
 class SystemUserAuthenticationToken(
     private val name: String = "system",
     authorities: Collection<GrantedAuthority>
@@ -22,5 +23,5 @@ class SystemUserAuthenticationToken(
         userName = "System User",
         jwt = null
     )
-    
+
 }

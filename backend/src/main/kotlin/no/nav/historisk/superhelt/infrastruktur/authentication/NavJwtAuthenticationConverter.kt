@@ -1,6 +1,5 @@
-package no.nav.historisk.superhelt.infrastruktur
+package no.nav.historisk.superhelt.infrastruktur.authentication
 
-import no.nav.historisk.superhelt.infrastruktur.authentication.rolePrefix
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority

@@ -1,10 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.infrastruktur.Permission
-import no.nav.historisk.superhelt.infrastruktur.Role
-import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
-import no.nav.historisk.superhelt.infrastruktur.authentication.hasPermission
-import no.nav.historisk.superhelt.infrastruktur.authentication.hasRole
+import no.nav.historisk.superhelt.infrastruktur.authentication.*
 
 enum class SakRettighet {
     LES,

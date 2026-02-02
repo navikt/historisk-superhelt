@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.vedtak
 
 import no.nav.common.types.*
-import no.nav.historisk.superhelt.infrastruktur.NavUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import java.time.Instant

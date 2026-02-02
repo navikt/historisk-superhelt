@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt
 
 import no.nav.common.types.NavIdent
-import no.nav.historisk.superhelt.infrastruktur.Role
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getCurrentUserRoles
 import org.springframework.security.access.prepost.PreAuthorize

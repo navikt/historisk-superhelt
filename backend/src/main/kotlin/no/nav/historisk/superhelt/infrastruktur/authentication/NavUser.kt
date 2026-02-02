@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.infrastruktur
+package no.nav.historisk.superhelt.infrastruktur.authentication
 
 import jakarta.persistence.Embeddable
 import no.nav.common.types.NavIdent

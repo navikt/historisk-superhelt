@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.utbetaling.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import no.nav.historisk.superhelt.infrastruktur.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.utbetaling.Utbetaling

@@ -1,7 +1,5 @@
 package no.nav.historisk.superhelt.infrastruktur.authentication
 
-import no.nav.historisk.superhelt.infrastruktur.Permission
-import no.nav.historisk.superhelt.infrastruktur.Role
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 

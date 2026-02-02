@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.test
 
-import no.nav.historisk.superhelt.infrastruktur.Permission
-import no.nav.historisk.superhelt.infrastruktur.Role
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithSecurityContext
