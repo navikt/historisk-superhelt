@@ -6,10 +6,9 @@ interface Props {
 }
 
 export default function SakAlert({sak}: Props) {
-
     const {error}= sak
 
-    if (sak.error.utbetalingError) {
+    if (error.utbetalingError) {
        return <LocalAlert status="error">
             <LocalAlert.Header>
                 <LocalAlert.Title>

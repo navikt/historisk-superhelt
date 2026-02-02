@@ -41,7 +41,7 @@ class AdminUtbetalingController(
             "Kjører på nytt feilete utbetalinger {}",
             utbetalingerToRetry.map { "${it.saksnummer}: ${it.uuid}" })
 
-        SecurityContextUtils.runWithPermissons(listOf(Permission.READ, Permission.WRITE, Permission.IGNORE_TILGANGSMASKIN)) {
+        SecurityContextUtils.runWithPermissions(listOf(Permission.READ, Permission.WRITE, Permission.IGNORE_TILGANGSMASKIN)) {
             utbetalingerToRetry.forEach {
                 val sak = sakRepository.getSak(it.saksnummer)
                 utbetalingService.retryUtbetaling(sak)

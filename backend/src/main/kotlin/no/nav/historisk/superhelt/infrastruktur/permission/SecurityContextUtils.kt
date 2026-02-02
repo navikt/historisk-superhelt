@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 object SecurityContextUtils {
 
-    fun <T> runWithPermissons( permissions: List<Permission>,task: () -> T): T {
+    fun <T> runWithPermissions(permissions: List<Permission>, task: () -> T): T {
         val originalContext = SecurityContextHolder.getContext()
         return try {
             val jwt = getCurrentJwt() ?: error("Ingen JWT funnet i sikkerhetskontekst")

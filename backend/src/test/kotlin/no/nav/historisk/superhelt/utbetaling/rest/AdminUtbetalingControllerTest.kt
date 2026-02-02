@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
-import tools.jackson.databind.json.JsonMapper
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
@@ -28,10 +27,7 @@ class AdminUtbetalingControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvcTester
-
-    @Autowired
-    private lateinit var jsonMapper: JsonMapper
-
+    
     @Autowired
     private lateinit var sakRepository: SakRepository
 
@@ -117,7 +113,10 @@ class AdminUtbetalingControllerTest {
                 assertThat(it).hasSize(1)
             })
 
-        verify(utbetalingKafkaMock, times(1)).sendTilUtbetaling(argThat{s -> s.saksnummer.equals(sak?.saksnummer)}, any())
+        verify(utbetalingKafkaMock, times(1)).sendTilUtbetaling(
+            argThat { s -> s.saksnummer.equals(sak?.saksnummer) },
+            any()
+        )
     }
 
 
