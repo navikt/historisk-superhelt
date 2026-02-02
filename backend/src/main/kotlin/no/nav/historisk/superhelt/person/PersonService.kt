@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.person
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.pdl.PdlClient
 import no.nav.person.PdlPersondataParser
 import no.nav.person.Persondata
@@ -19,7 +19,7 @@ class PersonService(
 
 
     fun hentPerson(fnr: FolkeregisterIdent): Persondata? {
-        val cacheKey = "${getCurrentNavIdent()}:${fnr.value}"
+        val cacheKey = "${getAuthenticatedUser().navIdent}:${fnr.value}"
 
         return cache.get(cacheKey, Persondata::class.java)
             ?: hentFraPdl(fnr).also { result ->

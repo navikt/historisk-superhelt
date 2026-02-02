@@ -1,6 +1,10 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.infrastruktur.*
+import no.nav.historisk.superhelt.infrastruktur.Permission
+import no.nav.historisk.superhelt.infrastruktur.Role
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.hasPermission
+import no.nav.historisk.superhelt.infrastruktur.authentication.hasRole
 
 enum class SakRettighet {
     LES,
@@ -17,7 +21,7 @@ enum class SakRettighet {
 
 internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
     val rettigheter = mutableSetOf<SakRettighet>()
-    val navIdent = getCurrentNavIdent()
+    val navIdent = getAuthenticatedUser().navIdent
 
     if (hasPermission(Permission.READ)) {
         rettigheter.add(SakRettighet.LES)

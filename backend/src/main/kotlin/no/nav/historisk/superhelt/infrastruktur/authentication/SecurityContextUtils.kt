@@ -1,8 +1,6 @@
 package no.nav.historisk.superhelt.infrastruktur.authentication
 
 import no.nav.historisk.superhelt.infrastruktur.Permission
-import no.nav.historisk.superhelt.infrastruktur.getCurrentJwt
-import no.nav.historisk.superhelt.infrastruktur.getCurrentUserRoles
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -12,7 +10,7 @@ object SecurityContextUtils {
     fun <T> runWithPermissions(permissions: List<Permission>, task: () -> T): T {
         val originalContext = SecurityContextHolder.getContext()
         return try {
-            val jwt = getCurrentJwt() ?: error("Ingen JWT funnet i sikkerhetskontekst")
+            val jwt = getAuthenticatedUser().jwt ?: error("Ingen JWT funnet i sikkerhetskontekst")
             val roles = getCurrentUserRoles()
 
             val roleAuthorities = roles.map { SimpleGrantedAuthority("ROLE_${it.name}") }

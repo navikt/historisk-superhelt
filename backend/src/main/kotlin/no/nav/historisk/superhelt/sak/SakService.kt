@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.NavUser
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.sak.rest.UtbetalingRequestDto
 import no.nav.historisk.superhelt.utbetaling.UtbetalingUpdateDto
 import org.slf4j.LoggerFactory
@@ -44,19 +44,19 @@ class SakService(
         val updateDto = when (nyStatus) {
             SakStatus.UNDER_BEHANDLING -> UpdateSakDto(
                 status = nyStatus,
-                saksbehandler = getCurrentNavUser(),
+                saksbehandler = getAuthenticatedUser().navUser,
                 attestant = NavUser.NULL_VALUE
             )
 
             SakStatus.TIL_ATTESTERING -> UpdateSakDto(
                 status = nyStatus,
-                saksbehandler = getCurrentNavUser(),
+                saksbehandler = getAuthenticatedUser().navUser,
                 attestant = NavUser.NULL_VALUE
             )
 
             SakStatus.FERDIG -> UpdateSakDto(
                 status = nyStatus,
-                attestant = getCurrentNavUser()
+                attestant = getAuthenticatedUser().navUser
             )
         }
 

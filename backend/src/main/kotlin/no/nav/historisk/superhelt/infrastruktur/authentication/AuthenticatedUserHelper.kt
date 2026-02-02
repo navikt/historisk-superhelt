@@ -1,8 +1,7 @@
-package no.nav.historisk.superhelt.infrastruktur
+package no.nav.historisk.superhelt.infrastruktur.authentication
 
-import no.nav.historisk.superhelt.infrastruktur.authentication.AuthenticatedUser
-import no.nav.historisk.superhelt.infrastruktur.authentication.SystemUserAuthenticationToken
-import no.nav.historisk.superhelt.infrastruktur.authentication.authenticatedUser
+import no.nav.historisk.superhelt.infrastruktur.Permission
+import no.nav.historisk.superhelt.infrastruktur.Role
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
@@ -35,11 +34,6 @@ fun getCurrentUserPermissions(): List<Permission> {
         ?: emptyList()
 }
 
-fun getCurrentNavIdent() = getAuthenticatedUser().navIdent
-fun getCurrentNavUser() = getAuthenticatedUser().navUser
-fun getCurrentUserToken() = getCurrentJwt()?.tokenValue
-fun getCurrentJwt() = getAuthenticatedUser().jwt
-
 fun getAuthenticatedUser(): AuthenticatedUser {
     return when (val authentication = SecurityContextHolder.getContext().authentication) {
         is JwtAuthenticationToken -> authentication.authenticatedUser
@@ -47,5 +41,3 @@ fun getAuthenticatedUser(): AuthenticatedUser {
         else -> throw IllegalStateException("Unknown Authenticated user $authentication")
     }
 }
-
-

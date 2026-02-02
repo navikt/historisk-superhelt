@@ -4,8 +4,8 @@ import no.nav.common.types.Aar
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.NavUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.db.SakJpaRepository
 import no.nav.historisk.superhelt.utbetaling.UtbetalingUpdateDto
@@ -26,7 +26,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
      fun opprettNySak(req: OpprettSakDto): Sak {
         val properties = req.properties
-        val saksbehandler = properties?.saksbehandler ?: getCurrentNavUser()
+        val saksbehandler = properties?.saksbehandler ?: getAuthenticatedUser().navUser
         val sakEntity = patchEntity(
             dto = properties ?: UpdateSakDto(),
             entity = SakJpaEntity(
