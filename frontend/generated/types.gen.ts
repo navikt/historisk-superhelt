@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
     readonly error: SakError;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
+    readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakError = {
@@ -281,12 +281,12 @@ export type SakWritable = {
 };
 
 export type SakErrorWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: SakWritable;
+    sak?: unknown;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
@@ -620,6 +620,39 @@ export type JournalforResponses = {
 };
 
 export type JournalforResponse = JournalforResponses[keyof JournalforResponses];
+
+export type RetryFeiletUtbetalingData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/utbetaling/retry/{saksnummer}';
+};
+
+export type RetryFeiletUtbetalingErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type RetryFeiletUtbetalingError = RetryFeiletUtbetalingErrors[keyof RetryFeiletUtbetalingErrors];
+
+export type RetryFeiletUtbetalingResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
 
 export type FindSakerForPersonData = {
     body?: never;
@@ -1136,7 +1169,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';
