@@ -78,5 +78,9 @@ data class Sak(
     val tilstand: SakTilstand
         get() = SakTilstand(this)
 
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val error: SakError
+        get() = SakError(this)
+
 }
 
