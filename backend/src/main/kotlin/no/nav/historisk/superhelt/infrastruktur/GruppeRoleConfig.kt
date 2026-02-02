@@ -17,6 +17,7 @@ class GruppeRoleConfig {
             props.les to Role.LES,
             props.saksbehandler to Role.SAKSBEHANDLER,
             props.attestant to Role.ATTESTANT,
+            props.drift to Role.DRIFT,
         )
         logger.debug("GruppeRoleMapping: {}", gruppeRoller)
         return gruppeRoller
