@@ -10,11 +10,12 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UtbetalingService(
     private val utbetalingRepository: UtbetalingRepository,
-    private val utbetalingKafkaProducer: UtbetalingKafkaProducer
+    private val utbetalingKafkaProducer: UtbetalingKafkaProducer,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    //TODO sjekke tilgang på saken i stedet for write
     @PreAuthorize("hasAuthority('WRITE')")
     fun sendTilUtbetaling(sak: Sak) {
         sak.utbetaling?.let {
@@ -78,6 +79,15 @@ class UtbetalingService(
 //        }
 
         utbetalingRepository.setUtbetalingStatus(uuid = utbetalingsId, status = newStatus)
+    }
+    @PreAuthorize("hasAuthority('WRITE')")
+    fun retryUtbetaling(sak: Sak) {
+        val utbetaling = sak.utbetaling?: throw IllegalStateException("Utbetaling er ikke funnet")
+        if (utbetaling.utbetalingStatus!= UtbetalingStatus.FEILET) {
+            throw IllegalStateException("Utbetaling i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke kjøres på nytt")
+        }
+        utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
+        sendTilUtbetaling(sak)
     }
 
 
