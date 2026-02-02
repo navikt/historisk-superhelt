@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.infrastruktur.permission
+package no.nav.historisk.superhelt.infrastruktur.authentication
 
 import no.nav.historisk.superhelt.infrastruktur.Permission
 import no.nav.historisk.superhelt.infrastruktur.getCurrentJwt
@@ -24,6 +24,20 @@ object SecurityContextUtils {
             })
 
              task()
+        } finally {
+            SecurityContextHolder.setContext(originalContext)
+        }
+    }
+
+    fun <T> runAsSystemuser(permissions: List<Permission>, task: () -> T): T {
+        val originalContext = SecurityContextHolder.getContext()
+        return try {
+            val permissionAuthorities = permissions.map { SimpleGrantedAuthority(it.name) }
+            SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply {
+                authentication = SystemUserAuthenticationToken(authorities = permissionAuthorities)
+            })
+
+            task()
         } finally {
             SecurityContextHolder.setContext(originalContext)
         }
