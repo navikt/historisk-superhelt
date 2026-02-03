@@ -12,6 +12,11 @@
     <name>superhelt-backend</name>
     <description>Saksbehandling og Utbetaling På Enkle Regler</description>
 
+    <properties>
+<!--        Bug ved validering i hibernate 7.2.1 https://discourse.hibernate.org/t/schema-validation-column-defined-as-not-null-in-the-database-but-nullable-in-model/12109-->
+        <hibernate.version>7.2.0.Final</hibernate.version>
+    </properties>
+
     <dependencies>
 
         <!-- Lokale avhengigheter -->
