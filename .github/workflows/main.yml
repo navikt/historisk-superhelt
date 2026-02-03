@@ -41,3 +41,23 @@ jobs:
           VARS: .nais/dev.json
           IMAGE: ${{ needs.build.outputs.image }}
           TELEMETRY: ${{ needs.build.outputs.telemetry }}
+  deploy_prod:
+    needs:
+      - deploy_dev
+    name: "Deploy til prod"
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Deploy backend til prod-gcp
+        uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/app/backend.yaml
+          VARS: .nais/prod.json
+          IMAGE: ${{ needs.build.outputs.image }}
+          TELEMETRY: ${{ needs.build.outputs.telemetry }}
