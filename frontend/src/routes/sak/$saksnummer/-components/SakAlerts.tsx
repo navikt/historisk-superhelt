@@ -16,7 +16,7 @@ export default function SakAlert({sak}: Props) {
                 </LocalAlert.Title>
             </LocalAlert.Header>
             <LocalAlert.Content>
-                Det oppstod en feil ved utbetaling av vedtaket. Kontakt support for å løse problemet.
+                Det oppstod en feil ved utbetaling av vedtaket. Prøv på nytt eller kontakt support for å løse problemet.
             </LocalAlert.Content>
         </LocalAlert>
     }

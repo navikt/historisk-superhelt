@@ -41,7 +41,8 @@ class UtbetalingStatusConsumer(
             return
         }
         SecurityContextUtils.runAsSystemuser(
-            listOf(
+            name = "utbetaling-system",
+            permissions = listOf(
                 Permission.READ,
                 Permission.WRITE,
                 Permission.IGNORE_TILGANGSMASKIN

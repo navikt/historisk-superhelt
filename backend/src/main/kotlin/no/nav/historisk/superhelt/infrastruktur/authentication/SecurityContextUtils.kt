@@ -20,18 +20,18 @@ object SecurityContextUtils {
                 authentication = JwtAuthenticationToken(jwt, allAuthorities, originalContext.authentication?.name)
             })
 
-             task()
+            task()
         } finally {
             SecurityContextHolder.setContext(originalContext)
         }
     }
 
-    fun <T> runAsSystemuser(permissions: List<Permission>, task: () -> T): T {
+    fun <T> runAsSystemuser(name: String?, permissions: List<Permission>, task: () -> T): T {
         val originalContext = SecurityContextHolder.getContext()
         return try {
             val permissionAuthorities = permissions.map { SimpleGrantedAuthority(it.name) }
             SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext().apply {
-                authentication = SystemUserAuthenticationToken(authorities = permissionAuthorities)
+                authentication = SystemUserAuthenticationToken(name= name, authorities = permissionAuthorities)
             })
 
             task()

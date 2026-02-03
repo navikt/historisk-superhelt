@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority
 
 /** Authentication token som representerer en systembruker (ikke en ekte bruker) */
 class SystemUserAuthenticationToken(
-    private val name: String = "system",
+    private val name: String?,
     authorities: Collection<GrantedAuthority>
 ) : AbstractAuthenticationToken(authorities) {
 
@@ -19,8 +19,8 @@ class SystemUserAuthenticationToken(
     override fun getPrincipal() = name
 
     val authenticatedUser= AuthenticatedUser(
-        navIdent = NavIdent(name),
-        userName = "System User",
+        navIdent = NavIdent(name?: "system"),
+        userName = name?: "system",
         jwt = null
     )
 
