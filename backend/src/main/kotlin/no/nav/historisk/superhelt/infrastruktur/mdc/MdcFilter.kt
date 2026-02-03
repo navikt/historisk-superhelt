@@ -23,7 +23,7 @@ class MdcFilter : OncePerRequestFilter() {
             val authentication = SecurityContextHolder.getContext().authentication
             if (authentication != null && authentication.isAuthenticated) {
                 val username = authentication.name
-                MdcHelper.userIdent= username
+                MdcHelper.userIdent = username
             }
 
             filterChain.doFilter(request, response)
