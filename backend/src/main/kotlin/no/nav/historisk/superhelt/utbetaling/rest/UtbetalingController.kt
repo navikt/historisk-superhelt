@@ -19,9 +19,7 @@ class UtbetalingController(
     private val utbetalingService: UtbetalingService,
     private val sakRepository: SakRepository,
 ) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
-
 
     @Operation(operationId = "retryFeiletUtbetaling", summary = "Kjører på nytt  utbetaling som har feilet")
     @PostMapping("retry/{saksnummer}")
