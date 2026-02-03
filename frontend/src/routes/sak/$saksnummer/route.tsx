@@ -12,6 +12,7 @@ import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
 import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 import {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
+import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -44,9 +45,9 @@ function SakLayout() {
     return (
         <>
             <PersonHeader maskertPersonId={sak.maskertPersonIdent}/>
+            <SakAlert sak={sak}/>
             <HGrid gap="space-24" columns={{lg: 1, xl: 2}} marginBlock={"space-16"}>
                 <VStack gap="space-16">
-
                     <ProcessMenu>
                         <ProcessMenuItem label={"Opplysninger"} stepType={calculateStepType(sak?.tilstand.opplysninger)}
                                          to={"/sak/$saksnummer/opplysninger"}/>

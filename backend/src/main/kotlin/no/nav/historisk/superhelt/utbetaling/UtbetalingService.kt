@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.utbetaling
 
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
 import org.slf4j.LoggerFactory
@@ -10,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UtbetalingService(
     private val utbetalingRepository: UtbetalingRepository,
-    private val utbetalingKafkaProducer: UtbetalingKafkaProducer
+    private val utbetalingKafkaProducer: UtbetalingKafkaProducer,
+    private val sakEndringsloggService: EndringsloggService,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    //TODO sjekke tilgang på saken i stedet for write
     @PreAuthorize("hasAuthority('WRITE')")
     fun sendTilUtbetaling(sak: Sak) {
         sak.utbetaling?.let {
@@ -31,7 +35,7 @@ class UtbetalingService(
 
         }
     }
-    //TODO Finne ut av hvordan vi kan kjøre dette som en systembruker
+
     @Transactional
     fun updateUtbetalingsStatus(utbetaling: Utbetaling, newStatus: UtbetalingStatus) {
         val utbetalingsId = utbetaling.uuid
@@ -57,27 +61,34 @@ class UtbetalingService(
             return
         }
 
+        if (newStatus.isFinal()) {
+            when (newStatus) {
+                UtbetalingStatus.UTBETALT -> sakEndringsloggService.logChange(
+                    saksnummer = utbetaling.saksnummer,
+                    endringsType = EndringsloggType.UTBETALING_OK,
+                    endring = "Utbetalt ${utbetaling.belop} til bruker"
+                )
 
-        // Legg til endringslogg når vi vet hvordan vi kan kjøre som systembruker
-//        if (newStatus.isFinal()) {
-//            when (newStatus) {
-//                UtbetalingStatus.UTBETALT -> sakEndringsloggService.logChange(
-//                    saksnummer = utbetaling.saksnummer,
-//                    endringsType = EndringsloggType.UTBETALING_OK,
-//                    endring = "Utbetalt ${utbetaling.belop} til bruker"
-//                )
-//
-//                UtbetalingStatus.FEILET -> sakEndringsloggService.logChange(
-//                    saksnummer = utbetaling.saksnummer,
-//                    endringsType = EndringsloggType.UTBETALING_FEILET,
-//                    endring = "Utbetaling til bruker feilet"
-//                )
-//
-//                else -> {}
-//            }
-//        }
+                UtbetalingStatus.FEILET -> sakEndringsloggService.logChange(
+                    saksnummer = utbetaling.saksnummer,
+                    endringsType = EndringsloggType.UTBETALING_FEILET,
+                    endring = "Utbetaling til bruker feilet"
+                )
+
+                else -> {}
+            }
+        }
 
         utbetalingRepository.setUtbetalingStatus(uuid = utbetalingsId, status = newStatus)
+    }
+    @PreAuthorize("hasAuthority('WRITE')")
+    fun retryUtbetaling(sak: Sak) {
+        val utbetaling = sak.utbetaling?: throw IllegalStateException("Utbetaling er ikke funnet")
+        if (utbetaling.utbetalingStatus!= UtbetalingStatus.FEILET) {
+            throw IllegalStateException("Utbetaling i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke kjøres på nytt")
+        }
+        utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
+        sendTilUtbetaling(sak)
     }
 
 

@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.dokarkiv
 import no.nav.common.types.Aar
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.OpprettSakDto
@@ -34,7 +34,7 @@ class JournalforService (
                 properties = UpdateSakDto(
                     soknadsDato = soknadsDato?.toLocalDate(),
                     tildelingsAar = soknadsDato?.let { Aar(it.year) },
-                    saksbehandler = getCurrentNavUser(),
+                    saksbehandler = getAuthenticatedUser().navUser,
                     //TODO lagre journalpostid i sak
 
                     )

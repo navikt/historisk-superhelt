@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.infrastruktur.audit
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.mdc.MdcHelper
 import org.slf4j.LoggerFactory
 import java.time.Instant
@@ -39,7 +39,7 @@ object AuditLog {
         val name = "Auditlogg"
 
         val callId = MdcHelper.callId
-        val navIdent = getCurrentNavIdent()
+        val navIdent = getAuthenticatedUser().navIdent
 
         val timestamp = Instant.now().toEpochMilli()
 

@@ -5,6 +5,7 @@ import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 import TotrinnkontrollAction from "~/routes/sak/$saksnummer/-components/TotrinnkontrollAction";
 import FerdigstillSakAction from "~/routes/sak/$saksnummer/-components/FerdigstillSakAction";
 import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
+import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";
 
 export const Route = createFileRoute('/sak/$saksnummer/oppsummering')({
     component: OppsummeringPage,
@@ -23,7 +24,10 @@ function OppsummeringPage() {
             case "TIL_ATTESTERING":
                 return <FerdigstillSakAction sak={sak}/>
             case "FERDIG":
-                return <Heading size={"medium"}>Saken er ferdigstilt</Heading>
+                return <>
+                    <Heading size={"medium"}>Saken er ferdigstilt</Heading>
+                    <UtbetalingRetryButton sak={sak}/>
+                </>
         }
     }
 
@@ -33,5 +37,6 @@ function OppsummeringPage() {
             <SakEndringer sak={sak}/>
         </VStack>)
 }
+
 
 

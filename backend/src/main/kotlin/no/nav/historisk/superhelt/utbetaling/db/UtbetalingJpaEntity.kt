@@ -40,7 +40,7 @@ class UtbetalingJpaEntity(
 
     override fun hashCode(): Int = javaClass.hashCode()
 
-    internal fun toDomain(): Utbetaling? {
+    internal fun toDomain(): Utbetaling {
         return Utbetaling(
             belop = Belop(this.belop),
             saksnummer = this.sak.saksnummer,

@@ -62,17 +62,22 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
+    readonly error: SakError;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    readonly valideringsfeil: Array<ValidationFieldError>;
+};
+
+export type SakError = {
+    utbetalingError: boolean;
 };
 
 export type SakTilstand = {
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -146,10 +151,14 @@ export type Person = {
     alder?: number;
 };
 
+export type RetryUtbetalingRequestDto = {
+    utbetalingIds: Array<string>;
+};
+
 export type User = {
     name: string;
     ident: string;
-    roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT'>;
+    roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT' | 'DRIFT'>;
 };
 
 export type Vedtak = {
@@ -271,11 +280,16 @@ export type SakWritable = {
     vedtaksbrevBruker?: BrevWritable;
 };
 
-export type SakTilstandWritable = {
+export type SakErrorWritable = {
     sak?: SakWritable;
+    utbetalingError: boolean;
+};
+
+export type SakTilstandWritable = {
+    sak?: unknown;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -607,6 +621,39 @@ export type JournalforResponses = {
 
 export type JournalforResponse = JournalforResponses[keyof JournalforResponses];
 
+export type RetryFeiletUtbetalingData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/utbetaling/retry/{saksnummer}';
+};
+
+export type RetryFeiletUtbetalingErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type RetryFeiletUtbetalingError = RetryFeiletUtbetalingErrors[keyof RetryFeiletUtbetalingErrors];
+
+export type RetryFeiletUtbetalingResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
 export type FindSakerForPersonData = {
     body?: never;
     path?: never;
@@ -776,6 +823,72 @@ export type FindPersonByFnrResponses = {
 };
 
 export type FindPersonByFnrResponse = FindPersonByFnrResponses[keyof FindPersonByFnrResponses];
+
+export type HentFeileteUtbetalingerData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/utbetaling/feilet';
+};
+
+export type HentFeileteUtbetalingerErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentFeileteUtbetalingerError = HentFeileteUtbetalingerErrors[keyof HentFeileteUtbetalingerErrors];
+
+export type HentFeileteUtbetalingerResponses = {
+    /**
+     * OK
+     */
+    200: Array<Utbetaling>;
+};
+
+export type HentFeileteUtbetalingerResponse = HentFeileteUtbetalingerResponses[keyof HentFeileteUtbetalingerResponses];
+
+export type RekjorFeileteUtbetalingerData = {
+    body?: RetryUtbetalingRequestDto;
+    path?: never;
+    query?: never;
+    url: '/admin/utbetaling/feilet';
+};
+
+export type RekjorFeileteUtbetalingerErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type RekjorFeileteUtbetalingerError = RekjorFeileteUtbetalingerErrors[keyof RekjorFeileteUtbetalingerErrors];
+
+export type RekjorFeileteUtbetalingerResponses = {
+    /**
+     * OK
+     */
+    200: Array<Utbetaling>;
+};
+
+export type RekjorFeileteUtbetalingerResponse = RekjorFeileteUtbetalingerResponses[keyof RekjorFeileteUtbetalingerResponses];
 
 export type GetUserInfoData = {
     body?: never;
@@ -1056,7 +1169,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

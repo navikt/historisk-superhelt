@@ -38,6 +38,7 @@ spec:
           - id: {{gruppe.saksbehandler}}
           - id: {{gruppe.attestant}}
           - id: {{gruppe.les}}
+          - id: {{gruppe.drift}}
 
   liveness:
     path: /actuator/health/liveness
@@ -88,6 +89,8 @@ spec:
       value: "{{gruppe.attestant}}"
     - name: APP_GRUPPE_LES
       value: "{{gruppe.les}}"
+    - name: APP_GRUPPE_DRIFT
+      value: "{{gruppe.drift}}"
     - name: APP_PDL_URL
       value: https://pdl-api.{{env}}-fss-pub.nais.io
     - name: APP_PDL_AUDIENCE

@@ -92,7 +92,7 @@ export interface FileRoutesByFullPath {
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
   '/oppgave/$oppgaveid/': typeof OppgaveOppgaveidIndexRoute
-  '/person/$personid': typeof PersonPersonidIndexRoute
+  '/person/$personid/': typeof PersonPersonidIndexRoute
   '/sak/$saksnummer/': typeof SakSaksnummerIndexRoute
 }
 export interface FileRoutesByTo {
@@ -132,7 +132,7 @@ export interface FileRouteTypes {
     | '/sak/$saksnummer/oppsummering'
     | '/sak/$saksnummer/vedtaksbrevbruker'
     | '/oppgave/$oppgaveid/'
-    | '/person/$personid'
+    | '/person/$personid/'
     | '/sak/$saksnummer/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -200,7 +200,7 @@ declare module '@tanstack/react-router' {
     '/person/$personid/': {
       id: '/person/$personid/'
       path: '/person/$personid'
-      fullPath: '/person/$personid'
+      fullPath: '/person/$personid/'
       preLoaderRoute: typeof PersonPersonidIndexRouteImport
       parentRoute: typeof rootRouteImport
     }

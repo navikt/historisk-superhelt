@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AttersterSakData, AttersterSakErrors, AttersterSakResponses, CreateSakData, CreateSakErrors, CreateSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, FinnJournalposterForSakData, FinnJournalposterForSakErrors, FinnJournalposterForSakResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetOppgaveData, GetOppgaveErrors, GetOppgaveResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, HentBrevData, HentBrevErrors, HentBrevResponses, HentEllerOpprettBrevData, HentEllerOpprettBrevErrors, HentEllerOpprettBrevResponses, HentEndringsloggForSakData, HentEndringsloggForSakErrors, HentEndringsloggForSakResponses, HentJournalpostMetaDataData, HentJournalpostMetaDataErrors, HentJournalpostMetaDataResponses, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerErrors, HentOppgaverForSaksbehandlerResponses, HentVedtakForSakData, HentVedtakForSakErrors, HentVedtakForSakResponses, HtmlBrevData, HtmlBrevErrors, HtmlBrevResponses, JournalforData, JournalforErrors, JournalforResponses, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostErrors, LastnedDokumentFraJournalpostResponses, OppdaterBrevData, OppdaterBrevErrors, OppdaterBrevResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, SendBrevData, SendBrevErrors, SendBrevResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
+import type { AttersterSakData, AttersterSakErrors, AttersterSakResponses, CreateSakData, CreateSakErrors, CreateSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, FinnJournalposterForSakData, FinnJournalposterForSakErrors, FinnJournalposterForSakResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetOppgaveData, GetOppgaveErrors, GetOppgaveResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, HentBrevData, HentBrevErrors, HentBrevResponses, HentEllerOpprettBrevData, HentEllerOpprettBrevErrors, HentEllerOpprettBrevResponses, HentEndringsloggForSakData, HentEndringsloggForSakErrors, HentEndringsloggForSakResponses, HentFeileteUtbetalingerData, HentFeileteUtbetalingerErrors, HentFeileteUtbetalingerResponses, HentJournalpostMetaDataData, HentJournalpostMetaDataErrors, HentJournalpostMetaDataResponses, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerErrors, HentOppgaverForSaksbehandlerResponses, HentVedtakForSakData, HentVedtakForSakErrors, HentVedtakForSakResponses, HtmlBrevData, HtmlBrevErrors, HtmlBrevResponses, JournalforData, JournalforErrors, JournalforResponses, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostErrors, LastnedDokumentFraJournalpostResponses, OppdaterBrevData, OppdaterBrevErrors, OppdaterBrevResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerErrors, RekjorFeileteUtbetalingerResponses, RetryFeiletUtbetalingData, RetryFeiletUtbetalingErrors, RetryFeiletUtbetalingResponses, SendBrevData, SendBrevErrors, SendBrevResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -99,6 +99,15 @@ export const journalfor = <ThrowOnError extends boolean = false>(options: Option
 });
 
 /**
+ * Kjører på nytt  utbetaling som har feilet
+ */
+export const retryFeiletUtbetaling = <ThrowOnError extends boolean = false>(options: Options<RetryFeiletUtbetalingData, ThrowOnError>) => (options.client ?? client).post<RetryFeiletUtbetalingResponses, RetryFeiletUtbetalingErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/utbetaling/retry/{saksnummer}',
+    ...options
+});
+
+/**
  * Finn saker for en person
  */
 export const findSakerForPerson = <ThrowOnError extends boolean = false>(options: Options<FindSakerForPersonData, ThrowOnError>) => (options.client ?? client).get<FindSakerForPersonResponses, FindSakerForPersonErrors, ThrowOnError>({
@@ -146,6 +155,28 @@ export const findPersonByFnr = <ThrowOnError extends boolean = false>(options: O
     headers: {
         'Content-Type': 'application/json',
         ...options.headers
+    }
+});
+
+/**
+ * Hent alle utbetalinger som har feilet
+ */
+export const hentFeileteUtbetalinger = <ThrowOnError extends boolean = false>(options?: Options<HentFeileteUtbetalingerData, ThrowOnError>) => (options?.client ?? client).get<HentFeileteUtbetalingerResponses, HentFeileteUtbetalingerErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/utbetaling/feilet',
+    ...options
+});
+
+/**
+ * Kjører på nytt  utbetalinger som har feilet
+ */
+export const rekjorFeileteUtbetalinger = <ThrowOnError extends boolean = false>(options?: Options<RekjorFeileteUtbetalingerData, ThrowOnError>) => (options?.client ?? client).post<RekjorFeileteUtbetalingerResponses, RekjorFeileteUtbetalingerErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/utbetaling/feilet',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
     }
 });
 

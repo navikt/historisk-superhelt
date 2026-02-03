@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.infrastruktur.token
 
-import no.nav.historisk.superhelt.infrastruktur.getCurrentUserToken
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestClient.builder
 
@@ -22,7 +22,7 @@ class NaisTokenService(
 
     /** Henter token for innlogget bruker */
     fun oboToken(target: String): String {
-        getCurrentUserToken()?.let { token ->
+        getAuthenticatedUser().jwt?.tokenValue?.let { token ->
             return texas.oboToken(target, token).access_token
         }
         throw IllegalArgumentException("Kunne ikke hente token for innlogget bruker")

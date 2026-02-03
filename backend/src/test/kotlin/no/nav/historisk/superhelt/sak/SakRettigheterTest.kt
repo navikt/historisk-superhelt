@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.NavIdent
-import no.nav.historisk.superhelt.infrastruktur.NavUser
-import no.nav.historisk.superhelt.infrastruktur.Role
+import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import no.nav.historisk.superhelt.test.WithAttestant
 import no.nav.historisk.superhelt.test.WithMockJwtAuth
 import no.nav.historisk.superhelt.test.WithSaksbehandler

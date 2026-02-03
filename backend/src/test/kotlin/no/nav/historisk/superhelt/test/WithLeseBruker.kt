@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.test
 
-import no.nav.historisk.superhelt.infrastruktur.Permission
-import no.nav.historisk.superhelt.infrastruktur.Role
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import org.springframework.core.annotation.AliasFor
 
 @Retention(AnnotationRetention.RUNTIME)

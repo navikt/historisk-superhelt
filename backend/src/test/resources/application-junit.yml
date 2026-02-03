@@ -14,6 +14,7 @@ app:
     saksbehandler: gr_saksbehandler
     attestant: gr_attestant
     les: gr_les
+    drift: gr_drift
   pdl:
     audience: api://mock.pdl.pdl-api/.default
     url: http://pdl-junit.mocked

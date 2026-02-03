@@ -13,6 +13,11 @@ class UtbetalingRepository(private val utbetalingJpaRepository: UtbetalingJpaRep
         return utbetalingJpaRepository.findByUuid(uuid)?.toDomain()
     }
 
+    fun findUtbetalingerFeilet(): List<Utbetaling> {
+        return utbetalingJpaRepository.findByUtbetalingStatus(UtbetalingStatus.FEILET)
+            .map { it.toDomain() }
+    }
+
     @Transactional
     internal fun setUtbetalingStatus(uuid: UUID, status: UtbetalingStatus) {
         updateUtbetalingStatus(uuid, status)

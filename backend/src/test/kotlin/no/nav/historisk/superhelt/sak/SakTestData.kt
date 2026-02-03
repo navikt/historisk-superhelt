@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.sak
 
 import net.datafaker.Faker
 import no.nav.common.types.*
-import no.nav.historisk.superhelt.infrastruktur.NavUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.test.withMockedUser
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
 import no.nav.historisk.superhelt.utbetaling.UtbetalingUpdateDto

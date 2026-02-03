@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.config
 
-import no.nav.historisk.superhelt.infrastruktur.NavJwtAuthenticationConverter
+import no.nav.historisk.superhelt.infrastruktur.authentication.NavJwtAuthenticationConverter
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -42,7 +44,8 @@ class SecurityConfig(
                 }
 
                 authorize("/api/user", authenticated)
-                authorize("/api/**", hasAuthority("READ"))
+                authorize("/api/**", hasAuthority(Permission.READ.name))
+                authorize("/admin/**", hasRole(Role.DRIFT.name))
                 authorize(anyRequest, authenticated)
             }
             oauth2ResourceServer {

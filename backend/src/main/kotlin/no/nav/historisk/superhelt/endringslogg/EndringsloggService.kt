@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.endringslogg
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.endringslogg.db.EndringsloggJpaEntity
 import no.nav.historisk.superhelt.endringslogg.db.EndringsloggJpaRepository
-import no.nav.historisk.superhelt.infrastruktur.getCurrentNavIdent
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.sak.SakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -19,7 +19,7 @@ class EndringsloggService(
     @Transactional
     fun logChange(saksnummer: Saksnummer, endringsType: EndringsloggType, endring: String, beskrivelse: String? = null) {
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
-        val navBruker = getCurrentNavIdent()
+        val navBruker = getAuthenticatedUser().navIdent
         logger.info("CHANGELOG: Sak $saksnummer endret: $endring av $navBruker")
 
         endringsloggJpaRepository.save(

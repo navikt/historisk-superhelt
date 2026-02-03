@@ -1,18 +1,17 @@
 package no.nav.historisk.superhelt.test
 
-import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import org.springframework.core.annotation.AliasFor
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @WithMockJwtAuth(
-    roles = [Role.SAKSBEHANDLER],
-    permissions = [Permission.READ, Permission.WRITE]
+    roles = [Role.DRIFT],
+    permissions = []
 )
-annotation class WithSaksbehandler(
+annotation class WithDriftbruker(
     @get:AliasFor(annotation = WithMockJwtAuth::class, attribute = "navIdent")
-    val navIdent: String = "Z999999",
+    val navIdent: String = "D999999",
     @get:AliasFor(annotation = WithMockJwtAuth::class, attribute = "name")
-    val name: String = "Test Saksbehandler"
+    val name: String = "Durek the Drifter"
 )

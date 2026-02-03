@@ -5,7 +5,7 @@ import {ProblemDetail} from "@generated";
 type ErrorAlertType = Error | ProblemDetail;
 
 interface ErrorAlertProps {
-    error: ErrorAlertType | undefined;
+    error: ErrorAlertType | undefined | null;
 }
 
 export function ErrorAlert({error}: ErrorAlertProps) {
