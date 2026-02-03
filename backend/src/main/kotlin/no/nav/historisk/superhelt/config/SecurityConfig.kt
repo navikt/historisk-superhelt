@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.config
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavJwtAuthenticationConverter
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.Role
+import no.nav.historisk.superhelt.infrastruktur.mdc.MdcFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -12,12 +13,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.context.SecurityContextHolderFilter
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
-    private val navJwtAuthenticationConverter: NavJwtAuthenticationConverter
+    private val navJwtAuthenticationConverter: NavJwtAuthenticationConverter,
+    private val mdcFilter: MdcFilter
 ) {
 
     private val publicGetPaths = listOf(
@@ -57,8 +60,10 @@ class SecurityConfig(
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
             headers {
-                frameOptions {sameOrigin = true}
+                frameOptions { sameOrigin = true }
             }
+            addFilterAfter<SecurityContextHolderFilter>(mdcFilter)
+
         }
         return http.build()
     }

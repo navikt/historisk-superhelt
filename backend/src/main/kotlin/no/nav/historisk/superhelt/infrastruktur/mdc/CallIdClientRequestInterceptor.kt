@@ -1,13 +1,10 @@
 package no.nav.historisk.superhelt.infrastruktur.mdc
 
-
 import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 import java.util.*
-
-
 
 fun callIdFromMDC() = MdcHelper.callId ?: UUID.randomUUID().toString()
 
