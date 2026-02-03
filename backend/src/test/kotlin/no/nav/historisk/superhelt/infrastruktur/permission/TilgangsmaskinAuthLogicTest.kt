@@ -125,7 +125,7 @@ class TilgangsmaskinAuthLogicTest {
 
     @WithMockJwtAuth(permissions = [Permission.IGNORE_TILGANGSMASKIN])
     @Test
-    fun `Skal ikke sjekke tilgang om bruker har Ignre`() {
+    fun `Skal ikke sjekke tilgang om bruker har Ignore_tilgangsmaskin rettighet`() {
         val fnr = FolkeregisterIdent("12345678901")
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr))
             .thenReturn(TilgangsmaskinClient.TilgangResult(false))

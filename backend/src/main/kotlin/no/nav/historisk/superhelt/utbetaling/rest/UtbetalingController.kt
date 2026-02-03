@@ -26,7 +26,7 @@ class UtbetalingController(
     @Operation(operationId = "retryFeiletUtbetaling", summary = "Kjører på nytt  utbetaling som har feilet")
     @PostMapping("retry/{saksnummer}")
     fun retryFeiletUtbetaling(@PathVariable saksnummer: Saksnummer) {
-        logger.info("Retry feilet utbertaling med saksnummer $saksnummer")
+        logger.info("Retry feilet utbetaling med saksnummer $saksnummer")
         val sak = sakRepository.getSak(saksnummer)
         val utbetaling =
             sak.utbetaling ?: throw IkkeFunnetException("Utbetaling for sak med saksnummer $saksnummer ikke funnet")
