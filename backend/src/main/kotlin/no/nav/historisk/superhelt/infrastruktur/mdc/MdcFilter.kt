@@ -32,6 +32,4 @@ class MdcFilter : OncePerRequestFilter() {
             MdcHelper.clear()
         }
     }
-
-
 }

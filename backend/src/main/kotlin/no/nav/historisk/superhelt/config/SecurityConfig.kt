@@ -12,8 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.context.SecurityContextHolderFilter
 
 @Configuration
 @EnableWebSecurity
@@ -62,7 +62,7 @@ class SecurityConfig(
             headers {
                 frameOptions { sameOrigin = true }
             }
-            addFilterAfter<SecurityContextHolderFilter>(mdcFilter)
+            addFilterAfter<BearerTokenAuthenticationFilter>(mdcFilter)
 
         }
         return http.build()
