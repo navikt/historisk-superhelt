@@ -4,7 +4,6 @@ import {PlusIcon} from '@navikt/aksel-icons'
 import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {SakerTable} from "./-components/SakerTable";
 import {PersonHeader} from "~/common/person/PersonHeader";
-import {DokumenterTable} from "~/routes/person/$personid/-components/DokumenterTable";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {createSak} from "@generated";
 import {finnPersonQuery} from "~/common/person/person.query";
@@ -38,7 +37,6 @@ function PersonPage() {
                 <Tabs defaultValue="saker">
                     <Tabs.List>
                         <Tabs.Tab value="saker" label="Saker"/>
-                        <Tabs.Tab value="dokumenter" label="Dokumenter"/>
                     </Tabs.List>
 
                     <Tabs.Panel value="saker">
@@ -50,19 +48,8 @@ function PersonPage() {
                                     <Button size="small" variant="primary" icon={<PlusIcon/>} onClick={opprettSak}>
                                         Opprett ny sak
                                     </Button>
-
                                 </HStack>
-
                                 <SakerTable maskertPersonIdent={personid}/>
-                            </VStack>
-                        </Box>
-                    </Tabs.Panel>
-
-                    <Tabs.Panel value="dokumenter">
-                        <Box padding="4" borderWidth="1" borderRadius="small">
-                            <VStack gap="4">
-                                <Heading size="medium">Dokumenter</Heading>
-                                <DokumenterTable/>
                             </VStack>
                         </Box>
                     </Tabs.Panel>
