@@ -1,6 +1,5 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
-import {Box, Button, Heading, HStack, Tabs, VStack} from '@navikt/ds-react'
-import {PlusIcon} from '@navikt/aksel-icons'
+import {Box, Heading, HStack, Tabs, VStack} from '@navikt/ds-react'
 import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {SakerTable} from "./-components/SakerTable";
 import {PersonHeader} from "~/common/person/PersonHeader";
@@ -45,9 +44,9 @@ function PersonPage() {
                                 <HStack justify="space-between" align="center">
                                     <Heading size="medium">Relevante saker</Heading>
 
-                                    <Button size="small" variant="primary" icon={<PlusIcon/>} onClick={opprettSak}>
-                                        Opprett ny sak
-                                    </Button>
+                                    {/*<Button size="small" variant="primary" icon={<PlusIcon/>} onClick={opprettSak}>*/}
+                                    {/*    Opprett ny sak*/}
+                                    {/*</Button>*/}
                                 </HStack>
                                 <SakerTable maskertPersonIdent={personid}/>
                             </VStack>
