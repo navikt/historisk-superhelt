@@ -35,12 +35,17 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                     rettigheter.add(SakRettighet.ATTESTERE)
                 }
             }
+            SakStatus.FERDIG_ATTESTERT -> {
+               // TODO sette rettigheter som kan styre knapper for ferdigstilling
+            }
 
             SakStatus.FERDIG -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.GJENAPNE)
                 }
             }
+
+
         }
     }
 

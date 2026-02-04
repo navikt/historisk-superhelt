@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.brev
 
 import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakRettighet
+import no.nav.historisk.superhelt.sak.SakValidator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -11,10 +13,23 @@ class BrevService(
 
     @Transactional
     fun hentEllerOpprettBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev {
-        brevRepository.findBySak(sak.saksnummer)
-            .findEditableBrev(type = type, mottaker = mottaker)?.let {
-                return it
-            }
+        val brevForSak = brevRepository.findBySak(sak.saksnummer)
+
+        val brev = brevForSak.findBrev(type = type, mottaker = mottaker)
+        if (brev != null) {
+            return brev
+        }
+
+        return genererNyttBrev(sak, type, mottaker)
+    }
+
+    private fun genererNyttBrev(
+        sak: Sak,
+        type: BrevType,
+        mottaker: BrevMottaker): Brev {
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .validate()
         val brevTekstGenerator = BrevTekstGenerator(sak)
 
         val brev = Brev(

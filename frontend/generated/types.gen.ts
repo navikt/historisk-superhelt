@@ -50,7 +50,7 @@ export type Sak = {
     behandlingsnummer: string;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
     beskrivelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly error: SakError;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
+    readonly error: SakError;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakError = {
@@ -208,7 +208,7 @@ export type OppgaveMedSak = {
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
     saksnummer?: string;
-    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
     readonly maskertPersonIdent: string;
 };
 
@@ -266,7 +266,7 @@ export type SakWritable = {
     behandlingsnummer: string;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
     beskrivelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
@@ -281,12 +281,12 @@ export type SakWritable = {
 };
 
 export type SakErrorWritable = {
-    sak?: SakWritable;
+    sak?: unknown;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
@@ -307,7 +307,7 @@ export type OppgaveMedSakWritable = {
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
     saksnummer?: string;
-    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
 };
 
 export type GetSakBySaksnummerData = {
@@ -475,6 +475,39 @@ export type GjenapneSakErrors = {
 export type GjenapneSakError = GjenapneSakErrors[keyof GjenapneSakErrors];
 
 export type GjenapneSakResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type FerdigstillSakData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/ferdigstill';
+};
+
+export type FerdigstillSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FerdigstillSakError = FerdigstillSakErrors[keyof FerdigstillSakErrors];
+
+export type FerdigstillSakResponses = {
     /**
      * OK
      */
@@ -1169,7 +1202,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: number;
+        dokumentId: string;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

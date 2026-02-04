@@ -47,6 +47,7 @@ class SakTilstand(private val sak: Sak) {
             return when (sak.status) {
                 SakStatus.UNDER_BEHANDLING -> TilstandStatus.IKKE_STARTET
                 SakStatus.TIL_ATTESTERING -> TilstandStatus.IKKE_STARTET
+                SakStatus.FERDIG_ATTESTERT -> TilstandStatus.VALIDERING_FEILET
                 SakStatus.FERDIG -> TilstandStatus.OK
             }
         }

@@ -92,9 +92,9 @@ spec:
     - name: APP_GRUPPE_DRIFT
       value: "{{gruppe.drift}}"
     - name: APP_PDL_URL
-      value: https://pdl-api.{{env}}-fss-pub.nais.io
+      value: "https://pdl-api.{{env}}-fss-pub.nais.io"
     - name: APP_PDL_AUDIENCE
-      value: api://{{env}}-fss.pdl.pdl-api/.default
+      value: "api://{{env}}-fss.pdl.pdl-api/.default"
     - name: APP_TILGANGSMASKIN_URL
       value: "http://populasjonstilgangskontroll.tilgangsmaskin"
     - name: APP_TILGANGSMASKIN_AUDIENCE

@@ -28,7 +28,7 @@ class SakService(
             )
         )
 
-        logger.info("Oppdaterer sak med saksnummer {}", saksnummer)
+        logger.debug("Oppdaterer utbetaling på sak {}", saksnummer)
         return sakRepository.updateSak(saksnummer, updateDto)
     }
 
@@ -54,10 +54,17 @@ class SakService(
                 attestant = NavUser.NULL_VALUE
             )
 
+            SakStatus.FERDIG_ATTESTERT -> UpdateSakDto(
+                status = nyStatus,
+                attestant = getAuthenticatedUser().navUser
+            )
+
             SakStatus.FERDIG -> UpdateSakDto(
                 status = nyStatus,
                 attestant = getAuthenticatedUser().navUser
             )
+
+
         }
 
         sakRepository.updateSak(saksnummer, updateDto)

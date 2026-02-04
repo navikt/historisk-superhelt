@@ -10,9 +10,9 @@ class SakValidator(private val sak: Sak): Validator() {
 
     fun checkStatusTransition(newStatus: SakStatus): SakValidator {
         val validTransitions = when (sak.status) {
-            //TODO Fjerne UNDER_BEHANDLING -> FERDIG når totrinnskontroll er på plass
             SakStatus.UNDER_BEHANDLING -> listOf( SakStatus.TIL_ATTESTERING)
-            SakStatus.TIL_ATTESTERING -> listOf(SakStatus.FERDIG, SakStatus.UNDER_BEHANDLING)
+            SakStatus.TIL_ATTESTERING -> listOf(SakStatus.FERDIG_ATTESTERT, SakStatus.UNDER_BEHANDLING)
+            SakStatus.FERDIG_ATTESTERT -> listOf(SakStatus.FERDIG)
             SakStatus.FERDIG -> listOf(SakStatus.UNDER_BEHANDLING)
         }
         check(newStatus !in validTransitions, "status", "Ugyldig statusovergang fra ${sak.status} til $newStatus")
