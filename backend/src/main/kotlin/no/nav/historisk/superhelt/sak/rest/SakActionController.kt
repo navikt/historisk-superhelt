@@ -47,14 +47,36 @@ class SakActionController(
                 )
             )
         }
-
+        logger.info("Sak $saksnummer attestert - godkjent: ${request.godkjent}")
         if (request.godkjent) {
             attester(sak)
             ferdigstillSak(sak)
         } else {
-            sendTilbakeTilSaksbehandler(sak,  request)
+            sendTilbakeTilSaksbehandler(sak, request)
         }
 
+        return ResponseEntity.ok().build()
+    }
+
+    @Operation(
+        operationId = "ferdigstillSak",
+        description = "Rekjøring av utbetaling og brevsending for en ferdig attestert sak"
+    )
+    @PutMapping("status/ferdigstill")
+    fun ferdigstill(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
+        val sak = sakRepository.getSak(saksnummer)
+
+        if (sak.status != SakStatus.FERDIG_ATTESTERT) {
+            throw ValideringException(
+                reason = "Sak må være i status FERDIG_ATTESTERT for å fullføre",
+                validationErrors = listOf(
+                    ValidationFieldError("status", "Sak er i status ${sak.status}")
+                )
+            )
+        }
+        logger.info("Ferdigstiller sak $saksnummer på nytt")
+
+        ferdigstillSak(sak)
         return ResponseEntity.ok().build()
     }
 
@@ -112,6 +134,7 @@ class SakActionController(
             .checkCompleted()
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
+        logger.info("Sak $saksnummer sent til attestering")
         sakService.endreStatus(sak, SakStatus.TIL_ATTESTERING)
 
         oppgaveService.ferdigstillOppgaver(

@@ -1,11 +1,11 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {Heading, VStack} from "@navikt/ds-react";
+import {Heading, InfoCard, VStack} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 import TotrinnkontrollAction from "~/routes/sak/$saksnummer/-components/TotrinnkontrollAction";
-import FerdigstillSakAction from "~/routes/sak/$saksnummer/-components/FerdigstillSakAction";
+import AttesterSakAction from "~/routes/sak/$saksnummer/-components/AttesterSakAction";
 import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
-import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";
+import SakErrorSummary from "~/routes/sak/$saksnummer/-components/SakErrorSummary";
 
 export const Route = createFileRoute('/sak/$saksnummer/oppsummering')({
     component: OppsummeringPage,
@@ -22,15 +22,24 @@ function OppsummeringPage() {
             case "UNDER_BEHANDLING":
                 return <TotrinnkontrollAction sak={sak}/>
             case "TIL_ATTESTERING":
-                return <FerdigstillSakAction sak={sak}/>
+                return <AttesterSakAction sak={sak}/>
             case "FERDIG_ATTESTERT":
                 return <>
-                    <Heading size={"medium"}>Saken er ferdig attestert</Heading>
+                    <InfoCard data-color={"warning"}>
+                        <InfoCard.Header>
+                            <InfoCard.Title>Saken er ferdig attestert men ikke fullført</InfoCard.Title>
+                        </InfoCard.Header>
+                        <InfoCard.Content>
+                            Denne stausen bør være midlertidig. Ta kontakt med support hvis saken forblir i denne
+                            statusen over lengre tid.
+                        </InfoCard.Content>
+                    </InfoCard>
+                    <SakErrorSummary sak={sak}/>
                 </>
             case "FERDIG":
                 return <>
                     <Heading size={"medium"}>Saken er ferdigstilt</Heading>
-                    <UtbetalingRetryButton sak={sak}/>
+                    <SakErrorSummary sak={sak}/>
                 </>
         }
     }

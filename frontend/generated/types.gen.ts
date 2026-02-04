@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly error: SakError;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
     readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
+    readonly error: SakError;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakError = {
@@ -281,12 +281,12 @@ export type SakWritable = {
 };
 
 export type SakErrorWritable = {
-    sak?: SakWritable;
+    sak?: unknown;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
@@ -475,6 +475,39 @@ export type GjenapneSakErrors = {
 export type GjenapneSakError = GjenapneSakErrors[keyof GjenapneSakErrors];
 
 export type GjenapneSakResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type FerdigstillSakData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/ferdigstill';
+};
+
+export type FerdigstillSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FerdigstillSakError = FerdigstillSakErrors[keyof FerdigstillSakErrors];
+
+export type FerdigstillSakResponses = {
     /**
      * OK
      */

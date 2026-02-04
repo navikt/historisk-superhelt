@@ -1,9 +1,10 @@
-import {BodyLong, Button, ErrorSummary, Heading, Radio, RadioGroup, Textarea, VStack} from "@navikt/ds-react";
+import {BodyLong, Button, Heading, Radio, RadioGroup, Textarea, VStack} from "@navikt/ds-react";
 import {Sak} from "@generated";
 import {useMutation} from "@tanstack/react-query";
 import {attersterSakMutation} from "@generated/@tanstack/react-query.gen";
 import {useState} from "react";
 import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
 
 interface Props {
     sak: Sak
@@ -16,7 +17,7 @@ interface ValideringState {
     kommentar?: string
 }
 
-export default function FerdigstillSakAction({sak}: Props) {
+export default function AttesterSakAction({sak}: Props) {
     const invalidateSakQuery = useInvalidateSakQuery();
     const saksnummer = sak.saksnummer
     const [beslutning, setBeslutning] = useState<RadioValue | "">("");
@@ -25,7 +26,7 @@ export default function FerdigstillSakAction({sak}: Props) {
 
     const attesterSak = useMutation({
         ...attersterSakMutation()
-        , onSettled: () => {
+        , onSuccess: () => {
             invalidateSakQuery(saksnummer);
         }
     })
@@ -99,10 +100,6 @@ export default function FerdigstillSakAction({sak}: Props) {
         >
             Fatte vedtak
         </Button>
-        {hasError && <ErrorSummary>
-            {attesterSak.error && <ErrorSummary.Item>{attesterSak?.error?.detail}</ErrorSummary.Item>}
-
-
-        </ErrorSummary>}
+        {hasError && <ErrorAlert error={attesterSak.error} />}
     </VStack>
 }
