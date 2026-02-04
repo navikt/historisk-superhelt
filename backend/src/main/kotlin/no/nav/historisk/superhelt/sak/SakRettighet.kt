@@ -36,7 +36,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                 }
             }
             SakStatus.FERDIG_ATTESTERT -> {
-
+               // TODO sette rettigheter som kan styre knapper for ferdigstilling
             }
 
             SakStatus.FERDIG -> {

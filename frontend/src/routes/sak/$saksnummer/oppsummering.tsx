@@ -30,7 +30,7 @@ function OppsummeringPage() {
                             <InfoCard.Title>Saken er ferdig attestert men ikke fullført</InfoCard.Title>
                         </InfoCard.Header>
                         <InfoCard.Content>
-                            Denne stausen bør være midlertidig. Ta kontakt med support hvis saken forblir i denne
+                            Denne statusen bør være midlertidig. Ta kontakt med support hvis saken forblir i denne
                             statusen over lengre tid.
                         </InfoCard.Content>
                     </InfoCard>

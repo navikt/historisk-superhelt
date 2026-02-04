@@ -65,15 +65,10 @@ class SakActionController(
     @PutMapping("status/ferdigstill")
     fun ferdigstill(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
         val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkStatusTransition(SakStatus.FERDIG)
+            .validate()
 
-        if (sak.status != SakStatus.FERDIG_ATTESTERT) {
-            throw ValideringException(
-                reason = "Sak må være i status FERDIG_ATTESTERT for å fullføre",
-                validationErrors = listOf(
-                    ValidationFieldError("status", "Sak er i status ${sak.status}")
-                )
-            )
-        }
         logger.info("Ferdigstiller sak $saksnummer på nytt")
 
         ferdigstillSak(sak)

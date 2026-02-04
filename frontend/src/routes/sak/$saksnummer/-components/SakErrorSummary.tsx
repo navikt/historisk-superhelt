@@ -9,11 +9,12 @@ interface Props {
 
 export default function SakErrorSummary({sak}: Props) {
     const utbetalingError = sak.utbetaling?.utbetalingStatus == "FEILET"
-    const vedtakBrevError = sak.vedtaksbrevBruker?.status != "SENDT"
+    const vedtakBrevError = sak.vedtaksbrevBruker != null && sak.vedtaksbrevBruker.status !== "SENDT"
+
     const hasError = utbetalingError || vedtakBrevError
 
     if (!hasError) {
-        return
+        return null
     }
 
     return <VStack gap="space-16">

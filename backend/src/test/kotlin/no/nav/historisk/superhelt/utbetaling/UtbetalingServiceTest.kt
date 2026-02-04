@@ -85,7 +85,7 @@ class UtbetalingServiceTest {
     }
 
     @Test
-    fun `skal kaste exception når status er UTBETALT`() {
+    fun `skal ignorere når status er UTBETALT`() {
         val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
         utbetalingService.sendTilUtbetaling(sak)
         verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())

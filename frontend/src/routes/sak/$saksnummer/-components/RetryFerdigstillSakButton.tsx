@@ -12,7 +12,7 @@ interface Props {
 
 export default function RetryFerdigstillSakButton({sak}: Props) {
     const invalidateSakQuery = useInvalidateSakQuery();
-    const retryMutation = useMutation({
+    const ferdigstillMutation = useMutation({
         ...ferdigstillSakMutation()
         , onSuccess: () => {
             invalidateSakQuery(sak.saksnummer);
@@ -20,14 +20,14 @@ export default function RetryFerdigstillSakButton({sak}: Props) {
     })
 
     function retryUtbetaling() {
-        retryMutation.mutate({path: {saksnummer: sak.saksnummer}})
+        ferdigstillMutation.mutate({path: {saksnummer: sak.saksnummer}})
     }
 
     return <VStack>
         <Button variant="secondary" data-color={"warning"} onClick={retryUtbetaling}
                 disabled={sak.status!== "FERDIG_ATTESTERT"}
-                loading={retryMutation.status === "pending"}
+                loading={ferdigstillMutation.status === "pending"}
                 icon={<ArrowCirclepathReverseIcon/>}>Ferdigstill sak</Button>
-        <ErrorAlert error={retryMutation.error}/>
+        <ErrorAlert error={ferdigstillMutation.error}/>
     </VStack>
 }
