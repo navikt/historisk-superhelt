@@ -7,6 +7,8 @@ import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
 import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakRettighet
+import no.nav.historisk.superhelt.sak.SakValidator
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -29,6 +31,9 @@ class BrevController(
         @PathVariable saksnummer: Saksnummer,
         @Valid @RequestBody request: OpprettBrevRequest): ResponseEntity<Brev> {
         val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.LES)
+            .validate()
         val brev = brevService.hentEllerOpprettBrev(sak, request.type, request.mottaker)
         sak.auditLog("Henter brev ${brev.uuid} for sak")
         return ResponseEntity.ok(brev)
@@ -38,6 +43,9 @@ class BrevController(
     @GetMapping("{brevId}")
     fun hentBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): Brev {
         val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.LES)
+            .validate()
         val brev = brevRepository.getByUUid(brevId)
         sak.auditLog("Henter brev ${brev.uuid} for sak")
         return brev
@@ -46,8 +54,12 @@ class BrevController(
     @Operation(operationId = "htmlBrev")
     @GetMapping("{brevId}/html", produces = ["text/html"])
     fun htmlBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): ByteArray {
-        val brev = brevRepository.getByUUid(brevId)
         val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.LES)
+            .validate()
+
+        val brev = brevRepository.getByUUid(brevId)
         val html = pdfgenService.genererHtml(sak, brev)
         sak.auditLog("Henter htmlbrev ${brev.uuid} for sak")
         return html
@@ -64,7 +76,10 @@ class BrevController(
             innhold = request.innhold,
             status = BrevStatus.UNDER_ARBEID
         )
-        // TODO sjekke tilgang i sak
+        val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .validate()
         return brevRepository.oppdater(brevId, oppdatertBrev)
     }
 
@@ -73,7 +88,9 @@ class BrevController(
     fun sendAnnetBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId) {
         val brev = brevRepository.getByUUid(brevId)
         val sak = sakRepository.getSak(saksnummer)
-
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .validate()
         brevSendingService.sendBrev(sak, brev)
 
     }
