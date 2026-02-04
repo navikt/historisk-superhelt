@@ -207,7 +207,7 @@ class SakActionControllerTest() {
             assertThatThrownBy {
                 sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true))
             }.isInstanceOf(ValideringException::class.java)
-                .hasMessageContaining("Ugyldig statusovergang")
+                .hasMessageContaining("Manglende rettighet i sak: ATTESTERE")
 
         }
     }

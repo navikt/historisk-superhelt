@@ -55,7 +55,8 @@ class SakService(
             )
 
             SakStatus.FERDIG_ATTESTERT -> UpdateSakDto(
-                status = nyStatus
+                status = nyStatus,
+                attestant = getAuthenticatedUser().navUser
             )
 
             SakStatus.FERDIG -> UpdateSakDto(

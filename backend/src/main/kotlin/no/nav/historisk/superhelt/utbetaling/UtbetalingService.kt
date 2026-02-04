@@ -26,7 +26,8 @@ class UtbetalingService(
                 ?: throw IllegalStateException("Utbetaling med uuid ${it.uuid} ikke funnet")
 
             if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
-                throw IllegalStateException("Utbetaling med uuid ${utbetaling.uuid} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke sendes til utbetaling")
+                logger.info("Utbetaling ${utbetaling.uuid} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
+                return
             }
             // Setter først status i egen transaksjon
             utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)

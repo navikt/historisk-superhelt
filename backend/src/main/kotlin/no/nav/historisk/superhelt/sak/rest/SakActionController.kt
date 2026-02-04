@@ -36,6 +36,10 @@ class SakActionController(
         @PathVariable saksnummer: Saksnummer,
         @RequestBody request: AttesterSakRequestDto): ResponseEntity<Unit> {
         val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.ATTESTERE)
+            .validate()
+
         if (!request.godkjent && (request.kommentar == null || request.kommentar.trim().length <= 5)) {
             throw ValideringException(
                 reason = "Valideringsfeil", validationErrors = listOf(
@@ -45,49 +49,55 @@ class SakActionController(
         }
 
         if (request.godkjent) {
-            ferdig_attestert(sak, saksnummer)
+            attester(sak)
+            ferdigstillSak(sak)
         } else {
-            SakValidator(sak)
-                .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
-                .checkRettighet(SakRettighet.ATTESTERE)
-                .validate()
-            sakService.endreStatus(sak, SakStatus.UNDER_BEHANDLING)
-            endringsloggService.logChange(
-                saksnummer = saksnummer,
-                endringsType = EndringsloggType.ATTESTERING_UNDERKJENT,
-                endring = "Sak returnert til saksbehandler",
-                beskrivelse = request.kommentar
-            )
+            sendTilbakeTilSaksbehandler(sak,  request)
         }
 
         return ResponseEntity.ok().build()
     }
 
-    private fun ferdig_attestert(sak: Sak, saksnummer: Saksnummer) {
+    private fun sendTilbakeTilSaksbehandler(
+        sak: Sak,
+        request: AttesterSakRequestDto) {
+        SakValidator(sak)
+            .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
+            .validate()
+        sakService.endreStatus(sak, SakStatus.UNDER_BEHANDLING)
+        endringsloggService.logChange(
+            saksnummer = sak.saksnummer,
+            endringsType = EndringsloggType.ATTESTERING_UNDERKJENT,
+            endring = "Sak returnert til saksbehandler",
+            beskrivelse = request.kommentar
+        )
+    }
+
+    private fun attester(sak: Sak) {
         SakValidator(sak)
             .checkStatusTransition(SakStatus.FERDIG_ATTESTERT)
             .checkRettighet(SakRettighet.ATTESTERE)
             .checkCompleted()
             .validate()
         endringsloggService.logChange(
-            saksnummer = saksnummer,
+            saksnummer = sak.saksnummer,
             endringsType = EndringsloggType.ATTESTERT_SAK,
             endring = "Sak attestert ok"
         )
         sakService.endreStatus(sak, SakStatus.FERDIG_ATTESTERT)
-        ferdigstillSak(sak, saksnummer)
+
     }
 
-    private fun ferdigstillSak(sak: Sak, saksnummer: Saksnummer) {
+    private fun ferdigstillSak(sak: Sak) {
         //TODO  håndtere retry
         sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it) }
         sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
 
         sakService.endreStatus(sak, SakStatus.FERDIG)
 
-        vedtakService.fattVedtak(saksnummer)
+        vedtakService.fattVedtak(sak.saksnummer)
         endringsloggService.logChange(
-            saksnummer = saksnummer,
+            saksnummer = sak.saksnummer,
             endringsType = EndringsloggType.FERDIGSTILT_SAK,
             endring = "Sak ferdigstilt"
         )

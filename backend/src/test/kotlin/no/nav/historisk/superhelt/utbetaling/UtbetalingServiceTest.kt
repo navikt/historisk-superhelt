@@ -78,26 +78,16 @@ class UtbetalingServiceTest {
 
 
     @Test
-    fun `skal kaste exception når status er SENDT_TIL_UTBETALING`() {
+    fun `skal ignorere når status er SENDT_TIL_UTBETALING`() {
         val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.SENDT_TIL_UTBETALING)
-
-        val exception = assertThrows<IllegalStateException> {
-            utbetalingService.sendTilUtbetaling(sak)
-        }
-
-        assertThat(exception.message).contains("er i status SENDT_TIL_UTBETALING")
+        utbetalingService.sendTilUtbetaling(sak)
         verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
     }
 
     @Test
     fun `skal kaste exception når status er UTBETALT`() {
         val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
-
-        val exception = assertThrows<IllegalStateException> {
-            utbetalingService.sendTilUtbetaling(sak)
-        }
-
-        assertThat(exception.message).contains("er i status UTBETALT")
+        utbetalingService.sendTilUtbetaling(sak)
         verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
     }
 
@@ -105,9 +95,7 @@ class UtbetalingServiceTest {
     @Test
     fun `skal ikke gjøre noe når sak mangler utbetaling`() {
         val sak = SakTestData.sakUtenUtbetaling()
-
         utbetalingService.sendTilUtbetaling(sak)
-
         verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
     }
 

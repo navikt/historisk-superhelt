@@ -21,23 +21,22 @@ class BrevSendingService(
     fun sendBrev(sak: Sak, brev: Brev) {
         val brevId = brev.uuid
 
-        BrevValidator(brev)
-            .checkBrev()
-            .checkKanSendes(sak)
-            .validate()
-
         if (brev.status == BrevStatus.SENDT) {
             log.info("Brev med id $brevId er allerede sendt, kan ikke sende på nytt")
             return
         }
 
+        BrevValidator(brev)
+            .checkBrev()
+            .checkKanSendes(sak)
+            .validate()
 
-        // sjekk om brev er arkivert
+        // Sett brev til klar til sending
         var oppdatertBrev = brevRepository.oppdater(
             uuid = brevId,
             oppdatering = BrevOppdatering(status = BrevStatus.KLAR_TIL_SENDING)
         )
-        // Sett brev til klar til sending
+
         oppdatertBrev = arkiverBrev(brev = oppdatertBrev, sak = sak)
 
         dokarkivService.distribuerBrev(sak = sak, brev = oppdatertBrev)

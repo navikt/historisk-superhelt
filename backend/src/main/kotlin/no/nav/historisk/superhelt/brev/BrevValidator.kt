@@ -19,7 +19,7 @@ class BrevValidator(private val brev: Brev) : Validator() {
     fun checkKanSendes(sak: Sak): BrevValidator {
         when (sak.status) {
             SakStatus.UNDER_BEHANDLING -> {
-                check(brev.type == BrevType.VEDTAKSBREV, "status", "Vedtaksbrev kan kun sendes når saken er ferdigbehandlet")
+                check(brev.type == BrevType.VEDTAKSBREV, "status", "Vedtaksbrev kan ikke sendes når saken er under behandling")
             }
 
             else -> {}
