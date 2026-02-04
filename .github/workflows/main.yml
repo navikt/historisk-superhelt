@@ -43,6 +43,7 @@ jobs:
           TELEMETRY: ${{ needs.build.outputs.telemetry }}
   deploy_prod:
     needs:
+      - build
       - deploy_dev
     name: "Deploy til prod"
     runs-on: ubuntu-latest
