@@ -23,6 +23,10 @@ function OppsummeringPage() {
                 return <TotrinnkontrollAction sak={sak}/>
             case "TIL_ATTESTERING":
                 return <FerdigstillSakAction sak={sak}/>
+            case "FERDIG_ATTESTERT":
+                return <>
+                    <Heading size={"medium"}>Saken er ferdig attestert</Heading>
+                </>
             case "FERDIG":
                 return <>
                     <Heading size={"medium"}>Saken er ferdigstilt</Heading>

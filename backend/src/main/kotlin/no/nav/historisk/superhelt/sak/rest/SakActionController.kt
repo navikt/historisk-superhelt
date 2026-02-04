@@ -45,7 +45,7 @@ class SakActionController(
         }
 
         if (request.godkjent) {
-            ferdigstillSak(sak, saksnummer)
+            ferdig_attestert(sak, saksnummer)
         } else {
             SakValidator(sak)
                 .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
@@ -63,9 +63,9 @@ class SakActionController(
         return ResponseEntity.ok().build()
     }
 
-    private fun ferdigstillSak(sak: Sak, saksnummer: Saksnummer) {
+    private fun ferdig_attestert(sak: Sak, saksnummer: Saksnummer) {
         SakValidator(sak)
-            .checkStatusTransition(SakStatus.FERDIG)
+            .checkStatusTransition(SakStatus.FERDIG_ATTESTERT)
             .checkRettighet(SakRettighet.ATTESTERE)
             .checkCompleted()
             .validate()
@@ -74,9 +74,14 @@ class SakActionController(
             endringsType = EndringsloggType.ATTESTERT_SAK,
             endring = "Sak attestert ok"
         )
+        sakService.endreStatus(sak, SakStatus.FERDIG_ATTESTERT)
+        ferdigstillSak(sak, saksnummer)
+    }
+
+    private fun ferdigstillSak(sak: Sak, saksnummer: Saksnummer) {
         //TODO  håndtere retry
-        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
         sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it) }
+        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
 
         sakService.endreStatus(sak, SakStatus.FERDIG)
 

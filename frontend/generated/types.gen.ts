@@ -50,7 +50,7 @@ export type Sak = {
     behandlingsnummer: string;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
     beskrivelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
@@ -208,7 +208,7 @@ export type OppgaveMedSak = {
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
     saksnummer?: string;
-    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
     readonly maskertPersonIdent: string;
 };
 
@@ -266,7 +266,7 @@ export type SakWritable = {
     behandlingsnummer: string;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
     beskrivelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
@@ -307,7 +307,7 @@ export type OppgaveMedSakWritable = {
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
     saksnummer?: string;
-    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG';
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
 };
 
 export type GetSakBySaksnummerData = {
@@ -1169,7 +1169,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: number;
+        dokumentId: string;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

@@ -54,10 +54,16 @@ class SakService(
                 attestant = NavUser.NULL_VALUE
             )
 
+            SakStatus.FERDIG_ATTESTERT -> UpdateSakDto(
+                status = nyStatus
+            )
+
             SakStatus.FERDIG -> UpdateSakDto(
                 status = nyStatus,
                 attestant = getAuthenticatedUser().navUser
             )
+
+
         }
 
         sakRepository.updateSak(saksnummer, updateDto)

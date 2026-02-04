@@ -34,10 +34,13 @@ export default function SakStatus({sak}: Props) {
     const hasError= sak.error.utbetalingError
 
     switch (sak.status) {
+
         case "UNDER_BEHANDLING":
             return <Tag variant="neutral" size="small">Under behandling</Tag>
         case "TIL_ATTESTERING":
             return <Tag variant="info" size="small">Til attestering</Tag>
+        case "FERDIG_ATTESTERT":
+            return <Tag variant="success-moderate" size="small">Ferdig attestert</Tag>
         case "FERDIG":
             return <Tag variant={hasError?"error":"success"} size="small" icon={getAlertIcon()}>{ferdigText(sak.vedtaksResultat)}</Tag>
     }
