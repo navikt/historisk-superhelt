@@ -1,34 +1,35 @@
 package no.nav.historisk.superhelt.infrastruktur.mdc
 
 import jakarta.servlet.FilterChain
-import jakarta.servlet.ServletRequest
-import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.core.Ordered
-import org.springframework.core.annotation.Order
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
-import org.springframework.web.filter.GenericFilterBean
-import java.util.UUID
+import org.springframework.web.filter.OncePerRequestFilter
+import java.util.*
 
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE)
-class MdcFilter() : GenericFilterBean() {
+class MdcFilter : OncePerRequestFilter() {
 
-    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain) {
 
         try {
+            val callId = request.getHeader(MdcHelper.CALL_ID_HEADER) ?: UUID.randomUUID().toString()
+            MdcHelper.callId = callId
 
-                if (request is HttpServletRequest ) {
-                    val callId = request.getHeader(MdcHelper.CALL_ID_HEADER) ?: UUID.randomUUID().toString()
-                    MdcHelper.callId = callId
-                }
+            val authentication = SecurityContextHolder.getContext().authentication
+            if (authentication != null && authentication.isAuthenticated) {
+                val username = authentication.name
+                MdcHelper.userIdent = username
+            }
 
-             chain.doFilter(request, response)
+            filterChain.doFilter(request, response)
 
         } finally {
             MdcHelper.clear()
         }
     }
-
-
 }

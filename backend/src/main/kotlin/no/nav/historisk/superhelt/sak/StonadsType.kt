@@ -7,7 +7,7 @@ enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskriv
     ANSIKT_PROTESE("Ansiktdefektprotese", KlasseKode.ANSIKTSDEFEKTPROTESE),
     OYE_PROTESE("Øyeprotese", KlasseKode.ØYEPROTESE),
     BRYSTPROTESE("Brystprotese/spesial-bh", KlasseKode.BRYSTPROTESE),
-    FOTTOY("Allminnelig fottøy i ulik størrelse", KlasseKode.VANLIGE_SKO),
+    FOTTOY("Alminnelig fottøy i ulik størrelse", KlasseKode.VANLIGE_SKO),
     REISEUTGIFTER("Reiseutgifter", KlasseKode.REISEUTGIFTER),
     FOTSENG("Fotseng", KlasseKode.FOTSENG),
     PROTESE("Ortopedisk protese", KlasseKode.ORTOPEDISK_PROTESE),

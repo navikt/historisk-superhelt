@@ -17,6 +17,7 @@
     *:focus {
         outline: none;
     }
+    min-height: 10rem;
 }
 
 .errorBorder {

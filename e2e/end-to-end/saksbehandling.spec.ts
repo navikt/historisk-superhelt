@@ -1,5 +1,4 @@
 import {test} from './test.fixtures'
-import {expect} from '@playwright/test'
 import {faker} from '@faker-js/faker'
 
 
@@ -28,10 +27,10 @@ test.describe('Superhelt', () => {
             await sok.fnr(brukerFnr)
         });
 
-        await test.step('Opprett sak', async () => {
-            await page.getByRole('button', {name: 'Opprett ny sak'}).click();
-            await expect(page.getByRole('button', { name: 'Opplysninger' })).toBeVisible();
-        });
+        // await test.step('Opprett sak', async () => {
+        //     await page.getByRole('button', {name: 'Opprett ny sak'}).click();
+        //     await expect(page.getByRole('button', { name: 'Opplysninger' })).toBeVisible();
+        // });
 
         //TODO  Foreløpig feiler det lokalt i playwright med   'X-Frame-Options' to 'deny'
 

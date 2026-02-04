@@ -21,7 +21,7 @@ class BrevTekstGenerator(private val sak: Sak) {
             BrevMottaker.BRUKER -> {
                 return """
                     <h1>Vedtaksbrev</h1>
-                    <p>Søknaden din av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}</p>
+                    <p>Søknaden din av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}.</p>
                  
                     <p>For ${sak.tildelingsAar} får du</p>
                     <ul>

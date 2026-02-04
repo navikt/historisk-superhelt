@@ -70,7 +70,6 @@ export function Header() {
             <InternalHeader.UserButton
                 as={Dropdown.Toggle}
                 name={user?.name ?? "--"}
-                description="Enhet: Skien"
             />
             <Dropdown.Menu>
                 <dl>
