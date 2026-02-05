@@ -1,10 +1,11 @@
-import {BodyLong, Button, Heading, Radio, RadioGroup, Textarea, VStack} from "@navikt/ds-react";
+import {BodyLong, Button, Dialog, Heading, Radio, RadioGroup, Textarea, VStack} from "@navikt/ds-react";
 import {Sak} from "@generated";
 import {useMutation} from "@tanstack/react-query";
 import {attersterSakMutation} from "@generated/@tanstack/react-query.gen";
 import {useState} from "react";
 import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {Link} from "@tanstack/react-router";
 
 interface Props {
     sak: Sak
@@ -23,11 +24,19 @@ export default function AttesterSakAction({sak}: Props) {
     const [beslutning, setBeslutning] = useState<RadioValue | "">("");
     const [kommentar, setKommentar] = useState("")
     const [validering, setValidering] = useState<ValideringState>({})
+    const [open, setOpen] = useState(false);
 
+    const handleAttesteringSuccess = () => {
+        if (beslutning == "ikke_godkjent") {
+            setOpen(true)
+        } else {
+            invalidateSakQuery(saksnummer);
+        }
+    }
     const attesterSak = useMutation({
         ...attersterSakMutation()
-        , onSuccess: () => {
-            invalidateSakQuery(saksnummer);
+        , onSuccess: (data) => {
+            handleAttesteringSuccess();
         }
     })
 
@@ -98,8 +107,25 @@ export default function AttesterSakAction({sak}: Props) {
             onClick={fatteVedtak}
             loading={attesterSak?.status === 'pending'}
         >
-            Fatte vedtak
+            Attester sak
         </Button>
-        {hasError && <ErrorAlert error={attesterSak.error} />}
+        {hasError && <ErrorAlert error={attesterSak.error}/>}
+        <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog.Popup closeOnOutsideClick={false}>
+                <Dialog.Header withClosebutton={false}>
+                    <Dialog.Title>Saken er ikke godkjent</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
+                    <BodyLong>
+                        Denne saken er underkjent og sendt tilbake til saksbehandler for videre arbeid. Det opprettes en ny oppgave som legges
+                        til oppgavebenken
+                    </BodyLong>
+                </Dialog.Body>
+                <Dialog.Footer>
+
+                    <Button as={Link} to={"/"} onClick={()=> setOpen(false)}>Gå til din oppgavebenk</Button>
+                </Dialog.Footer>
+            </Dialog.Popup>
+        </Dialog>
     </VStack>
 }
