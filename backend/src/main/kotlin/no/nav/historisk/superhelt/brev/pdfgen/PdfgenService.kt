@@ -31,7 +31,7 @@ class PdfgenService(
             saksbehandlerNavn = sak.saksbehandler.navn,
             beslutterNavn = sak.attestant?.navn ?: "<attestant>",
             kontor = "NAV Arbeid og ytelser",
-            html = brev.innhold ?: "",
+            html = htmlToXhtml(brev.innhold ?: ""),
             brevtype = brev.type.asPdfGenBrevType(),
             mottaker = brev.mottakerType.asPdfgenMottakerType(),
         )
