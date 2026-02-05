@@ -33,6 +33,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
                 brevId: brevId,
             }
         }),
+        refetchOnMount: false,
         refetchOnWindowFocus: false
     })
     const [editorContent, setEditorContent] = useState(brev?.innhold ?? "")
@@ -93,9 +94,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
         const lagretBrev = await lagreBrev();
         setShowValidation(true)
         if (lagretBrev && lagretBrev.valideringsfeil.length === 0) {
-            console.log("Starter onSuccess med brevId=", lagretBrev.uuid)
             await onSuccess(brevId)
-            console.log("Ferdig=", lagretBrev.uuid)
         }
         setLoading(false)
     }
@@ -110,7 +109,9 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
                        onBlur={lagreBrev}/>
             <HtmlPdfgenEditor html={genpdfHtml} onChange={editorChanged}
                               readOnly={readOnly}
-                              error={getErrorMessage("innhold")}/>
+                              error={getErrorMessage("innhold")}
+                              onBlur={() => lagreBrev}
+            />
             <HStack gap="8" align="start">
                 <Button type="submit" variant="secondary" onClick={onActionClick} disabled={readOnly}
                         loading={loading}>{buttonText}</Button>

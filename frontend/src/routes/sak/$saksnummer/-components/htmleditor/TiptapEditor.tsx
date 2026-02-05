@@ -2,7 +2,7 @@ import styles from './TiptapEditor.module.css'
 import type {Editor} from '@tiptap/react'
 import {EditorContent, EditorContext, useEditor, useEditorState} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import React, {useMemo} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {Box, ErrorMessage} from "@navikt/ds-react";
 import {ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon} from "@navikt/aksel-icons";
 import {Bold, Italic} from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
@@ -127,19 +127,29 @@ function MenuBar({editor}: { editor: Editor }) {
 interface TiptapEditorProps {
     initialContentHtml: string,
     onChange: (html: string) => void,
+    onBlur?: () => void,
     error: string | undefined
     readOnly?: boolean
 }
 
-function TiptapEditor({initialContentHtml, onChange, error, readOnly}: TiptapEditorProps) {
+function TiptapEditor({initialContentHtml, onChange, onBlur, error, readOnly}: TiptapEditorProps) {
     const editor = useEditor({
         extensions,
         content: initialContentHtml,
         editable: !readOnly,
         onUpdate: (editorState) => {
             onChange(editorState.editor.getHTML())
-        }
+        },
+        onBlur: onBlur
     })
+
+
+    // Oppdater editor-innhold når initialContentHtml endres
+    useEffect(() => {
+        if (editor && initialContentHtml !== editor.getHTML()) {
+            editor.commands.setContent(initialContentHtml)
+        }
+    }, [editor, initialContentHtml])
 
     const providerValue = useMemo(() => ({editor}), [editor])
 
