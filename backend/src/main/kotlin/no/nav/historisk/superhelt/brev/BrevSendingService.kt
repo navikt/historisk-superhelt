@@ -41,7 +41,7 @@ class BrevSendingService(
 
         dokarkivService.distribuerBrev(sak = sak, brev = oppdatertBrev)
 
-        oppdatertBrev=brevRepository.oppdater(uuid = brevId, oppdatering = BrevOppdatering(status = BrevStatus.SENDT))
+        oppdatertBrev = brevRepository.oppdater(uuid = brevId, oppdatering = BrevOppdatering(status = BrevStatus.SENDT))
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
             endringsType = EndringsloggType.SENDT_BREV,
