@@ -14,5 +14,3 @@ fun htmlToXhtml(html: String): String {
     return document.outerHtml()
 }
 
-
-
