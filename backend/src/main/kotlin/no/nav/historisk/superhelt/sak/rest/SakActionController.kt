@@ -50,7 +50,7 @@ class SakActionController(
         logger.info("Sak $saksnummer attestert - godkjent: ${request.godkjent}")
         if (request.godkjent) {
             attester(sak)
-            ferdigstillSak(sak)
+            ferdigstill(sak.saksnummer)
         } else {
             sendTilbakeTilSaksbehandler(sak, request)
         }
@@ -71,7 +71,16 @@ class SakActionController(
 
         logger.info("Ferdigstiller sak $saksnummer på nytt")
 
-        ferdigstillSak(sak)
+        sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it) }
+        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
+
+        sakService.endreStatus(sak, SakStatus.FERDIG)
+        vedtakService.fattVedtak(sak.saksnummer)
+        endringsloggService.logChange(
+            saksnummer = sak.saksnummer,
+            endringsType = EndringsloggType.FERDIGSTILT_SAK,
+            endring = "Sak ferdigstilt"
+        )
         return ResponseEntity.ok().build()
     }
 
@@ -103,21 +112,6 @@ class SakActionController(
         )
         sakService.endreStatus(sak, SakStatus.FERDIG_ATTESTERT)
 
-    }
-
-    private fun ferdigstillSak(sak: Sak) {
-        //TODO  håndtere retry
-        sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it) }
-        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
-
-        sakService.endreStatus(sak, SakStatus.FERDIG)
-
-        vedtakService.fattVedtak(sak.saksnummer)
-        endringsloggService.logChange(
-            saksnummer = sak.saksnummer,
-            endringsType = EndringsloggType.FERDIGSTILT_SAK,
-            endring = "Sak ferdigstilt"
-        )
     }
 
     @Operation(operationId = "sendTilAttestering")
