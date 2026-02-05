@@ -147,7 +147,7 @@ function TiptapEditor({initialContentHtml, onChange, onBlur, error, readOnly}: T
     // Oppdater editor-innhold når initialContentHtml endres
     useEffect(() => {
         if (editor && initialContentHtml !== editor.getHTML()) {
-            editor.commands.setContent(initialContentHtml)
+            editor.commands.setContent(initialContentHtml, {emitUpdate: false})
         }
     }, [editor, initialContentHtml])
 

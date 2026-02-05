@@ -33,7 +33,6 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
                 brevId: brevId,
             }
         }),
-        refetchOnMount: false,
         refetchOnWindowFocus: false
     })
     const [editorContent, setEditorContent] = useState(brev?.innhold ?? "")
@@ -110,7 +109,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
             <HtmlPdfgenEditor html={genpdfHtml} onChange={editorChanged}
                               readOnly={readOnly}
                               error={getErrorMessage("innhold")}
-                              onBlur={() => lagreBrev}
+                              onBlur={lagreBrev}
             />
             <HStack gap="8" align="start">
                 <Button type="submit" variant="secondary" onClick={onActionClick} disabled={readOnly}
