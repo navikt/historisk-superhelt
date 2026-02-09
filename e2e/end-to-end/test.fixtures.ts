@@ -35,7 +35,8 @@ export const test = base.extend<Fixtures>({
         await use(auth)
     },
 
-    oppgave: async ({page}, use) => {
+    // biome-ignore lint/correctness/noEmptyPattern: "Denne trengs for å kunne bruke oppgave-fixture i beforeAll uten å måtte bruke page-fixture"
+    oppgave: async ({}, use) => {
         const oppgave = new OppgaveUtils()
         await use(oppgave)
     },
