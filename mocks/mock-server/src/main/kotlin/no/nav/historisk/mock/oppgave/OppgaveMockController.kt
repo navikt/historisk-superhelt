@@ -21,17 +21,7 @@ class OppgaveMockController() {
     private val repository = mutableMapOf<EksternOppgaveId, OppgaveDto>()
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    init {
-        generateTestdata(OppgaveType.JFR, 10000)
-    }
 
-    private fun generateTestdata(type: OppgaveType, id: Long) {
-        val oppgave = generateOppgave(fnr = "11111111111", tilordnetRessurs = NavIdent(defaultSaksbehandler)).copy(
-            oppgavetype = type.oppgavetype,
-            id = EksternOppgaveId(id),
-        )
-        repository.put(oppgave.id, oppgave)
-    }
 
     @GetMapping()
     fun info(): MutableMap<EksternOppgaveId, OppgaveDto> {
@@ -94,11 +84,10 @@ class OppgaveMockController() {
         repository.put(nyOppgave.id, nyOppgave)
         // Steng tilhørende journalføringsoppgave hvis dn er koblet samme journalpostid
         // Simulering av at det gjøres i gosys
-        repository.values
-            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
-            .filter { it.journalpostId == nyOppgave.journalpostId }
-            .forEach { repository[it.id] = it.copy(status = OppgaveDto.Status.FERDIGSTILT) }
-
+//        repository.values
+//            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
+//            .filter { it.journalpostId == nyOppgave.journalpostId }
+//            .forEach { repository[it.id] = it.copy(status = OppgaveDto.Status.FERDIGSTILT) }
 
         return nyOppgave
     }
