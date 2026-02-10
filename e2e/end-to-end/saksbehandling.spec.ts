@@ -64,14 +64,12 @@ test.describe("Superhelt", () => {
         })
 
         await test.step("Skriv brev", async () => {
-            // await expect(page.getByRole("link", {name: "Brev til bruker"})).toHaveClass(/active/)
+            await expect(page.getByRole("link", {name: "Brev til bruker"})).toHaveClass(/active/)
             await expect(page.getByText("Dokumentbeskrivelse i arkivet")).toBeVisible()
-
             await page.getByRole("button", {name: "Lagre og gå videre"}).click()
-            await page.waitForLoadState("networkidle")
         })
         await test.step("Send til attestering", async () => {
-            // await expect(page.getByRole("link", {name: "Oppsummering"})).toHaveClass(/active/)
+            await expect(page.getByRole("link", {name: "Oppsummering"})).toHaveClass(/active/)
             await expect(page.getByRole("heading", {name: "Til attestering"})).toBeVisible()
             await page.getByRole("button", {name: "Send til attestering"}).click()
             await page.waitForLoadState("networkidle")
@@ -109,8 +107,8 @@ test.describe("Superhelt", () => {
             ).toBeVisible()
             await page.getByRole('radio', {name: 'Godkjenn vedtak'}).check()
             await page.getByRole('button', {name: 'Attester sak'}).click()
-            await page.waitForLoadState("networkidle")
-            await expect(page.getByRole("heading", {name: "ferdigstilt"})).toBeVisible()
+      
+            await expect(page.getByRole("heading", {name: "ferdigstilt"})).toBeVisible({timeout:20_000})
         })
     })
 })
