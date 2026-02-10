@@ -26,7 +26,7 @@ export class OppgaveUtils {
 
         const oppgave = await response.json();
         console.debug(`Opprettet oppgave med id ${oppgave.id} for ${personIdent} `);
-        context.dispose();
+        await context.dispose();
         return oppgave.id;
     }
 
@@ -41,6 +41,6 @@ export class OppgaveUtils {
                 tilordnetRessurs: saksbehandler,
             },
         });
-        context.dispose();
+        await context.dispose();
     }
 }
