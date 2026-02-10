@@ -29,7 +29,7 @@ jobs:
 #          sparse-checkout: |
 #            - backend/hel-pdfgen
 
-      - uses: .github/actions/setup
+      - uses: ./.github/actions/setup
         with:
           node-auth-token: ${{ secrets.READER_TOKEN }}
      
