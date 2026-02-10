@@ -22,6 +22,7 @@ jobs:
         with:
           repository: 'navikt/historisk-helsetjenester' # Owner/repo name
           path: 'historisk-helsetjenester'
+          token: ${{ secrets.READER_TOKEN }}
 
       - uses: ./.github/actions/setup
         with:
