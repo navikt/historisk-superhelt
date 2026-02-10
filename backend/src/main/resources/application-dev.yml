@@ -39,7 +39,7 @@ app:
     url: http://localhost:9080/tilgangsmaskin-mock
     audience: api://mock.tilgangsmaskin/.default
   pdfgen:
-    url: https://historisk-pdfgen.intern.dev.nav.no
+    url: http://localhost:8086
   dokarkiv:
     url: http://localhost:9080/dokarkiv-mock
     audience: api://mock.dokarkiv/.default

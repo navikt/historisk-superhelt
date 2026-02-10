@@ -17,6 +17,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - name: Checkout historisk helt for pdfgen
+        uses: actions/checkout@v6
+        with:
+          repository: 'navikt/historisk-helsetjenester' # Owner/repo name
+          path: 'historisk-helsetjenester'
+
       - uses: ./.github/actions/setup
         with:
           node-auth-token: ${{ secrets.READER_TOKEN }}
