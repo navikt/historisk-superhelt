@@ -10,7 +10,6 @@ export class OppgaveUtils {
         const context = await request.newContext({
             baseURL: mockBaseURL,
         });
-        // Create a repository.
         const response = await context.post("/oppgave-mock/api/v1/oppgaver", {
             data: {
                 personident: personIdent,

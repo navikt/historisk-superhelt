@@ -82,12 +82,6 @@ class OppgaveMockController() {
             opprettetTidspunkt = OffsetDateTime.now(),
         )
         repository.put(nyOppgave.id, nyOppgave)
-        // Steng tilhørende journalføringsoppgave hvis dn er koblet samme journalpostid
-        // Simulering av at det gjøres i gosys
-//        repository.values
-//            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
-//            .filter { it.journalpostId == nyOppgave.journalpostId }
-//            .forEach { repository[it.id] = it.copy(status = OppgaveDto.Status.FERDIGSTILT) }
 
         return nyOppgave
     }
