@@ -47,6 +47,7 @@ updates:
     directories:
     - "/backend"
     - "/mocks/mock-server"
+    - "/pdfgen"
     schedule:
       interval: "weekly"
  

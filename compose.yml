@@ -2,7 +2,7 @@ include:
   - ./mocks/mock-oidc/compose.yml
   - ./mocks/mock-server/compose.yml
 # Bruker pdfgen fra helt for å unngå duplisering. Muligens ikke optimalt
-  - ../historisk-helsetjenester/backend/hel-pdfgen/compose.yml
+  - ./pdfgen/compose.yml
 
 services:
 

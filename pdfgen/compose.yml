@@ -1,0 +1,15 @@
+services:
+  pdfgen:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: superhelt-pdfgen:latest
+    ports:
+      - "8086:8080"
+    volumes:
+      - ./templates:/app/templates
+      - ./fonts:/app/fonts
+      - ./data:/app/data
+      - ./resources:/app/resources
+#    environment:
+#      JDK_JAVA_OPTIONS: ${JDK_JAVA_OPTIONS}
