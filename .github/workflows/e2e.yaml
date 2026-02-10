@@ -17,14 +17,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          path: superhelt
       - name: Checkout historisk helt for pdfgen
         uses: actions/checkout@v6
         with:
           repository: 'navikt/historisk-helsetjenester' # Owner/repo name
           path: 'historisk-helsetjenester'
+          ref: 'main'
           token: ${{ secrets.READER_TOKEN }}
+#          sparse-checkout: |
+#            - backend/hel-pdfgen
 
-      - uses: ./.github/actions/setup
+      - uses: .github/actions/setup
         with:
           node-auth-token: ${{ secrets.READER_TOKEN }}
      
@@ -32,18 +37,21 @@ jobs:
         run: echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
 
       - name: Build mock server
+        working-directory: ./superhelt
         run: mvn --batch-mode  -pl mocks/mock-server -am -DskipTests verify
 
       - name: Start Docker stack
+        working-directory: ./superhelt
         run: docker compose up --build -d --wait
 
       - name: Start backend
+        working-directory: ./superhelt
         run: |
           nohup mvn --batch-mode -pl backend -am -DskipTests -Dspring-boot.run.profiles=dev clean package spring-boot:run  > backend.log 2>&1 &
           echo $! > backend.pid
 
       - name: Installer node moduler
-        working-directory: ./e2e
+        working-directory: ./superhelt/e2e
         run: npm ci
 
 #      - name: Biome check
@@ -60,14 +68,14 @@ jobs:
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
-        working-directory: ./e2e
+        working-directory: ./superhelt/e2e
         run: npx playwright install chromium --with-deps
 
       - name: Vent på backend
         run: timeout 300 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
 
       - name: Run E2E tests
-        working-directory: ./e2e
+        working-directory: ./superhelt/e2e
         run: npx playwright test
 
       - name: Upload Playwright Report
@@ -75,15 +83,17 @@ jobs:
         if: always()
         with:
           name: e2e-playwright-report
-          path: ./e2e/playwright-report/
+          path: ./superhelt/e2e/playwright-report/
           retention-days: 3
 
       - name: Clean up Docker containers
         if: always()
+        working-directory: ./superhelt
         run: |
           docker compose down
       
       - name: Stopp backend
+        working-directory: ./superhelt
         if: always()
         run: |
           if [ -f backend.pid ]; then
@@ -94,5 +104,5 @@ jobs:
         if: always()
         with:
           name: backend-log
-          path: backend.log
+          path: ./superhelt/backend.log
           retention-days: 3
