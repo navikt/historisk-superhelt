@@ -5,7 +5,6 @@ import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.oppgave.OppgaveClient
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.FinnOppgaverParams
@@ -25,7 +24,6 @@ private const val TEMA_HEL = "HEL"
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val oppgaveRepository: OppgaveRepository,
-    private val sakRepository: SakRepository
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -94,7 +92,7 @@ class OppgaveService(
     @Transactional(readOnly = true)
     fun ferdigstillOppgaver(saksnummer: Saksnummer, vararg types: OppgaveType?) {
         if (types.isEmpty()) {
-            logger.debug("Ferdigstiller alle oppgaver for sak {}")
+            logger.debug("Ferdigstiller alle oppgaver for sak {}", saksnummer)
             val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, null)
             oppgaveIds.forEach { oppgaveId ->
                 ferdigstillOppgave(oppgaveId)
