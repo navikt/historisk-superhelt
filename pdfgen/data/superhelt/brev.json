@@ -1,0 +1,16 @@
+{
+  "behandlingsnummer": "123123123",
+  "personalia": {
+    "ident": "12345678901",
+    "fornavn": "Planet",
+    "etternavn": "Planetus"
+  },
+  "datoForUtsending": "3. august 2023",
+  "saksbehandlerNavn": "Kåre Kropp",
+  "beslutterNavn": "Pelle Parafin",
+  "kontor": "Nav Hjelpemidler Øst Viken",
+  "mottaker": "BRUKER",
+  "brevtype": "VEDTAKSBREV",
+
+  "html": "<h1>h1 heading</h1>\n<h2>h2 heading</h2>\n<h3>h3 heading</h3>\n<h4>h4 heading</h4>\n\n\n<b>bold</b>\n<i>italic</i>\n\n<p>lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget consectetur sagittis, nisl nunc\n    egestas nunc, vitae facilisis enim nisi nec nisi. Sed euismod, nisl eget consectetur sagittis, nisl nunc egestas\n    nunc, vitae facilisis enim nisi nec nisi.</p>\n\n<ul>\n    <li>List item 1</li>\n    <li>List item 2</li>\n    <li>List item 3</li>\n</ul>\n\n<ol>\n    <li>List item 1</li>\n    <li>List item 2</li>\n    <li>List item 3</li>\n    <li>List item 4</li>\n</ol>\n\n<table>\n    <caption>\n        Council budget (in £) 2018\n    </caption>\n    <thead>\n    <tr>\n        <th>Items</th>\n        <th>Expenditure</th>\n    </tr>\n    </thead>\n    <tbody>\n    <tr>\n        <th>Donuts</th>\n&nbsp;&nbsp;&nbsp;     <td>3,000</td>\n    </tr>\n    <tr>\n        <th >Stationery</th>\n        <td>18,000</td>\n    </tr>\n    </tbody>\n    <tfoot>\n    <tr>\n        <th >Totals</th>\n        <td>21,000</td>\n    </tr>\n    </tfoot>\n</table>"
+}

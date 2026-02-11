@@ -1,6 +1,8 @@
 include:
   - ./mocks/mock-oidc/compose.yml
   - ./mocks/mock-server/compose.yml
+# Bruker pdfgen fra helt for å unngå duplisering. Muligens ikke optimalt
+  - ./pdfgen/compose.yml
 
 services:
 

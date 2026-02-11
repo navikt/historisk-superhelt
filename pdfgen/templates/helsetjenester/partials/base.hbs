@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "dtd/xhtml1-strict.dtd">
+<html lang="no">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Vedtaksbrev for Helsetjenester" />
+  <meta name="author" content="Team historisk" />
+  <meta name="subject" content="Helsetjenester" />
+  {{> helsetjenester/partials/style}}
+  <title>Vedtaksbrev for Helsetjenester</title>
+</head>
+<body>
+<article>
+  <section>
+    <img alt="Nav logo" class="navLogo" src="{{image "NAV_logo_digital_Red.svg"}}" />
+    {{#with personalia}}
+      <header>
+        <div class="personalia">
+          <p>Navn: </p>
+          <p>Fødselsnummer: </p>
+          <p>Behandlingsnummer: </p>
+        </div>
+        <div class="personalia inline">
+          <p>{{fornavn}} {{etternavn}}</p>
+          <p>{{ident}}</p>
+          <p>{{behandlingsnummer}}</p>
+        </div>
+        <p class="dato">{{datoForUtsending}}</p>
+      </header>
+    {{/with}}
+
+  </section>
+  <section>
+    {{> @partial-block}}         <!-- Innholdet i partial-block er brev.hbs -->
+  </section>
+  {{#eq mottaker 'BRUKER'}}
+    {{#eq brevtype 'VEDTAKSBREV'}}
+      {{#eq målform 'NN'}}
+        {{> helsetjenester/partials/klagerett_NN}}
+        {{> helsetjenester/partials/innsynsrett_NN}}
+      {{/eq}}
+      {{#not_eq målform 'NN'}}
+        {{> helsetjenester/partials/klagerett}}
+        {{> helsetjenester/partials/innsynsrett}}
+      {{/not_eq}}
+    {{/eq}}
+    {{#eq målform 'NN'}}
+      {{> helsetjenester/partials/personopplysningsrett_NN}}
+      {{> helsetjenester/partials/veiledningsrett_NN}}
+      {{> helsetjenester/partials/sporsmal_NN}}
+    {{/eq}}
+    {{#not_eq målform 'NN'}}
+      {{> helsetjenester/partials/personopplysningsrett}}
+      {{> helsetjenester/partials/veiledningsrett}}
+      {{> helsetjenester/partials/sporsmal}}
+    {{/not_eq}}
+  {{/eq}}
+  <section class="hilsen">
+    <p>Med vennlig hilsen</p>
+    <p>{{kontor}}</p>
+    <div class="signatur">
+      <div class="beslutter">
+        {{#if beslutterNavn}}
+          <p>{{beslutterNavn}}</p>
+        {{else}}
+          <p>-</p>
+        {{/if}}
+      </div>
+      <div>
+        <p>{{saksbehandlerNavn}}</p>
+      </div>
+    </div>
+  </section>
+</article>
+</body>
+</html>
