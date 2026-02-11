@@ -19,7 +19,7 @@ class EndringsloggJpaEntity(
     @JoinColumn(name = "sak_id", nullable = false)
     val sak: SakJpaEntity,
 
-    val tidspunkt: Instant ,
+    val tidspunkt: Instant,
     val endretAv: NavIdent,
     @Enumerated(EnumType.STRING)
     @Column(name = "endringslogg_type")

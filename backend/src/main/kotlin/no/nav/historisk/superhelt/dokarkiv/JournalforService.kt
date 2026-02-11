@@ -45,10 +45,10 @@ class JournalforService (
                 endringsloggService.logChange(
                     saksnummer = nySak.saksnummer,
                     endringsType = EndringsloggType.DOKUMENT_MOTTATT,
-                    endring = "Dokument mottatt NAV",
+                    endring = "Dokument mottatt av NAV",
                     tidspunkt = it.toInstant(),
                     navBruker = NavIdent("system"),
-                    beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelder.stringValue}\" registert mottatt"
+                    beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelder.stringValue}\" registrert som mottatt"
                 )
         }
         endringsloggService.logChange(
