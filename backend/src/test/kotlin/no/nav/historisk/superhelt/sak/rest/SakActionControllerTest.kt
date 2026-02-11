@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.sak.rest
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
+import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -40,6 +41,8 @@ class SakActionControllerTest() {
 
     @MockitoBean
     private lateinit var utbetalingService: UtbetalingService
+    @MockitoBean
+    private lateinit var oppgaveService: OppgaveService
 
     @WithSaksbehandler(navIdent = "s12345")
     @Nested

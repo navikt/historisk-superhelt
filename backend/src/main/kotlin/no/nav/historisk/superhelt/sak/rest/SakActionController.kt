@@ -54,7 +54,7 @@ class SakActionController(
         } else {
             sendTilbakeTilSaksbehandler(sak, request)
         }
-
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.GOD_VED)
         return ResponseEntity.ok().build()
     }
 
@@ -76,6 +76,8 @@ class SakActionController(
 
         sakService.endreStatus(sak, SakStatus.FERDIG)
         vedtakService.fattVedtak(sak.saksnummer)
+        oppgaveService.ferdigstillOppgaver(sak.saksnummer)
+
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
             endringsType = EndringsloggType.FERDIGSTILT_SAK,
@@ -96,6 +98,13 @@ class SakActionController(
             endringsType = EndringsloggType.ATTESTERING_UNDERKJENT,
             endring = "Sak returnert til saksbehandler",
             beskrivelse = request.kommentar
+        )
+
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.BEH_UND_VED,
+            sak = sak,
+            beskrivelse = "Sak ${sak.saksnummer} underkjent i attestering. Kommentar: ${request.kommentar}",
+            tilordneSaksbehandler = false
         )
     }
 
@@ -126,10 +135,13 @@ class SakActionController(
         logger.info("Sak $saksnummer sent til attestering")
         sakService.endreStatus(sak, SakStatus.TIL_ATTESTERING)
 
-        oppgaveService.ferdigstillOppgaver(
-            saksnummer = saksnummer,
-            type = OppgaveType.BEH_SAK
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.GOD_VED,
+            sak = sak,
+            beskrivelse = "Attestering av sak ${sak.type.beskrivelse} med saksnummer ${sak.saksnummer} saksbehandlet av ${sak.saksbehandler.navIdent}",
+            tilordneSaksbehandler = false
         )
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK, OppgaveType.BEH_UND_VED)
 
         endringsloggService.logChange(
             saksnummer = saksnummer,

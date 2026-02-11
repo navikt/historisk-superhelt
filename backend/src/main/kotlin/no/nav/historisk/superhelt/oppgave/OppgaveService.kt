@@ -12,6 +12,7 @@ import no.nav.oppgave.model.FinnOppgaverParams
 import no.nav.oppgave.model.OppgaveDto
 import no.nav.oppgave.model.OpprettOppgaveRequest
 import no.nav.oppgave.model.PatchOppgaveRequest
+import no.nav.oppgave.type
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -65,7 +66,6 @@ class OppgaveService(
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
-    @Transactional
     fun ferdigstillOppgave(oppgaveId: EksternOppgaveId) {
         val oppgave = oppgaveClient.hentOppgave(oppgaveId)
 
@@ -86,28 +86,42 @@ class OppgaveService(
                 status = OppgaveDto.Status.FERDIGSTILT
             )
         )
-        logger.info("Ferdigstiller oppgave med id {}", oppgave.id)
+        logger.info("Ferdigstiller oppgave {}: {}", oppgave.type, oppgave.id)
     }
 
+    /** Ferdigstiller alle oppgaver av gitt type for en sak. Hvis ingen type er oppgitt, ferdigstilles alle oppgaver for saken. */
     @PreAuthorize("hasAuthority('WRITE')")
-    fun ferdigstillOppgaver(saksnummer: Saksnummer, type: OppgaveType?) {
-        val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
-        oppgaveIds.forEach { oppgaveId ->
-            ferdigstillOppgave(oppgaveId)
+    @Transactional(readOnly = true)
+    fun ferdigstillOppgaver(saksnummer: Saksnummer, vararg types: OppgaveType?) {
+        if (types.isEmpty()) {
+            val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, null)
+            oppgaveIds.forEach { oppgaveId ->
+                ferdigstillOppgave(oppgaveId)
+            }
+        } else {
+            types.forEach { type ->
+                val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
+                oppgaveIds.forEach { oppgaveId ->
+                    ferdigstillOppgave(oppgaveId)
+                }
+            }
         }
     }
 
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#sak.fnr)")
     @Transactional
-    fun opprettOppgave(type: OppgaveType, sak: Sak, tilordneSaksbehandler: Boolean = true): OppgaveMedSak {
+    fun opprettOppgave(
+        type: OppgaveType, sak: Sak,
+        beskrivelse: String? = null,
+        tilordneSaksbehandler: Boolean = true): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(
                 tema = TEMA_HEL,
                 oppgavetype = type.oppgavetype,
 //                journalpostId = journalpostId,
-                beskrivelse = "Saksbehandling i superhelt",
+                beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
                 saksreferanse = sak.saksnummer.value,
                 behandlesAvApplikasjon = "SUPERHELT",
