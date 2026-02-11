@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.endringslogg
 
 enum class EndringsloggType {
+    DOKUMENT_MOTTATT,
     OPPRETTET_SAK,
     OPPDATERTE_SAKSDETALJER,
     TIL_ATTESTERING,

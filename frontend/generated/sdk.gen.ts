@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AttersterSakData, AttersterSakErrors, AttersterSakResponses, CreateSakData, CreateSakErrors, CreateSakResponses, FerdigstillSakData, FerdigstillSakErrors, FerdigstillSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, FinnJournalposterForSakData, FinnJournalposterForSakErrors, FinnJournalposterForSakResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetOppgaveData, GetOppgaveErrors, GetOppgaveResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, HentBrevData, HentBrevErrors, HentBrevResponses, HentEllerOpprettBrevData, HentEllerOpprettBrevErrors, HentEllerOpprettBrevResponses, HentEndringsloggForSakData, HentEndringsloggForSakErrors, HentEndringsloggForSakResponses, HentFeileteUtbetalingerData, HentFeileteUtbetalingerErrors, HentFeileteUtbetalingerResponses, HentJournalpostMetaDataData, HentJournalpostMetaDataErrors, HentJournalpostMetaDataResponses, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerErrors, HentOppgaverForSaksbehandlerResponses, HentVedtakForSakData, HentVedtakForSakErrors, HentVedtakForSakResponses, HtmlBrevData, HtmlBrevErrors, HtmlBrevResponses, JournalforData, JournalforErrors, JournalforResponses, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostErrors, LastnedDokumentFraJournalpostResponses, OppdaterBrevData, OppdaterBrevErrors, OppdaterBrevResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerErrors, RekjorFeileteUtbetalingerResponses, RetryFeiletUtbetalingData, RetryFeiletUtbetalingErrors, RetryFeiletUtbetalingResponses, SendBrevData, SendBrevErrors, SendBrevResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
+import type { AttersterSakData, AttersterSakErrors, AttersterSakResponses, FerdigstillSakData, FerdigstillSakErrors, FerdigstillSakResponses, FindPersonByFnrData, FindPersonByFnrErrors, FindPersonByFnrResponses, FindSakerForPersonData, FindSakerForPersonErrors, FindSakerForPersonResponses, FinnJournalposterForSakData, FinnJournalposterForSakErrors, FinnJournalposterForSakResponses, GetKodeverkStonadTypeData, GetKodeverkStonadTypeErrors, GetKodeverkStonadTypeResponses, GetOppgaveData, GetOppgaveErrors, GetOppgaveResponses, GetPersonByMaskertIdentData, GetPersonByMaskertIdentErrors, GetPersonByMaskertIdentResponses, GetSakBySaksnummerData, GetSakBySaksnummerErrors, GetSakBySaksnummerResponses, GetUserInfoData, GetUserInfoErrors, GetUserInfoResponses, GjenapneSakData, GjenapneSakErrors, GjenapneSakResponses, HentBrevData, HentBrevErrors, HentBrevResponses, HentEllerOpprettBrevData, HentEllerOpprettBrevErrors, HentEllerOpprettBrevResponses, HentEndringsloggForSakData, HentEndringsloggForSakErrors, HentEndringsloggForSakResponses, HentFeileteUtbetalingerData, HentFeileteUtbetalingerErrors, HentFeileteUtbetalingerResponses, HentJournalpostMetaDataData, HentJournalpostMetaDataErrors, HentJournalpostMetaDataResponses, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerErrors, HentOppgaverForSaksbehandlerResponses, HentVedtakForSakData, HentVedtakForSakErrors, HentVedtakForSakResponses, HtmlBrevData, HtmlBrevErrors, HtmlBrevResponses, JournalforData, JournalforErrors, JournalforResponses, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostErrors, LastnedDokumentFraJournalpostResponses, OppdaterBrevData, OppdaterBrevErrors, OppdaterBrevResponses, OppdaterSakData, OppdaterSakErrors, OppdaterSakResponses, OppdaterUtbetalingData, OppdaterUtbetalingErrors, OppdaterUtbetalingResponses, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerErrors, RekjorFeileteUtbetalingerResponses, RetryFeiletUtbetalingData, RetryFeiletUtbetalingErrors, RetryFeiletUtbetalingResponses, SendBrevData, SendBrevErrors, SendBrevResponses, SendTilAttesteringData, SendTilAttesteringErrors, SendTilAttesteringResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -116,28 +116,6 @@ export const retryFeiletUtbetaling = <ThrowOnError extends boolean = false>(opti
     ...options
 });
 
-/**
- * Finn saker for en person
- */
-export const findSakerForPerson = <ThrowOnError extends boolean = false>(options: Options<FindSakerForPersonData, ThrowOnError>) => (options.client ?? client).get<FindSakerForPersonResponses, FindSakerForPersonErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/sak',
-    ...options
-});
-
-/**
- * opprett en ny sak
- */
-export const createSak = <ThrowOnError extends boolean = false>(options: Options<CreateSakData, ThrowOnError>) => (options.client ?? client).post<CreateSakResponses, CreateSakErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/sak',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
 export const hentEllerOpprettBrev = <ThrowOnError extends boolean = false>(options: Options<HentEllerOpprettBrevData, ThrowOnError>) => (options.client ?? client).post<HentEllerOpprettBrevResponses, HentEllerOpprettBrevErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/sak/{saksnummer}/brev',
@@ -192,6 +170,15 @@ export const rekjorFeileteUtbetalinger = <ThrowOnError extends boolean = false>(
 export const getUserInfo = <ThrowOnError extends boolean = false>(options?: Options<GetUserInfoData, ThrowOnError>) => (options?.client ?? client).get<GetUserInfoResponses, GetUserInfoErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/user',
+    ...options
+});
+
+/**
+ * Finn saker for en person
+ */
+export const findSakerForPerson = <ThrowOnError extends boolean = false>(options: Options<FindSakerForPersonData, ThrowOnError>) => (options.client ?? client).get<FindSakerForPersonResponses, FindSakerForPersonErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak',
     ...options
 });
 

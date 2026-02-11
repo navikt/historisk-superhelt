@@ -68,9 +68,8 @@ enum class OppgaveGjelder(
     null, "Ukjent", null, null
     );
 
-    fun stringValue(): String {
-        return "$behandlingstemaTerm $behandlingstypeTerm"
-    }
+    val stringValue: String
+        get() = listOfNotNull(behandlingstemaTerm, behandlingstypeTerm).joinToString(" ")
 
 }
 

@@ -122,13 +122,6 @@ export type JournalforRequest = {
     dokumenter: Array<JournalforDokument>;
 };
 
-export type SakCreateRequestDto = {
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    fnr: string;
-    beskrivelse?: string;
-    soknadsDato?: string;
-};
-
 export type OpprettBrevRequest = {
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV';
     mottaker: 'BRUKER' | 'SAMHANDLER';
@@ -181,7 +174,7 @@ export type Vedtak = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'OPPRETTET_SAK' | 'OPPDATERTE_SAKSDETALJER' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'OPPDATERTE_SAKSDETALJER' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET';
     endring: string;
     beskrivelse?: string;
     endretAv: string;
@@ -687,74 +680,6 @@ export type RetryFeiletUtbetalingResponses = {
     200: unknown;
 };
 
-export type FindSakerForPersonData = {
-    body?: never;
-    path?: never;
-    query: {
-        maskertPersonId: string;
-    };
-    url: '/api/sak';
-};
-
-export type FindSakerForPersonErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type FindSakerForPersonError = FindSakerForPersonErrors[keyof FindSakerForPersonErrors];
-
-export type FindSakerForPersonResponses = {
-    /**
-     * OK
-     */
-    200: Array<Sak>;
-};
-
-export type FindSakerForPersonResponse = FindSakerForPersonResponses[keyof FindSakerForPersonResponses];
-
-export type CreateSakData = {
-    body: SakCreateRequestDto;
-    path?: never;
-    query?: never;
-    url: '/api/sak';
-};
-
-export type CreateSakErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type CreateSakError = CreateSakErrors[keyof CreateSakErrors];
-
-export type CreateSakResponses = {
-    /**
-     * OK
-     */
-    200: Sak;
-};
-
-export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];
-
 export type HentEllerOpprettBrevData = {
     body: OpprettBrevRequest;
     path: {
@@ -955,6 +880,41 @@ export type GetUserInfoResponses = {
 };
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
+
+export type FindSakerForPersonData = {
+    body?: never;
+    path?: never;
+    query: {
+        maskertPersonId: string;
+    };
+    url: '/api/sak';
+};
+
+export type FindSakerForPersonErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FindSakerForPersonError = FindSakerForPersonErrors[keyof FindSakerForPersonErrors];
+
+export type FindSakerForPersonResponses = {
+    /**
+     * OK
+     */
+    200: Array<Sak>;
+};
+
+export type FindSakerForPersonResponse = FindSakerForPersonResponses[keyof FindSakerForPersonResponses];
 
 export type HentVedtakForSakData = {
     body?: never;
@@ -1202,7 +1162,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

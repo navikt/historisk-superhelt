@@ -2,19 +2,15 @@ package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
-import no.nav.common.types.Aar
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
-import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDate.now
 
 @RestController
 @RequestMapping("/api/sak")
@@ -34,31 +30,6 @@ class SakController(
         return ResponseEntity.ok(saker)
     }
 
-    //TODO Fjerne denne og opprette fra oppgave
-    @Operation(operationId = "createSak", summary = "opprett en ny sak")
-    @PostMapping
-    fun createSak(@RequestBody @Valid sak: SakCreateRequestDto): ResponseEntity<Sak> {
-        val soknadsDato = sak.soknadsDato ?: now()
-        val createdSak = sakRepository.opprettNySak(
-            OpprettSakDto(
-                type = sak.type,
-                fnr = sak.fnr,
-                properties = UpdateSakDto(
-                    beskrivelse = sak.beskrivelse,
-                    soknadsDato = soknadsDato,
-                    saksbehandler = getAuthenticatedUser().navUser,
-                    tildelingsAar = soknadsDato?.let { Aar(it.year) },
-                ),
-
-                )
-        )
-        endringsloggService.logChange(
-            saksnummer = createdSak.saksnummer,
-            endringsType = EndringsloggType.OPPRETTET_SAK,
-            endring = "Sak opprettet"
-        )
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdSak)
-    }
 
     @Operation(operationId = "oppdaterSak")
     @PutMapping("{saksnummer}")
