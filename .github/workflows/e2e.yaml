@@ -48,7 +48,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }} # Endres hvis Playwright-versjonen i package-lock.json endres
+          key: ${{ runner.os }}-playwright-${{ hashFiles('./e2e/package-lock.json') }} # Endres hvis Playwright-versjonen i package-lock.json endres
           restore-keys: |
             ${{ runner.os }}-playwright-
 
