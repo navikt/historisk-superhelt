@@ -104,7 +104,7 @@ class SakActionController(
             type = OppgaveType.BEH_UND_VED,
             sak = sak,
             beskrivelse = "Sak ${sak.saksnummer} underkjent i attestering. Kommentar: ${request.kommentar}",
-            tilordneSaksbehandler = false
+            tilordneTil = sak.saksbehandler.navIdent
         )
     }
 
@@ -139,7 +139,7 @@ class SakActionController(
             type = OppgaveType.GOD_VED,
             sak = sak,
             beskrivelse = "Attestering av sak ${sak.type.beskrivelse} med saksnummer ${sak.saksnummer} saksbehandlet av ${sak.saksbehandler.navIdent}",
-            tilordneSaksbehandler = false
+            tilordneTil = null
         )
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK, OppgaveType.BEH_UND_VED)
 

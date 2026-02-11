@@ -17,6 +17,7 @@ import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Nested
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
@@ -75,7 +76,7 @@ class SakActionControllerTest() {
                 eq(OppgaveType.BEH_SAK),
                 eq(OppgaveType.BEH_UND_VED)
             )
-            verify(oppgaveService).opprettOppgave(eq(OppgaveType.GOD_VED), eq(sak), any(), eq(false))
+            verify(oppgaveService).opprettOppgave(eq(OppgaveType.GOD_VED), eq(sak), any(), isNull())
         }
 
         @WithAttestant
@@ -185,7 +186,12 @@ class SakActionControllerTest() {
                 eq(sak.saksnummer),
                 eq(OppgaveType.GOD_VED)
             )
-            verify(oppgaveService).opprettOppgave(eq(OppgaveType.BEH_UND_VED), eq(sak), any(), eq(false))
+            verify(oppgaveService).opprettOppgave(
+                eq(OppgaveType.BEH_UND_VED),
+                eq(sak),
+                any(),
+                eq(sak.saksbehandler.navIdent)
+            )
 
 
             val endringslogg = endringsloggService.findBySak(sak.saksnummer)

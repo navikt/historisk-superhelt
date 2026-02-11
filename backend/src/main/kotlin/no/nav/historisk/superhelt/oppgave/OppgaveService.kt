@@ -114,7 +114,7 @@ class OppgaveService(
     fun opprettOppgave(
         type: OppgaveType, sak: Sak,
         beskrivelse: String? = null,
-        tilordneSaksbehandler: Boolean = true): OppgaveMedSak {
+        tilordneTil: NavIdent? = null): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(
@@ -133,12 +133,12 @@ class OppgaveService(
 
         knyttOppgaveTilSak(sak.saksnummer, oppgave.id, type)
 
-        if (tilordneSaksbehandler) {
+        if (tilordneTil!= null) {
             oppgaveClient.patchOppgave(
                 oppgaveId = oppgave.id,
                 request = PatchOppgaveRequest(
                     versjon = oppgave.versjon,
-                    tilordnetRessurs = sak.saksbehandler.navIdent
+                    tilordnetRessurs = tilordneTil
                 )
             )
         }
