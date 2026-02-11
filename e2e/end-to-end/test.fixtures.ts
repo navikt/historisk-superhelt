@@ -2,11 +2,9 @@ import base from '@playwright/test'
 import {AccessibilityScan} from './accessibility-scan'
 import {AuthUtils} from './auth.utils'
 import {SokPage} from './sok.page'
-import {OppgaveUtils} from './oppgave.utils'
 
 type Fixtures = {
     auth: AuthUtils
-    oppgave: OppgaveUtils
     accessibilityScan: AccessibilityScan
     sok: SokPage
 }
@@ -33,12 +31,6 @@ export const test = base.extend<Fixtures>({
     auth: async ({page}, use) => {
         const auth = new AuthUtils(page)
         await use(auth)
-    },
-
-    // biome-ignore lint/correctness/noEmptyPattern: "Denne trengs for å kunne bruke oppgave-fixture i beforeAll uten å måtte bruke page-fixture"
-    oppgave: async ({}, use) => {
-        const oppgave = new OppgaveUtils()
-        await use(oppgave)
     },
 
     accessibilityScan: async ({page}, use) => {
