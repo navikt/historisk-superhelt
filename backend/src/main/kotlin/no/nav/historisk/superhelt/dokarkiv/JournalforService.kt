@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.dokarkiv
 
 import no.nav.common.types.Aar
+import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
@@ -40,6 +41,16 @@ class JournalforService (
                     )
             )
         )
+        soknadsDato?.let {
+                endringsloggService.logChange(
+                    saksnummer = nySak.saksnummer,
+                    endringsType = EndringsloggType.DOKUMENT_MOTTATT,
+                    endring = "Dokument mottatt NAV",
+                    tidspunkt = it.toInstant(),
+                    navBruker = NavIdent("system"),
+                    beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelder.stringValue}\" registert mottatt"
+                )
+        }
         endringsloggService.logChange(
             saksnummer = nySak.saksnummer,
             endringsType = EndringsloggType.OPPRETTET_SAK,

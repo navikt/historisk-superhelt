@@ -5,6 +5,7 @@ import {hentEndringsloggForSakOptions} from "@generated/@tanstack/react-query.ge
 import {isoTilLokal} from "~/common/dato.utils";
 import {
     ArrowCirclepathReverseIcon,
+    ArrowRightIcon,
     CheckmarkCircleIcon,
     ChevronRightIcon,
     HourglassBottomFilledIcon,
@@ -30,6 +31,8 @@ export default function SakEndringer({sak}: SakEndringerProps) {
 
     const getBullet = (type: EndringsloggType) => {
         switch (type) {
+            case "DOKUMENT_MOTTATT":
+                return <ArrowRightIcon />;
             case "UTBETALING_OK":
                 // subtask
                 return undefined
