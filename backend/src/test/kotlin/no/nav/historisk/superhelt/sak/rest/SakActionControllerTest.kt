@@ -12,9 +12,11 @@ import no.nav.historisk.superhelt.test.WithAttestant
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakRepository
+import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Nested
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
@@ -41,6 +43,7 @@ class SakActionControllerTest() {
 
     @MockitoBean
     private lateinit var utbetalingService: UtbetalingService
+
     @MockitoBean
     private lateinit var oppgaveService: OppgaveService
 
@@ -50,7 +53,10 @@ class SakActionControllerTest() {
 
         @Test
         fun `skal sende sak til attestering`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            )
 
             sakActionController.tilAttestering(sak.saksnummer)
 
@@ -64,13 +70,21 @@ class SakActionControllerTest() {
                     assertThat(it.type).isEqualTo(EndringsloggType.TIL_ATTESTERING)
                     assertThat(it.endretAv.value).isEqualTo("s12345")
                 }
-
+            verify(oppgaveService).ferdigstillOppgaver(
+                eq(sak.saksnummer),
+                eq(OppgaveType.BEH_SAK),
+                eq(OppgaveType.BEH_UND_VED)
+            )
+            verify(oppgaveService).opprettOppgave(eq(OppgaveType.GOD_VED), eq(sak), any(), eq(false))
         }
 
         @WithAttestant
         @Test
         fun `attestant skal ikke få sende til attestering`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            )
 
             assertThatThrownBy {
                 sakActionController.tilAttestering(sak.saksnummer)
@@ -83,7 +97,8 @@ class SakActionControllerTest() {
 
         @Test
         fun `skal feile validering når saken ikke er under behandling`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG))
+            val sak =
+                SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG))
 
             assertThatThrownBy {
                 sakActionController.tilAttestering(sak.saksnummer)
@@ -114,7 +129,10 @@ class SakActionControllerTest() {
 
         @Test
         fun `skal attestere sak med godkjent`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            )
 
             sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true, kommentar = null))
 
@@ -134,6 +152,11 @@ class SakActionControllerTest() {
 
             verify(utbetalingService).sendTilUtbetaling(any())
 
+            verify(oppgaveService).ferdigstillOppgaver(
+                eq(sak.saksnummer),
+                eq(OppgaveType.GOD_VED)
+            )
+
             val endringslogg = endringsloggService.findBySak(sak.saksnummer)
             assertThat(endringslogg)
                 .anySatisfy {
@@ -145,12 +168,25 @@ class SakActionControllerTest() {
 
         @Test
         fun `skal attestere sak med avslag`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            )
 
-            sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = false, kommentar = "Avslått av attestant"))
+            sakActionController.attesterSak(
+                sak.saksnummer,
+                AttesterSakRequestDto(godkjent = false, kommentar = "Avslått av attestant")
+            )
 
             val attestertSak = sakRepository.getSak(sak.saksnummer)
             assertThat(attestertSak.status).isEqualTo(SakStatus.UNDER_BEHANDLING)
+
+            verify(oppgaveService).ferdigstillOppgaver(
+                eq(sak.saksnummer),
+                eq(OppgaveType.GOD_VED)
+            )
+            verify(oppgaveService).opprettOppgave(eq(OppgaveType.BEH_UND_VED), eq(sak), any(), eq(false))
+
 
             val endringslogg = endringsloggService.findBySak(sak.saksnummer)
             assertThat(endringslogg)
@@ -164,7 +200,10 @@ class SakActionControllerTest() {
         @WithSaksbehandler
         @Test
         fun `saksbehandler skal ikke få attestere`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            )
 
             assertThatThrownBy {
                 sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true))
@@ -177,7 +216,13 @@ class SakActionControllerTest() {
 
         @Test
         fun `attestant skal ikke få attestere sin egen sak`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING, saksbehandlerIdent = "a12345"))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(
+                    sakStatus = SakStatus.TIL_ATTESTERING,
+                    saksbehandlerIdent = "a12345"
+                )
+            )
 
             assertThatThrownBy {
                 sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true))
@@ -190,10 +235,16 @@ class SakActionControllerTest() {
 
         @Test
         fun `skal feile validering når kommentar mangler ved avslag`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            )
 
             assertThatThrownBy {
-                sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = false, kommentar = null))
+                sakActionController.attesterSak(
+                    sak.saksnummer,
+                    AttesterSakRequestDto(godkjent = false, kommentar = null)
+                )
             }.isInstanceOf(ValideringException::class.java)
                 .hasMessageContaining("Kommentar må")
 
@@ -205,7 +256,10 @@ class SakActionControllerTest() {
 
         @Test
         fun `skal feile validering når saken ikke er til attestering`() {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING))
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            )
 
             assertThatThrownBy {
                 sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true))
