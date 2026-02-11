@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
     readonly error: SakError;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
+    readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakError = {
@@ -120,13 +120,6 @@ export type JournalforRequest = {
     bruker: string;
     avsender: string;
     dokumenter: Array<JournalforDokument>;
-};
-
-export type SakCreateRequestDto = {
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    fnr: string;
-    beskrivelse?: string;
-    soknadsDato?: string;
 };
 
 export type OpprettBrevRequest = {
@@ -281,12 +274,12 @@ export type SakWritable = {
 };
 
 export type SakErrorWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: SakWritable;
+    sak?: unknown;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
@@ -687,74 +680,6 @@ export type RetryFeiletUtbetalingResponses = {
     200: unknown;
 };
 
-export type FindSakerForPersonData = {
-    body?: never;
-    path?: never;
-    query: {
-        maskertPersonId: string;
-    };
-    url: '/api/sak';
-};
-
-export type FindSakerForPersonErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type FindSakerForPersonError = FindSakerForPersonErrors[keyof FindSakerForPersonErrors];
-
-export type FindSakerForPersonResponses = {
-    /**
-     * OK
-     */
-    200: Array<Sak>;
-};
-
-export type FindSakerForPersonResponse = FindSakerForPersonResponses[keyof FindSakerForPersonResponses];
-
-export type CreateSakData = {
-    body: SakCreateRequestDto;
-    path?: never;
-    query?: never;
-    url: '/api/sak';
-};
-
-export type CreateSakErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type CreateSakError = CreateSakErrors[keyof CreateSakErrors];
-
-export type CreateSakResponses = {
-    /**
-     * OK
-     */
-    200: Sak;
-};
-
-export type CreateSakResponse = CreateSakResponses[keyof CreateSakResponses];
-
 export type HentEllerOpprettBrevData = {
     body: OpprettBrevRequest;
     path: {
@@ -955,6 +880,41 @@ export type GetUserInfoResponses = {
 };
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
+
+export type FindSakerForPersonData = {
+    body?: never;
+    path?: never;
+    query: {
+        maskertPersonId: string;
+    };
+    url: '/api/sak';
+};
+
+export type FindSakerForPersonErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FindSakerForPersonError = FindSakerForPersonErrors[keyof FindSakerForPersonErrors];
+
+export type FindSakerForPersonResponses = {
+    /**
+     * OK
+     */
+    200: Array<Sak>;
+};
+
+export type FindSakerForPersonResponse = FindSakerForPersonResponses[keyof FindSakerForPersonResponses];
 
 export type HentVedtakForSakData = {
     body?: never;
@@ -1202,7 +1162,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

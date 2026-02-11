@@ -8,7 +8,6 @@ import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithLeseBruker
 import no.nav.historisk.superhelt.test.WithSaksbehandler
@@ -49,62 +48,6 @@ class SakControllerRestTest() {
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
             harTilgang = true
         )
-    }
-
-    @WithSaksbehandler
-    @Nested
-    inner class `opprett sak` {
-        @Test
-        fun `opprett sak ok`() {
-            val fnr = FolkeregisterIdent("22345678901")
-            assertThat(opprettSak(fnr))
-                .hasStatus(HttpStatus.CREATED)
-                .bodyJson()
-                .convertTo(Sak::class.java)
-                .satisfies({
-                    assertThat(it.fnr).isEqualTo(fnr)
-                    assertThat(it.type).isEqualTo(StonadsType.BRYSTPROTESE)
-                    assertThat(it.saksnummer).isNotNull
-                })
-            verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(fnr)
-        }
-
-        @WithLeseBruker
-        @Test
-        fun `opprett sak uten skrivetilgang skal gi feil`() {
-            val fnr = FolkeregisterIdent("32345678901")
-            assertThat(opprettSak(fnr))
-                .hasStatus(HttpStatus.FORBIDDEN)
-                .bodyAsProblemDetail()
-                .satisfies({
-                    assertThat(it?.detail).isNotBlank
-                })
-        }
-
-        @Test
-        fun `opprett sak uten rettighet for person skal gi feil`() {
-            val fnr = FolkeregisterIdent("42345678901")
-            whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr)) doReturn TilgangsmaskinClient.TilgangResult(
-                harTilgang = false,
-                TilgangsmaskinTestData.problemDetailResponse,
-            )
-            assertThat(opprettSak(fnr))
-                .hasStatus(HttpStatus.FORBIDDEN)
-                .bodyAsProblemDetail()
-        }
-
-        private fun opprettSak(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder =
-            mockMvc.post().uri("/api/sak")
-                .with(csrf())
-                .contentType("application/json")
-                .content(
-                    objectMapper.writeValueAsString(
-                        SakCreateRequestDto(
-                            type = StonadsType.BRYSTPROTESE,
-                            fnr = fnr
-                        )
-                    )
-                )
     }
 
     @WithSaksbehandler

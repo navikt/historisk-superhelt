@@ -1,11 +1,8 @@
-import {createFileRoute, useNavigate} from '@tanstack/react-router'
+import {createFileRoute} from '@tanstack/react-router'
 import {Box, Heading, HStack, Tabs, VStack} from '@navikt/ds-react'
 import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {SakerTable} from "./-components/SakerTable";
 import {PersonHeader} from "~/common/person/PersonHeader";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {createSak} from "@generated";
-import {finnPersonQuery} from "~/common/person/person.query";
 
 export const Route = createFileRoute('/person/$personid/')({
     component: PersonPage,
@@ -13,20 +10,6 @@ export const Route = createFileRoute('/person/$personid/')({
 
 function PersonPage() {
     const {personid} = Route.useParams()
-    const {data: person} = useSuspenseQuery(finnPersonQuery(personid))
-
-    const navigate = useNavigate()
-
-
-    async function opprettSak() {
-        const {data, error: apiError} = await createSak({
-            body: {
-                type: "PARYKK",
-                fnr: person.fnr,
-            }
-        })
-        navigate({to: `/sak/${data?.saksnummer}`})
-    }
 
     return (
         <VStack gap="6">
@@ -43,10 +26,6 @@ function PersonPage() {
                             <VStack gap="4">
                                 <HStack justify="space-between" align="center">
                                     <Heading size="medium">Relevante saker</Heading>
-
-                                    {/*<Button size="small" variant="primary" icon={<PlusIcon/>} onClick={opprettSak}>*/}
-                                    {/*    Opprett ny sak*/}
-                                    {/*</Button>*/}
                                 </HStack>
                                 <SakerTable maskertPersonIdent={personid}/>
                             </VStack>
