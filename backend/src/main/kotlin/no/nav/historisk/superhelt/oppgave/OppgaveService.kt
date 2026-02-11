@@ -94,11 +94,13 @@ class OppgaveService(
     @Transactional(readOnly = true)
     fun ferdigstillOppgaver(saksnummer: Saksnummer, vararg types: OppgaveType?) {
         if (types.isEmpty()) {
+            logger.debug("Ferdigstiller alle oppgaver for sak {}")
             val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, null)
             oppgaveIds.forEach { oppgaveId ->
                 ferdigstillOppgave(oppgaveId)
             }
         } else {
+            logger.debug("Ferdigstiller oppgaver for sak {} av type {}", saksnummer, types.joinToString(","))
             types.forEach { type ->
                 val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
                 oppgaveIds.forEach { oppgaveId ->
