@@ -1,7 +1,7 @@
-import { BodyShort, Box, HStack } from "@navikt/ds-react";
+import { BodyShort, HStack, Link as AkselLink } from "@navikt/ds-react";
 import { StepIcon } from "./StepIcon";
 import { StepType } from "./StepType";
-import { Link, type LinkProps } from "@tanstack/react-router";
+import { Link, type LinkProps, useMatches } from "@tanstack/react-router";
 import styles from "./step.module.css";
 
 interface ProcessMenuProps {
@@ -24,24 +24,34 @@ const ProcessMenuItem = ({
 	disabled = false,
 	...linkProps
 }: ProcessButtonProps) => {
+	const matches = useMatches({ select: (match) => match.at(-1) }); // Siste match er den mest spesifikke routen
+	const isActive = matches?.fullPath === linkProps.to;
+
 	return (
-		<Link {...linkProps} className={styles.step} disabled={disabled}>
-			{({ isActive }) => {
-				return (
-					<Box
-						className={`${styles.step__button} ${styles[stepType]} ${isActive ? styles["active"] : ""} ${disabled && styles["disabled"]}`}
-					>
-						<StepIcon type={stepType} usePartialStatus={false} />
-						<BodyShort as="span" size="small" className={styles.step__text}>
-							{label}
-						</BodyShort>
-						{isActive && (
-							<div className={`${styles["step__arrow-container"]}`} />
-						)}
-					</Box>
-				);
-			}}
-		</Link>
+		<AkselLink
+			as={Link}
+			to={linkProps.to}
+			className={styles.step__link}
+			disabled={disabled}
+		>
+			<HStack
+				align="center"
+				justify="center"
+				gap="space-4"
+				className={`${styles.step} ${styles[stepType]} ${isActive && styles["active"]} ${disabled && styles["disabled"]}`}
+			>
+				<StepIcon type={stepType} usePartialStatus={false} />
+				<BodyShort
+					size="small"
+					className={styles.step__text}
+					weight={isActive ? "semibold" : "regular"}
+					align="center"
+					truncate
+				>
+					{label}
+				</BodyShort>
+			</HStack>
+		</AkselLink>
 	);
 };
 
