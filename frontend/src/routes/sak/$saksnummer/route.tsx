@@ -9,10 +9,10 @@ import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
 import {StepType} from "~/common/process-menu/StepType";
 import {ProcessMenuItem} from "~/common/process-menu/ProcessMenuItem";
 import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
-import {SakerTable} from "~/routes/person/$personid/-components/SakerTable";
 import {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
+import {SaksHistorikkTable} from "~/routes/sak/$saksnummer/-components/SaksHistorikkTable";
 
 export const Route = createFileRoute('/sak/$saksnummer')({
     component: SakLayout,
@@ -86,7 +86,7 @@ function SakLayout() {
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
                             <Box width="100%" height="6rem" padding="space-16">
-                                <SakerTable maskertPersonIdent={sak.maskertPersonIdent}/>
+                                <SaksHistorikkTable maskertPersonIdent={sak.maskertPersonIdent}/>
                             </Box>
                         </Tabs.Panel>
                     </Tabs>
