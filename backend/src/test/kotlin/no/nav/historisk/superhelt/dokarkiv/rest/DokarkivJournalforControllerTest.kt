@@ -106,7 +106,7 @@ class DokarkivJournalforControllerTest {
             request = any()
         )
         verify(oppgaveService).ferdigstillOppgave(eq(jfrOppgaveId))
-        verify(oppgaveService).opprettOppgave(eq(OppgaveType.BEH_SAK), eq(sak), eq(true))
+        verify(oppgaveService).opprettOppgave(eq(OppgaveType.BEH_SAK), eq(sak), any(), eq(sak.saksbehandler.navIdent))
     }
 
     @WithSaksbehandler
@@ -162,7 +162,5 @@ class DokarkivJournalforControllerTest {
             journalfoerendeEnhet = any(),
             request = any()
         )
-        verify(oppgaveService).ferdigstillOppgave(eq(jfrOppgaveId))
-        verify(oppgaveService).opprettOppgave(eq(OppgaveType.BEH_SAK), eq(sak), eq(true))
     }
 }

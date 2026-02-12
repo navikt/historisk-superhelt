@@ -59,7 +59,12 @@ class DokarkivJournalforController(
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
 
         val sak = sakRepository.getSak(saksnummer)
-        oppgaveService.opprettOppgave(OppgaveType.BEH_SAK, sak)
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.BEH_SAK,
+            sak = sak,
+            beskrivelse = "Behandle sak av type ${sak.type.navn}",
+            tilordneTil = sak.saksbehandler.navIdent
+        )
 
         return saksnummer
 

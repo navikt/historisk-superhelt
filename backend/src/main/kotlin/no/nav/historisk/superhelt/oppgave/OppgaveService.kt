@@ -5,13 +5,13 @@ import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.oppgave.OppgaveClient
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.FinnOppgaverParams
 import no.nav.oppgave.model.OppgaveDto
 import no.nav.oppgave.model.OpprettOppgaveRequest
 import no.nav.oppgave.model.PatchOppgaveRequest
+import no.nav.oppgave.type
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -24,7 +24,6 @@ private const val TEMA_HEL = "HEL"
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val oppgaveRepository: OppgaveRepository,
-    private val sakRepository: SakRepository
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -65,7 +64,6 @@ class OppgaveService(
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
-    @Transactional
     fun ferdigstillOppgave(oppgaveId: EksternOppgaveId) {
         val oppgave = oppgaveClient.hentOppgave(oppgaveId)
 
@@ -86,28 +84,42 @@ class OppgaveService(
                 status = OppgaveDto.Status.FERDIGSTILT
             )
         )
-        logger.info("Ferdigstiller oppgave med id {}", oppgave.id)
+        logger.info("Ferdigstiller oppgave {}: {}", oppgave.type, oppgave.id)
     }
 
+    /** Ferdigstiller alle oppgaver av gitt type for en sak. Hvis ingen type er oppgitt, ferdigstilles alle oppgaver for saken. */
     @PreAuthorize("hasAuthority('WRITE')")
-    fun ferdigstillOppgaver(saksnummer: Saksnummer, type: OppgaveType?) {
-        val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
-        oppgaveIds.forEach { oppgaveId ->
-            ferdigstillOppgave(oppgaveId)
+    fun ferdigstillOppgaver(saksnummer: Saksnummer, vararg types: OppgaveType?) {
+        if (types.isEmpty()) {
+            logger.debug("Ferdigstiller alle oppgaver for sak {}", saksnummer)
+            val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, null)
+            oppgaveIds.forEach { oppgaveId ->
+                ferdigstillOppgave(oppgaveId)
+            }
+        } else {
+            logger.debug("Ferdigstiller oppgaver for sak {} av type {}", saksnummer, types.joinToString(","))
+            types.forEach { type ->
+                val oppgaveIds = oppgaveRepository.finnOppgaverForSak(saksnummer, type)
+                oppgaveIds.forEach { oppgaveId ->
+                    ferdigstillOppgave(oppgaveId)
+                }
+            }
         }
     }
 
-
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#sak.fnr)")
     @Transactional
-    fun opprettOppgave(type: OppgaveType, sak: Sak, tilordneSaksbehandler: Boolean = true): OppgaveMedSak {
+    fun opprettOppgave(
+        type: OppgaveType, sak: Sak,
+        beskrivelse: String? = null,
+        tilordneTil: NavIdent? = null): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(
                 tema = TEMA_HEL,
                 oppgavetype = type.oppgavetype,
 //                journalpostId = journalpostId,
-                beskrivelse = "Saksbehandling i superhelt",
+                beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
                 saksreferanse = sak.saksnummer.value,
                 behandlesAvApplikasjon = "SUPERHELT",
@@ -119,12 +131,12 @@ class OppgaveService(
 
         knyttOppgaveTilSak(sak.saksnummer, oppgave.id, type)
 
-        if (tilordneSaksbehandler) {
+        if (tilordneTil != null) {
             oppgaveClient.patchOppgave(
                 oppgaveId = oppgave.id,
                 request = PatchOppgaveRequest(
                     versjon = oppgave.versjon,
-                    tilordnetRessurs = sak.saksbehandler.navIdent
+                    tilordnetRessurs = tilordneTil
                 )
             )
         }
@@ -132,6 +144,4 @@ class OppgaveService(
         return oppgave.toOppgaveMedSak(sak)
 
     }
-
-
 }
