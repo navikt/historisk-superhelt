@@ -45,10 +45,12 @@ class OppgaveControllerTest {
     @Test
     fun `Hent oppgaver for saksbehandler`() {
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
-            antallTreffTotalt = 2,
+            antallTreffTotalt = 4,
             oppgaver = listOf(
-                OppgaveTestdata.opprettOppgave(),
-                OppgaveTestdata.opprettOppgave()
+                OppgaveTestdata.opprettOppgave().copy(oppgavetype = "JFR"),
+                OppgaveTestdata.opprettOppgave().copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "SUPERHELT"),
+                OppgaveTestdata.opprettOppgave().copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = null),
+                OppgaveTestdata.opprettOppgave().copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "other")
             )
         )
 

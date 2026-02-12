@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 private const val TEMA_HEL = "HEL"
+private const val APP_NAVN = "SUPERHELT"
 
 @Service
 class OppgaveService(
@@ -28,6 +29,7 @@ class OppgaveService(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    /** Hent åpne oppgaver tilordnet en saksbehandler som kan saksbehandles i denne appen */
     @PreAuthorize("hasAuthority('READ')")
     fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
 
@@ -40,11 +42,13 @@ class OppgaveService(
             )
         ).oppgaver ?: emptyList()
 
-        return oppgaver.map {
-            it.toOppgaveMedSak(
-                sak = oppgaveRepository.finnSakForOppgave(it.id)
-            )
-        }
+        return oppgaver
+            .filter { OppgaveType.JFR.name == it.oppgavetype || APP_NAVN == it.behandlesAvApplikasjon }
+            .map {
+                it.toOppgaveMedSak(
+                    sak = oppgaveRepository.finnSakForOppgave(it.id)
+                )
+            }
     }
 
     @PreAuthorize("hasAuthority('READ')")
@@ -122,7 +126,7 @@ class OppgaveService(
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
                 saksreferanse = sak.saksnummer.value,
-                behandlesAvApplikasjon = "SUPERHELT",
+                behandlesAvApplikasjon = APP_NAVN,
                 behandlingstype = gjelder.behandlingstype,
                 behandlingstema = gjelder.behandlingstema,
                 fristFerdigstillelse = LocalDate.now().plusDays(5),
