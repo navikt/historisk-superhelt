@@ -76,7 +76,6 @@ class SakActionController(
 
         sakService.endreStatus(sak, SakStatus.FERDIG)
         vedtakService.fattVedtak(sak.saksnummer)
-        oppgaveService.ferdigstillOppgaver(sak.saksnummer)
 
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,

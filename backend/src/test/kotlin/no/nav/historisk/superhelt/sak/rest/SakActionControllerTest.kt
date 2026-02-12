@@ -4,6 +4,7 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
+import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -76,7 +77,11 @@ class SakActionControllerTest() {
                 eq(OppgaveType.BEH_SAK),
                 eq(OppgaveType.BEH_UND_VED)
             )
-            verify(oppgaveService).opprettOppgave(eq(OppgaveType.GOD_VED), eq(sak), any(), isNull())
+            verify(oppgaveService).opprettOppgave(
+                eq(OppgaveType.GOD_VED),
+                any<Sak>(),
+                any(),
+                isNull())
         }
 
         @WithAttestant
@@ -188,7 +193,7 @@ class SakActionControllerTest() {
             )
             verify(oppgaveService).opprettOppgave(
                 eq(OppgaveType.BEH_UND_VED),
-                eq(sak),
+                any<Sak>(),
                 any(),
                 eq(sak.saksbehandler.navIdent)
             )

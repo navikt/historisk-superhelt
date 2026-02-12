@@ -89,7 +89,6 @@ class OppgaveService(
 
     /** Ferdigstiller alle oppgaver av gitt type for en sak. Hvis ingen type er oppgitt, ferdigstilles alle oppgaver for saken. */
     @PreAuthorize("hasAuthority('WRITE')")
-    @Transactional(readOnly = true)
     fun ferdigstillOppgaver(saksnummer: Saksnummer, vararg types: OppgaveType?) {
         if (types.isEmpty()) {
             logger.debug("Ferdigstiller alle oppgaver for sak {}", saksnummer)
@@ -107,7 +106,6 @@ class OppgaveService(
             }
         }
     }
-
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#sak.fnr)")
     @Transactional
@@ -133,7 +131,7 @@ class OppgaveService(
 
         knyttOppgaveTilSak(sak.saksnummer, oppgave.id, type)
 
-        if (tilordneTil!= null) {
+        if (tilordneTil != null) {
             oppgaveClient.patchOppgave(
                 oppgaveId = oppgave.id,
                 request = PatchOppgaveRequest(
@@ -146,6 +144,4 @@ class OppgaveService(
         return oppgave.toOppgaveMedSak(sak)
 
     }
-
-
 }
