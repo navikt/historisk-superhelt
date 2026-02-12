@@ -1,9 +1,11 @@
 package no.nav.historisk.superhelt.oppgave
 
 import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.oppgave.OppgaveClient
 import no.nav.oppgave.OppgaveType
@@ -25,6 +27,7 @@ private const val APP_NAVN = "SUPERHELT"
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val oppgaveRepository: OppgaveRepository,
+    private val personService: PersonService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -44,6 +47,28 @@ class OppgaveService(
 
         return oppgaver
             .filter { OppgaveType.JFR.name == it.oppgavetype || APP_NAVN == it.behandlesAvApplikasjon }
+            .map {
+                it.toOppgaveMedSak(
+                    sak = oppgaveRepository.finnSakForOppgave(it.id)
+                )
+            }
+    }
+
+    @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
+    fun hentOppgaverForPerson(fnr: FolkeregisterIdent): List<OppgaveMedSak> {
+        val person = personService.hentPerson(fnr)
+            ?: throw IllegalStateException("Fant ikke persondata for person")
+
+        val oppgaver = oppgaveClient.finnOppgaver(
+            FinnOppgaverParams(
+                aktoerId = listOf(person.aktorId),
+                statuskategori = "AAPEN",
+                tema = listOf(TEMA_HEL),
+                limit = 50L
+            )
+        ).oppgaver ?: emptyList()
+
+        return oppgaver
             .map {
                 it.toOppgaveMedSak(
                     sak = oppgaveRepository.finnSakForOppgave(it.id)

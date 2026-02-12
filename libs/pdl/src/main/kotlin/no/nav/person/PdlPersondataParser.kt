@@ -1,5 +1,6 @@
 package no.nav.person
 
+import no.nav.common.types.AktorId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.pdl.*
 import org.slf4j.LoggerFactory
@@ -50,7 +51,7 @@ class PdlPersondataParser {
 
         val aktorId = identer.filter { it.gruppe == IdentGruppe.AKTORID }
             .first { !it.historisk }
-            .ident
+            .let { AktorId(it.ident) }
 
         val hentPerson = data.hentPerson
         // Gir default navn om det ikke skulle være noe der. Betyr at personen ikke finnes eller det ikke er tilgan
