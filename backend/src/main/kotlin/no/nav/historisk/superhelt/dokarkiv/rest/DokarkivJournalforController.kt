@@ -62,7 +62,7 @@ class DokarkivJournalforController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK,
             sak = sak,
-            beskrivelse = "Behandle sak av type ${sak.type.beskrivelse}",
+            beskrivelse = "Behandle sak av type ${sak.type.navn}",
             tilordneTil = sak.saksbehandler.navIdent
         )
 

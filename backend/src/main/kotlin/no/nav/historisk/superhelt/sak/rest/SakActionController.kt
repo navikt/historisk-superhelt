@@ -102,7 +102,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_UND_VED,
             sak = sak,
-            beskrivelse = "Sak ${sak.saksnummer} underkjent i attestering. Kommentar: ${request.kommentar}",
+            beskrivelse = "Sak ${sak.saksnummer} underkjent i attestering med kommentar: ${request.kommentar}",
             tilordneTil = sak.saksbehandler.navIdent
         )
     }
