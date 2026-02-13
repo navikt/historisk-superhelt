@@ -139,7 +139,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.GOD_VED,
             sak = sak,
-            beskrivelse = "Attestering av sak ${sak.type.beskrivelse} med saksnummer ${sak.saksnummer} saksbehandlet av ${sak.saksbehandler.navIdent}",
+            beskrivelse = "Attestering av sak ${sak.type.navn} med saksnummer ${sak.saksnummer} saksbehandlet av ${sak.saksbehandler.navIdent}",
             tilordneTil = null
         )
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK, OppgaveType.BEH_UND_VED)
@@ -159,7 +159,6 @@ class SakActionController(
         @Valid @RequestBody request: FeilregisterRequestDto): ResponseEntity<Unit> {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkStatusTransition(SakStatus.FEILREGISTRERT)
             .checkRettighet(SakRettighet.FEILREGISTERE)
             .validate()
         logger.info("Sak $saksnummer er feilregistert")
@@ -171,7 +170,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK_MK,
             sak = sak,
-            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.beskrivelse} \n\n 
+            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.aarsak} \n\n 
                  Det må ryddes opp i journalposter knyttet til denne saken
             """.trimMargin(),
             tilordneTil = getAuthenticatedUser().navIdent,
@@ -182,7 +181,8 @@ class SakActionController(
         endringsloggService.logChange(
             saksnummer = saksnummer,
             endringsType = EndringsloggType.FEILREGISTERT,
-            endring = "Sak feilregistrert med årsak: ${request.beskrivelse}"
+            endring = "Sak feilregistrert",
+            beskrivelse = "Årsak: ${request.aarsak}"
         )
         return ResponseEntity.ok().build()
     }

@@ -38,7 +38,7 @@ data class AttesterSakRequestDto(
 
 data class FeilregisterRequestDto(
     @field:Size(min = 5, max = 1000)
-    val beskrivelse: String,
+    val aarsak: String,
 )
 
 data class UtbetalingRequestDto(val utbetalingsType: UtbetalingsType, val belop: Belop?)

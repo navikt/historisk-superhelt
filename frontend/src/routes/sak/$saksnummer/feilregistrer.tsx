@@ -57,7 +57,7 @@ function FeilregistrerPage() {
                 saksnummer: saksnummer
             },
             body: {
-                beskrivelse: aarsak
+                aarsak: aarsak
             }
         })
     }

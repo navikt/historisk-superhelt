@@ -29,7 +29,10 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
-                    rettigheter.add(SakRettighet.FEILREGISTERE)
+                    if(sak.vedtaksResultat!= null){
+                        // Ikke gi rettigheter på en gjenåpnet sak
+                        rettigheter.add(SakRettighet.FEILREGISTERE)
+                    }
                 }
             }
 

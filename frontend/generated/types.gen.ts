@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE'>;
+    readonly tilstand: SakTilstand;
     readonly error: SakError;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE'>;
-    readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakError = {
@@ -99,7 +99,7 @@ export type UtbetalingRequestDto = {
 };
 
 export type FeilregisterRequestDto = {
-    beskrivelse: string;
+    aarsak: string;
 };
 
 export type AttesterSakRequestDto = {
@@ -278,12 +278,12 @@ export type SakWritable = {
 };
 
 export type SakErrorWritable = {
-    sak?: SakWritable;
+    sak?: unknown;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
