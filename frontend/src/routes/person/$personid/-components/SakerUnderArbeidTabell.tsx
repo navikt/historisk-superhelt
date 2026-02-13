@@ -2,6 +2,7 @@ import {useSuspenseQuery} from "@tanstack/react-query";
 import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
 import {SakerTabell} from "~/common/sak/SakerTabell";
 import {InfoCard} from "@navikt/ds-react";
+import {isSakFerdig} from "~/routes/person/$personid/-components/sak.utils";
 
 
 interface SakerTableProps {
@@ -15,7 +16,7 @@ export function SakerUnderArbeidTabell({maskertPersonIdent}: SakerTableProps) {
         retry: false,
     }))
 
-    const saker = data.filter(sak => sak.status !== "FERDIG")
+    const saker = data.filter(sak =>!isSakFerdig(sak))
     if (saker.length === 0 && !isPending) {
         return <InfoCard data-color="neutral">
             <InfoCard.Header>

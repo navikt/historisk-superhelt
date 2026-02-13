@@ -1,6 +1,6 @@
 import {Tag} from "@navikt/ds-react";
 import {Sak} from "@generated";
-import {SakVedtakType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {SakStatusType, SakVedtakType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {ExclamationmarkTriangleIcon} from "@navikt/aksel-icons";
 
 interface Props {
@@ -33,10 +33,13 @@ export default function SakStatus({sak}: Props) {
     }
     const hasError= sak.error.utbetalingError
 
-    switch (sak.status) {
-
+    const status: SakStatusType = sak.status;
+    //TODO oppdatere til aksel v8 og sette bedre farge
+    switch (status) {
+        case "FEILREGISTRERT":
+            return <Tag variant="neutral-filled" size="small">Feilregistert</Tag>
         case "UNDER_BEHANDLING":
-            return <Tag variant="neutral" size="small">Under behandling</Tag>
+            return <Tag variant="alt2" size="small">Under behandling</Tag>
         case "TIL_ATTESTERING":
             return <Tag variant="info" size="small">Til attestering</Tag>
         case "FERDIG_ATTESTERT":
