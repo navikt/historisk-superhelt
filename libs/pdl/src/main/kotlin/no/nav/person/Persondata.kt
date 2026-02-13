@@ -1,5 +1,6 @@
 package no.nav.person
 
+import no.nav.common.types.AktorId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.pdl.AdressebeskyttelseGradering
 import java.time.LocalDate
@@ -18,5 +19,4 @@ data class Persondata(
     val harTilgang: Boolean
 )
 
-typealias AktorId = String
 typealias Doedsfall = String?

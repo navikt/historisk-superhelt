@@ -35,7 +35,6 @@ const ProcessMenuItem = ({
 			{...linkProps}
 		>
 			{({ isActive }) => {
-				console.log(isActive);
 				return (
 					<HStack
 						align="center"

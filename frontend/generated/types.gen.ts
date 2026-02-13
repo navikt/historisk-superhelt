@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
-    readonly tilstand: SakTilstand;
     readonly maskertPersonIdent: string;
     readonly error: SakError;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakError = {
@@ -274,12 +274,12 @@ export type SakWritable = {
 };
 
 export type SakErrorWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: SakWritable;
+    sak?: unknown;
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
@@ -1157,6 +1157,41 @@ export type HentOppgaverForSaksbehandlerResponses = {
 };
 
 export type HentOppgaverForSaksbehandlerResponse = HentOppgaverForSaksbehandlerResponses[keyof HentOppgaverForSaksbehandlerResponses];
+
+export type HentOppgaverForPersonData = {
+    body?: never;
+    path: {
+        maskertPersonIdent: string;
+    };
+    query?: never;
+    url: '/api/oppgave/person/{maskertPersonIdent}';
+};
+
+export type HentOppgaverForPersonErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentOppgaverForPersonError = HentOppgaverForPersonErrors[keyof HentOppgaverForPersonErrors];
+
+export type HentOppgaverForPersonResponses = {
+    /**
+     * OK
+     */
+    200: Array<OppgaveMedSak>;
+};
+
+export type HentOppgaverForPersonResponse = HentOppgaverForPersonResponses[keyof HentOppgaverForPersonResponses];
 
 export type LastnedDokumentFraJournalpostData = {
     body?: never;

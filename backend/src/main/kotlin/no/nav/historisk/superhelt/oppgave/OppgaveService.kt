@@ -1,9 +1,11 @@
 package no.nav.historisk.superhelt.oppgave
 
 import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.oppgave.OppgaveClient
 import no.nav.oppgave.OppgaveType
@@ -19,15 +21,18 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 private const val TEMA_HEL = "HEL"
+private const val APP_NAVN = "SUPERHELT"
 
 @Service
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val oppgaveRepository: OppgaveRepository,
+    private val personService: PersonService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    /** Hent åpne oppgaver tilordnet en saksbehandler som kan saksbehandles i denne appen */
     @PreAuthorize("hasAuthority('READ')")
     fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
 
@@ -40,11 +45,35 @@ class OppgaveService(
             )
         ).oppgaver ?: emptyList()
 
-        return oppgaver.map {
-            it.toOppgaveMedSak(
-                sak = oppgaveRepository.finnSakForOppgave(it.id)
+        return oppgaver
+            .filter { OppgaveType.JFR.name == it.oppgavetype || APP_NAVN == it.behandlesAvApplikasjon }
+            .map {
+                it.toOppgaveMedSak(
+                    sak = oppgaveRepository.finnSakForOppgave(it.id)
+                )
+            }
+    }
+
+    @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
+    fun hentOppgaverForPerson(fnr: FolkeregisterIdent): List<OppgaveMedSak> {
+        val person = personService.hentPerson(fnr)
+            ?: throw IllegalStateException("Fant ikke persondata for person")
+
+        val oppgaver = oppgaveClient.finnOppgaver(
+            FinnOppgaverParams(
+                aktoerId = listOf(person.aktorId),
+                statuskategori = "AAPEN",
+                tema = listOf(TEMA_HEL),
+                limit = 50L
             )
-        }
+        ).oppgaver ?: emptyList()
+
+        return oppgaver
+            .map {
+                it.toOppgaveMedSak(
+                    sak = oppgaveRepository.finnSakForOppgave(it.id)
+                )
+            }
     }
 
     @PreAuthorize("hasAuthority('READ')")
@@ -122,7 +151,7 @@ class OppgaveService(
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
                 saksreferanse = sak.saksnummer.value,
-                behandlesAvApplikasjon = "SUPERHELT",
+                behandlesAvApplikasjon = APP_NAVN,
                 behandlingstype = gjelder.behandlingstype,
                 behandlingstema = gjelder.behandlingstema,
                 fristFerdigstillelse = LocalDate.now().plusDays(5),
