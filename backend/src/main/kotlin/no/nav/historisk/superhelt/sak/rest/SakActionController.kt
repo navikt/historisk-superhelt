@@ -174,7 +174,7 @@ class SakActionController(
             """.trimMargin(),
             tilordneTil = getAuthenticatedUser().navIdent,
             // Setter applikasjon til null så denne behandles i helhet i gosys
-//            behandlesAvApplikasjon = null
+            behandlesAvApplikasjon = null
         )
 
         endringsloggService.logChange(

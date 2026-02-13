@@ -82,7 +82,8 @@ class SakActionControllerTest() {
                 eq(OppgaveType.GOD_VED),
                 any<Sak>(),
                 any(),
-                isNull()
+                isNull(),
+                any()
             )
         }
 
@@ -197,7 +198,8 @@ class SakActionControllerTest() {
                 eq(OppgaveType.BEH_UND_VED),
                 any<Sak>(),
                 any(),
-                eq(sak.saksbehandler.navIdent)
+                eq(sak.saksbehandler.navIdent),
+                any()
             )
 
 
@@ -315,7 +317,8 @@ class SakActionControllerTest() {
                 eq(OppgaveType.BEH_SAK_MK),
                 any<Sak>(),
                 any(),
-                eq(NavIdent("s12345"))
+                eq(NavIdent("s12345")),
+                isNull()
             )
         }
 
