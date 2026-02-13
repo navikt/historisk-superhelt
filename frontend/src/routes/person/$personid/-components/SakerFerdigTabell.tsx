@@ -1,14 +1,11 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
 import {SakerTabell} from "~/common/sak/SakerTabell";
-import {isSakFerdig} from "~/routes/person/$personid/-components/sak.utils";
-
+import {isSakFerdig} from "~/common/sak/sak.utils";
 
 interface SakerTableProps {
     maskertPersonIdent: string
 }
-
-
 
 export function SakerFerdigTabell({maskertPersonIdent}: SakerTableProps) {
 

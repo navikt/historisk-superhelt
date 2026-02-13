@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.infrastruktur.validation.TilstandStatus
+
 /** Representerer tilstanden til en sak i forhold til utfylling og validering
  *
  * Brukes for å vise hvilket steg i en sak som er fullført, har valideringsfeil eller ikke er startet
@@ -29,9 +29,7 @@ class SakTilstand(private val sak: Sak) {
 
     val vedtaksbrevBruker: TilstandStatus
         get() {
-
-
-            if (sak.vedtaksbrevBruker == null || sak.vedtaksbrevBruker.status == BrevStatus.NY) {
+            if (sak.vedtaksbrevBruker == null ) {
                 return TilstandStatus.IKKE_STARTET
             }
             val valideringsfeil = sak.vedtaksbrevBruker.valideringsfeil
