@@ -21,13 +21,10 @@ class OppgaveMockController() {
     private val repository = mutableMapOf<EksternOppgaveId, OppgaveDto>()
     private val logger = LoggerFactory.getLogger(javaClass)
 
-
-
     @GetMapping()
     fun info(): MutableMap<EksternOppgaveId, OppgaveDto> {
         return repository
     }
-
 
     @GetMapping("/api/v1/oppgaver")
     fun finnOppgaver(@RequestParam tilordnetRessurs: String?, @RequestParam aktoerId: String?): SokOppgaverResponse {

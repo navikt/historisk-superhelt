@@ -34,7 +34,7 @@ class PdlPersondataParserTest {
         assertEquals("Ola", result?.fornavn)
         assertEquals("Nordmann", result?.etternavn)
         assertThat(result?.fnr).isEqualTo(FolkeregisterIdent("12345678901"))
-        assertEquals("1234567890123", result?.aktorId)
+        assertEquals("1234567890123", result?.aktorId?.value)
         assertThat(result?.alleFnr?.map { it.value }).contains("12345678901", "10987654321")
         assertNull(result?.doedsfall)
         assertNull(result?.adressebeskyttelseGradering)
@@ -103,7 +103,7 @@ class PdlPersondataParserTest {
 
         // Then
         assertThat(result?.fnr).isEqualTo(FolkeregisterIdent("12345678901")) // Aktivt FNR
-        assertEquals("1234567890123", result?.aktorId) // Aktiv AktørID
+        assertEquals("1234567890123", result?.aktorId?.value) // Aktiv AktørID
         assertThat(result?.alleFnr?.map { it.value }).contains("12345678901", "98765432109", "11111111111") // Alle FNR
     }
 

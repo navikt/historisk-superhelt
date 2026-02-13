@@ -1,4 +1,3 @@
-import {PaperclipIcon} from '@navikt/aksel-icons'
 import {BodyShort, Detail, Label, Link, List, Pagination, type SortState, Table, Tag, VStack} from '@navikt/ds-react'
 import {useState} from 'react'
 import {Link as RouterLink} from '@tanstack/react-router'
@@ -129,13 +128,6 @@ export function OppgaveTabell({oppgaver, dineOppgaver}: Props) {
                                 {!dineOppgaver && (
                                     <Table.DataCell>{oppgave.tilordnetRessurs ?? ''}</Table.DataCell>
                                 )}
-                                <Table.DataCell>
-                                    {oppgave.journalpostId && (
-                                        <Link as={RouterLink} to={`/oppgave/${oppgave.oppgaveId}`}>
-                                            <PaperclipIcon title="Last ned dokument" fontSize="1.5rem"/>
-                                        </Link>
-                                    )}
-                                </Table.DataCell>
                             </Table.ExpandableRow>
                         ))}
                     </Table.Body>
