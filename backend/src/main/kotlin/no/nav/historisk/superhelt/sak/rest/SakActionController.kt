@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevSendingService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
@@ -155,7 +156,7 @@ class SakActionController(
     @PutMapping("status/feilregister")
     fun feilregister(
         @PathVariable saksnummer: Saksnummer,
-        @RequestBody request: FeilregisterRequestDto): ResponseEntity<Unit> {
+        @Valid @RequestBody request: FeilregisterRequestDto): ResponseEntity<Unit> {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkStatusTransition(SakStatus.FEILREGISTRERT)

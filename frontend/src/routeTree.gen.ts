@@ -19,6 +19,7 @@ import { Route as SakSaksnummerVedtaksbrevbrukerRouteImport } from './routes/sak
 import { Route as SakSaksnummerOppsummeringRouteImport } from './routes/sak/$saksnummer/oppsummering'
 import { Route as SakSaksnummerOpplysningerRouteImport } from './routes/sak/$saksnummer/opplysninger'
 import { Route as SakSaksnummerFritekstbrevRouteImport } from './routes/sak/$saksnummer/fritekstbrev'
+import { Route as SakSaksnummerFeilregistrerRouteImport } from './routes/sak/$saksnummer/feilregistrer'
 import { Route as OppgaveOppgaveidJournalforRouteImport } from './routes/oppgave/$oppgaveid/journalfor'
 
 const IndexRoute = IndexRouteImport.update({
@@ -75,6 +76,12 @@ const SakSaksnummerFritekstbrevRoute =
     path: '/fritekstbrev',
     getParentRoute: () => SakSaksnummerRouteRoute,
   } as any)
+const SakSaksnummerFeilregistrerRoute =
+  SakSaksnummerFeilregistrerRouteImport.update({
+    id: '/feilregistrer',
+    path: '/feilregistrer',
+    getParentRoute: () => SakSaksnummerRouteRoute,
+  } as any)
 const OppgaveOppgaveidJournalforRoute =
   OppgaveOppgaveidJournalforRouteImport.update({
     id: '/journalfor',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/oppgave/$oppgaveid': typeof OppgaveOppgaveidRouteRouteWithChildren
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
+  '/sak/$saksnummer/feilregistrer': typeof SakSaksnummerFeilregistrerRoute
   '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
@@ -98,6 +106,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
+  '/sak/$saksnummer/feilregistrer': typeof SakSaksnummerFeilregistrerRoute
   '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
@@ -112,6 +121,7 @@ export interface FileRoutesById {
   '/oppgave/$oppgaveid': typeof OppgaveOppgaveidRouteRouteWithChildren
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
+  '/sak/$saksnummer/feilregistrer': typeof SakSaksnummerFeilregistrerRoute
   '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/oppgave/$oppgaveid'
     | '/sak/$saksnummer'
     | '/oppgave/$oppgaveid/journalfor'
+    | '/sak/$saksnummer/feilregistrer'
     | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/oppgave/$oppgaveid/journalfor'
+    | '/sak/$saksnummer/feilregistrer'
     | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
     | '/oppgave/$oppgaveid'
     | '/sak/$saksnummer'
     | '/oppgave/$oppgaveid/journalfor'
+    | '/sak/$saksnummer/feilregistrer'
     | '/sak/$saksnummer/fritekstbrev'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
@@ -239,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SakSaksnummerFritekstbrevRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
+    '/sak/$saksnummer/feilregistrer': {
+      id: '/sak/$saksnummer/feilregistrer'
+      path: '/feilregistrer'
+      fullPath: '/sak/$saksnummer/feilregistrer'
+      preLoaderRoute: typeof SakSaksnummerFeilregistrerRouteImport
+      parentRoute: typeof SakSaksnummerRouteRoute
+    }
     '/oppgave/$oppgaveid/journalfor': {
       id: '/oppgave/$oppgaveid/journalfor'
       path: '/journalfor'
@@ -265,6 +285,7 @@ const OppgaveOppgaveidRouteRouteWithChildren =
   )
 
 interface SakSaksnummerRouteRouteChildren {
+  SakSaksnummerFeilregistrerRoute: typeof SakSaksnummerFeilregistrerRoute
   SakSaksnummerFritekstbrevRoute: typeof SakSaksnummerFritekstbrevRoute
   SakSaksnummerOpplysningerRoute: typeof SakSaksnummerOpplysningerRoute
   SakSaksnummerOppsummeringRoute: typeof SakSaksnummerOppsummeringRoute
@@ -273,6 +294,7 @@ interface SakSaksnummerRouteRouteChildren {
 }
 
 const SakSaksnummerRouteRouteChildren: SakSaksnummerRouteRouteChildren = {
+  SakSaksnummerFeilregistrerRoute: SakSaksnummerFeilregistrerRoute,
   SakSaksnummerFritekstbrevRoute: SakSaksnummerFritekstbrevRoute,
   SakSaksnummerOpplysningerRoute: SakSaksnummerOpplysningerRoute,
   SakSaksnummerOppsummeringRoute: SakSaksnummerOppsummeringRoute,
