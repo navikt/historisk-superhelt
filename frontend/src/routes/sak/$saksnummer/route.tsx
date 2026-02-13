@@ -64,7 +64,10 @@ function SakLayout() {
 							label={"Oppsummering"}
 							stepType={calculateStepType(sak?.tilstand.oppsummering)}
 							to={"/sak/$saksnummer/oppsummering"}
-							disabled={sak?.tilstand.vedtaksbrevBruker !== "OK"}
+							disabled={
+								sak.status !== "TIL_ATTESTERING" &&
+								sak?.tilstand.vedtaksbrevBruker !== "OK"
+							}
 						/>
 					</ProcessMenu>
 

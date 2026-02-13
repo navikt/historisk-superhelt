@@ -106,7 +106,7 @@ test.describe("Superhelt", () => {
     });
 
     await test.step("Velg oppsummering ", async () => {
-      await page.getByRole("button", { name: "Oppsummering" }).click();
+      await page.getByRole("link", { name: "Oppsummering" }).click();
       //   expect(page.getByRole("link", { name: "Oppsummering" })).toHaveClass(
       //     /active/,
       //   )
