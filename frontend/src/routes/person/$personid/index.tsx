@@ -15,7 +15,7 @@ function PersonPage() {
     const {personid} = Route.useParams()
 
     const {data} = useSuspenseQuery(hentOppgaverForPersonOptions({path: {maskertPersonIdent: personid}}))
-    const oppgaver = data.filter(o => o.saksnummer === null) || []
+    const oppgaver = data?.filter(o => o.saksnummer === null) ?? []
 
     return (
         <VStack gap="6">
@@ -26,7 +26,7 @@ function PersonPage() {
                     <Heading size="medium">Saker under behandling</Heading>
                     <SakerUnderArbeidTabell maskertPersonIdent={personid}/>
                 </Box.New>
-                <Box.New background={"default"}  borderRadius="medium">
+                <Box.New background={"default"} borderRadius="medium">
                     <Tabs defaultValue="saker">
                         <Tabs.List>
                             <Tabs.Tab value="saker" label="Sakshistorikk"/>
@@ -46,7 +46,8 @@ function PersonPage() {
                             <Box padding="4" borderWidth="1" borderRadius="small">
                                 <VStack gap="4">
                                     <Heading size="small">Åpne oppgaver</Heading>
-                                    <BodyShort>Alle oppgaver på personen innen relevant tema. Oppgaver på som er under behandling her vises ikke her</BodyShort>
+                                    <BodyShort>Alle oppgaver på personen innen relevant tema. Oppgaver som er under
+                                        behandling her vises ikke her</BodyShort>
                                     <OppgaveTabell oppgaver={oppgaver} dineOppgaver={false}/>
                                 </VStack>
                             </Box>
@@ -55,5 +56,5 @@ function PersonPage() {
                 </Box.New>
             </VStack>
         </VStack>
-)
+    )
 }

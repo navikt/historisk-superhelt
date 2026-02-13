@@ -14,9 +14,9 @@ export function SakerFerdigTabell({maskertPersonIdent}: SakerTableProps) {
         retry: false,
     }))
 
-    const saker= data?.filter(sak => sak.status === "FERDIG") || []
+    const saker = data.filter(sak => sak.status === "FERDIG")
 
-   return <SakerTabell saker={saker} isPending={isPending} error={error}/>
+    return <SakerTabell saker={saker} isPending={isPending} error={error}/>
 
 }
 

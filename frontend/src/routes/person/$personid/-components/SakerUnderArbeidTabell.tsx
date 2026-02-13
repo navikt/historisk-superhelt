@@ -15,14 +15,14 @@ export function SakerUnderArbeidTabell({maskertPersonIdent}: SakerTableProps) {
         retry: false,
     }))
 
-    const saker = data?.filter(sak => sak.status !== "FERDIG") || []
+    const saker = data.filter(sak => sak.status !== "FERDIG")
     if (saker.length === 0 && !isPending) {
         return <InfoCard data-color="neutral">
             <InfoCard.Header>
                 <InfoCard.Title>Ingen saker under behandling</InfoCard.Title>
             </InfoCard.Header>
             <InfoCard.Content>
-               Det er ingen saker under arbeid for denne personen. Sjekk sakshistorikken for å se tidligere saker.
+                Det er ingen saker under arbeid for denne personen. Sjekk sakshistorikken for å se tidligere saker.
             </InfoCard.Content>
         </InfoCard>
     }
