@@ -139,9 +139,11 @@ class OppgaveService(
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#sak.fnr)")
     @Transactional
     fun opprettOppgave(
-        type: OppgaveType, sak: Sak,
+        type: OppgaveType,
+        sak: Sak,
         beskrivelse: String? = null,
-        tilordneTil: NavIdent? = null): OppgaveMedSak {
+        tilordneTil: NavIdent? = null,
+    ): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(

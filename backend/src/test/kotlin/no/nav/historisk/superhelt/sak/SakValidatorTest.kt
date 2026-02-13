@@ -17,7 +17,6 @@ class SakValidatorTest {
             val validator = SakValidator(sak)
 
             validator.checkStatusTransition(SakStatus.TIL_ATTESTERING)
-
             assertThat(validator.validationErrors).isEmpty()
         }
 
@@ -27,7 +26,6 @@ class SakValidatorTest {
             val validator = SakValidator(sak)
 
             validator.checkStatusTransition(SakStatus.UNDER_BEHANDLING)
-
             assertThat(validator.validationErrors).isEmpty()
         }
     }

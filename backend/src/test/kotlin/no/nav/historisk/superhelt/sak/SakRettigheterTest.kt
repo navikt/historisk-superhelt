@@ -10,6 +10,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
@@ -19,21 +21,10 @@ class SakRettigheterTest {
     @WithMockJwtAuth(roles = [Role.LES])
     inner class `Bruker med kun leserettighet` {
 
-        @Test
-        fun `får kun LES-rettighet når sak er under behandling`() {
-            val sak = SakTestData.sakUtenUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
-            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
-        }
-
-        @Test
-        fun `får kun LES-rettighet når sak er til attestering`() {
-            val sak = SakTestData.sakUtenUtbetaling().copy(status = SakStatus.TIL_ATTESTERING)
-            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
-        }
-
-        @Test
-        fun `får kun LES-rettighet når sak er ferdig`() {
-            val sak = SakTestData.sakUtenUtbetaling().copy(status = SakStatus.FERDIG)
+        @EnumSource(SakStatus::class)
+        @ParameterizedTest
+        fun `får kun LES-rettighet`(status: SakStatus) {
+            val sak = SakTestData.sakUtenUtbetaling().copy(status = status)
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }
     }
@@ -41,6 +32,14 @@ class SakRettigheterTest {
     @Nested
     @WithSaksbehandler
     inner class Saksbehandler {
+
+
+        @EnumSource(SakStatus::class)
+        @ParameterizedTest
+        fun `har leserettighet`(status: SakStatus) {
+            val sak = SakTestData.sakUtenUtbetaling().copy(status = status)
+            assertThat(sak.rettigheter).contains(SakRettighet.LES)
+        }
 
         @Test
         fun `får LES og SAKSBEHANDLE når sak er under behandling`() {
@@ -67,6 +66,14 @@ class SakRettigheterTest {
                 status = SakStatus.FERDIG
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES, SakRettighet.GJENAPNE)
+        }
+
+        @Test
+        fun `får kun LES når sak er feilregistert`() {
+            val sak = SakTestData.sakUtenUtbetaling().copy(
+                status = SakStatus.FEILREGISTRERT
+            )
+            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }
     }
 
@@ -106,6 +113,14 @@ class SakRettigheterTest {
         fun `får kun LES når sak er ferdig`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.FERDIG,
+            )
+            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
+        }
+
+        @Test
+        fun `får kun LES når sak er feilregistert`() {
+            val sak = SakTestData.sakUtenUtbetaling().copy(
+                status = SakStatus.FEILREGISTRERT
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES)
         }

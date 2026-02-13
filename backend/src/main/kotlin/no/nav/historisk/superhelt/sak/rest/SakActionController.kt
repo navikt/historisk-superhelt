@@ -5,6 +5,7 @@ import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevSendingService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
@@ -150,6 +151,40 @@ class SakActionController(
         return ResponseEntity.ok().build()
     }
 
+    @Operation(operationId = "feilregisterSak")
+    @PutMapping("status/feilregister")
+    fun feilregister(
+        @PathVariable saksnummer: Saksnummer,
+        @RequestBody request: FeilregisterRequestDto): ResponseEntity<Unit> {
+        val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkStatusTransition(SakStatus.FEILREGISTRERT)
+            .validate()
+        logger.info("Sak $saksnummer er feilregistert")
+        sakService.endreStatus(sak, SakStatus.FEILREGISTRERT)
+
+
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK)
+
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.BEH_SAK_MK,
+            sak = sak,
+            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.beskrivelse} \n\n 
+                 Det må ryddes opp i journalposter knyttet til denne saken
+            """.trimMargin(),
+            tilordneTil = getAuthenticatedUser().navIdent,
+            // Setter applikasjon til null så denne behandles i helhet i gosys
+//            behandlesAvApplikasjon = null
+        )
+
+        endringsloggService.logChange(
+            saksnummer = saksnummer,
+            endringsType = EndringsloggType.FEILREGISTERT,
+            endring = "Sak feilregistrert med årsak: ${request.beskrivelse}"
+        )
+        return ResponseEntity.ok().build()
+    }
+
     @Operation(operationId = "gjenapneSak")
     @PutMapping("status/gjenapne")
     fun gjenapne(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
@@ -168,8 +203,5 @@ class SakActionController(
         )
         return ResponseEntity.ok().build()
     }
-
-    // Henlegg
-    // Avvis
 
 }

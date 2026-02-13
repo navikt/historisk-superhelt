@@ -8,14 +8,16 @@ import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 
 class SakValidator(private val sak: Sak): Validator() {
 
-    fun checkStatusTransition(newStatus: SakStatus): SakValidator {
-        val validTransitions = when (sak.status) {
-            SakStatus.UNDER_BEHANDLING -> listOf( SakStatus.TIL_ATTESTERING)
+    fun checkStatusTransition(toStatus: SakStatus): SakValidator {
+        val fromStatus = sak.status
+        val validTransitions = when (fromStatus) {
+            SakStatus.UNDER_BEHANDLING -> listOf( SakStatus.TIL_ATTESTERING, SakStatus.FEILREGISTRERT)
             SakStatus.TIL_ATTESTERING -> listOf(SakStatus.FERDIG_ATTESTERT, SakStatus.UNDER_BEHANDLING)
             SakStatus.FERDIG_ATTESTERT -> listOf(SakStatus.FERDIG)
             SakStatus.FERDIG -> listOf(SakStatus.UNDER_BEHANDLING)
+            SakStatus.FEILREGISTRERT -> emptyList()
         }
-        check(newStatus !in validTransitions, "status", "Ugyldig statusovergang fra ${sak.status} til $newStatus")
+        check(toStatus !in validTransitions, "status", "Ugyldig statusovergang fra $fromStatus til $toStatus")
 
         return this
     }

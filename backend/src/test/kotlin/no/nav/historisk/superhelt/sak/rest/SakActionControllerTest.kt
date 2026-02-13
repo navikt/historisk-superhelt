@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak.rest
 
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
@@ -81,7 +82,8 @@ class SakActionControllerTest() {
                 eq(OppgaveType.GOD_VED),
                 any<Sak>(),
                 any(),
-                isNull())
+                isNull()
+            )
         }
 
         @WithAttestant
@@ -278,5 +280,45 @@ class SakActionControllerTest() {
                 .hasMessageContaining("Manglende rettighet i sak: ATTESTERE")
 
         }
+    }
+
+    @WithSaksbehandler(navIdent = "s12345")
+    @Nested
+    inner class `feilregistrer sak` {
+
+        @Test
+        fun `feilregister sak under behandling`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            )
+
+            sakActionController.feilregister(
+                saksnummer = sak.saksnummer,
+                request = FeilregisterRequestDto("Årsak til feilregistrering")
+            )
+
+            val sendtSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(sendtSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
+
+            val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+            assertThat(endringslogg)
+                .anySatisfy {
+                    assertThat(it.type).isEqualTo(EndringsloggType.FEILREGISTERT)
+                    assertThat(it.endretAv.value).isEqualTo("s12345")
+                }
+            verify(oppgaveService).ferdigstillOppgaver(
+                eq(sak.saksnummer),
+                eq(OppgaveType.BEH_SAK)
+            )
+            verify(oppgaveService).opprettOppgave(
+                eq(OppgaveType.BEH_SAK_MK),
+                any<Sak>(),
+                any(),
+                eq(NavIdent("s12345"))
+            )
+        }
+
+
     }
 }

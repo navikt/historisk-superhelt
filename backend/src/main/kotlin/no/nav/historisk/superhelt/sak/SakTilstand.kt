@@ -49,6 +49,7 @@ class SakTilstand(private val sak: Sak) {
                 SakStatus.TIL_ATTESTERING -> TilstandStatus.IKKE_STARTET
                 SakStatus.FERDIG_ATTESTERT -> TilstandStatus.VALIDERING_FEILET
                 SakStatus.FERDIG -> TilstandStatus.OK
+                SakStatus.FEILREGISTRERT -> TilstandStatus.IKKE_STARTET
             }
         }
 

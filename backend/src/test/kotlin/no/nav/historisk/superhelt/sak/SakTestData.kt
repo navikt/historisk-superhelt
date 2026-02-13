@@ -21,6 +21,7 @@ object SakTestData {
         SakStatus.TIL_ATTESTERING -> sakMedUtbetaling().copy(status = sakStatus)
         SakStatus.FERDIG -> sakMedUtbetaling().copy(status = sakStatus, attestant = navUser())
         SakStatus.FERDIG_ATTESTERT ->  sakMedUtbetaling().copy(status = sakStatus, attestant = navUser())
+        SakStatus.FEILREGISTRERT -> sakUtenUtbetaling().copy(status = sakStatus)
     }
 
     fun sakMedUtbetaling(): Sak {

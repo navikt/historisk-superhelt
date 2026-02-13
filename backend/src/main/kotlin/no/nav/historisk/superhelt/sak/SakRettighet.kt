@@ -44,6 +44,9 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                     rettigheter.add(SakRettighet.GJENAPNE)
                 }
             }
+            SakStatus.FEILREGISTRERT -> {
+               // Det er ikke mulig å gjenåpne en feilregistrert sak
+            }
 
 
         }
