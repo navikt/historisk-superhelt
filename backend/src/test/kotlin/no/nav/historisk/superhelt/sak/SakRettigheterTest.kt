@@ -42,13 +42,14 @@ class SakRettigheterTest {
         }
 
         @Test
-        fun `får LES og SAKSBEHANDLE når sak er under behandling`() {
+        fun `får LES, SAKSBEHANDLE og FEILREGISTRERE når sak er under behandling`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.UNDER_BEHANDLING
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
-                SakRettighet.SAKSBEHANDLE
+                SakRettighet.SAKSBEHANDLE,
+                SakRettighet.FEILREGISTERE
             )
         }
 

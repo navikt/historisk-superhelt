@@ -13,6 +13,8 @@ enum class SakRettighet {
 
     /** Gir rettighet til å gjenåpne en ferdigstilt sak */
     GJENAPNE,
+
+    FEILREGISTERE,
 }
 
 internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
@@ -27,6 +29,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
+                    rettigheter.add(SakRettighet.FEILREGISTERE)
                 }
             }
 

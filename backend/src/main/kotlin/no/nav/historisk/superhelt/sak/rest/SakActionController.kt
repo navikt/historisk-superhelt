@@ -159,6 +159,7 @@ class SakActionController(
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkStatusTransition(SakStatus.FEILREGISTRERT)
+            .checkRettighet(SakRettighet.FEILREGISTERE)
             .validate()
         logger.info("Sak $saksnummer er feilregistert")
         sakService.endreStatus(sak, SakStatus.FEILREGISTRERT)
