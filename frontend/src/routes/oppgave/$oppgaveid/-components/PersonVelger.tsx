@@ -14,6 +14,7 @@ interface Props {
     value: PersonValue
     error?: string
     onChange?: (value: PersonValue) => void
+    readOnly?: boolean
 }
 
 export function PersonVelger(props: Props) {
@@ -55,7 +56,7 @@ export function PersonVelger(props: Props) {
                         <PersonIcon title="person" fontSize="1.5rem"/>
                         <BodyShort>{props.value.navn}/{props.value.fnr}</BodyShort>
                     </HStack>
-                    <Button variant="secondary" type="button" size="small" onClick={toggleEditmode}>
+                    <Button variant="secondary" type="button" size="small" onClick={toggleEditmode} disabled={props.readOnly}>
                         Endre
                     </Button>
                 </HStack>

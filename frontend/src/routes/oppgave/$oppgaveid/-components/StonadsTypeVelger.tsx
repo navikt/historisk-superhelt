@@ -9,9 +9,10 @@ interface Props {
     error?: string
     onChange: (type: StonadType | undefined) => void
     name: string
+    readOnly?: boolean
 }
 
-export function StonadsTypeVelger({value, error, onChange, name}: Props) {
+export function StonadsTypeVelger({value, error, onChange, name, readOnly}: Props) {
     const {data: stonadsTyper} = useSuspenseQuery(getKodeverkStonadsTypeOptions())
     const selectValue: string = (value ?? '') as string
 
@@ -21,6 +22,7 @@ export function StonadsTypeVelger({value, error, onChange, name}: Props) {
             name={name}
             value={selectValue}
             error={error}
+            readOnly={readOnly}
             onChange={(e) => {
                 const v = e.target.value
                 onChange(v === '' ? undefined : (v as StonadType))

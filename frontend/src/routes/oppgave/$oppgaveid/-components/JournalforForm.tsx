@@ -32,6 +32,7 @@ interface Props {
     journalPost: Journalpost
     defaultStonadstype?: StonadType
     onBrukerUpdate: (updated: Person) => void
+    readOnly?: boolean
 }
 
 export function JournalforForm({
@@ -40,13 +41,14 @@ export function JournalforForm({
                                    journalPost,
                                    defaultStonadstype,
                                    onBrukerUpdate,
+                                   readOnly
                                }: Props) {
     const navigate = useNavigate()
-    const [backendError, setBackendError] = useState<ProblemDetail| undefined>()
+    const [backendError, setBackendError] = useState<ProblemDetail | undefined>()
     const journalfor = useMutation({
         ...journalforMutation(),
         onError: (error) => {
-        setBackendError(error)
+            setBackendError(error)
         }
 
     })
@@ -78,6 +80,9 @@ export function JournalforForm({
 
     async function validateAndSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
+        if (readOnly) {
+            return
+        }
         const formData = new FormData(e.currentTarget)
 // TODO se om dette kan forenkles ved å bruke state direkte
         const dokumenter: JournalforDokument[] = []
@@ -153,6 +158,7 @@ export function JournalforForm({
                     label="Bruker"
                     name="bruker"
                     value={bruker}
+                    readOnly={readOnly}
                     error={validationErrors?.bruker}
                     onChange={handleBrukerChange}
                 />
@@ -160,6 +166,7 @@ export function JournalforForm({
                     label="Avsender"
                     name="avsender"
                     value={avsender}
+                    readOnly={readOnly}
                     error={validationErrors?.avsender}
                     onChange={handleAvsenderChange}
                 />
@@ -173,10 +180,13 @@ export function JournalforForm({
                         <DokumentTittelFelt
                             index={index}
                             value={dok.tittel}
+                            readOnly={readOnly}
                             name={`dokumenttittel_${dok.dokumentInfoId}`}
                             error={validationErrors?.dokumenter?.find((d) => d.dokumentInfoId === dok.dokumentInfoId)?.tittel}
                         />
-                        {index === 0 && <AnnetInnholdCombobox name="annetInnhold" onChange={setLogiskeVedlegg}/>}
+                        {index === 0 && <AnnetInnholdCombobox name="annetInnhold"
+                                                              onChange={setLogiskeVedlegg}
+                                                              readOnly={readOnly}/>}
                     </div>
                 ))}
 
@@ -188,8 +198,9 @@ export function JournalforForm({
                     value={stonadstype}
                     error={validationErrors?.stonadstype}
                     onChange={setStonadstype}
+                    readOnly={readOnly}
                 />
-                <Button type="submit">
+                <Button type="submit" disabled={readOnly}>
                     Journalfør og start behandling
                 </Button>
                 {backendError && (<ErrorAlert error={backendError}/>)}

@@ -1,7 +1,7 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {Heading, VStack} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getOppgaveOptions} from "@generated/@tanstack/react-query.gen";
+import {getOppgaveOptions, getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 import {OppgaveGjelder} from "~/routes/oppgave/$oppgaveid/-types/oppgave.types";
 import {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {FerdigJournalfort} from "~/routes/oppgave/$oppgaveid/-components/FerdigJournalfort";
@@ -57,6 +57,8 @@ function JournalforPage() {
     const {data: oppgave} = useSuspenseQuery(getOppgaveOptions({path: {oppgaveId: Number(oppgaveId)}}))
     const {data: person} = useSuspenseQuery(finnPersonQuery(oppgave.maskertPersonIdent))
     const {data: journalPost} = useSuspenseQuery(hentJournalpostMetadataQuery(oppgave.journalpostId))
+    const {data: user} = useSuspenseQuery(getUserInfoOptions())
+    const harSkriveTilgang = user.roles.includes('SAKSBEHANDLER')
 
     const completed =
         oppgave.oppgavestatus === 'FERDIGSTILT' &&
@@ -77,6 +79,7 @@ function JournalforPage() {
                     person={person}
                     oppgaveMedSak={oppgave}
                     journalPost={journalPost}
+                    readOnly={!harSkriveTilgang}
                     defaultStonadstype={guessStonadsType(oppgave.oppgaveGjelder)}
                     onBrukerUpdate={oppdaterBruker}
                 />

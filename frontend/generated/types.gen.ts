@@ -50,7 +50,7 @@ export type Sak = {
     behandlingsnummer: string;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     beskrivelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
@@ -66,7 +66,7 @@ export type Sak = {
     readonly error: SakError;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE'>;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE'>;
     readonly tilstand: SakTilstand;
 };
 
@@ -96,6 +96,10 @@ export type ValidationFieldError = {
 export type UtbetalingRequestDto = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
+};
+
+export type FeilregisterRequestDto = {
+    beskrivelse: string;
 };
 
 export type AttesterSakRequestDto = {
@@ -174,7 +178,7 @@ export type Vedtak = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'OPPDATERTE_SAKSDETALJER' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT';
     endring: string;
     beskrivelse?: string;
     endretAv: string;
@@ -201,7 +205,7 @@ export type OppgaveMedSak = {
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
     saksnummer?: string;
-    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     readonly maskertPersonIdent: string;
 };
 
@@ -259,7 +263,7 @@ export type SakWritable = {
     behandlingsnummer: string;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
-    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     beskrivelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
@@ -300,7 +304,7 @@ export type OppgaveMedSakWritable = {
     tildeltEnhetsnr?: string;
     opprettetAv?: string;
     saksnummer?: string;
-    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG';
+    sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
 };
 
 export type GetSakBySaksnummerData = {
@@ -501,6 +505,39 @@ export type FerdigstillSakErrors = {
 export type FerdigstillSakError = FerdigstillSakErrors[keyof FerdigstillSakErrors];
 
 export type FerdigstillSakResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type FeilregisterSakData = {
+    body: FeilregisterRequestDto;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/feilregister';
+};
+
+export type FeilregisterSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FeilregisterSakError = FeilregisterSakErrors[keyof FeilregisterSakErrors];
+
+export type FeilregisterSakResponses = {
     /**
      * OK
      */
