@@ -1,58 +1,16 @@
-.default {
-    --status-color: var(--ax-neutral-400);
-    --status-color-hover: var(--ax-neutral-500);
-    --status-color-active: var(--ax-neutral-600);
-}
-
-.success {
-    --status-color: var(--ax-success-400);
-    --status-color-hover: var(--ax-success-500);
-    --status-color-active: var(--ax-success-600);
-    --icon-color: var(--ax-text-success-decoration);
-}
-
-.warning {
-    --status-color: var(--ax-warning-300);
-    --status-color-hover: var(--ax-warning-400);
-    --status-color-active: var(--ax-warning-500);
-    --icon-color: var(--ax-text-warning-decoration);
-}
-
-.danger {
-    --status-color: var(--ax-danger-400);
-    --status-color-hover: var(--ax-danger-500);
-    --status-color-active: var(--ax-danger-600);
-    --icon-color: var(--ax-text-danger-decoration);
+.step__link {
+    position: relative;
+    color: inherit;
+    text-decoration: none;
 }
 
 .step {
-    position: relative;
-}
-
-.step__button {
-    align-items: center;
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    display: inline-flex;
-    height: 38px;
-    justify-content: center;
-    overflow: hidden;
-    padding: 4px 1.5rem 10px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &:hover {
-        background-color: var(--ax-bg-neutral-moderate-hoverA);
-    }
-
-    &.active {
-        text-shadow: 0 0 0.2px #333; /* bruker text-shadow i steden for font-weight for å unngå endring i bredde */
-    }
+    width: 11.5rem;
+    padding: var(--ax-space-4) var(--ax-space-12) var(--ax-space-8);
 
     &:after {
         background: var(--status-color);
-        border-radius: 3px;
+        border-radius: var(--ax-border-radius-medium);
         bottom: 0;
         content: '';
         display: block;
@@ -69,14 +27,48 @@
     &.active:after {
         background: var(--status-color-active);
     }
+
+    &.default {
+        --status-color: var(--ax-neutral-400);
+        --status-color-hover: var(--ax-neutral-500);
+        --status-color-active: var(--ax-neutral-600);
+}
+
+    &.success {
+        --status-color: var(--ax-success-400);
+        --status-color-hover: var(--ax-success-500);
+        --status-color-active: var(--ax-success-600);
+        --icon-color: var(--ax-text-success-decoration);
+    }
+
+    &.warning {
+        --status-color: var(--ax-warning-300);
+        --status-color-hover: var(--ax-warning-400);
+        --status-color-active: var(--ax-warning-500);
+        --icon-color: var(--ax-text-warning-decoration);
+    }
+
+    &.danger {
+        --status-color: var(--ax-danger-400);
+        --status-color-hover: var(--ax-danger-500);
+        --status-color-active: var(--ax-danger-600);
+        --icon-color: var(--ax-text-danger-decoration);
+    }
+
+    &.disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+
+        &:after {
+            background: var(--status-color);
+        }
+    }
 }
 
 .icon {
     color: var(--icon-color);
-    display: flex;
     height: 24px;
-    margin-right: 10px;
-    min-width: 24px;
+    width: 24px;
 
     @media screen and (max-width: 1024px) {
         display: none;
@@ -119,19 +111,4 @@
     &.active:after {
         --partial-color: var(--status-color-active);
     }
-}
-
-.step__arrow-container {
-    display: flex;
-    justify-content: center;
-    left: 0;
-    position: absolute;
-    right: 0;
-    width: 100%;
-}
-
-.step__text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
