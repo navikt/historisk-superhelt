@@ -48,7 +48,13 @@ function SakLayout() {
 		}
 	};
 
-	return (
+    const steptypeForOpplysninger = () => {
+        if(sak?.tilstand.vedtaksbrevBruker === "IKKE_STARTET"){
+            return StepType.success
+        }
+        return calculateStepType(sak?.tilstand.opplysninger);
+    }
+    return (
 		<>
 			<PersonHeader maskertPersonId={sak.maskertPersonIdent} />
 			<SakAlert sak={sak} />
@@ -57,7 +63,7 @@ function SakLayout() {
 					<ProcessMenu>
 						<ProcessMenu.Item
 							label={"Opplysninger"}
-							stepType={calculateStepType(sak?.tilstand.opplysninger)}
+							stepType={steptypeForOpplysninger()}
 							to={"/sak/$saksnummer/opplysninger"}
 						/>
 						<ProcessMenu.Item
