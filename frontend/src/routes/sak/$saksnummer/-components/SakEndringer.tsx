@@ -13,7 +13,8 @@ import {
     SparkLargeIcon,
     ThumbDownIcon,
     ThumbUpIcon,
-    TrashIcon
+    TrashIcon,
+    XMarkIcon
 } from "@navikt/aksel-icons";
 import {EndringsloggType} from "~/routes/sak/$saksnummer/-types/endringslogg.types";
 
@@ -31,13 +32,15 @@ export default function SakEndringer({sak}: SakEndringerProps) {
 
     const getBullet = (type: EndringsloggType) => {
         switch (type) {
+            case "HENLAGT_SAK":
+                return <XMarkIcon/>
             case "DOKUMENT_MOTTATT":
-                return <ArrowRightIcon />;
+                return <ArrowRightIcon/>;
             case "UTBETALING_OK":
                 // subtask
                 return undefined
             case "UTBETALING_FEILET":
-                return <SackKronerIcon />
+                return <SackKronerIcon/>
             case "FEILREGISTERT":
                 return <TrashIcon/>;
             case "TIL_ATTESTERING":
@@ -49,12 +52,12 @@ export default function SakEndringer({sak}: SakEndringerProps) {
             case "ATTESTERING_UNDERKJENT":
                 return <ThumbDownIcon/>
             case "GJENAPNET_SAK":
-               return <ArrowCirclepathReverseIcon/>
+                return <ArrowCirclepathReverseIcon/>
             case "SENDT_BREV":
                 // subtask
                 return undefined
             case "OPPRETTET_SAK":
-                return <SparkLargeIcon />
+                return <SparkLargeIcon/>
             default:
                 return <ChevronRightIcon/>;
 

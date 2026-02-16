@@ -1,12 +1,13 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
-import {ErrorSummary, Modal, VStack} from "@navikt/ds-react";
+import {Modal, Textarea, VStack} from "@navikt/ds-react";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
-import {useRef} from "react";
-import {VedtaksBrevEditor} from "~/routes/sak/$saksnummer/-components/VedtaksBrevEditor";
-import {DocPencilIcon} from "@navikt/aksel-icons";
-import {sendBrevMutation} from "@generated/@tanstack/react-query.gen";
+import {useRef, useState} from "react";
+import {BrevEditor} from "~/routes/sak/$saksnummer/-components/BrevEditor";
+import {henleggSakMutation} from "@generated/@tanstack/react-query.gen";
 import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import {GavelIcon} from "@navikt/aksel-icons";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
 
 export const Route = createFileRoute('/sak/$saksnummer/henlegg')({
     component: FritekstBrevPage,
@@ -18,31 +19,54 @@ function FritekstBrevPage() {
     const ref = useRef<HTMLDialogElement>(null);
     const navigate = useNavigate();
     const invalidateSakQuery = useInvalidateSakQuery();
+    const [aarsak, setAarsak] = useState("")
+    const [error, setError] = useState<string | undefined>()
 
-    const sendBrev = useMutation({
-        ...sendBrevMutation(),
+    const henleggMutation = useMutation({
+        ...henleggSakMutation(),
         onSuccess: (data) => {
             invalidateSakQuery(saksnummer)
             navigateBack()
         }
     })
 
-    const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
+    const hasPermission = sak.rettigheter.includes("HENLEGGE")
 
     const navigateBack = () => {
         navigate({to: "/sak/$saksnummer/oppsummering", params: {saksnummer}});
     }
 
-    const onBrevSend = async (brevId: string) => {
-        await sendBrev.mutateAsync({
+
+    const validate = () => {
+        if (aarsak.length < 5) {
+            setError("Årsak må være minst 10 tegn")
+            return false
+        }
+        if (aarsak.length > 1000) {
+            setError("Årsak kan max være 1000 tegn")
+            return false
+        }
+        setError(undefined)
+        return true
+    }
+
+    const onSubmit = async (brevId: string) => {
+        if (!validate()) {
+            return
+        }
+
+        await henleggMutation.mutateAsync({
             path: {
                 saksnummer: saksnummer,
-                brevId: brevId
+            },
+            body: {
+                hendleggelseBrevId: brevId,
+                aarsak: aarsak,
             }
         })
 
     }
-    const hasError = !!sendBrev.error
+
 
     return (
         <VStack gap={"8"}>
@@ -52,20 +76,32 @@ function FritekstBrevPage() {
                    onClose={() => navigateBack()}
                    width={"80%"}
                    header={{
-                       icon: <DocPencilIcon aria-hidden/>,
-                       heading: "Skriv brev til bruker",
+                       icon: <GavelIcon aria-hidden/>,
+                       heading: "Henlegg sak",
+
                    }}
             >
                 <Modal.Body>
-                    <VedtaksBrevEditor sak={sak} type={"FRITEKSTBREV"} mottaker="BRUKER"
-                                       buttonText="Send brev"
-                                       onSuccess={onBrevSend}
-                                       readOnly={!hasSaksbehandleRettighet}
-                    />
 
-                    {hasError && <ErrorSummary>
-                        {sendBrev.error && <ErrorSummary.Item>{sendBrev?.error?.detail}</ErrorSummary.Item>}
-                    </ErrorSummary>}
+                    <VStack gap={"space-16"}>
+                        <Textarea
+                            label={"Årsak til henleggelse"}
+                            readOnly={!hasPermission}
+                            value={aarsak}
+                            onChange={(e) => setAarsak(e.target.value)}
+                            error={error}/>
+
+
+                        <BrevEditor
+                            sak={sak} type={"HENLEGGESEBREV"}
+                            mottaker="BRUKER"
+                            buttonText="Henlegg sak"
+                            onSuccess={onSubmit}
+                            readOnly={!hasPermission}
+                        />
+
+                        <ErrorAlert error={henleggMutation.error}/>
+                    </VStack>
                 </Modal.Body>
 
             </Modal>

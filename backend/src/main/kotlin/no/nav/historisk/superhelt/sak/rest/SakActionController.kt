@@ -211,14 +211,12 @@ class SakActionController(
 
         endringsloggService.logChange(
             saksnummer = saksnummer,
-            endringsType = EndringsloggType.HENLEGG_SAK,
+            endringsType = EndringsloggType.HENLAGT_SAK,
             endring = "Sak henlagt",
             beskrivelse = "Årsak: ${request.aarsak}"
         )
         return ResponseEntity.ok().build()
     }
-
-
 
     @Operation(operationId = "gjenapneSak")
     @PutMapping("status/gjenapne")
@@ -238,5 +236,4 @@ class SakActionController(
         )
         return ResponseEntity.ok().build()
     }
-
 }

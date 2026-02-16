@@ -33,8 +33,9 @@ export default function SakMeny({sak}: SakMenyProps) {
                     to={`/sak/${sak.saksnummer}/feilregistrer`}
                     icon={<TrashIcon aria-hidden/>}>Feilregistrer sak</ActionMenu.Item>
                 <ActionMenu.Item
-                    onSelect={console.info}
-                    disabled={true}
+                    as={RouterLink}
+                    to={`/sak/${sak.saksnummer}/henlegg`}
+                    disabled={!hasRettighet("HENLEGGE")}
                     icon={<GavelIcon aria-hidden/>}>Henlegg sak</ActionMenu.Item>
                 <ActionMenu.Item
                     onSelect={console.info}

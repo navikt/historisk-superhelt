@@ -16,11 +16,8 @@ export default function SakStatus({sak}: Props) {
                 return "Innvilget";
             case "DELVIS_INNVILGET":
                 return "Delvis innvilget";
-            case "FEILREGISTRERT":
-                return "Feilregistrert";
             case "HENLAGT" :
                 return "Henlagt";
-
         }
         return undefined;
     }
@@ -32,9 +29,18 @@ export default function SakStatus({sak}: Props) {
         return undefined;
     }
     const hasError= sak.error.utbetalingError
-
     const status: SakStatusType = sak.status;
-    //TODO oppdatere til aksel v8 og sette bedre farge
+
+    const renderFerdigStatusTag = () => {
+        if (sak.vedtaksResultat==="HENLAGT") {
+            return <Tag variant="warning" size="small">Henlagt</Tag>
+        }
+        const variant = hasError ? "error" : "success";
+        const icon = getAlertIcon();
+
+        return <Tag variant={variant} size="small" icon={icon}>{ferdigText(sak.vedtaksResultat)}</Tag>
+    }
+//TODO oppdatere til aksel v8 og sette bedre farge
     switch (status) {
         case "FEILREGISTRERT":
             return <Tag variant="neutral-filled" size="small">Feilregistert</Tag>
@@ -45,7 +51,7 @@ export default function SakStatus({sak}: Props) {
         case "FERDIG_ATTESTERT":
             return <Tag variant="success-moderate" size="small">Ferdig attestert</Tag>
         case "FERDIG":
-            return <Tag variant={hasError?"error":"success"} size="small" icon={getAlertIcon()}>{ferdigText(sak.vedtaksResultat)}</Tag>
+            return renderFerdigStatusTag();
     }
 
 }

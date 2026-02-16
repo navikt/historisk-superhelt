@@ -1,25 +1,14 @@
 package no.nav.historisk.superhelt.sak.rest
 
-import jakarta.validation.constraints.NotEmpty
-import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
-import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.brev.BrevId
 import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.LocalDate
 
-data class SakCreateRequestDto(
-    val type: StonadsType,
-    @field:Size(min = 11, max = 11)
-    @field:Pattern(regexp = "[0-9]*", message = "Fødselsnummer må kun inneholde tall")
-    val fnr: FolkeregisterIdent,
-    val beskrivelse: String? = null,
-    val soknadsDato: LocalDate? = null,
-)
 
 data class SakUpdateRequestDto(
     val type: StonadsType? = null,
@@ -46,7 +35,6 @@ data class FeilregisterRequestDto(
 data class HenlagtSakRequestDto(
     @field:Size(min = 5, max = 1000)
     val aarsak: String,
-    @field:NotEmpty
     val hendleggelseBrevId: BrevId
 )
 

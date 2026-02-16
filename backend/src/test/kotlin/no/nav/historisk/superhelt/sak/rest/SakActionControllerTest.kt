@@ -395,7 +395,7 @@ class SakActionControllerTest() {
             val endringslogg = endringsloggService.findBySak(sak.saksnummer)
             assertThat(endringslogg)
                 .anySatisfy {
-                    assertThat(it.type).isEqualTo(EndringsloggType.HENLEGG_SAK)
+                    assertThat(it.type).isEqualTo(EndringsloggType.HENLAGT_SAK)
                 }
             verify(oppgaveService).ferdigstillOppgaver(
                 eq(sak.saksnummer)

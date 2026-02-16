@@ -46,8 +46,8 @@ class BrevTekstGenerator(private val sak: Sak) {
          
                     <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
-                        ${if (sak.utbetaling != null) "<li>Utbetaling: ${sak.utbetaling?.belop} kr</li>" else ""}
-                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn på inntil ${sak.forhandstilsagn?.belop} kr</li>" else ""}
+                        ${if (sak.utbetaling != null) "<li>Utbetaling: ${sak.utbetaling.belop} kr</li>" else ""}
+                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn på inntil ${sak.forhandstilsagn.belop} kr</li>" else ""}
                       </ul> 
                 """.trimIndent()
             }
@@ -56,11 +56,11 @@ class BrevTekstGenerator(private val sak: Sak) {
 
     fun generateTittel(type: BrevType, mottaker: BrevMottaker): String {
         return when (type) {
-            BrevType.HENLEGGESEBREV,BrevType.VEDTAKSBREV -> when (mottaker) {
+            BrevType.VEDTAKSBREV -> when (mottaker) {
                 BrevMottaker.BRUKER -> "Vedtaksbrev, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
                 BrevMottaker.SAMHANDLER -> "Vedtaksbrev til samhandler, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
             }
-
+            BrevType.HENLEGGESEBREV -> "Henleggelsebrev for ${sak.type.navn.lowercase()}"
             BrevType.FRITEKSTBREV -> ""
         }
     }

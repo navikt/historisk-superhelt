@@ -3,7 +3,7 @@ import {ErrorSummary, Modal, VStack} from "@navikt/ds-react";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 import {useRef} from "react";
-import {VedtaksBrevEditor} from "~/routes/sak/$saksnummer/-components/VedtaksBrevEditor";
+import {BrevEditor} from "~/routes/sak/$saksnummer/-components/BrevEditor";
 import {DocPencilIcon} from "@navikt/aksel-icons";
 import {sendBrevMutation} from "@generated/@tanstack/react-query.gen";
 import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
@@ -57,10 +57,10 @@ function FritekstBrevPage() {
                    }}
             >
                 <Modal.Body>
-                    <VedtaksBrevEditor sak={sak} type={"FRITEKSTBREV"} mottaker="BRUKER"
-                                       buttonText="Send brev"
-                                       onSuccess={onBrevSend}
-                                       readOnly={!hasSaksbehandleRettighet}
+                    <BrevEditor sak={sak} type={"FRITEKSTBREV"} mottaker="BRUKER"
+                                buttonText="Send brev"
+                                onSuccess={onBrevSend}
+                                readOnly={!hasSaksbehandleRettighet}
                     />
 
                     {hasError && <ErrorSummary>

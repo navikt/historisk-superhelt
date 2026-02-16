@@ -21,7 +21,7 @@ interface BrevEditorProps {
 
 /** Editor for vedtaksbrev til bruker
  */
-export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText}: BrevEditorProps) {
+export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText}: BrevEditorProps) {
     const saksnummer = sak.saksnummer
     const {data: brev} = useSuspenseQuery(getOrCreateBrevOptions(saksnummer, type, mottaker))
     const queryClient = useQueryClient();
@@ -111,7 +111,7 @@ export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, but
                               error={getErrorMessage("innhold")}
                               onBlur={lagreBrev}
             />
-            <HStack gap="8" align="start">
+            <HStack gap="8" justify={"start"}>
                 <Button type="submit" variant="secondary" onClick={onActionClick} disabled={readOnly}
                         loading={loading}>{buttonText}</Button>
             </HStack>

@@ -12,5 +12,5 @@ enum class EndringsloggType {
     UTBETALING_OK,
     UTBETALING_FEILET,
     FEILREGISTERT,
-    HENLEGG_SAK,
+    HENLAGT_SAK,
 }
