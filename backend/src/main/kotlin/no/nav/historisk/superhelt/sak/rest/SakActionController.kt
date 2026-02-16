@@ -218,6 +218,42 @@ class SakActionController(
         return ResponseEntity.ok().build()
     }
 
+    @Operation(operationId = "feilregisterSak")
+    @PutMapping("status/feilregister")
+    fun feilregister(
+        @PathVariable saksnummer: Saksnummer,
+        @Valid @RequestBody request: FeilregisterRequestDto): ResponseEntity<Unit> {
+        val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.FEILREGISTERE)
+            .validate()
+        logger.info("Sak $saksnummer er feilregistert")
+        sakService.endreStatus(sak, SakStatus.FEILREGISTRERT)
+
+
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK)
+
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.BEH_SAK_MK,
+            sak = sak,
+            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.aarsak} 
+                
+                 Det må ryddes opp i journalposter knyttet til denne saken
+            """.trimIndent(),
+            tilordneTil = getAuthenticatedUser().navIdent,
+            // Setter applikasjon til null så denne behandles i helhet i gosys
+            behandlesAvApplikasjon = null
+        )
+
+        endringsloggService.logChange(
+            saksnummer = saksnummer,
+            endringsType = EndringsloggType.FEILREGISTERT,
+            endring = "Sak feilregistrert",
+            beskrivelse = "Årsak: ${request.aarsak}"
+        )
+        return ResponseEntity.ok().build()
+    }
+
     @Operation(operationId = "gjenapneSak")
     @PutMapping("status/gjenapne")
     fun gjenapne(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
