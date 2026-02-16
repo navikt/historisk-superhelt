@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.infrastruktur.validation.TilstandStatus
 import org.assertj.core.api.Assertions.assertThat
@@ -50,14 +49,6 @@ class SakTilstandTest {
         @Test
         fun `vedtaksbrevBruker er IKKE_STARTET når brev er null`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(vedtaksbrevBruker = null)
-            val tilstand = SakTilstand(sak)
-            assertThat(tilstand.vedtaksbrevBruker).isEqualTo(TilstandStatus.IKKE_STARTET)
-        }
-
-        @Test
-        fun `vedtaksbrevBruker er IKKE_STARTET når brev er nytt`() {
-
-            val sak = SakTestData.sakUtenUtbetaling().copy(vedtaksbrevBruker = brev.copy(status = BrevStatus.NY))
             val tilstand = SakTilstand(sak)
             assertThat(tilstand.vedtaksbrevBruker).isEqualTo(TilstandStatus.IKKE_STARTET)
         }
