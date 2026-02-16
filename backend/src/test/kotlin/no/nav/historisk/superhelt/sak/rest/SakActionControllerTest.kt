@@ -381,8 +381,8 @@ class SakActionControllerTest() {
             sakActionController.henleggSak(
                 saksnummer = sak.saksnummer,
                 request = HenlagtSakRequestDto(
-                    hendleggelseBrevId =brev.uuid,
-                    aarsak = "Årsak til feilregistrering"
+                    henleggelseBrevId = brev.uuid,
+                    aarsak = "Årsak til henleggelse"
                 )
             )
 

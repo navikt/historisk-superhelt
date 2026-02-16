@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
+    readonly maskertPersonIdent: string;
     readonly error: SakError;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
     readonly tilstand: SakTilstand;
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakError = {
@@ -100,7 +100,7 @@ export type UtbetalingRequestDto = {
 
 export type HenlagtSakRequestDto = {
     aarsak: string;
-    hendleggelseBrevId: string;
+    henleggelseBrevId: string;
 };
 
 export type FeilregisterRequestDto = {

@@ -35,7 +35,7 @@ data class FeilregisterRequestDto(
 data class HenlagtSakRequestDto(
     @field:Size(min = 5, max = 1000)
     val aarsak: String,
-    val hendleggelseBrevId: BrevId
+    val henleggelseBrevId: BrevId
 )
 
 

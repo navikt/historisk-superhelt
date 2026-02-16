@@ -205,7 +205,7 @@ class SakActionController(
             saksbehandler = getAuthenticatedUser().navUser,
             vedtaksResultat = VedtaksResultat.HENLAGT
         ))
-        brevSendingService.sendBrev(sak, request.hendleggelseBrevId)
+        brevSendingService.sendBrev(sak, request.henleggelseBrevId)
 
         oppgaveService.ferdigstillOppgaver(saksnummer)
 

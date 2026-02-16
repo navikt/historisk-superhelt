@@ -10,10 +10,10 @@ import {GavelIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
 
 export const Route = createFileRoute('/sak/$saksnummer/henlegg')({
-    component: FritekstBrevPage,
+    component: HenleggPage,
 })
 
-function FritekstBrevPage() {
+function HenleggPage() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
     const ref = useRef<HTMLDialogElement>(null);
@@ -38,7 +38,7 @@ function FritekstBrevPage() {
 
 
     const validate = () => {
-        if (aarsak.length < 5) {
+        if (aarsak.length < 10) {
             setError("Årsak må være minst 10 tegn")
             return false
         }
@@ -60,7 +60,7 @@ function FritekstBrevPage() {
                 saksnummer: saksnummer,
             },
             body: {
-                hendleggelseBrevId: brevId,
+                henleggelseBrevId: brevId,
                 aarsak: aarsak,
             }
         })

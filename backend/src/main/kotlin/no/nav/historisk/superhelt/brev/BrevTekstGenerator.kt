@@ -20,7 +20,7 @@ class BrevTekstGenerator(private val sak: Sak) {
     private fun generateHenleggelsebrev(): String {
         return """
             <h1>Henleggelsebrev</h1>
-            <p>Søknaden av  ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er henlagt.</p
+            <p>Søknaden av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er henlagt.</p>
         """.trimIndent()
     }
 
