@@ -83,15 +83,15 @@ class BrevController(
         return brevRepository.oppdater(brevId, oppdatertBrev)
     }
 
+    /** Sender annet brev enn vedtaksbrev */
     @Operation(operationId = "sendBrev")
     @PostMapping("{brevId}/send")
     fun sendAnnetBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId) {
-        val brev = brevRepository.getByUUid(brevId)
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
-        brevSendingService.sendBrev(sak, brev)
+        brevSendingService.sendBrev(sak, brevId)
 
     }
 

@@ -49,7 +49,8 @@ class SakRettigheterTest {
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE,
-                SakRettighet.FEILREGISTERE
+                SakRettighet.FEILREGISTERE,
+                SakRettighet.HENLEGGE
             )
         }
 

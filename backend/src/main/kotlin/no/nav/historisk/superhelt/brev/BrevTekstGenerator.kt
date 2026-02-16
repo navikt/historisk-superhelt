@@ -13,7 +13,15 @@ class BrevTekstGenerator(private val sak: Sak) {
         return when (type) {
             BrevType.VEDTAKSBREV -> generateVedtaksbrev(mottaker)
             BrevType.FRITEKSTBREV -> ""
+            BrevType.HENLEGGESEBREV -> generateHenleggelsebrev()
         }
+    }
+
+    private fun generateHenleggelsebrev(): String {
+        return """
+            <h1>Henleggelsebrev</h1>
+            <p>Søknaden av  ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er henlagt.</p
+        """.trimIndent()
     }
 
     private fun generateVedtaksbrev(mottaker: BrevMottaker): String {
@@ -48,8 +56,8 @@ class BrevTekstGenerator(private val sak: Sak) {
 
     fun generateTittel(type: BrevType, mottaker: BrevMottaker): String {
         return when (type) {
-            BrevType.VEDTAKSBREV -> when (mottaker) {
-                BrevMottaker.BRUKER -> "Vedtaksbrev, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()} "
+            BrevType.HENLEGGESEBREV,BrevType.VEDTAKSBREV -> when (mottaker) {
+                BrevMottaker.BRUKER -> "Vedtaksbrev, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
                 BrevMottaker.SAMHANDLER -> "Vedtaksbrev til samhandler, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
             }
 

@@ -18,6 +18,11 @@ class BrevSendingService(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    fun sendBrev(sak: Sak, brevId: BrevId) {
+        val brev = brevRepository.getByUUid(brevId)
+        sendBrev(sak, brev)
+    }
+
     fun sendBrev(sak: Sak, brev: Brev) {
         val brevId = brev.uuid
 
