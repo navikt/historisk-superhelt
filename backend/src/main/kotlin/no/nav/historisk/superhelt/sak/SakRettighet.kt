@@ -13,6 +13,8 @@ enum class SakRettighet {
 
     /** Gir rettighet til å gjenåpne en ferdigstilt sak */
     GJENAPNE,
+
+    FEILREGISTERE,
 }
 
 internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
@@ -27,6 +29,9 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
+                    // TODO ikke kunne feilregistere en gjenåpnet sak
+                    rettigheter.add(SakRettighet.FEILREGISTERE)
+
                 }
             }
 
@@ -35,14 +40,19 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                     rettigheter.add(SakRettighet.ATTESTERE)
                 }
             }
+
             SakStatus.FERDIG_ATTESTERT -> {
-               // TODO sette rettigheter som kan styre knapper for ferdigstilling
+                // TODO sette rettigheter som kan styre knapper for ferdigstilling
             }
 
             SakStatus.FERDIG -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.GJENAPNE)
                 }
+            }
+
+            SakStatus.FEILREGISTRERT -> {
+                // Det er ikke mulig å gjenåpne en feilregistrert sak
             }
 
 

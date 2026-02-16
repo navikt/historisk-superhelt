@@ -5,13 +5,14 @@ interface Props {
     index?: number
     name?: string
     error?: string
+    readOnly?: boolean
 }
 
 function getDokumentLabel(index: number): string {
     return index > 0 ? `Dokumenttittel ${index + 1}` : 'Dokumenttittel'
 }
 
-export function DokumentTittelFelt({value, error, name, index = 0}: Props) {
+export function DokumentTittelFelt({value, error, name, index = 0, readOnly}: Props) {
     return (
         <VStack gap="space-16">
             <TextField
@@ -19,6 +20,7 @@ export function DokumentTittelFelt({value, error, name, index = 0}: Props) {
                 name={name}
                 error={error}
                 defaultValue={value}
+                readOnly={readOnly}
             />
         </VStack>
     )

@@ -139,9 +139,12 @@ class OppgaveService(
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#sak.fnr)")
     @Transactional
     fun opprettOppgave(
-        type: OppgaveType, sak: Sak,
+        type: OppgaveType,
+        sak: Sak,
         beskrivelse: String? = null,
-        tilordneTil: NavIdent? = null): OppgaveMedSak {
+        tilordneTil: NavIdent? = null,
+        behandlesAvApplikasjon: String? = APP_NAVN,
+    ): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(
@@ -151,7 +154,7 @@ class OppgaveService(
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
                 saksreferanse = sak.saksnummer.value,
-                behandlesAvApplikasjon = APP_NAVN,
+                behandlesAvApplikasjon = behandlesAvApplikasjon,
                 behandlingstype = gjelder.behandlingstype,
                 behandlingstema = gjelder.behandlingstema,
                 fristFerdigstillelse = LocalDate.now().plusDays(5),

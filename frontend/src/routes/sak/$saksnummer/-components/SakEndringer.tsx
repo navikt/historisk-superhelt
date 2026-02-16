@@ -9,11 +9,11 @@ import {
     CheckmarkCircleIcon,
     ChevronRightIcon,
     HourglassBottomFilledIcon,
-    PersonPencilIcon,
     SackKronerIcon,
     SparkLargeIcon,
     ThumbDownIcon,
-    ThumbUpIcon
+    ThumbUpIcon,
+    TrashIcon
 } from "@navikt/aksel-icons";
 import {EndringsloggType} from "~/routes/sak/$saksnummer/-types/endringslogg.types";
 
@@ -38,8 +38,8 @@ export default function SakEndringer({sak}: SakEndringerProps) {
                 return undefined
             case "UTBETALING_FEILET":
                 return <SackKronerIcon />
-            case "OPPDATERTE_SAKSDETALJER":
-                return <PersonPencilIcon/>;
+            case "FEILREGISTERT":
+                return <TrashIcon/>;
             case "TIL_ATTESTERING":
                 return <HourglassBottomFilledIcon/>;
             case "ATTESTERT_SAK":

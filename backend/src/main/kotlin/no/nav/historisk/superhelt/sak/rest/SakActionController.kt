@@ -1,10 +1,12 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevSendingService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
@@ -137,7 +139,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.GOD_VED,
             sak = sak,
-            beskrivelse = "Attestering av sak ${sak.type.beskrivelse} med saksnummer ${sak.saksnummer} saksbehandlet av ${sak.saksbehandler.navIdent}",
+            beskrivelse = "Attestering av sak ${sak.type.navn} med saksnummer ${sak.saksnummer} saksbehandlet av ${sak.saksbehandler.navIdent}",
             tilordneTil = null
         )
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK, OppgaveType.BEH_UND_VED)
@@ -146,6 +148,42 @@ class SakActionController(
             saksnummer = saksnummer,
             endringsType = EndringsloggType.TIL_ATTESTERING,
             endring = "Sak sendt til totrinnskontroll"
+        )
+        return ResponseEntity.ok().build()
+    }
+
+    @Operation(operationId = "feilregisterSak")
+    @PutMapping("status/feilregister")
+    fun feilregister(
+        @PathVariable saksnummer: Saksnummer,
+        @Valid @RequestBody request: FeilregisterRequestDto): ResponseEntity<Unit> {
+        val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.FEILREGISTERE)
+            .validate()
+        logger.info("Sak $saksnummer er feilregistert")
+        sakService.endreStatus(sak, SakStatus.FEILREGISTRERT)
+
+
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK)
+
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.BEH_SAK_MK,
+            sak = sak,
+            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.aarsak} 
+                
+                 Det må ryddes opp i journalposter knyttet til denne saken
+            """.trimIndent(),
+            tilordneTil = getAuthenticatedUser().navIdent,
+            // Setter applikasjon til null så denne behandles i helhet i gosys
+            behandlesAvApplikasjon = null
+        )
+
+        endringsloggService.logChange(
+            saksnummer = saksnummer,
+            endringsType = EndringsloggType.FEILREGISTERT,
+            endring = "Sak feilregistrert",
+            beskrivelse = "Årsak: ${request.aarsak}"
         )
         return ResponseEntity.ok().build()
     }
@@ -168,8 +206,5 @@ class SakActionController(
         )
         return ResponseEntity.ok().build()
     }
-
-    // Henlegg
-    // Avvis
 
 }

@@ -21,7 +21,7 @@ data class SakCreateRequestDto(
 
 data class SakUpdateRequestDto(
     val type: StonadsType? = null,
-    @field:Size( max = 200)
+    @field:Size(max = 200)
     val beskrivelse: String? = null,
     @field:Size(max = 1000)
     val begrunnelse: String? = null,
@@ -32,8 +32,13 @@ data class SakUpdateRequestDto(
 
 data class AttesterSakRequestDto(
     val godkjent: Boolean,
-    @field:Size(min= 5, max = 500)
+    @field:Size(min = 5, max = 500)
     val kommentar: String? = null,
+)
+
+data class FeilregisterRequestDto(
+    @field:Size(min = 5, max = 1000)
+    val aarsak: String,
 )
 
 data class UtbetalingRequestDto(val utbetalingsType: UtbetalingsType, val belop: Belop?)

@@ -37,7 +37,10 @@ function MainContent() {
         ...getUserInfoOptions()
     })
 
-    if (user.roles.length === 0) {
+    // Sjekk om brukeren har noen roller som gir tilgang til systemet. Hvis ikke, vis en advarsel.
+    const hasAccess = user.roles.some(role => role !== 'DRIFT');
+
+    if (!hasAccess) {
         return <Box padding={"space-8"}>
             <GlobalAlert status="warning">
                 <GlobalAlert.Header>
@@ -47,7 +50,6 @@ function MainContent() {
                 </GlobalAlert.Header>
                 <GlobalAlert.Content>
                     <p>Din bruker har ikke noen roller i systemet og har derfor ikke tilgang.</p>
-
                     <p>Vennligst kontakt systemadministrator for å få tildelt roller.</p>
                 </GlobalAlert.Content>
             </GlobalAlert>

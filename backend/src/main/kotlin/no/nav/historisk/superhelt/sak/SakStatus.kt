@@ -6,4 +6,5 @@ enum class SakStatus {
     TIL_ATTESTERING,
     FERDIG_ATTESTERT,
     FERDIG,
+    FEILREGISTRERT
 }
