@@ -36,7 +36,7 @@ function FeilregistrerPage() {
     }
 
     const validate = () => {
-        if (aarsak.length < 10) {
+        if (aarsak.length < 5) {
             setError("Årsak må være minst 10 tegn")
             return false
         }

@@ -29,10 +29,9 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
-                    if(sak.vedtaksResultat!= null){
-                        // Ikke gi rettigheter på en gjenåpnet sak
-                        rettigheter.add(SakRettighet.FEILREGISTERE)
-                    }
+                    // TODO ikke kunne feilregistere en gjenåpnet sak
+                    rettigheter.add(SakRettighet.FEILREGISTERE)
+
                 }
             }
 
@@ -41,8 +40,9 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                     rettigheter.add(SakRettighet.ATTESTERE)
                 }
             }
+
             SakStatus.FERDIG_ATTESTERT -> {
-               // TODO sette rettigheter som kan styre knapper for ferdigstilling
+                // TODO sette rettigheter som kan styre knapper for ferdigstilling
             }
 
             SakStatus.FERDIG -> {
@@ -50,8 +50,9 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                     rettigheter.add(SakRettighet.GJENAPNE)
                 }
             }
+
             SakStatus.FEILREGISTRERT -> {
-               // Det er ikke mulig å gjenåpne en feilregistrert sak
+                // Det er ikke mulig å gjenåpne en feilregistrert sak
             }
 
 

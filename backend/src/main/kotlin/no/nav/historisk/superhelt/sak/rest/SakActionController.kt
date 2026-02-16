@@ -170,9 +170,10 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK_MK,
             sak = sak,
-            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.aarsak} \n\n 
+            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.aarsak} 
+                
                  Det må ryddes opp i journalposter knyttet til denne saken
-            """.trimMargin(),
+            """.trimIndent(),
             tilordneTil = getAuthenticatedUser().navIdent,
             // Setter applikasjon til null så denne behandles i helhet i gosys
             behandlesAvApplikasjon = null
