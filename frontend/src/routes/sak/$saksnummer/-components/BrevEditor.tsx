@@ -112,7 +112,7 @@ export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText
                               onBlur={lagreBrev}
             />
             <HStack gap="space-32" align="start">
-                <Button type="submit" variant="secondary" onClick={onActionClick} disabled={readOnly}
+                <Button type="submit" variant="primary" onClick={onActionClick} disabled={readOnly}
                         loading={loading}>{buttonText}</Button>
             </HStack>
             {hasError && <ErrorSummary>
