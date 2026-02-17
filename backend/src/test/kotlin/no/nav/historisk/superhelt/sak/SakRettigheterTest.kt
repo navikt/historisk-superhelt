@@ -33,7 +33,6 @@ class SakRettigheterTest {
     @WithSaksbehandler
     inner class Saksbehandler {
 
-
         @EnumSource(SakStatus::class)
         @ParameterizedTest
         fun `har leserettighet`(status: SakStatus) {
@@ -42,14 +41,15 @@ class SakRettigheterTest {
         }
 
         @Test
-        fun `får LES, SAKSBEHANDLE og FEILREGISTRERE når sak er under behandling`() {
+        fun `får flere rettigheter når sak er under behandling`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.UNDER_BEHANDLING
             )
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE,
-                SakRettighet.FEILREGISTERE
+                SakRettighet.FEILREGISTERE,
+                SakRettighet.HENLEGGE
             )
         }
 

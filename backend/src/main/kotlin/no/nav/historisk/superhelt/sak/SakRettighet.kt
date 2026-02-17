@@ -15,6 +15,9 @@ enum class SakRettighet {
     GJENAPNE,
 
     FEILREGISTERE,
+    HENLEGGE
+
+
 }
 
 internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
@@ -29,9 +32,9 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
+                    rettigheter.add(SakRettighet.HENLEGGE)
                     // TODO ikke kunne feilregistere en gjenåpnet sak
                     rettigheter.add(SakRettighet.FEILREGISTERE)
-
                 }
             }
 

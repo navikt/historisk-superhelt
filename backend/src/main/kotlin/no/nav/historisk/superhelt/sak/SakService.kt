@@ -72,7 +72,7 @@ class SakService(
         }
 
         sakRepository.updateSak(saksnummer, updateDto)
-        logger.info("Sak {} endret status til {}", saksnummer, nyStatus)
+        logger.debug("Sak {} endret status til {}", saksnummer, nyStatus)
     }
 
 }

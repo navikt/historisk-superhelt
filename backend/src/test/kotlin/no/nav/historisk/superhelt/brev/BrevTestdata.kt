@@ -15,6 +15,9 @@ object BrevTestdata {
     fun fritekstbrevBruker(): Brev {
         return brevUtkast().copy(type = BrevType.FRITEKSTBREV, mottakerType = BrevMottaker.BRUKER)
     }
+    fun henleggBrev(): Brev {
+        return brevUtkast().copy(type = BrevType.HENLEGGESEBREV, mottakerType = BrevMottaker.BRUKER)
+    }
 
     fun brevUtkast(): Brev {
         return Brev(

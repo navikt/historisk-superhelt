@@ -13,6 +13,7 @@ import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakService
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import no.nav.oppgave.OppgaveType
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -188,6 +189,35 @@ class SakActionController(
         return ResponseEntity.ok().build()
     }
 
+    @Operation(operationId = "henleggSak")
+    @PutMapping("status/henlegg")
+    fun henleggSak(
+        @PathVariable saksnummer: Saksnummer,
+        @Valid @RequestBody request: HenlagtSakRequestDto): ResponseEntity<Unit> {
+        val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.HENLEGGE)
+            .validate()
+
+        logger.info("Henlegger sak $saksnummer")
+        sakRepository.updateSak(sak.saksnummer, UpdateSakDto(
+            status = SakStatus.FERDIG,
+            saksbehandler = getAuthenticatedUser().navUser,
+            vedtaksResultat = VedtaksResultat.HENLAGT
+        ))
+        brevSendingService.sendBrev(sak, request.henleggelseBrevId)
+
+        oppgaveService.ferdigstillOppgaver(saksnummer)
+
+        endringsloggService.logChange(
+            saksnummer = saksnummer,
+            endringsType = EndringsloggType.HENLAGT_SAK,
+            endring = "Sak henlagt",
+            beskrivelse = "Årsak: ${request.aarsak}"
+        )
+        return ResponseEntity.ok().build()
+    }
+
     @Operation(operationId = "gjenapneSak")
     @PutMapping("status/gjenapne")
     fun gjenapne(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
@@ -206,5 +236,4 @@ class SakActionController(
         )
         return ResponseEntity.ok().build()
     }
-
 }

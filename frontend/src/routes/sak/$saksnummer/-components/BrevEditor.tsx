@@ -21,7 +21,7 @@ interface BrevEditorProps {
 
 /** Editor for vedtaksbrev til bruker
  */
-export function VedtaksBrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText}: BrevEditorProps) {
+export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText}: BrevEditorProps) {
     const saksnummer = sak.saksnummer
     const {data: brev} = useSuspenseQuery(getOrCreateBrevOptions(saksnummer, type, mottaker))
     const queryClient = useQueryClient();
