@@ -69,7 +69,7 @@ function HenleggPage() {
 
 
     return (
-        <VStack gap={"8"}>
+        <VStack gap={"space-16"}>
 
             <Modal ref={ref}
                    open={true}
