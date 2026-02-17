@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 
 /**
- * Mock av eksterne tjenester. Bruk MocitoBean i testene for å overstyre disse mockene i spesifikke tester.
+ * Mock av eksterne tjenester. Bruk MockitoBean i testene for å overstyre disse mockene i spesifikke tester.
  */
 @TestConfiguration
 class ExternalMockTestConfig {

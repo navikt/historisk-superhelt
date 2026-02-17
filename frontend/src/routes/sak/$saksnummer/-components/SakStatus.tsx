@@ -28,11 +28,12 @@ export default function SakStatus({sak}: Props) {
         }
         return undefined;
     }
-    const hasError= sak.error.utbetalingError
+
+    const hasError = sak.error.utbetalingError
     const status: SakStatusType = sak.status;
 
     const renderFerdigStatusTag = () => {
-        if (sak.vedtaksResultat==="HENLAGT") {
+        if (sak.vedtaksResultat === "HENLAGT") {
             return <Tag variant="warning" size="small">Henlagt</Tag>
         }
         const variant = hasError ? "error" : "success";

@@ -400,6 +400,34 @@ class SakActionControllerTest() {
             verify(oppgaveService).ferdigstillOppgaver(
                 eq(sak.saksnummer)
             )
+        }
+
+        @Test
+        fun `henlegg ferdig sak skal feile`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            val brev = BrevTestdata.lagreBrev(
+                brevRepository,
+                sak.saksnummer,
+                BrevTestdata.henleggBrev()
+            )
+
+
+
+            assertThatThrownBy {
+                sakActionController.henleggSak(
+                    saksnummer = sak.saksnummer,
+                    request = HenlagtSakRequestDto(
+                        henleggelseBrevId = brev.uuid,
+                        aarsak = "Årsak til henleggelse"
+                    )
+                )
+            }.isInstanceOf(ValideringException::class.java)
+
+            val lagretSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(lagretSak.status).isEqualTo(SakStatus.FERDIG)
 
         }
     }
