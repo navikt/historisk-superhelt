@@ -9,7 +9,6 @@ import {
     Table,
     Tag,
     VStack,
-    Box,
 } from '@navikt/ds-react';
 import {useState} from 'react'
 import {Link as RouterLink} from '@tanstack/react-router'
