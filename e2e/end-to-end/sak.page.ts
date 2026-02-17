@@ -58,6 +58,13 @@ export class SakPage {
         await this.page.getByRole("button", {name: "Lagre og gå videre"}).click();
     }
 
+    async selectBehandlingsmenyItem(item: "Feilregistrer sak"| "Henlegg sak") {
+        const benhandlingsmeny= this.page.getByRole('button', { name: 'Behandlingsmeny' })
+        await expect(benhandlingsmeny).toBeVisible();
+        await benhandlingsmeny.click();
+        await this.page.getByRole('menuitem', { name: item }).click();
+    }   
+
     async sendTilAttering() {
         await this.selectMenuItem("Oppsummering");
         await expect(
