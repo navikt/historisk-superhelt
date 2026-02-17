@@ -45,8 +45,7 @@ function FritekstBrevPage() {
     const hasError = !!sendBrev.error
 
     return (
-        <VStack gap={"8"}>
-
+        <VStack gap={"space-32"}>
             <Modal ref={ref}
                    open={true}
                    onClose={() => navigateBack()}
@@ -70,7 +69,7 @@ function FritekstBrevPage() {
 
             </Modal>
         </VStack>
-    )
+    );
 }
 
 

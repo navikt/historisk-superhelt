@@ -11,29 +11,31 @@ interface Props {
 export function PersonHeader({maskertPersonId}: Props) {
     const {data: person} = useSuspenseQuery(finnPersonQuery(maskertPersonId))
 
-    return <Box.New background="neutral-moderate" padding="space-4">
-        <HStack justify={"space-between"}>
+    return (
+        <Box background="neutral-moderate" padding="space-4">
+            <HStack justify={"space-between"}>
 
-            <HStack gap="space-4" align="center" justify={"space-between"}>
-                <PersonIcon fontSize="1.5rem"/>
-                <Link as={RouterLink} to={`/person/${person.maskertPersonident}`} underline={false}>
-                    <BodyShort size={"large"}>
-                        {person?.navn} ({person.alder??'-'} år)
-                    </BodyShort>
-                </Link>
-                <BodyShort size={"small"}>{person.fnr}</BodyShort>
-                <CopyButton copyText={person.fnr}/>
+                <HStack gap="space-4" align="center" justify={"space-between"}>
+                    <PersonIcon fontSize="1.5rem"/>
+                    <Link as={RouterLink} to={`/person/${person.maskertPersonident}`} underline={false}>
+                        <BodyShort size={"large"}>
+                            {person?.navn} ({person.alder??'-'} år)
+                        </BodyShort>
+                    </Link>
+                    <BodyShort size={"small"}>{person.fnr}</BodyShort>
+                    <CopyButton copyText={person.fnr}/>
+                </HStack>
+                {person.avvisningsBegrunnelse &&
+                    <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
+                <HStack gap="space-16" align="center">
+                    {/*TODO Her kommer mer info om person,*/}
+
+                    {person.adressebeskyttelseGradering &&
+                        <Tag data-color="warning" variant="outline">Adressebeskyttelse: {person.adressebeskyttelseGradering}</Tag>}
+                    {person.verge && <Tag data-color="info" variant="outline">Verge: {person.verge}</Tag>}
+                </HStack>
+
             </HStack>
-            {person.avvisningsBegrunnelse &&
-                <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
-            <HStack gap="space-16" align="center">
-                {/*TODO Her kommer mer info om person,*/}
-
-                {person.adressebeskyttelseGradering &&
-                    <Tag variant={"warning"}>Adressebeskyttelse: {person.adressebeskyttelseGradering}</Tag>}
-                {person.verge && <Tag variant={"info"}>Verge: {person.verge}</Tag>}
-            </HStack>
-
-        </HStack>
-    </Box.New>
+        </Box>
+    );
 }

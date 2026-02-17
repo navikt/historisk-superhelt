@@ -38,5 +38,5 @@ export function OppgaveActionButton(props: { oppgave: OppgaveMedSak }) {
         return null
     }
 
-    return <HStack gap="2">{renderButton()}</HStack>
+    return <HStack gap="space-8">{renderButton()}</HStack>;
 }

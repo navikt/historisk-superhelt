@@ -1,6 +1,6 @@
 .pdfViewer {
    select {
-      background-color: var(--a-gray-800);
-      color: var(--a-text-on-inverted);
+      background-color: var(--ax-neutral-900);
+      color: var(--ax-text-neutral-contrast);
    }
 }
