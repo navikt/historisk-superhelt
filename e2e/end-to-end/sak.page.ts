@@ -13,15 +13,13 @@ export class SakPage {
     async selectMenuItem(
         item: "Oppsummering" | "Opplysninger" | "Brev til bruker",
     ) {
-        await this.page.getByRole("link", {name: item}).click();
-        await expect(this.page.getByRole("link", {name: item})).toHaveClass(
-            /active/,
-        );
+        const menuItem = this.page.getByRole("link", {name: item});
+        await expect(menuItem).toBeEnabled();
+        await menuItem.click();
+        await expect(menuItem).toHaveClass(/active/);
     }
 
     async fyllInnOpplysninger(opplysninger: Opplysninger) {
-        await this.selectMenuItem("Opplysninger");
-
         if (opplysninger.beskrivelse) {
             await this.page
                 .getByRole("textbox", {name: "Kort beskrivelse av stønad"})
@@ -51,7 +49,6 @@ export class SakPage {
     }
 
     async skrivBrev() {
-        await this.selectMenuItem("Brev til bruker");
         await expect(
             this.page.getByText("Dokumentbeskrivelse i arkivet"),
         ).toBeVisible();
@@ -66,7 +63,6 @@ export class SakPage {
     }   
 
     async sendTilAttering() {
-        await this.selectMenuItem("Oppsummering");
         await expect(
             this.page.getByRole("heading", {name: "Til attestering"}),
         ).toBeVisible();
