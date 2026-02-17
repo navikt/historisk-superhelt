@@ -10,7 +10,7 @@
 
     &:after {
         background: var(--status-color);
-        border-radius: var(--ax-border-radius-medium);
+        border-radius: var(--ax-radius-4);
         bottom: 0;
         content: '';
         display: block;

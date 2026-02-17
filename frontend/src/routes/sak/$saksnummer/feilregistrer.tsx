@@ -63,8 +63,7 @@ function FeilregistrerPage() {
     }
 
     return (
-        <VStack gap={"8"}>
-
+        <VStack gap={"space-32"}>
             <Modal ref={ref}
                    open={true}
                    onClose={navigateBack}
@@ -74,7 +73,7 @@ function FeilregistrerPage() {
                    }}
             >
                 <Modal.Body>
-                    <VStack gap={"8"}>
+                    <VStack gap={"space-32"}>
                         <BodyLong>Saken feilregisteres og lukkes. Det er ikke mulig å åpne saken igjen etterpå. Det
                             blir laget en oppgave i Gosys for saksbehandler om å rydde opp i saken.
                         </BodyLong>
@@ -91,10 +90,12 @@ function FeilregistrerPage() {
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button type="button"
-                            variant="danger"
-                            disabled={!hasPermission}
-                            onClick={onFeilregistrer}>Feilregister</Button>
+                    <Button
+                        data-color="danger"
+                        type="button"
+                        variant="primary"
+                        disabled={!hasPermission}
+                        onClick={onFeilregistrer}>Feilregister</Button>
                     <Button
                         type="button"
                         variant="secondary"
@@ -103,7 +104,7 @@ function FeilregistrerPage() {
                 </Modal.Footer>
             </Modal>
         </VStack>
-    )
+    );
 }
 
 

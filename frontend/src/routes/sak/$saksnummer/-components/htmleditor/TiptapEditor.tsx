@@ -155,14 +155,14 @@ function TiptapEditor({initialContentHtml, onChange, onBlur, error, readOnly}: T
 
 
     return (
-        <Box.New background={"raised"} padding={"space-4"} className={error ? styles.errorBorder : ''}>
+        <Box padding={"space-4"} className={error ? styles.errorBorder : ''}>
             <EditorContext.Provider value={providerValue}>
                 {!readOnly && <MenuBar editor={editor}/>}
                 <EditorContent editor={editor} className={styles.editor}/>
             </EditorContext.Provider>
             {error && <ErrorMessage showIcon>{error}</ErrorMessage>}
-        </Box.New>
-    )
+        </Box>
+    );
 }
 
 export default TiptapEditor

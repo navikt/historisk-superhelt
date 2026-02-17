@@ -113,9 +113,8 @@ export default function SakEditor({sak}: Props) {
     }
 
     return (
-        <Box.New background={"neutral-soft"} padding="6" borderWidth="1" borderRadius="medium">
-
-            <VStack gap="6">
+        <Box background={"neutral-soft"} padding="space-24" borderWidth="1" borderRadius="4">
+            <VStack gap="space-24">
                 <Select
                     label="Stønad"
                     value={updateSakData.type}
@@ -128,7 +127,7 @@ export default function SakEditor({sak}: Props) {
                     ))}
                 </Select>
 
-                <HStack gap="6">
+                <HStack gap="space-24">
                     <DatePicker {...datepickerProps} >
                         <DatePicker.Input {...inputProps}
                                           label="Søknadsdato"
@@ -152,7 +151,7 @@ export default function SakEditor({sak}: Props) {
                 />
 
 
-                <Box.New background={"default"} padding={"space-16"}>
+                <Box background={"default"} padding={"space-16"}>
                     <VStack gap="space-16">
                         <RadioGroup legend="Vedtak" value={updateSakData.vedtaksResultat}
                                     onChange={value => patchSak({vedtaksResultat: value as SakVedtakType})}
@@ -178,10 +177,10 @@ export default function SakEditor({sak}: Props) {
                             minRows={4}
                         />
                     </VStack>
-                </Box.New>
+                </Box>
 
 
-                <HStack gap="8" align="start">
+                <HStack gap="space-32" align="start">
                     <Button type="submit" variant="secondary" onClick={completedSoknad}>Lagre og gå videre</Button>
                 </HStack>
                 {hasError && <ErrorSummary>
@@ -193,7 +192,6 @@ export default function SakEditor({sak}: Props) {
                 </ErrorSummary>}
 
             </VStack>
-
-        </Box.New>
-    )
+        </Box>
+    );
 }

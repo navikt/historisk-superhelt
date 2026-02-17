@@ -43,16 +43,16 @@ export function PersonVelger(props: Props) {
     }
 
     if (isSearching) {
-        return <VStack gap="2"><Label>{props.label}</Label><Loader height="3rem"/></VStack>
+        return <VStack gap="space-8"><Label>{props.label}</Label><Loader height="3rem"/></VStack>;
     }
 
     if (!editMode) {
         return (
-            <VStack gap="2">
+            <VStack gap="space-8">
                 <input type="hidden" name={props.name} value={props.value.fnr}/>
                 <Label>{props.label}</Label>
-                <HStack height="3rem" gap="4" justify="space-between" align="center">
-                    <HStack gap="2" align="center">
+                <HStack height="3rem" gap="space-16" justify="space-between" align="center">
+                    <HStack gap="space-8" align="center">
                         <PersonIcon title="person" fontSize="1.5rem"/>
                         <BodyShort>{props.value.navn}/{props.value.fnr}</BodyShort>
                     </HStack>
@@ -61,12 +61,12 @@ export function PersonVelger(props: Props) {
                     </Button>
                 </HStack>
             </VStack>
-        )
+        );
     }
 
     return (
-        <VStack gap="2">
-            <HStack gap="4" align="end">
+        <VStack gap="space-8">
+            <HStack gap="space-16" align="end">
                 <TextField
                     label={props.label}
                     value={searchFnr}
@@ -85,5 +85,5 @@ export function PersonVelger(props: Props) {
                 </Button>
             </HStack>
         </VStack>
-    )
+    );
 }

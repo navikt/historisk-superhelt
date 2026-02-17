@@ -1,7 +1,7 @@
 import {StrictMode} from 'react'
 import ReactDOM from 'react-dom/client'
 import {createRouter, RouterProvider} from '@tanstack/react-router'
-import "@navikt/ds-css/darkside";
+import "@navikt/ds-css";
 
 // Import the generated route tree
 import {routeTree} from './routeTree.gen'

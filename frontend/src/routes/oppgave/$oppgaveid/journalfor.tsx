@@ -69,21 +69,23 @@ function JournalforPage() {
         console.log("Bruker oppdatert")
     }
 
-    return <VStack gap={"6"}>
-        <Heading size="xlarge">Journalfør oppgave {oppgave.oppgaveId}</Heading>
+    return (
+        <VStack gap={"space-24"}>
+            <Heading size="xlarge">Journalfør oppgave {oppgave.oppgaveId}</Heading>
 
-        <>
-            {completed && <FerdigJournalfort saksnummer={oppgave.saksnummer}/>}
-            {!completed && (
-                <JournalforForm
-                    person={person}
-                    oppgaveMedSak={oppgave}
-                    journalPost={journalPost}
-                    readOnly={!harSkriveTilgang}
-                    defaultStonadstype={guessStonadsType(oppgave.oppgaveGjelder)}
-                    onBrukerUpdate={oppdaterBruker}
-                />
-            )}
-    </>
-    </VStack>
+            <>
+                {completed && <FerdigJournalfort saksnummer={oppgave.saksnummer}/>}
+                {!completed && (
+                    <JournalforForm
+                        person={person}
+                        oppgaveMedSak={oppgave}
+                        journalPost={journalPost}
+                        readOnly={!harSkriveTilgang}
+                        defaultStonadstype={guessStonadsType(oppgave.oppgaveGjelder)}
+                        onBrukerUpdate={oppdaterBruker}
+                    />
+                )}
+        </>
+        </VStack>
+    );
 }

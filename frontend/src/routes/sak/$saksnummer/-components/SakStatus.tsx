@@ -37,13 +37,13 @@ export default function SakStatus({sak}: Props) {
     //TODO oppdatere til aksel v8 og sette bedre farge
     switch (status) {
         case "FEILREGISTRERT":
-            return <Tag variant="neutral-filled" size="small">Feilregistert</Tag>
+            return <Tag data-color="neutral" variant="strong" size="small">Feilregistert</Tag>;
         case "UNDER_BEHANDLING":
-            return <Tag variant="alt2" size="small">Under behandling</Tag>
+            return <Tag data-color="meta-lime" variant="outline" size="small">Under behandling</Tag>;
         case "TIL_ATTESTERING":
-            return <Tag variant="info" size="small">Til attestering</Tag>
+            return <Tag data-color="info" variant="outline" size="small">Til attestering</Tag>;
         case "FERDIG_ATTESTERT":
-            return <Tag variant="success-moderate" size="small">Ferdig attestert</Tag>
+            return <Tag data-color="success" variant="moderate" size="small">Ferdig attestert</Tag>;
         case "FERDIG":
             return <Tag variant={hasError?"error":"success"} size="small" icon={getAlertIcon()}>{ferdigText(sak.vedtaksResultat)}</Tag>
     }

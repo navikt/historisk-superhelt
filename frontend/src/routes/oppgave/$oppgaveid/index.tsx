@@ -21,11 +21,13 @@ export const Route = createFileRoute('/oppgave/$oppgaveid/')({
 
 function OppgaveComponent() {
     const oppgave = Route.useLoaderData()
-    return <VStack gap={"6"}>
-        <Heading size="xlarge">Oppgave {oppgave.oppgaveId}</Heading>
-        <BodyShort>Vet ikke hvordan denne skal behandles</BodyShort>
-        <pre>
-        {JSON.stringify(oppgave, null, 2)}
-    </pre>
-    </VStack>
+    return (
+        <VStack gap={"space-24"}>
+            <Heading size="xlarge">Oppgave {oppgave.oppgaveId}</Heading>
+            <BodyShort>Vet ikke hvordan denne skal behandles</BodyShort>
+            <pre>
+            {JSON.stringify(oppgave, null, 2)}
+        </pre>
+        </VStack>
+    );
 }

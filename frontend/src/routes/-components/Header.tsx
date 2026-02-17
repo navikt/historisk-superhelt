@@ -39,52 +39,54 @@ export function Header() {
 
     }
 
-    return <InternalHeader>
-        <InternalHeader.Title as="h1">
-            <Link as={RouterLink} to={"/"} underline={false} variant={"neutral"}><img src="/logo.svg" height="35rem"
-                                                                                      alt={""}/>Superhelt</Link>
-        </InternalHeader.Title>
-        <HStack
-            as="form"
-            paddingInline="space-20"
-            align="center"
-            onSubmit={(e) => {
-                e.preventDefault();
-                doSearch();
-            }}
-        >
-            <Search
-                label="Søk"
-                size="small"
-                disabled={!hasAccess}
-                variant="simple"
-                placeholder="Finn person"
-                value={search}
-                onChange={setSearch}
-                error={searchError}
-            />
-        </HStack>
-        <Spacer/>
+    return (
+        <InternalHeader>
+            <InternalHeader.Title as="h1">
+                <Link data-color="neutral" as={RouterLink} to={"/"} underline={false}><img src="/logo.svg" height="35rem"
+                                                                                          alt={""}/>Superhelt</Link>
+            </InternalHeader.Title>
+            <HStack
+                as="form"
+                paddingInline="space-20"
+                align="center"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    doSearch();
+                }}
+            >
+                <Search
+                    label="Søk"
+                    size="small"
+                    disabled={!hasAccess}
+                    variant="simple"
+                    placeholder="Finn person"
+                    value={search}
+                    onChange={setSearch}
+                    error={searchError}
+                />
+            </HStack>
+            <Spacer/>
 
-        <Dropdown>
-            <InternalHeader.UserButton
-                as={Dropdown.Toggle}
-                name={user?.name ?? "--"}
-            />
-            <Dropdown.Menu>
-                <dl>
-                    <BodyShort as="dt" size="small">
-                        {user?.name}
-                    </BodyShort>
-                    <Detail as="dd">Roller: {user?.roles}</Detail>
-                </dl>
-                <Dropdown.Menu.Divider/>
-                <Dropdown.Menu.List>
-                    <Dropdown.Menu.List.Item as="a" href="/oauth2/logout">
-                        Logg ut <Spacer/> <LeaveIcon aria-hidden fontSize="1.5rem"/>
-                    </Dropdown.Menu.List.Item>
-                </Dropdown.Menu.List>
-            </Dropdown.Menu>
-        </Dropdown>
-    </InternalHeader>
+            <Dropdown>
+                <InternalHeader.UserButton
+                    as={Dropdown.Toggle}
+                    name={user?.name ?? "--"}
+                />
+                <Dropdown.Menu>
+                    <dl>
+                        <BodyShort as="dt" size="small">
+                            {user?.name}
+                        </BodyShort>
+                        <Detail as="dd">Roller: {user?.roles}</Detail>
+                    </dl>
+                    <Dropdown.Menu.Divider/>
+                    <Dropdown.Menu.List>
+                        <Dropdown.Menu.List.Item as="a" href="/oauth2/logout">
+                            Logg ut <Spacer/> <LeaveIcon aria-hidden fontSize="1.5rem"/>
+                        </Dropdown.Menu.List.Item>
+                    </Dropdown.Menu.List>
+                </Dropdown.Menu>
+            </Dropdown>
+        </InternalHeader>
+    );
 }

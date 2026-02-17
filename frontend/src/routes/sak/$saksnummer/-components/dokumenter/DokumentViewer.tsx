@@ -12,9 +12,11 @@ export default function DokumentViewer({saksnummer}: DokumentViewerProps) {
         ...finnJournalposterForSakOptions({path: {saksnummer: saksnummer}}),
     }))
 
-    return <HStack gap="8">
-        <MultiPdfViewer journalPoster={journalposter}/>
-    </HStack>
+    return (
+        <HStack gap="space-32">
+            <MultiPdfViewer journalPoster={journalposter}/>
+        </HStack>
+    );
 
 
 }

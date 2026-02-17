@@ -1,4 +1,16 @@
-import {BodyShort, Detail, Label, Link, List, Pagination, type SortState, Table, Tag, VStack} from '@navikt/ds-react'
+import {
+    BodyShort,
+    Detail,
+    Label,
+    Link,
+    List,
+    Pagination,
+    type SortState,
+    Table,
+    Tag,
+    VStack,
+    Box,
+} from '@navikt/ds-react';
 import {useState} from 'react'
 import {Link as RouterLink} from '@tanstack/react-router'
 import {OppgaveActionButton} from './OppgaveActionButton'
@@ -148,15 +160,15 @@ export function OppgaveTabell({oppgaver, dineOppgaver}: Props) {
 function Detaljer({oppgave: oppgave}: { oppgave: OppgaveMedSak }) {
     function BehandlendeSystem({oppgave}: { oppgave: OppgaveMedSak }) {
         if (oppgave.saksnummer) {
-            return <Tag variant="success">SuperHelt</Tag>
+            return <Tag data-color="success" variant="outline">SuperHelt</Tag>;
         }
         if (oppgave.behandlesAvApplikasjon) {
-            return <Tag variant="warning-filled">{oppgave.behandlesAvApplikasjon}</Tag>
+            return <Tag data-color="warning" variant="strong">{oppgave.behandlesAvApplikasjon}</Tag>;
         }
         if (oppgave.opprettetAv?.startsWith('jfr-infotrygd')) {
-            return <Tag variant="warning-filled">Infotrygd</Tag>
+            return <Tag data-color="warning" variant="strong">Infotrygd</Tag>;
         }
-        return <Tag variant="neutral">Ukjent</Tag>
+        return <Tag data-color="neutral" variant="outline">Ukjent</Tag>;
     }
 
     function Kommentar(props: { line: string }) {
@@ -171,7 +183,7 @@ function Detaljer({oppgave: oppgave}: { oppgave: OppgaveMedSak }) {
     }
 
     return (
-        <VStack gap={'5'}>
+        <VStack gap={"space-20"}>
             <div>
                 <Label textColor="subtle">Sak</Label>
                 <Link as={RouterLink}
@@ -192,7 +204,7 @@ function Detaljer({oppgave: oppgave}: { oppgave: OppgaveMedSak }) {
             </div>
             <div>
                 <Label textColor="subtle">Kommentarer</Label>
-                <List as="ul">
+                <List>
                     {oppgave?.beskrivelse
                         ?.split('--- ')
                         .filter((line: string) => line.trim() !== '')
@@ -202,5 +214,5 @@ function Detaljer({oppgave: oppgave}: { oppgave: OppgaveMedSak }) {
                 </List>
             </div>
         </VStack>
-    )
+    );
 }
