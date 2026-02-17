@@ -1,14 +1,15 @@
 import {test} from "./test.fixtures";
 import {faker} from "@faker-js/faker";
+import {expect} from "@playwright/test";
 
-test.describe("Happy path saksbehandling og attestering", () => {
+test.describe("Saksbehandling og attestering ok", () => {
     test.describe.configure({mode: "serial"});
 
     const brukerFnr = `5${faker.string.numeric({length: 10})}`;
 
     test.beforeAll(async () => {
         console.debug(
-            `Generert fødselsnummer for "Happy path saksbehandling" testene: ${brukerFnr}`,
+            `Generert fødselsnummer for "Saksbehandling og attestering ok" testene: ${brukerFnr}`,
         );
 
     });
@@ -64,8 +65,15 @@ test.describe("Happy path saksbehandling og attestering", () => {
             await sak.selectMenuItem("Oppsummering");
         });
 
-        await test.step("Attester ", async () => {
-            await sak.attesterSak();
+        await test.step("Attester og ferdigstill", async () => {
+            await expect(
+                page.getByRole("heading", {name: "Godkjenne sak"}),
+            ).toBeVisible();
+            await page.getByRole("radio", {name: "Godkjenn vedtak"}).check();
+            await page.getByRole("button", {name: "Attester sak"}).click();
+            await expect(
+                page.getByRole("heading", {name: "ferdigstilt"}),
+            ).toBeVisible({timeout: 20_000});
         });
     });
 });

@@ -79,17 +79,4 @@ export class SakPage {
         ).toBeVisible();
     }
 
-
-    async attesterSak() {
-        await this.page.getByRole("button", {name: "Attester sak"}).click();
-        await expect(
-            this.page.getByRole("heading", {name: "Godkjenne sak"}),
-        ).toBeVisible();
-        await this.page.getByRole("radio", {name: "Godkjenn vedtak"}).check();
-        await this.page.getByRole("button", {name: "Attester sak"}).click();
-
-        await expect(
-            this.page.getByRole("heading", {name: "ferdigstilt"}),
-        ).toBeVisible({timeout: 20_000});
-    }
 }
