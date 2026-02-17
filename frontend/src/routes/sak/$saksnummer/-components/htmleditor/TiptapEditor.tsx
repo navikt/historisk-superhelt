@@ -155,7 +155,7 @@ function TiptapEditor({initialContentHtml, onChange, onBlur, error, readOnly}: T
 
 
     return (
-        <Box padding={"space-4"} className={error ? styles.errorBorder : ''}>
+        <Box background="raised" padding="space-4" className={error ? styles.errorBorder : ''}>
             <EditorContext.Provider value={providerValue}>
                 {!readOnly && <MenuBar editor={editor}/>}
                 <EditorContent editor={editor} className={styles.editor}/>
