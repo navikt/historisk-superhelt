@@ -18,15 +18,15 @@ function PersonPage() {
     const oppgaver = data?.filter(o => o.saksnummer === null) ?? []
 
     return (
-        <VStack gap="6">
+        <VStack gap="space-24">
             <PersonHeader maskertPersonId={personid}/>
             <Heading size="large">Personside</Heading>
-            <VStack gap="12">
-                <Box.New background={"accent-soft"} padding="6" borderWidth="1" borderRadius="medium">
+            <VStack gap="space-48">
+                <Box background={"accent-soft"} padding="space-24" borderWidth="1" borderRadius="4">
                     <Heading size="medium">Saker under behandling</Heading>
                     <SakerUnderArbeidTabell maskertPersonIdent={personid}/>
-                </Box.New>
-                <Box.New background={"default"} borderRadius="medium">
+                </Box>
+                <Box background={"default"} borderRadius="4">
                     <Tabs defaultValue="saker">
                         <Tabs.List>
                             <Tabs.Tab value="saker" label="Sakshistorikk"/>
@@ -34,8 +34,8 @@ function PersonPage() {
                         </Tabs.List>
 
                         <Tabs.Panel value="saker">
-                            <Box padding="4" borderWidth="1" borderRadius="small">
-                                <VStack gap="4">
+                            <Box padding="space-16" borderWidth="1" borderRadius="2">
+                                <VStack gap="space-16">
                                     <Heading size="small">Sakshistorikk</Heading>
                                     <BodyShort>Saker som er ferdig behandlet</BodyShort>
                                     <SakerFerdigTabell maskertPersonIdent={personid}/>
@@ -43,8 +43,8 @@ function PersonPage() {
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="oppgaver">
-                            <Box padding="4" borderWidth="1" borderRadius="small">
-                                <VStack gap="4">
+                            <Box padding="space-16" borderWidth="1" borderRadius="2">
+                                <VStack gap="space-16">
                                     <Heading size="small">Åpne oppgaver</Heading>
                                     <BodyShort>Alle oppgaver på personen innen relevant tema. Oppgaver som er under
                                         behandling her vises ikke her</BodyShort>
@@ -53,8 +53,8 @@ function PersonPage() {
                             </Box>
                         </Tabs.Panel>
                     </Tabs>
-                </Box.New>
+                </Box>
             </VStack>
         </VStack>
-    )
+    );
 }

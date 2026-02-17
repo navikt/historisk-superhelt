@@ -101,7 +101,7 @@ export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText
     const hasError: boolean = showValidation && (!!oppdaterBrev?.error || hasValidationErrors)
 
     return (
-        <VStack gap={"8"}>
+        <VStack gap={"space-32"}>
             <TextField label={"Dokumentbeskrivelse i arkivet"} value={tittel} readOnly={readOnly}
                        onChange={e => tittelChanged(e.target.value)}
                        error={getErrorMessage("tittel")}
@@ -111,7 +111,7 @@ export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText
                               error={getErrorMessage("innhold")}
                               onBlur={lagreBrev}
             />
-            <HStack gap="8" justify={"start"}>
+            <HStack gap="space-32" align="start">
                 <Button type="submit" variant="secondary" onClick={onActionClick} disabled={readOnly}
                         loading={loading}>{buttonText}</Button>
             </HStack>
@@ -122,7 +122,8 @@ export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText
                 ))}
 
             </ErrorSummary>}
-        </VStack>)
+        </VStack>
+    );
 }
 
 

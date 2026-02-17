@@ -49,10 +49,11 @@ function OppsummeringPage() {
     }
 
     return (
-        <VStack gap={"8"}>
+        <VStack gap={"space-32"}>
             {renderAction()}
             <SakEndringer sak={sak}/>
-        </VStack>)
+        </VStack>
+    );
 }
 
 

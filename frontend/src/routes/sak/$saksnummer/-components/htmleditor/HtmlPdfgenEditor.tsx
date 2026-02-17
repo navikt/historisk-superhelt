@@ -26,15 +26,17 @@ export function HtmlPdfgenEditor({html, onChange, onBlur, error, readOnly}: Html
     const postfix = utledPostfixInnhold(xhtml)
     const editorContent = finnRedigerbartInnhold(html)
     
-    return <Box.New background={"neutral-moderate"} padding={"space-16"} className="htmleditor">
-        <VStack gap={"space-8"}>
-            <FixedHtml html={prefix}/>
-            <TiptapEditor initialContentHtml={editorContent} onChange={onChange} error={error} onBlur={onBlur}
-                          readOnly={readOnly}/>
-            <BrevExpandable title={"Standardtekster og signatur"}>
-                <FixedHtml html={postfix}/>
-            </BrevExpandable>
-        </VStack>
-    </Box.New>
+    return (
+        <Box background={"neutral-moderate"} padding={"space-16"} className="htmleditor">
+            <VStack gap={"space-8"}>
+                <FixedHtml html={prefix}/>
+                <TiptapEditor initialContentHtml={editorContent} onChange={onChange} error={error} onBlur={onBlur}
+                              readOnly={readOnly}/>
+                <BrevExpandable title={"Standardtekster og signatur"}>
+                    <FixedHtml html={postfix}/>
+                </BrevExpandable>
+            </VStack>
+        </Box>
+    );
 
 }
