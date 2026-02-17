@@ -1,0 +1,88 @@
+import {expect, type Page} from "@playwright/test";
+
+export interface Opplysninger {
+    beskrivelse?: string;
+    belop?: string;
+    begrunnelse?: string;
+}
+
+export class SakPage {
+    constructor(public readonly page: Page) {
+    }
+
+    async selectMenuItem(
+        item: "Oppsummering" | "Opplysninger" | "Brev til bruker",
+    ) {
+        await this.page.getByRole("link", {name: item}).click();
+        await expect(this.page.getByRole("link", {name: item})).toHaveClass(
+            /active/,
+        );
+    }
+
+    async fyllInnOpplysninger(opplysninger: Opplysninger) {
+        await this.selectMenuItem("Opplysninger");
+
+        if (opplysninger.beskrivelse) {
+            await this.page
+                .getByRole("textbox", {name: "Kort beskrivelse av stønad"})
+                .fill(opplysninger.beskrivelse);
+        }
+
+        await this.page
+            .getByRole("radio", {name: "Innvilget", exact: true})
+            .check();
+        await this.page.getByRole("radio", {name: "Direkte til bruker"}).check();
+
+        if (opplysninger.belop) {
+            await this.page
+                .getByRole("textbox", {name: "Beløp som skal utbetales"})
+                .fill(opplysninger.belop);
+        }
+
+        await this.page.waitForLoadState("networkidle");
+
+        if (opplysninger.begrunnelse) {
+            await this.page
+                .getByRole("textbox", {name: "Begrunnelse for vedtak"})
+                .fill(opplysninger.begrunnelse);
+        }
+
+        await this.page.getByRole("button", {name: "Lagre og gå videre"}).click();
+    }
+
+    async skrivBrev() {
+        await this.selectMenuItem("Brev til bruker");
+        await expect(
+            this.page.getByText("Dokumentbeskrivelse i arkivet"),
+        ).toBeVisible();
+        await this.page.getByRole("button", {name: "Lagre og gå videre"}).click();
+    }
+
+    async sendTilAttering() {
+        await this.selectMenuItem("Oppsummering");
+        await expect(
+            this.page.getByRole("heading", {name: "Til attestering"}),
+        ).toBeVisible();
+        await this.page
+            .getByRole("button", {name: "Send til attestering"})
+            .click();
+        await this.page.waitForLoadState("networkidle");
+        await expect(
+            this.page.getByRole("heading", {name: "Godkjenne sak"}),
+        ).toBeVisible();
+    }
+
+
+    async attesterSak() {
+        await this.page.getByRole("button", {name: "Attester sak"}).click();
+        await expect(
+            this.page.getByRole("heading", {name: "Godkjenne sak"}),
+        ).toBeVisible();
+        await this.page.getByRole("radio", {name: "Godkjenn vedtak"}).check();
+        await this.page.getByRole("button", {name: "Attester sak"}).click();
+
+        await expect(
+            this.page.getByRole("heading", {name: "ferdigstilt"}),
+        ).toBeVisible({timeout: 20_000});
+    }
+}
