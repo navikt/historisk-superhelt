@@ -5,6 +5,8 @@ import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakRettighet
@@ -31,12 +33,21 @@ class BrevController(
         @PathVariable saksnummer: Saksnummer,
         @Valid @RequestBody request: OpprettBrevRequest): ResponseEntity<Brev> {
         val sak = sakRepository.getSak(saksnummer)
-        SakValidator(sak)
-            .checkRettighet(SakRettighet.LES)
-            .validate()
-        val brev = brevService.hentEllerOpprettBrev(sak, request.type, request.mottaker)
+        SakValidator(sak).checkRettighet(SakRettighet.LES).validate()
+        val brev = brevService.finnBrev(sak, request.type, request.mottaker)
+            ?: genererNyttBrev(sak, request.type, request.mottaker)
+            ?: throw IkkeFunnetException("Kunne ikke finne eller generere brev for sak")
+
         sak.auditLog("Henter brev ${brev.uuid} for sak")
         return ResponseEntity.ok(brev)
+    }
+
+    private fun genererNyttBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev? {
+        if (sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)) {
+            return brevService.genererNyttBrev(sak, type, mottaker)
+        }
+        logger.warn("Kan ikke generere brev for sak ${sak.saksnummer} fordi saksbehandler mangler rettigheter")
+        return null
     }
 
     @Operation(operationId = "hentBrev")
@@ -83,15 +94,15 @@ class BrevController(
         return brevRepository.oppdater(brevId, oppdatertBrev)
     }
 
+    /** Sender annet brev enn vedtaksbrev */
     @Operation(operationId = "sendBrev")
     @PostMapping("{brevId}/send")
     fun sendAnnetBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId) {
-        val brev = brevRepository.getByUUid(brevId)
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
-        brevSendingService.sendBrev(sak, brev)
+        brevSendingService.sendBrev(sak, brevId)
 
     }
 

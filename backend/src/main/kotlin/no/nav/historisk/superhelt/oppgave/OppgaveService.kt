@@ -116,7 +116,7 @@ class OppgaveService(
         logger.info("Ferdigstiller oppgave {}: {}", oppgave.type, oppgave.id)
     }
 
-    /** Ferdigstiller alle oppgaver av gitt type for en sak. Hvis ingen type er oppgitt, ferdigstilles alle oppgaver for saken. */
+    /** Ferdigstiller oppgaver av gitt type for en sak. Hvis ingen type er oppgitt, ferdigstilles alle oppgaver for saken. */
     @PreAuthorize("hasAuthority('WRITE')")
     fun ferdigstillOppgaver(saksnummer: Saksnummer, vararg types: OppgaveType?) {
         if (types.isEmpty()) {

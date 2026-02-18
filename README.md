@@ -39,4 +39,12 @@ npm start
 Appen er da tilgjengelig på http://localhost:3000 med hot reload, devtools mm ++
 Pålogging må skje via http://localhost:4000
 
+#### Formatering og linting
+Prosjektet bruker Biome for formatering og linting av frontend koden
+
+```shell
+npm run biome # kjører formatter og linter
+npm run biome:write # kjører formatter og linter, og skriver endringer til filene
+```
+
 ![nettverksopplegg](./docs/super-docker-compose.png)

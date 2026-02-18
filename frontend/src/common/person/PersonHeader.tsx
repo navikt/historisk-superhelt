@@ -11,10 +11,11 @@ interface Props {
 
 export function PersonHeader({maskertPersonId}: Props) {
     const {data: person} = useSuspenseQuery(finnPersonQuery(maskertPersonId))
+    const hasBeskyttetAdresse = person.adressebeskyttelseGradering && person.adressebeskyttelseGradering !== 'UGRADERT'
 
-    //TO DO ikke vis alder for dødsfall, bare dødsdato
-    return <Box background="neutral-moderate" padding="space-4">
-            <HStack justify={"space-between"}>
+    return (
+        <Box background="neutral-moderate" padding="space-4">
+            <HStack gap={"space-16"}>
 
                 <HStack gap="space-4" align="center" justify={"space-between"}>
                     <PersonIcon fontSize="1.5rem"/>
@@ -25,10 +26,18 @@ export function PersonHeader({maskertPersonId}: Props) {
                     </Link>
                     <BodyShort size={"small"}>{person.fnr}</BodyShort>
                     <CopyButton copyText={person.fnr}/>
-                    {person.doedsfall && <Tag data-color="neutral" variant="outline">Dødsdato: {isoTilLokal(person.doedsfall)}</Tag>}
                 </HStack>
-                {person.avvisningsBegrunnelse && <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
+                {person.doedsfall && <Tag data-color="neutral" variant="outline">Dødsdato: {isoTilLokal(person.doedsfall)}</Tag>}
+                {person.avvisningsBegrunnelse &&
+                    <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
+
+
+                {hasBeskyttetAdresse &&
+                    <Tag data-color="warning"
+                         variant="outline">Beskyttet adresse</Tag>}
+                {person.verge && <Tag data-color="info" variant="outline">Verge: {person.verge}</Tag>}
+
             </HStack>
         </Box>
-
+    );
 }

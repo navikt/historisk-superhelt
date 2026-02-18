@@ -1,6 +1,10 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import no.nav.common.types.NavIdent
+import no.nav.historisk.superhelt.brev.Brev
+import no.nav.historisk.superhelt.brev.BrevRepository
+import no.nav.historisk.superhelt.brev.BrevSendingService
+import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
@@ -14,6 +18,7 @@ import no.nav.historisk.superhelt.test.WithAttestant
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakRepository
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Nested
@@ -42,6 +47,9 @@ class SakActionControllerTest() {
     private lateinit var vedtakRepository: VedtakRepository
 
     @Autowired
+    private lateinit var brevRepository: BrevRepository
+
+    @Autowired
     private lateinit var endringsloggService: EndringsloggService
 
     @MockitoBean
@@ -49,6 +57,10 @@ class SakActionControllerTest() {
 
     @MockitoBean
     private lateinit var oppgaveService: OppgaveService
+
+    @MockitoBean
+    private lateinit var brevSendingService: BrevSendingService
+
 
     @WithSaksbehandler(navIdent = "s12345")
     @Nested
@@ -142,6 +154,11 @@ class SakActionControllerTest() {
                 sakRepository,
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
             )
+            BrevTestdata.lagreBrev(
+                brevRepository,
+                sak.saksnummer,
+                BrevTestdata.vedtaksbrevBruker()
+            )
 
             sakActionController.attesterSak(sak.saksnummer, AttesterSakRequestDto(godkjent = true, kommentar = null))
 
@@ -160,6 +177,7 @@ class SakActionControllerTest() {
                 })
 
             verify(utbetalingService).sendTilUtbetaling(any())
+            verify(brevSendingService).sendBrev(any<Sak>(), any<Brev>())
 
             verify(oppgaveService).ferdigstillOppgaver(
                 eq(sak.saksnummer),
@@ -323,5 +341,94 @@ class SakActionControllerTest() {
         }
 
 
+        @Test
+        fun `feilregister ferdig sak`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+
+            assertThatThrownBy {
+                sakActionController.feilregister(
+                    saksnummer = sak.saksnummer,
+                    request = FeilregisterRequestDto("Årsak til feilregistrering")
+                )
+            }.isInstanceOf(ValideringException::class.java)
+
+            val sendtSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(sendtSak.status).isEqualTo(SakStatus.FERDIG)
+
+        }
+    }
+
+
+    @WithSaksbehandler
+    @Nested
+    inner class `henlegg sak` {
+
+        @Test
+        fun `henlegg sak under behandling`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            )
+            val brev = BrevTestdata.lagreBrev(
+                brevRepository,
+                sak.saksnummer,
+                BrevTestdata.henleggBrev()
+            )
+
+            sakActionController.henleggSak(
+                saksnummer = sak.saksnummer,
+                request = HenlagtSakRequestDto(
+                    henleggelseBrevId = brev.uuid,
+                    aarsak = "Årsak til henleggelse"
+                )
+            )
+
+            val lagretSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(lagretSak.status).isEqualTo(SakStatus.FERDIG)
+            assertThat(lagretSak.vedtaksResultat).isEqualTo(VedtaksResultat.HENLAGT)
+
+            verify(brevSendingService).sendBrev(any<Sak>(), eq(brev.uuid))
+
+            val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+            assertThat(endringslogg)
+                .anySatisfy {
+                    assertThat(it.type).isEqualTo(EndringsloggType.HENLAGT_SAK)
+                }
+            verify(oppgaveService).ferdigstillOppgaver(
+                eq(sak.saksnummer)
+            )
+        }
+
+        @Test
+        fun `henlegg ferdig sak skal feile`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            val brev = BrevTestdata.lagreBrev(
+                brevRepository,
+                sak.saksnummer,
+                BrevTestdata.henleggBrev()
+            )
+
+
+
+            assertThatThrownBy {
+                sakActionController.henleggSak(
+                    saksnummer = sak.saksnummer,
+                    request = HenlagtSakRequestDto(
+                        henleggelseBrevId = brev.uuid,
+                        aarsak = "Årsak til henleggelse"
+                    )
+                )
+            }.isInstanceOf(ValideringException::class.java)
+
+            val lagretSak = sakRepository.getSak(sak.saksnummer)
+            assertThat(lagretSak.status).isEqualTo(SakStatus.FERDIG)
+
+        }
     }
 }

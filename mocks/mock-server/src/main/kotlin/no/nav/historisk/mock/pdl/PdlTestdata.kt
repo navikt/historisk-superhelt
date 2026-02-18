@@ -9,7 +9,14 @@ val faker = Faker()
 fun fakeAktoerIdFromFnr(fnr: String): String = "AK" + fnr.take(11)
 fun fnrFromAktoerId(aktoerId: String): String = aktoerId.substring(2, 13)
 
-fun pdlData(fnr: String) = PdlData(
+fun pdlData(
+    fnr: String,
+    adressebeskyttelse: List<Adressebeskyttelse>? = emptyList(),
+    doedsfall: List<Doedsfall> = emptyList(),
+    vergemaal: List<VergemaalEllerFremtidsfullmakt> = emptyList()
+
+
+) = PdlData(
     hentPerson = Person(
         navn = listOf(
             Navn(
@@ -18,11 +25,10 @@ fun pdlData(fnr: String) = PdlData(
                 etternavn = faker.name().lastName()
             )
         ),
-        //Logikk som gir en sjanse for at personen er død, og i så fall en tilfeldig dødsdato mellom 0 og 80 år etter fødselsdato
-        doedsfall = if (faker.number().numberBetween(0, 100) < 20) listOf(Doedsfall(faker.timeAndDate().birthday().plusYears(faker.number().numberBetween(0, 80).toLong()).toString())) else listOf(),
+        doedsfall = doedsfall,
         foedselsdato = listOf(Foedselsdato(faker.timeAndDate().birthday())),
-        adressebeskyttelse = listOf(),
-        vergemaalEllerFremtidsfullmakt = listOf()
+        adressebeskyttelse = adressebeskyttelse,
+        vergemaalEllerFremtidsfullmakt = vergemaal
     ),
     hentIdenter = Identliste(
         identer = listOf(
@@ -40,7 +46,7 @@ fun pdlData(fnr: String) = PdlData(
     )
 )
 
-fun pdlError(avvisningskode: Avvisningskode)= listOf(
+fun pdlError(avvisningskode: Avvisningskode) = listOf(
     PdlError(
         message = avvisningskode.name,
         locations = listOf(),
@@ -55,6 +61,6 @@ fun pdlError(avvisningskode: Avvisningskode)= listOf(
 private fun Avvisningskode.toPdlKode(): String? {
     return when (this) {
         Avvisningskode.UKJENT_PERSON -> PdlFeilkoder.NOT_FOUND
-        else ->  PdlFeilkoder.UNAUTHORIZED
+        else -> PdlFeilkoder.UNAUTHORIZED
     }
 }

@@ -8,6 +8,4 @@ enum class VedtaksResultat(val navn: String) {
     /** Saken er henlagt fordi bruker f.eks. trekker søknad. */
     HENLAGT("henlagt"),
 
-    /** Nav har gjort noe feil. Saken avvises  */
-    FEILREGISTRERT("feilregistrert");
 }

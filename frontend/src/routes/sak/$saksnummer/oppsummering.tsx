@@ -19,6 +19,10 @@ function OppsummeringPage() {
     function renderAction() {
 
         switch (sak.status) {
+            case "FEILREGISTRERT":
+                return <>
+                    <Heading size={"medium"}>Saken er feilregistert</Heading>
+                </>
             case "UNDER_BEHANDLING":
                 return <TotrinnkontrollAction sak={sak}/>
             case "TIL_ATTESTERING":
@@ -37,6 +41,9 @@ function OppsummeringPage() {
                     <SakErrorSummary sak={sak}/>
                 </>
             case "FERDIG":
+                if (sak.vedtaksResultat === "HENLAGT") {
+                    return <Heading size={"medium"}>Saken er henlagt</Heading>
+                }
                 return <>
                     <Heading size={"medium"}>Saken er ferdigstilt</Heading>
                     <SakErrorSummary sak={sak}/>
