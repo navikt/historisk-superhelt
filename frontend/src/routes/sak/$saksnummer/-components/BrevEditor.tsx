@@ -19,13 +19,14 @@ interface BrevEditorProps {
     onSuccess: (brevId: string) => Promise<void>,
     buttonText: string,
 }
+
 export function BrevEditor(props: BrevEditorProps) {
     if (!props.brevId) return <InfoCard data-color="warning">
         <InfoCard.Header>
             <InfoCard.Title>Finner ikke brev</InfoCard.Title>
         </InfoCard.Header>
         <InfoCard.Content>
-           Det finnes ikke noe brev av denne typen i denne saken
+            Det finnes ikke noe brev av denne typen i denne saken
         </InfoCard.Content>
     </InfoCard>
 
@@ -71,7 +72,14 @@ function BrevEditorInternal({sak, brevId, readOnly, onSuccess, buttonText}: Brev
         ...oppdaterBrevMutation(),
         onSuccess: (data) => {
             queryClient.setQueryData(getOrCreateBrevQueryKey(saksnummer, brev.type, brev.mottakerType), data)
-            queryClient.invalidateQueries({queryKey:hentBrevQueryKey({path:{saksnummer:saksnummer, brevId:brevId}})})
+            queryClient.invalidateQueries({
+                queryKey: hentBrevQueryKey({
+                    path: {
+                        saksnummer: saksnummer,
+                        brevId: brevId
+                    }
+                })
+            })
         }
     })
 

@@ -5,7 +5,7 @@ export const getOrCreateBrevQueryKey = (saksnummer: string, type: BrevType, mott
     return ["brev", saksnummer, type, mottaker];
 }
 /**
- * Oppretter ett nytt brev om det ikke allerede finnes ett av denne typen for denne saken, og returnerer
+ * Oppretter ett nytt brev om det ikke allerede finnes ett av denne typen for denne saken.
  *
  * Bruker post mot backend så derfor er denne laget custom */
 export const getOrCreateBrevOptions= (saksnummer: string, type: BrevType, mottaker: BrevMottakerType) => ({
