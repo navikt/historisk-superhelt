@@ -10,16 +10,17 @@ interface Props {
 
 export function PersonHeader({maskertPersonId}: Props) {
     const {data: person} = useSuspenseQuery(finnPersonQuery(maskertPersonId))
+    const hasBeskyttetAdresse = person.adressebeskyttelseGradering && person.adressebeskyttelseGradering !== 'UGRADERT'
 
     return (
         <Box background="neutral-moderate" padding="space-4">
-            <HStack justify={"space-between"}>
+            <HStack gap={"space-16"}>
 
                 <HStack gap="space-4" align="center" justify={"space-between"}>
                     <PersonIcon fontSize="1.5rem"/>
                     <Link as={RouterLink} to={`/person/${person.maskertPersonident}`} underline={false}>
                         <BodyShort size={"large"}>
-                            {person?.navn} ({person.alder??'-'} år)
+                            {person?.navn} ({person.alder ?? '-'} år)
                         </BodyShort>
                     </Link>
                     <BodyShort size={"small"}>{person.fnr}</BodyShort>
@@ -27,13 +28,12 @@ export function PersonHeader({maskertPersonId}: Props) {
                 </HStack>
                 {person.avvisningsBegrunnelse &&
                     <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
-                <HStack gap="space-16" align="center">
-                    {/*TODO Her kommer mer info om person,*/}
 
-                    {person.adressebeskyttelseGradering &&
-                        <Tag data-color="warning" variant="outline">Adressebeskyttelse: {person.adressebeskyttelseGradering}</Tag>}
-                    {person.verge && <Tag data-color="info" variant="outline">Verge: {person.verge}</Tag>}
-                </HStack>
+
+                {hasBeskyttetAdresse &&
+                    <Tag data-color="warning"
+                         variant="outline">Beskyttet adresse</Tag>}
+                {person.verge && <Tag data-color="info" variant="outline">Verge: {person.verge}</Tag>}
 
             </HStack>
         </Box>
