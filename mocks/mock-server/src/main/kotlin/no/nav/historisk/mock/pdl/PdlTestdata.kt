@@ -12,8 +12,8 @@ fun fnrFromAktoerId(aktoerId: String): String = aktoerId.substring(2, 13)
 fun pdlData(
     fnr: String,
     adressebeskyttelse: List<Adressebeskyttelse>? = emptyList(),
-    doedsfall: List<Doedsfall>?= emptyList(),
-    vergemaal: List<VergemaalEllerFremtidsfullmakt>?= emptyList()
+    doedsfall: List<Doedsfall> = emptyList(),
+    vergemaal: List<VergemaalEllerFremtidsfullmakt> = emptyList()
 
 
 ) = PdlData(

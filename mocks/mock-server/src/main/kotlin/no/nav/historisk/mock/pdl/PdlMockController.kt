@@ -23,9 +23,9 @@ class PdlMockController(private val repository: PersonTestRepository) {
         logger.trace("søker etter : {}", body)
         val ident = body.variables.ident
         val testPerson = repository.findOrCreate(ident)
-        if (testPerson.avisningskode != null) {
+        if (testPerson.avvisningskode != null) {
             val errorData = testPerson.data.copy(hentPerson = null)
-            val errors = pdlError(testPerson.avisningskode)
+            val errors = pdlError(testPerson.avvisningskode)
             return HentPdlResponse(data = errorData, errors = errors)
         }
         return HentPdlResponse(data = testPerson.data, errors = null)

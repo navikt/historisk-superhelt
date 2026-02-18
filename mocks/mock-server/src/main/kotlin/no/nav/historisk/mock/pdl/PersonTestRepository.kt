@@ -71,8 +71,8 @@ class PersonTestRepository {
         fnr: String,
         tilgangsMaskinAvvisningskode: Avvisningskode? = null,
         data: PdlData = pdlData(fnr)): TestPerson {
-        assert(fnr.length == 11) { "fnr må være 11 siffer" }
-        val testPerson = TestPerson(fnr = fnr, data = data, tilgangsMaskinAvvisningskode)
+        require(fnr.length == 11) { "fnr må være 11 siffer" }
+        val testPerson = TestPerson(fnr = fnr, data = data, avvisningskode = tilgangsMaskinAvvisningskode)
         lagre(testPerson)
         logger.debug("Registerer ny person for pdl: {} -> {}", fnr, data)
         return testPerson
@@ -83,5 +83,5 @@ class PersonTestRepository {
         return repository
     }
 
-    data class TestPerson(val fnr: String, val data: PdlData, val avisningskode: Avvisningskode? = null)
+    data class TestPerson(val fnr: String, val data: PdlData, val avvisningskode: Avvisningskode? = null)
 }

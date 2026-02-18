@@ -17,7 +17,7 @@ class TilgangsmaskinMockController(private val repository: PersonTestRepository)
     @PostMapping("/api/v1/komplett", "/api/v1/kjerne")
     fun komplett(@RequestBody personident: String): ResponseEntity<Any> {
         val person = repository.findOrCreate(personident)
-        val avvisningskode = person.avisningskode
+        val avvisningskode = person.avvisningskode
 
         if (avvisningskode != null) {
             if (avvisningskode == Avvisningskode.UKJENT_PERSON) {
