@@ -21,7 +21,7 @@ export type SakUpdateRequestDto = {
     begrunnelse?: string;
     soknadsDato?: string;
     tildelingsAar?: number;
-    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
 };
 
 export type Brev = {
@@ -29,7 +29,7 @@ export type Brev = {
     uuid: string;
     tittel?: string;
     innhold?: string;
-    type: 'VEDTAKSBREV' | 'FRITEKSTBREV';
+    type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
@@ -55,7 +55,7 @@ export type Sak = {
     soknadsDato?: string;
     tildelingsAar?: number;
     begrunnelse?: string;
-    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
@@ -63,9 +63,9 @@ export type Sak = {
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
     readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE'>;
     readonly tilstand: SakTilstand;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
     readonly error: SakError;
     readonly maskertPersonIdent: string;
 };
@@ -98,6 +98,11 @@ export type UtbetalingRequestDto = {
     belop?: number;
 };
 
+export type HenlagtSakRequestDto = {
+    aarsak: string;
+    henleggelseBrevId: string;
+};
+
 export type FeilregisterRequestDto = {
     aarsak: string;
 };
@@ -127,7 +132,7 @@ export type JournalforRequest = {
 };
 
 export type OpprettBrevRequest = {
-    type: 'VEDTAKSBREV' | 'FRITEKSTBREV';
+    type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottaker: 'BRUKER' | 'SAMHANDLER';
 };
 
@@ -168,7 +173,7 @@ export type Vedtak = {
     soknadsDato: string;
     tildelingsAar?: number;
     begrunnelse?: string;
-    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
+    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     vedtaksTidspunkt: string;
     saksbehandler: NavUser;
     attestant: NavUser;
@@ -179,7 +184,7 @@ export type Vedtak = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK';
     endring: string;
     beskrivelse?: string;
     endretAv: string;
@@ -253,7 +258,7 @@ export type BrevWritable = {
     uuid: string;
     tittel?: string;
     innhold?: string;
-    type: 'VEDTAKSBREV' | 'FRITEKSTBREV';
+    type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
@@ -269,7 +274,7 @@ export type SakWritable = {
     soknadsDato?: string;
     tildelingsAar?: number;
     begrunnelse?: string;
-    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT' | 'FEILREGISTRERT';
+    vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
@@ -440,6 +445,39 @@ export type SendTilAttesteringErrors = {
 export type SendTilAttesteringError = SendTilAttesteringErrors[keyof SendTilAttesteringErrors];
 
 export type SendTilAttesteringResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type HenleggSakData = {
+    body: HenlagtSakRequestDto;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/henlegg';
+};
+
+export type HenleggSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HenleggSakError = HenleggSakErrors[keyof HenleggSakErrors];
+
+export type HenleggSakResponses = {
     /**
      * OK
      */
