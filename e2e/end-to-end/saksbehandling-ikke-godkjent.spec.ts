@@ -84,8 +84,10 @@ test.describe("Saksbehandling og attestering ikke godkjent", () => {
                 await page.getByRole("button", {name: "Attester sak"}).click();
             });
 
-            await test.step("Sjekk at sak er under behandling", async () => {
-                await expect(page.getByText("Sak returnert til saksbehandler")).toBeVisible();
+            await test.step("Sjekk at sak blir returnert til saksbehandler", async () => {
+              await expect(page.getByRole('heading', { name: 'Saken sendes tilbake' })).toBeVisible();
+              await page.getByRole('button', { name: 'Gå til din oppgavebenk' }).click();
+              await expect(page.getByRole('heading', { name: 'Dine oppgaver' })).toBeVisible();
             });
         });
     });

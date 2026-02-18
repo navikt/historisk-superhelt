@@ -41,6 +41,9 @@ function OppsummeringPage() {
                     <SakErrorSummary sak={sak}/>
                 </>
             case "FERDIG":
+                if (sak.vedtaksResultat === "HENLAGT") {
+                    return <Heading size={"medium"}>Saken er henlagt</Heading>
+                }
                 return <>
                     <Heading size={"medium"}>Saken er ferdigstilt</Heading>
                     <SakErrorSummary sak={sak}/>
