@@ -28,13 +28,10 @@ export function PersonHeader({maskertPersonId}: Props) {
                     <CopyButton copyText={person.fnr}/>
                     {person.doedsfall &&
                         <Tag data-color="neutral" variant="outline">Dødsdato: {isoTilLokal(person.doedsfall)}</Tag>}
-                    {person.adressebeskyttelseGradering &&
-                        <Tag data-color="warning" variant="outline">Adressebeskyttelse: {person.adressebeskyttelseGradering}</Tag>}
-                    {person.verge && <Tag data-color="info" variant="outline">Verge</Tag>}
                 </HStack>
                 {person.avvisningsBegrunnelse &&
                     <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
             </HStack>
         </Box>
-    );
+
 }
