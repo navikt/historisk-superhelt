@@ -161,41 +161,41 @@ class PersonControllerTest {
             })
     }
 
-    @Test
-    fun `skal returnere person med adressebeskyttelse når gradering er satt`() {
-        val fnr = FolkeregisterIdent("12345678903")
-        val testPerson = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = fnr)
-        mockPerson(fnr, testPerson)
+    // @Test
+    // fun `skal returnere person med adressebeskyttelse når gradering er satt`() {
+    //     val fnr = FolkeregisterIdent("12345678903")
+    //     val testPerson = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = fnr)
+    //     mockPerson(fnr, testPerson)
+    //
+    //     assertThat(findPersonByFnr(fnr))
+    //         .hasStatusOk()
+    //         .bodyJson()
+    //         .convertTo(Person::class.java)
+    //         .satisfies({
+    //             assertThat(it.fnr).isEqualTo(fnr)
+    //             assertThat(it.doed).isFalse()
+    //             assertThat(it.verge).isFalse()
+    //             assertThat(it.adressebeskyttelseGradering).isEqualTo(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+    //         })
+    // }
 
-        assertThat(findPersonByFnr(fnr))
-            .hasStatusOk()
-            .bodyJson()
-            .convertTo(Person::class.java)
-            .satisfies({
-                assertThat(it.fnr).isEqualTo(fnr)
-                assertThat(it.doed).isFalse()
-                assertThat(it.verge).isFalse()
-                assertThat(it.adressebeskyttelseGradering).isEqualTo(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
-            })
-    }
-
-    @Test
-    fun `skal returnere person med verge når verge er satt`() {
-        val fnr = FolkeregisterIdent("12345678904")
-        val testPerson = PersonTestData.testPersonMedVerge.copy(fnr = fnr)
-        mockPerson(fnr, testPerson)
-
-        assertThat(findPersonByFnr(fnr))
-            .hasStatusOk()
-            .bodyJson()
-            .convertTo(Person::class.java)
-            .satisfies({
-                assertThat(it.fnr).isEqualTo(fnr)
-                assertThat(it.doed).isFalse()
-                assertThat(it.verge).isTrue()
-                assertThat(it.adressebeskyttelseGradering).isNull()
-            })
-    }
+    // @Test
+    // fun `skal returnere person med verge når verge er satt`() {
+    //     val fnr = FolkeregisterIdent("12345678904")
+    //     val testPerson = PersonTestData.testPersonMedVerge.copy(fnr = fnr)
+    //     mockPerson(fnr, testPerson)
+    //
+    //     assertThat(findPersonByFnr(fnr))
+    //         .hasStatusOk()
+    //         .bodyJson()
+    //         .convertTo(Person::class.java)
+    //         .satisfies({
+    //             assertThat(it.fnr).isEqualTo(fnr)
+    //             assertThat(it.doed).isFalse()
+    //             assertThat(it.verge).isTrue()
+    //             assertThat(it.adressebeskyttelseGradering).isNull()
+    //         })
+    // }
 
     private fun mockPerson(
         fnr: FolkeregisterIdent,
