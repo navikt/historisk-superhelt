@@ -1,39 +1,61 @@
-import {Button, ErrorSummary, HStack, TextField, VStack} from "@navikt/ds-react";
+import {Button, ErrorSummary, HStack, InfoCard, TextField, VStack} from "@navikt/ds-react";
 import {HtmlPdfgenEditor} from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlPdfgenEditor";
 import {useState} from "react";
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
-import {getOrCreateBrevOptions, getOrCreateBrevQueryKey} from "~/routes/sak/$saksnummer/-api/brev.query";
-import {htmlBrevOptions, oppdaterBrevMutation} from "@generated/@tanstack/react-query.gen";
+import {getOrCreateBrevQueryKey} from "~/routes/sak/$saksnummer/-api/brev.query";
+import {
+    hentBrevOptions,
+    hentBrevQueryKey,
+    htmlBrevOptions,
+    oppdaterBrevMutation
+} from "@generated/@tanstack/react-query.gen";
 import {useAutoSave} from "~/common/useAutosave";
 import {Brev, Sak} from "@generated";
-import {BrevMottakerType, BrevType} from "~/routes/sak/$saksnummer/-types/brev.types";
-
 
 interface BrevEditorProps {
     sak: Sak,
-    type: BrevType,
-    mottaker: BrevMottakerType,
+    brevId?: string,
     readOnly?: boolean,
     onSuccess: (brevId: string) => Promise<void>,
     buttonText: string,
 }
+export function BrevEditor(props: BrevEditorProps) {
+    if (!props.brevId) return <InfoCard data-color="warning">
+        <InfoCard.Header>
+            <InfoCard.Title>Finner ikke brev</InfoCard.Title>
+        </InfoCard.Header>
+        <InfoCard.Content>
+           Det finnes ikke noe brev av denne typen i denne saken
+        </InfoCard.Content>
+    </InfoCard>
 
+    return <BrevEditorInternal {...props} brevId={props.brevId}/>
+}
 
-/** Editor for vedtaksbrev til bruker
- */
-export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText}: BrevEditorProps) {
+interface BrevEditorInternalProps extends BrevEditorProps {
+    brevId: string,
+}
+
+function BrevEditorInternal({sak, brevId, readOnly, onSuccess, buttonText}: BrevEditorInternalProps) {
     const saksnummer = sak.saksnummer
-    const {data: brev} = useSuspenseQuery(getOrCreateBrevOptions(saksnummer, type, mottaker))
+    const {data: brev} = useSuspenseQuery({
+        ...hentBrevOptions({
+            path: {
+                saksnummer: saksnummer,
+                brevId: brevId,
+            }
+        })
+    })
     const queryClient = useQueryClient();
-    const brevId = brev?.uuid ?? "";
     const {data: genpdfHtml} = useSuspenseQuery({
         ...htmlBrevOptions({
             path: {
                 saksnummer: saksnummer,
                 brevId: brevId,
-            }
+            },
         }),
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+
     })
     const [editorContent, setEditorContent] = useState(brev?.innhold ?? "")
     const [tittel, setTittel] = useState(brev?.tittel ?? "")
@@ -48,7 +70,8 @@ export function BrevEditor({sak, type, mottaker, readOnly, onSuccess, buttonText
     const oppdaterBrev = useMutation({
         ...oppdaterBrevMutation(),
         onSuccess: (data) => {
-            queryClient.setQueryData(getOrCreateBrevQueryKey(saksnummer, type, mottaker), data)
+            queryClient.setQueryData(getOrCreateBrevQueryKey(saksnummer, brev.type, brev.mottakerType), data)
+            queryClient.invalidateQueries({queryKey:hentBrevQueryKey({path:{saksnummer:saksnummer, brevId:brevId}})})
         }
     })
 

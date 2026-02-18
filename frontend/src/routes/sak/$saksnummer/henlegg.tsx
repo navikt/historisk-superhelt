@@ -1,6 +1,6 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
 import {Modal, Textarea, VStack} from "@navikt/ds-react";
-import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useSuspenseQuery} from "@tanstack/react-query";
 import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 import {useRef, useState} from "react";
 import {BrevEditor} from "~/routes/sak/$saksnummer/-components/BrevEditor";
@@ -8,6 +8,7 @@ import {henleggSakMutation} from "@generated/@tanstack/react-query.gen";
 import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 import {GavelIcon} from "@navikt/aksel-icons";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {getOrCreateBrevOptions} from "~/routes/sak/$saksnummer/-api/brev.query";
 
 export const Route = createFileRoute('/sak/$saksnummer/henlegg')({
     component: HenleggPage,
@@ -16,6 +17,13 @@ export const Route = createFileRoute('/sak/$saksnummer/henlegg')({
 function HenleggPage() {
     const {saksnummer} = Route.useParams()
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
+    const hasPermission = sak.rettigheter.includes("HENLEGGE")
+    const {data: brev} = useQuery({
+            ...getOrCreateBrevOptions(saksnummer, "HENLEGGESEBREV", "BRUKER"),
+            enabled: hasPermission
+        }
+    )
+
     const ref = useRef<HTMLDialogElement>(null);
     const navigate = useNavigate();
     const invalidateSakQuery = useInvalidateSakQuery();
@@ -30,12 +38,9 @@ function HenleggPage() {
         }
     })
 
-    const hasPermission = sak.rettigheter.includes("HENLEGGE")
-
     const navigateBack = () => {
         navigate({to: "/sak/$saksnummer/oppsummering", params: {saksnummer}});
     }
-
 
     const validate = () => {
         if (aarsak.length < 10) {
@@ -67,7 +72,6 @@ function HenleggPage() {
 
     }
 
-
     return (
         <VStack gap={"space-16"}>
 
@@ -93,8 +97,8 @@ function HenleggPage() {
 
 
                         <BrevEditor
-                            sak={sak} type={"HENLEGGESEBREV"}
-                            mottaker="BRUKER"
+                            sak={sak}
+                            brevId={brev?.uuid}
                             buttonText="Henlegg sak"
                             onSuccess={onSubmit}
                             readOnly={!hasPermission}
