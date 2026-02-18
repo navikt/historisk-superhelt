@@ -2,6 +2,7 @@ package no.nav.historisk.mock.pdl
 
 import no.nav.pdl.Adressebeskyttelse
 import no.nav.pdl.AdressebeskyttelseGradering
+import no.nav.pdl.Doedsfall
 import no.nav.pdl.PdlData
 import no.nav.tilgangsmaskin.Avvisningskode
 import org.slf4j.LoggerFactory
@@ -51,6 +52,15 @@ class PersonTestRepository {
                 "60000000003", adressebeskyttelse = listOf(
                     Adressebeskyttelse(AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND)
                 )
+            )
+        )
+
+        // Person med dødsfall
+        generateAndCacheResponse(
+            fnr = "70000000001",
+            data = pdlData(
+                fnr = "70000000001",
+                doedsfall = listOf(Doedsfall(doedsdato = "2023-06-15"))
             )
         )
     }

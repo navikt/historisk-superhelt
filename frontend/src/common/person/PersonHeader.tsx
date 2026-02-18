@@ -30,8 +30,6 @@ export function PersonHeader({maskertPersonId}: Props) {
                 {person.doedsfall && <Tag data-color="neutral" variant="outline">Dødsdato: {isoTilLokal(person.doedsfall)}</Tag>}
                 {person.avvisningsBegrunnelse &&
                     <Alert variant={"error"} size={"small"}>{person.avvisningsBegrunnelse}</Alert>}
-
-
                 {hasBeskyttetAdresse &&
                     <Tag data-color="warning"
                          variant="outline">Beskyttet adresse</Tag>}
