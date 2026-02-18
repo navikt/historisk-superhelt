@@ -35,32 +35,4 @@ object PersonTestData {
         etternavn = "Nordmann",
         adressebeskyttelseGradering = null,
     )
-
-    // val testPersonMedAdressebeskyttelse = Persondata(
-    //     fnr = FolkeregisterIdent("12345678903"),
-    //     navn = "Beskyttet Nordmann",
-    //     aktorId = AktorId("1234567890125"),
-    //     alleFnr = setOf(FolkeregisterIdent("12345678903")),
-    //     doedsfall = null,
-    //     foedselsdato = LocalDate.now().minusYears(40),
-    //     verge = null,
-    //     harTilgang = true,
-    //     fornavn = "Beskyttet",
-    //     etternavn = "Nordmann",
-    //     adressebeskyttelseGradering = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
-    // )
-
-    // val testPersonMedVerge = Persondata(
-    //     fnr = FolkeregisterIdent("12345678904"),
-    //     navn = "Verget Nordmann",
-    //     aktorId = AktorId("1234567890126"),
-    //     alleFnr = setOf(FolkeregisterIdent("12345678904")),
-    //     doedsfall = null,
-    //     foedselsdato = LocalDate.now().minusYears(35),
-    //     verge = FolkeregisterIdent("98765432109"),
-    //     harTilgang = true,
-    //     fornavn = "Verget",
-    //     etternavn = "Nordmann",
-    //     adressebeskyttelseGradering = null,
-    // )
 }
