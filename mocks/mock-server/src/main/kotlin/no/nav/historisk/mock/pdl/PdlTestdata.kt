@@ -18,10 +18,21 @@ fun pdlData(fnr: String) = PdlData(
                 etternavn = faker.name().lastName()
             )
         ),
-        doedsfall = listOf(),
+        //Logikk som gir en sjanse for at personen er død, og i så fall en tilfeldig dødsdato mellom 0 og 80 år etter fødselsdato
+        doedsfall = if (faker.number().numberBetween(0, 100) < 20) listOf(Doedsfall(faker.timeAndDate().birthday().plusYears(faker.number().numberBetween(0, 80).toLong()).toString())) else listOf(),
         foedselsdato = listOf(Foedselsdato(faker.timeAndDate().birthday())),
-        adressebeskyttelse = listOf(),
-        vergemaalEllerFremtidsfullmakt = listOf()
+        //Logikk som gir en sjanse for at personen har adressebeskyttelse (20% sjanse)
+        adressebeskyttelse = if (faker.number().numberBetween(0, 100) < 20) {
+            listOf(Adressebeskyttelse(gradering = AdressebeskyttelseGradering.entries.random()))
+        } else listOf(),
+        //Logikk som gir en sjanse for at personen har verge
+        vergemaalEllerFremtidsfullmakt = if (faker.number().numberBetween(0, 100) < 100) {
+            listOf(VergemaalEllerFremtidsfullmakt(
+                vergeEllerFullmektig = VergeEllerFullmektig(
+                    motpartsPersonident = faker.number().digits(11)
+                )
+            ))
+        } else listOf()
     ),
     hentIdenter = Identliste(
         identer = listOf(
