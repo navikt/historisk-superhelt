@@ -29,10 +29,11 @@ export default function AttesterSakAction({sak}: Props) {
     const handleAttesteringSuccess = () => {
         if (beslutning === "ikke_godkjent") {
             setOpen(true)
+        } else {
+            invalidateSakQuery(saksnummer);
         }
-        invalidateSakQuery(saksnummer);
-
     }
+
     const attesterSak = useMutation({
         ...attersterSakMutation(),
         onSuccess: handleAttesteringSuccess
@@ -111,17 +112,16 @@ export default function AttesterSakAction({sak}: Props) {
         <Dialog open={open} onOpenChange={setOpen}>
             <Dialog.Popup closeOnOutsideClick={false}>
                 <Dialog.Header withClosebutton={false}>
-                    <Dialog.Title>Saken er ikke godkjent</Dialog.Title>
+                    <Dialog.Title>Saken sendes tilbake til saksbehandler</Dialog.Title>
                 </Dialog.Header>
                 <Dialog.Body>
                     <BodyLong>
                         Denne saken er underkjent og sendt tilbake til saksbehandler for videre arbeid. Det opprettes en
                         ny oppgave som legges
-                        til oppgavebenken
+                        til oppgavebenken til saksbehandleren. Når saksbehandleren har gjort nødvendige endringer og sendt saken på nytt, vil den komme tilbake til attestering.
                     </BodyLong>
                 </Dialog.Body>
                 <Dialog.Footer>
-
                     <Button as={Link} to={"/"} onClick={() => setOpen(false)}>Gå til din oppgavebenk</Button>
                 </Dialog.Footer>
             </Dialog.Popup>

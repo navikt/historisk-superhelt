@@ -10,7 +10,7 @@ spring:
   application:
     name: superhelt
   http:
-    client:
+    clients:
       connect-timeout: 1s
       read-timeout: 3s
   security:
