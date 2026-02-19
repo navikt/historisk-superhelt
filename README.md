@@ -21,6 +21,14 @@ For å kjøre tester lokalt må du ha Docker installert og kjørende på maskine
 
 For Colima på Mac, sjekk https://golang.testcontainers.org/system_requirements/using_colima/
 
+### Test personer
+Mock-serveren har forhåndsdefinerte testpersoner for ulike scenarier. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
+
+Eksempler:
+- `70000000001` - Person med dødsdato 2023-06-15
+- `60000000001` - Person med strengt fortrolig adresse
+- `40300000001` - Person som avvises av tilgangsmaskin (habilitet)
+
 ### Tjenester som appen trenger
 ```shell
 docker-compose up

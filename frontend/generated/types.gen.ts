@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
-    readonly error: SakError;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly tilstand: SakTilstand;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
-    readonly tilstand: SakTilstand;
-    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly error: SakError;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakError = {
@@ -75,9 +75,9 @@ export type SakError = {
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -145,6 +145,7 @@ export type Person = {
     fnr: string;
     maskertPersonident: string;
     doed: boolean;
+    doedsfall?: string;
     adressebeskyttelseGradering?: 'FORTROLIG' | 'STRENGT_FORTROLIG' | 'STRENGT_FORTROLIG_UTLAND' | 'UGRADERT';
     verge: boolean;
     avvisningsKode?: 'AVVIST_STRENGT_FORTROLIG_ADRESSE' | 'AVVIST_STRENGT_FORTROLIG_UTLAND' | 'AVVIST_AVDØD' | 'AVVIST_PERSON_UTLAND' | 'AVVIST_SKJERMING' | 'AVVIST_FORTROLIG_ADRESSE' | 'AVVIST_UKJENT_BOSTED' | 'AVVIST_GEOGRAFISK' | 'AVVIST_HABILITET' | 'UKJENT_PERSON';
@@ -283,15 +284,15 @@ export type SakWritable = {
 };
 
 export type SakErrorWritable = {
-    sak?: SakWritable;
+    sak?: unknown;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: unknown;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    sak?: SakWritable;
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -1272,7 +1273,9 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: number;
+        dokumentId: {
+            [key: string]: unknown;
+        };
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

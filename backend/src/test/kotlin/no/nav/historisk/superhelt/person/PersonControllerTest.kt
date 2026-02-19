@@ -6,6 +6,7 @@ import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithLeseBruker
 import no.nav.person.Persondata
+import no.nav.pdl.AdressebeskyttelseGradering
 import no.nav.tilgangsmaskin.Avvisningskode
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
@@ -35,7 +36,6 @@ class PersonControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvcTester
-
 
     @Test
     fun `skal hente person `() {
@@ -142,6 +142,60 @@ class PersonControllerTest {
             .contains("Fødselsnummer må være 11 tegn")
     }
 
+    @Test
+    fun `skal returnere død person når doedsfall er satt`() {
+        val fnr = FolkeregisterIdent("12345678902")
+        val testPerson = PersonTestData.testPersonDoed.copy(fnr = fnr)
+        mockPerson(fnr, testPerson)
+
+        assertThat(findPersonByFnr(fnr))
+            .hasStatusOk()
+            .bodyJson()
+            .convertTo(Person::class.java)
+            .satisfies({
+                assertThat(it.fnr).isEqualTo(fnr)
+                assertThat(it.doed).isTrue()
+                assertThat(it.doedsfall).isEqualTo("2025-01-15")
+                assertThat(it.verge).isFalse()
+                assertThat(it.adressebeskyttelseGradering).isNull()
+            })
+    }
+
+    // @Test
+    // fun `skal returnere person med adressebeskyttelse når gradering er satt`() {
+    //     val fnr = FolkeregisterIdent("12345678903")
+    //     val testPerson = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = fnr)
+    //     mockPerson(fnr, testPerson)
+    //
+    //     assertThat(findPersonByFnr(fnr))
+    //         .hasStatusOk()
+    //         .bodyJson()
+    //         .convertTo(Person::class.java)
+    //         .satisfies({
+    //             assertThat(it.fnr).isEqualTo(fnr)
+    //             assertThat(it.doed).isFalse()
+    //             assertThat(it.verge).isFalse()
+    //             assertThat(it.adressebeskyttelseGradering).isEqualTo(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+    //         })
+    // }
+
+    // @Test
+    // fun `skal returnere person med verge når verge er satt`() {
+    //     val fnr = FolkeregisterIdent("12345678904")
+    //     val testPerson = PersonTestData.testPersonMedVerge.copy(fnr = fnr)
+    //     mockPerson(fnr, testPerson)
+    //
+    //     assertThat(findPersonByFnr(fnr))
+    //         .hasStatusOk()
+    //         .bodyJson()
+    //         .convertTo(Person::class.java)
+    //         .satisfies({
+    //             assertThat(it.fnr).isEqualTo(fnr)
+    //             assertThat(it.doed).isFalse()
+    //             assertThat(it.verge).isTrue()
+    //             assertThat(it.adressebeskyttelseGradering).isNull()
+    //         })
+    // }
 
     private fun mockPerson(
         fnr: FolkeregisterIdent,
@@ -163,4 +217,3 @@ class PersonControllerTest {
     }
 
 }
-
