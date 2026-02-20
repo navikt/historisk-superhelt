@@ -4,6 +4,8 @@ import no.nav.pdl.Adressebeskyttelse
 import no.nav.pdl.AdressebeskyttelseGradering
 import no.nav.pdl.Doedsfall
 import no.nav.pdl.PdlData
+import no.nav.pdl.VergeEllerFullmektig
+import no.nav.pdl.VergemaalEllerFremtidsfullmakt
 import no.nav.tilgangsmaskin.Avvisningskode
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -61,6 +63,25 @@ class PersonTestRepository {
             data = pdlData(
                 fnr = "70000000001",
                 doedsfall = listOf(Doedsfall(doedsdato = "2023-06-15"))
+            )
+        )
+        // Person med vergemål
+        generateAndCacheResponse(
+            fnr = "70000000002",
+            data = pdlData(
+                fnr = "70000000002",
+                doedsfall = listOf(Doedsfall(doedsdato = "2025-12-12")),
+                adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)),
+                vergemaal = listOf(
+                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(motpartsPersonident = "70000000003"))
+                )
+            )
+        )
+        // Person som er verge for 70000000002
+        generateAndCacheResponse(
+            fnr = "70000000003",
+            data = pdlData(
+                fnr = "70000000003",
             )
         )
     }

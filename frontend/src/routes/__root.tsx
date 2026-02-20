@@ -15,21 +15,20 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
 
-    return <Theme theme={"light"}>
-        <Page footer={<Footer/>}>
-            <Page.Block as="header" gutters>
-                <Header/>
-            </Page.Block>
-            <Page.Block as="main" gutters>
-                <RfcErrorBoundary>
-                    <MainContent/>
-                </RfcErrorBoundary>
-            </Page.Block>
-
-        </Page>
-        <TanStackRouterDevtools/>
-        <ReactQueryDevtools buttonPosition="bottom-right"/>
-    </Theme>;
+    return (
+        <Theme theme={"light"}>
+            <Page footer={<Footer />}>
+                <Header />
+                <Page.Block as="main" gutters>
+                    <RfcErrorBoundary>
+                        <MainContent />
+                    </RfcErrorBoundary>
+                </Page.Block>
+            </Page>
+            <TanStackRouterDevtools />
+            <ReactQueryDevtools buttonPosition="bottom-right" />
+        </Theme>
+    );
 }
 
 function MainContent() {
