@@ -41,7 +41,7 @@ class PersonControllerTest {
     fun `skal hente person `() {
         val fnr = FolkeregisterIdent("12345678901")
         val foedselsdato = LocalDate.now().minusYears(26)
-        val testPerson = PersonTestData.testPerson.copy(fnr = fnr,foedselsdato = foedselsdato)
+        val testPerson = PersonTestData.testPerson.copy(fnr = fnr, foedselsdato = foedselsdato)
         mockPerson(fnr, testPerson)
 
         assertThat(getPersonByMaskertId(fnr))
@@ -128,10 +128,11 @@ class PersonControllerTest {
             .hasStatus(HttpStatus.FORBIDDEN)
     }
 
-    private fun findPersonByFnr(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder = mockMvc.post().uri("/api/person")
-        .with(csrf())
-        .contentType("application/json")
-        .content("""{"fnr": "${fnr.value}"}""")
+    private fun findPersonByFnr(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder =
+        mockMvc.post().uri("/api/person")
+            .with(csrf())
+            .contentType("application/json")
+            .content("""{"fnr": "${fnr.value}"}""")
 
     @Test
     fun `Validering av fnr`() {
@@ -161,46 +162,50 @@ class PersonControllerTest {
             })
     }
 
-     @Test
-     fun `skal returnere person med adressebeskyttelse når gradering er satt`() {
-         val fnr = FolkeregisterIdent("12345678903")
-         val testPerson = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = fnr)
-         mockPerson(fnr, testPerson)
+    @Test
+    fun `skal returnere person med adressebeskyttelse når gradering er satt`() {
+        val fnr = FolkeregisterIdent("12345678903")
+        val testPerson = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = fnr)
+        mockPerson(fnr, testPerson)
 
-         assertThat(findPersonByFnr(fnr))
-             .hasStatusOk()
-             .bodyJson()
-             .convertTo(Person::class.java)
-             .satisfies({
-                 assertThat(it.fnr).isEqualTo(fnr)
-                 assertThat(it.doed).isFalse()
-                 assertThat(it.harVerge).isFalse()
-                 assertThat(it.adressebeskyttelseGradering).isEqualTo(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
-             })
-     }
+        assertThat(findPersonByFnr(fnr))
+            .hasStatusOk()
+            .bodyJson()
+            .convertTo(Person::class.java)
+            .satisfies({
+                assertThat(it.fnr).isEqualTo(fnr)
+                assertThat(it.doed).isFalse()
+                assertThat(it.harVerge).isFalse()
+                assertThat(it.adressebeskyttelseGradering).isEqualTo(AdressebeskyttelseGradering.STRENGT_FORTROLIG)
+            })
+    }
 
-     @Test
-     fun `skal returnere person med verge når verge er satt`() {
-         val fnr = FolkeregisterIdent("12345678904")
-         val vergeFnr = FolkeregisterIdent("12345678903")
-         val testPerson = PersonTestData.testPersonMedVerge.copy(fnr = fnr, verge = vergeFnr)
-         mockPerson(fnr, testPerson)
+    @Test
+    fun `skal returnere person med verge når verge er satt`() {
+        val fnr = FolkeregisterIdent("12345678904")
+        val vergeFnr = FolkeregisterIdent("12345678903")
+        val testPerson = PersonTestData.testPersonMedVerge.copy(fnr = fnr, verge = vergeFnr)
+        val testVerge = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = vergeFnr)
+        mockPerson(fnr, testPerson)
+        mockPerson(vergeFnr, testVerge)
 
-         assertThat(findPersonByFnr(fnr))
-             .hasStatusOk()
-             .bodyJson()
-             .convertTo(Person::class.java)
-             .satisfies({
-                 assertThat(it.fnr).isEqualTo(fnr)
-                 assertThat(it.doed).isFalse()
-                 assertThat(it.harVerge).isTrue()
-                 assertThat { it.vergeInfo.also { vergeInfo ->
-                     assertThat(vergeInfo).isNotNull()
-                     assertThat(vergeInfo?.fnr).isEqualTo(FolkeregisterIdent("12345678903"))
-                 } }
-                 assertThat(it.adressebeskyttelseGradering).isNull()
-             })
-     }
+        assertThat(findPersonByFnr(fnr))
+            .hasStatusOk()
+            .bodyJson()
+            .convertTo(Person::class.java)
+            .satisfies({
+                assertThat(it.fnr).isEqualTo(fnr)
+                assertThat(it.doed).isFalse()
+                assertThat(it.harVerge).isTrue()
+                assertThat {
+                    it.vergeInfo.also { vergeInfo ->
+                        assertThat(vergeInfo).isNotNull()
+                        assertThat(vergeInfo?.fnr).isEqualTo(FolkeregisterIdent("12345678903"))
+                    }
+                }
+                assertThat(it.adressebeskyttelseGradering).isNull()
+            })
+    }
 
     private fun mockPerson(
         fnr: FolkeregisterIdent,
