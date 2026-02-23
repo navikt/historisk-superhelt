@@ -105,7 +105,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_UND_VED,
             sak = sak,
-            beskrivelse = "Sak ${sak.saksnummer} underkjent i attestering med kommentar: ${request.kommentar}",
+            beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er underkjent i attestering med kommentar: ${request.kommentar}",
             tilordneTil = sak.saksbehandler.navIdent
         )
     }
@@ -140,7 +140,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.GOD_VED,
             sak = sak,
-            beskrivelse = "Attestering av sak ${sak.type.navn} med saksnummer ${sak.saksnummer} saksbehandlet av ${sak.saksbehandler.navIdent}",
+            beskrivelse = "Attestering av sak ${sak.type.navn} i Superhelt(${sak.saksnummer}) saksbehandlet av ${sak.saksbehandler.navIdent}",
             tilordneTil = null
         )
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK, OppgaveType.BEH_UND_VED)
@@ -171,7 +171,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK_MK,
             sak = sak,
-            beskrivelse = """Sak ${sak.saksnummer} er feilregistrert med årsak: ${request.aarsak} 
+            beskrivelse = """Sak i Superhelt(${sak.saksnummer}) er feilregistrert med årsak: ${request.aarsak} 
                 
                  Det må ryddes opp i journalposter knyttet til denne saken
             """.trimIndent(),
