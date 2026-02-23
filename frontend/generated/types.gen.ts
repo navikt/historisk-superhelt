@@ -47,7 +47,7 @@ export type NavUser = {
 
 export type Sak = {
     saksnummer: string;
-    behandlingsnummer: string;
+    behandlingsnummer: number;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
@@ -63,11 +63,12 @@ export type Sak = {
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
     readonly tilstand: SakTilstand;
+    readonly gjenapnet: boolean;
     readonly maskertPersonIdent: string;
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
     readonly error: SakError;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakError = {
@@ -75,9 +76,9 @@ export type SakError = {
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -170,7 +171,7 @@ export type User = {
 
 export type Vedtak = {
     saksnummer: string;
-    behandlingsnummer: string;
+    behandlingsnummer: number;
     stonadstype: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     beskrivelse: string;
@@ -270,7 +271,7 @@ export type BrevWritable = {
 
 export type SakWritable = {
     saksnummer: string;
-    behandlingsnummer: string;
+    behandlingsnummer: number;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
@@ -294,9 +295,9 @@ export type SakErrorWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {

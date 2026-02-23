@@ -28,7 +28,7 @@ data class Sak(
     /** Saksnummer for å skille mellom ulike saker for samme person Unik */
     val saksnummer: Saksnummer,
 
-    /** Generert behandlingsnummer for denne behandlingen av saken. Unik */
+    /** Nummer som angir aktuell behandling*/
     val behandlingsnummer: Behandlingsnummer,
 
     val type: StonadsType,
@@ -81,6 +81,10 @@ data class Sak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val error: SakError
         get() = SakError(this)
+
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val gjenapnet: Boolean
+        get() = this.behandlingsnummer.value > 1
 
 }
 
