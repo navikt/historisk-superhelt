@@ -18,6 +18,8 @@
         <appender-ref ref="AuditLogger"/>
     </logger>
 
+    <!-- Denne kan finne på å logge databasepassord på INFO -->
+    <logger name="org.hibernate.orm.connection.pooling" level="WARN"/>
 
     <root level="WARN">
         <appender-ref ref="json"/>
