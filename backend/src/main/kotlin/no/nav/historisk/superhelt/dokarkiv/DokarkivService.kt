@@ -1,9 +1,6 @@
 package no.nav.historisk.superhelt.dokarkiv
 
-import no.nav.common.types.EksternFellesKodeverkTema
-import no.nav.common.types.EksternJournalpostId
-import no.nav.common.types.Enhetsnummer
-import no.nav.common.types.Saksnummer
+import no.nav.common.types.*
 import no.nav.dokarkiv.*
 import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DistribuerJournalpostResponse
@@ -59,7 +56,7 @@ class DokarkivService(
                 fagsakId = sak.saksnummer,
                 fagsaksystem = "HELT",
             ),
-            journalfoerendeEnhet = Enhetsnummer("4485") // TODO hente fra sak eller saksbehandler
+            journalfoerendeEnhet = defaultEnhetsnummer
         )
         return dokarkivClient.opprett(req, forsokFerdigstill = true)
     }
