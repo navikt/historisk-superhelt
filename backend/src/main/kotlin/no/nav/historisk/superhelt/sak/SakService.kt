@@ -80,6 +80,7 @@ class SakService(
     fun gjenapneSak(sak: Sak) {
         endreStatus(sak, SakStatus.UNDER_BEHANDLING)
         sakRepository.incrementBehandlingsNummer(sak.saksnummer)
+
         logger.info("Sak {} er gjenåpnet", sak.saksnummer)
     }
 

@@ -7,12 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema
  * Må maks være 30 tegn for å kunne brukes i mot oppdrag
  *
  */
-@Schema(type = "string")
+@Schema(type = "number")
 @JvmInline
-value class Behandlingsnummer(val value: String) {
-    constructor(saksnummer: Saksnummer, id: Int) : this("${saksnummer}-${id}")
+value class Behandlingsnummer(val value: Int) {
 
     override fun toString(): String {
-        return value
+        return value.toString()
     }
 }

@@ -82,7 +82,7 @@ class VedtakJpaEntity(
         val saksnummer = this.sak.saksnummer
         return Vedtak(
             saksnummer = saksnummer,
-            behandlingsnummer = Behandlingsnummer(saksnummer, this.behandlingsTeller),
+            behandlingsnummer = Behandlingsnummer( this.behandlingsTeller),
             stonadstype = this.type,
             fnr = this.fnr,
             beskrivelse = this.beskrivelse,
