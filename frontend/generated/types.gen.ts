@@ -62,12 +62,12 @@ export type Sak = {
     utbetaling?: Utbetaling;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
+    readonly valideringsfeil: Array<ValidationFieldError>;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
     readonly error: SakError;
-    readonly maskertPersonIdent: string;
 };
 
 export type SakError = {
@@ -101,6 +101,10 @@ export type UtbetalingRequestDto = {
 export type HenlagtSakRequestDto = {
     aarsak: string;
     henleggelseBrevId: string;
+};
+
+export type GjenapneSakRequestDto = {
+    aarsak: string;
 };
 
 export type FeilregisterRequestDto = {
@@ -485,7 +489,7 @@ export type HenleggSakResponses = {
 };
 
 export type GjenapneSakData = {
-    body?: never;
+    body: GjenapneSakRequestDto;
     path: {
         saksnummer: string;
     };
@@ -1273,9 +1277,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: {
-            [key: string]: unknown;
-        };
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

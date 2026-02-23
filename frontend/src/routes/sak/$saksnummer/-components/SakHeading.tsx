@@ -1,7 +1,7 @@
 import {Detail, Heading, HStack, VStack} from "@navikt/ds-react";
 import {Sak} from "@generated";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
-import SakMeny from "~/routes/sak/$saksnummer/-components/SakMeny";
+import BehandlingsMeny from "~/routes/sak/$saksnummer/-components/BehandlingsMeny";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getKodeverkStonadsTypeOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 
@@ -26,7 +26,7 @@ export default function SakHeading({sak}: Props) {
             </HStack>
         </VStack>
         <HStack gap={"space-8"} height={"1.5rem"}>
-            <SakMeny sak={sak}/>
+            <BehandlingsMeny sak={sak}/>
         </HStack>
     </HStack>
 }

@@ -8,7 +8,7 @@ interface SakMenyProps {
     sak: Sak
 }
 
-export default function SakMeny({sak}: SakMenyProps) {
+export default function BehandlingsMeny({sak}: SakMenyProps) {
 
     const hasRettighet = (rettighet: RettighetType) => {
         return sak.rettigheter.includes(rettighet)
@@ -38,7 +38,8 @@ export default function SakMeny({sak}: SakMenyProps) {
                     disabled={!hasRettighet("HENLEGGE")}
                     icon={<GavelIcon aria-hidden/>}>Henlegg sak</ActionMenu.Item>
                 <ActionMenu.Item
-                    onSelect={console.info}
+                    as={RouterLink}
+                    to={`/sak/${sak.saksnummer}/gjenapne`}
                     disabled={!hasRettighet("GJENAPNE")}
                     icon={<PadlockUnlockedIcon aria-hidden/>}>Gjenåpne sak</ActionMenu.Item>
             </ActionMenu.Group>
