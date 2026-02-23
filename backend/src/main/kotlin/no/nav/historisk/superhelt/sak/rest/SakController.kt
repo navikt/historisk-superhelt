@@ -38,20 +38,24 @@ class SakController(
         @RequestBody @Valid req: SakUpdateRequestDto,
     ): ResponseEntity<Sak> {
         val sak = sakRepository.getSak(saksnummer)
+
+        val updateSakDto = UpdateSakDto(
+            type = req.type,
+            beskrivelse = req.beskrivelse,
+            begrunnelse = req.begrunnelse,
+            soknadsDato = req.soknadsDato,
+            tildelingsAar = req.tildelingsAar,
+            vedtaksResultat = req.vedtaksResultat,
+            saksbehandler = getAuthenticatedUser().navUser
+        )
+
         SakValidator(sak)
             .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .checkUpdate(updateSakDto)
             .validate()
 
         val updated = sakRepository.updateSak(
-            saksnummer, UpdateSakDto(
-                type = req.type,
-                beskrivelse = req.beskrivelse,
-                begrunnelse = req.begrunnelse,
-                soknadsDato = req.soknadsDato,
-                tildelingsAar = req.tildelingsAar,
-                vedtaksResultat = req.vedtaksResultat,
-                saksbehandler = getAuthenticatedUser().navUser
-            )
+            saksnummer, updateSakDto
         )
         return ResponseEntity.ok(updated)
     }
