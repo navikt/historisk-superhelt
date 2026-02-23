@@ -171,7 +171,7 @@ class SakActionController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK_MK,
             sak = sak,
-            beskrivelse = """Sak i Superhelt(${sak.saksnummer}) er feilregistrert med årsak: ${request.aarsak} 
+            beskrivelse = """Sak i Superhelt(${sak.saksnummer}) er feilregistrert med årsak: ${request.aarsak}
                 
                  Det må ryddes opp i journalposter knyttet til denne saken
             """.trimIndent(),
