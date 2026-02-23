@@ -220,19 +220,27 @@ class SakActionController(
 
     @Operation(operationId = "gjenapneSak")
     @PutMapping("status/gjenapne")
-    fun gjenapne(@PathVariable saksnummer: Saksnummer): ResponseEntity<Unit> {
-        // TODO årsak mm
+    fun gjenapneSak(@PathVariable saksnummer: Saksnummer,
+                    @Valid @RequestBody request: GjenapneSakRequestDto): ResponseEntity<Unit> {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkStatusTransition(SakStatus.UNDER_BEHANDLING)
             .checkRettighet(SakRettighet.GJENAPNE)
             .validate()
 
-        sakService.endreStatus(sak, SakStatus.UNDER_BEHANDLING)
+        sakService.gjenapneSak(sak)
+
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.BEH_SAK,
+            sak = sak,
+            beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er gjenåpnet med årsak: ${request.aarsak}",
+            tilordneTil = getAuthenticatedUser().navIdent
+        )
+
         endringsloggService.logChange(
             saksnummer = saksnummer,
             endringsType = EndringsloggType.GJENAPNET_SAK,
-            endring = "Sak er gjenåpnet"
+            endring = "Sak er gjenåpnet",
+            beskrivelse = "Årsak: ${request.aarsak}"
         )
         return ResponseEntity.ok().build()
     }

@@ -75,4 +75,12 @@ class SakService(
         logger.debug("Sak {} endret status til {}", saksnummer, nyStatus)
     }
 
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun gjenapneSak(sak: Sak) {
+        endreStatus(sak, SakStatus.UNDER_BEHANDLING)
+        sakRepository.incrementBehandlingsNummer(sak.saksnummer)
+        logger.info("Sak {} er gjenåpnet", sak.saksnummer)
+    }
+
 }
