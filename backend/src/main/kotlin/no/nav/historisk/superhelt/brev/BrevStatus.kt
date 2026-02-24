@@ -4,5 +4,9 @@ enum class BrevStatus() {
     NY,
     UNDER_ARBEID,
     KLAR_TIL_SENDING,
-    SENDT,
+    SENDT, ;
+
+    fun isCompleted(): Boolean {
+        return this == KLAR_TIL_SENDING || this == SENDT
+    }
 }

@@ -228,6 +228,8 @@ class SakActionController(
             .validate()
 
         sakService.gjenapneSak(sak)
+        // brevService nyttbrev
+//        sak.utbetaling.let { utbetalingService.updateUtbetalingsStatus() }
 
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK,

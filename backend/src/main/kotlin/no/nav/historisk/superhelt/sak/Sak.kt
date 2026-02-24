@@ -51,6 +51,7 @@ data class Sak(
 
     val utbetaling: Utbetaling? = null,
     val forhandstilsagn: Forhandstilsagn? = null,
+
     val vedtaksbrevBruker: Brev? = null
 ) {
 
