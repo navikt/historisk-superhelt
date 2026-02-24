@@ -1,90 +1,80 @@
 package no.nav.historisk.superhelt.sak.rest
 
-import no.nav.historisk.superhelt.brev.BrevTestdata
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.WithSaksbehandler
-import no.nav.historisk.superhelt.vedtak.VedtaksResultat
+import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.Test
 
 
-@WithSaksbehandler
-class HenleggSakActionControllerTest : AbstractSakActionTest() {
+@WithSaksbehandler(navIdent = "s12345")
+class SakActionControllerFeilregistrerTest : AbstractSakActionTest() {
 
     @Autowired
     private lateinit var sakActionController: SakActionController
 
     @Test
-    fun `henlegg sak under behandling`() {
+    fun `feilregister sak under behandling`() {
         val sak = SakTestData.lagreNySak(
             sakRepository,
             SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
         )
-        val brev = BrevTestdata.lagreBrev(
-            brevRepository,
-            sak.saksnummer,
-            BrevTestdata.henleggBrev()
-        )
 
-        sakActionController.henleggSak(
+        sakActionController.feilregister(
             saksnummer = sak.saksnummer,
-            request = HenlagtSakRequestDto(
-                henleggelseBrevId = brev.uuid,
-                aarsak = "Årsak til henleggelse"
-            )
+            request = FeilregisterRequestDto("Årsak til feilregistrering")
         )
 
-        val lagretSak = sakRepository.getSak(sak.saksnummer)
-        assertThat(lagretSak.status).isEqualTo(SakStatus.FERDIG)
-        assertThat(lagretSak.vedtaksResultat).isEqualTo(VedtaksResultat.HENLAGT)
-
-        verify(brevSendingService).sendBrev(any<Sak>(), eq(brev.uuid))
+        val sendtSak = sakRepository.getSak(sak.saksnummer)
+        assertThat(sendtSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
 
         val endringslogg = endringsloggService.findBySak(sak.saksnummer)
         assertThat(endringslogg)
             .anySatisfy {
-                assertThat(it.type).isEqualTo(EndringsloggType.HENLAGT_SAK)
+                assertThat(it.type).isEqualTo(EndringsloggType.FEILREGISTERT)
+                assertThat(it.endretAv.value).isEqualTo("s12345")
             }
         verify(oppgaveService).ferdigstillOppgaver(
-            eq(sak.saksnummer)
+            eq(sak.saksnummer),
+            eq(OppgaveType.BEH_SAK)
+        )
+        verify(oppgaveService).opprettOppgave(
+            eq(OppgaveType.BEH_SAK_MK),
+            any<Sak>(),
+            any(),
+            eq(NavIdent("s12345")),
+            isNull()
         )
     }
 
+
     @Test
-    fun `henlegg ferdig sak skal feile`() {
+    fun `feilregister ferdig sak`() {
         val sak = SakTestData.lagreNySak(
             sakRepository,
             SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
         )
-        val brev = BrevTestdata.lagreBrev(
-            brevRepository,
-            sak.saksnummer,
-            BrevTestdata.henleggBrev()
-        )
-
-
 
         assertThatThrownBy {
-            sakActionController.henleggSak(
+            sakActionController.feilregister(
                 saksnummer = sak.saksnummer,
-                request = HenlagtSakRequestDto(
-                    henleggelseBrevId = brev.uuid,
-                    aarsak = "Årsak til henleggelse"
-                )
+                request = FeilregisterRequestDto("Årsak til feilregistrering")
             )
         }.isInstanceOf(ValideringException::class.java)
 
-        val lagretSak = sakRepository.getSak(sak.saksnummer)
-        assertThat(lagretSak.status).isEqualTo(SakStatus.FERDIG)
+        val sendtSak = sakRepository.getSak(sak.saksnummer)
+        assertThat(sendtSak.status).isEqualTo(SakStatus.FERDIG)
 
     }
 }

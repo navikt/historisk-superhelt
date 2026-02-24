@@ -21,7 +21,7 @@ import kotlin.test.Test
 
 
 @WithAttestant(navIdent = "a12345")
-class AttesterSakActionControllerTest : AbstractSakActionTest() {
+class SakActionControllerAttesterTest : AbstractSakActionTest() {
 
     @Autowired
     private lateinit var sakActionController: SakActionController

@@ -19,7 +19,7 @@ import kotlin.test.Test
 
 
 @WithSaksbehandler(navIdent = "s12345")
-class SendTilAttesteringSakActionControllerTest : AbstractSakActionTest() {
+class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
 
     @Autowired
     private lateinit var sakActionController: SakActionController

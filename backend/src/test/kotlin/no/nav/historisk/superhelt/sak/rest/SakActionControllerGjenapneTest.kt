@@ -2,12 +2,14 @@ package no.nav.historisk.superhelt.sak.rest
 
 import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
@@ -16,7 +18,7 @@ import kotlin.test.Test
 
 
 @WithSaksbehandler(navIdent = "s12345")
-class GjenapneSakActionControllerTest : AbstractSakActionTest() {
+class SakActionControllerGjenapneTest : AbstractSakActionTest() {
     @Autowired
     private lateinit var sakActionController: SakActionController
 
@@ -50,5 +52,19 @@ class GjenapneSakActionControllerTest : AbstractSakActionTest() {
         )
     }
 
+    @Test
+    fun `Sak som ikke er feridg kan ikke gjenåpnes `() {
+        val sak = SakTestData.lagreNySak(
+            sakRepository,
+            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+        )
+
+        assertThatThrownBy {
+            sakActionController.gjenapneSak(sak.saksnummer, GjenapneSakRequestDto("Fordi jeg vil"))
+        }.isInstanceOf(ValideringException::class.java)
+
+        val lagretSak = sakRepository.getSak(sak.saksnummer)
+        assertThat(lagretSak.status).isEqualTo(SakStatus.UNDER_BEHANDLING)
+    }
 
 }
