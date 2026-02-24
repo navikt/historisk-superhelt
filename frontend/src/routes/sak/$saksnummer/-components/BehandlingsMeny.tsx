@@ -40,7 +40,9 @@ export default function BehandlingsMeny({sak}: SakMenyProps) {
                 <ActionMenu.Item
                     as={RouterLink}
                     to={`/sak/${sak.saksnummer}/gjenapne`}
-                    disabled={!hasRettighet("GJENAPNE")}
+                    // TODO foreløpig skal ingen kunne gjenåpne saker, så denne er deaktivert. Når det blir aktuelt å åpne opp for dette
+                    // disabled={!hasRettighet("GJENAPNE")}
+                    disabled={true}
                     icon={<PadlockUnlockedIcon aria-hidden/>}>Gjenåpne sak</ActionMenu.Item>
             </ActionMenu.Group>
             <ActionMenu.Group label={"Brev"}>

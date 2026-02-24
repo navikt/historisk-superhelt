@@ -29,7 +29,9 @@ function GjenapnePage() {
         }
     })
 
-    const hasPermission = sak.rettigheter.includes("GJENAPNE")
+    // TODO foreløpig skal ingen kunne gjenåpne saker, så denne er deaktivert. Når det blir aktuelt å åpne opp for dette
+    // const hasPermission = sak.rettigheter.includes("GJENAPNE")
+    const hasPermission = false
 
     const navigateBack = () => {
         navigate({to: "/sak/$saksnummer/opplysninger", params: {saksnummer}});
