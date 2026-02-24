@@ -53,7 +53,7 @@ class SakActionControllerGjenapneTest : AbstractSakActionTest() {
     }
 
     @Test
-    fun `Sak som ikke er feridg kan ikke gjenåpnes `() {
+    fun `Sak som ikke er ferdig kan ikke gjenåpnes `() {
         val sak = SakTestData.lagreNySak(
             sakRepository,
             SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)

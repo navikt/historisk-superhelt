@@ -50,7 +50,7 @@ function GjenapnePage() {
         return true
     }
 
-    const onFeilregistrer = async () => {
+    const onGjenopprett = async () => {
         if (!validate()) {
             return
         }
@@ -96,7 +96,7 @@ function GjenapnePage() {
                         type="button"
                         variant="primary"
                         disabled={!hasPermission}
-                        onClick={onFeilregistrer}>Gjenåpne</Button>
+                        onClick={onGjenopprett}>Gjenåpne</Button>
                     <Button
                         type="button"
                         variant="secondary"
