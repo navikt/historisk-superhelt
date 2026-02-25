@@ -38,5 +38,10 @@ data class HenlagtSakRequestDto(
     val henleggelseBrevId: BrevId
 )
 
+data class GjenapneSakRequestDto(
+    @field:Size(min = 5, max = 1000)
+    val aarsak: String,
+)
+
 
 data class UtbetalingRequestDto(val utbetalingsType: UtbetalingsType, val belop: Belop?)

@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.brev
 import net.datafaker.Faker
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.test.withMockedUser
+import java.time.Instant
 
 object BrevTestdata {
 
@@ -28,6 +29,7 @@ object BrevTestdata {
             type = faker.options().option(BrevType::class.java),
             mottakerType = faker.options().option(BrevMottaker::class.java),
             status = BrevStatus.UNDER_ARBEID,
+            opprettetTidspunkt = Instant.now()
         )
     }
 

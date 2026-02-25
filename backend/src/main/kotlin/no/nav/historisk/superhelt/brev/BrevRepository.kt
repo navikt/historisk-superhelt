@@ -17,7 +17,7 @@ class BrevRepository(
 ) {
 
     @PreAuthorize("hasAuthority('READ')")
-    fun findBySak(saksnummer: Saksnummer): BrevUtkastList {
+    fun findBySak(saksnummer: Saksnummer): BrevList{
         return jpaRepository.findAllBySakId(saksnummer.id).map { it.toDomain() }
     }
 
@@ -36,6 +36,7 @@ class BrevRepository(
         val sakEntity = sakRepository.getSakEntityOrThrow(brev.saksnummer)
         val brevJpaEntity = BrevJpaEntity(
             uuid = brev.uuid,
+            createdDate = brev.opprettetTidspunkt,
             sak = sakEntity,
             tittel = brev.tittel,
             innhold = brev.innhold,
@@ -70,8 +71,3 @@ internal data class BrevOppdatering(
     val status: BrevStatus? = null,
     val journalpostId: EksternJournalpostId? = null
 )
-
-typealias BrevUtkastList = List<Brev>
-
-fun BrevUtkastList.findBrev(type: BrevType, mottaker: BrevMottaker): Brev? =
-    this.find { it.type == type && it.mottakerType == mottaker  }

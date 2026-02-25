@@ -79,8 +79,15 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
             }
 
         }
-
         return entity
+    }
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun incrementBehandlingsNummer(saksnummer: Saksnummer): Sak {
+        val sakEntity = getSakEntityOrThrow(saksnummer)
+        sakEntity.behandlingsTeller += 1
+        return jpaRepository.save(sakEntity).toDomain()
     }
 
 

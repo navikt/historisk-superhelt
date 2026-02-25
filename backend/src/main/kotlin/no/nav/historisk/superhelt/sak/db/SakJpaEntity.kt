@@ -8,6 +8,7 @@ import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.db.BrevJpaEntity
+import no.nav.historisk.superhelt.brev.finnGjeldendeBrev
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
@@ -93,7 +94,7 @@ class SakJpaEntity(
                 "SakJpaEntity id kan ikke være null ved henting av saksnummer"
             )
     val behandlingsnummer: Behandlingsnummer
-        get() = Behandlingsnummer(saksnummer, behandlingsTeller)
+        get() = Behandlingsnummer(behandlingsTeller)
 
 
     fun setOrUpdateUtbetaling(belop: Int) {
@@ -108,12 +109,8 @@ class SakJpaEntity(
         this.forhandstilsagn = entity
     }
 
-
-    private fun getBrev(
-        brevType: BrevType,
-        mottaker: BrevMottaker): BrevJpaEntity? {
-        return brev.find { it.type == brevType && it.mottakerType == mottaker }
-    }
+    private fun getVedtaksbrevBrev() = brev.map { it.toDomain() }
+        .finnGjeldendeBrev(BrevType.VEDTAKSBREV, BrevMottaker.BRUKER)
 
     internal fun toDomain(): Sak {
 
@@ -133,7 +130,7 @@ class SakJpaEntity(
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             utbetaling = this.utbetaling?.toDomain(),
             forhandstilsagn = this.forhandstilsagn?.toDomain(),
-            vedtaksbrevBruker = getBrev(BrevType.VEDTAKSBREV, BrevMottaker.BRUKER)?.toDomain()
+            vedtaksbrevBruker = this.getVedtaksbrevBrev()
         )
     }
 }

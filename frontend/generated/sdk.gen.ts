@@ -66,7 +66,11 @@ export const henleggSak = <ThrowOnError extends boolean = false>(options: Option
 export const gjenapneSak = <ThrowOnError extends boolean = false>(options: Options<GjenapneSakData, ThrowOnError>) => (options.client ?? client).put<GjenapneSakResponses, GjenapneSakErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/sak/{saksnummer}/status/gjenapne',
-    ...options
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**

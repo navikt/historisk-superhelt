@@ -8,7 +8,7 @@ import java.time.LocalDate
 data class UtbetalingMelding(
     val id: String, // unik id for utbetalingmelding, brukes som transaksjonsid hos helved
     val sakId: String,
-    val behandlingId: String, // alla journalpost
+    val behandlingId: String,
     val personident: String,
     val stønad: KlasseKode, // klassekode enum koordineres med oppdrag /helved
 

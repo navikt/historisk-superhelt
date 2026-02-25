@@ -57,6 +57,7 @@ class BrevJpaEntity(
         return Brev(
             saksnummer = sak.saksnummer,
             uuid = this.uuid,
+            opprettetTidspunkt = this.createdDate,
             tittel = this.tittel,
             innhold = this.innhold,
             type = this.type,

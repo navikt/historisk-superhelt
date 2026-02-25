@@ -130,7 +130,7 @@ class UtbetalingServiceTest {
             argThat { melding ->
                 melding.id == utbetalingUuid.toString() &&
                         melding.sakId == sak.saksnummer.value &&
-                        melding.behandlingId == sak.behandlingsnummer.value &&
+                        melding.behandlingId == sak.behandlingsnummer.toString() &&
                         melding.personident == sak.fnr.value &&
                         melding.perioder.first().beløp == sak.utbetaling.belop.value &&
                         melding.saksbehandler == sak.saksbehandler.navIdent.value

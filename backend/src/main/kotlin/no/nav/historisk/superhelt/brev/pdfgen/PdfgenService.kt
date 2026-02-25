@@ -21,7 +21,7 @@ class PdfgenService(
             ?: throw IllegalStateException("Fant ikke persondata for person i sak ${sak.saksnummer}")
 
         return PdfgenRequest(
-            behandlingsnummer = sak.behandlingsnummer,
+            behandlingsnummer = "${sak.saksnummer}-${sak.behandlingsnummer}",
             personalia = Personalia(
                 ident = sak.fnr,
                 fornavn = person.fornavn,
