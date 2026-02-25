@@ -1,11 +1,16 @@
 import {FormSummary} from '@navikt/ds-react';
-import {Sak} from '@generated';
+import type {Sak} from '@generated';
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getKodeverkStonadsTypeOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 
 interface SakSummaryProps {
     sak: Sak;
 }
 
 export default function SakSummary({sak}: SakSummaryProps) {
+    const {data: saksTyper} = useSuspenseQuery(getKodeverkStonadsTypeOptions())
+    const sakTypeNavn = saksTyper.find(type => type.type === sak.type)?.navn || sak.type
+
     return (
         <FormSummary>
             <FormSummary.Header>
@@ -15,7 +20,7 @@ export default function SakSummary({sak}: SakSummaryProps) {
 
                 <FormSummary.Answer>
                     <FormSummary.Label>Type</FormSummary.Label>
-                    <FormSummary.Value>{sak.type}</FormSummary.Value>
+                    <FormSummary.Value>{sakTypeNavn}</FormSummary.Value>
                 </FormSummary.Answer>
                 <FormSummary.Answer>
                     <FormSummary.Label>Beskrivelse</FormSummary.Label>

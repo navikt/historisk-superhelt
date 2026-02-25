@@ -3,7 +3,9 @@ import {Link} from '@tanstack/react-router'
 import {ErrorAlert} from "~/common/error/ErrorAlert";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 import {isoTilLokal} from "~/common/dato.utils";
-import {ProblemDetail, Sak} from "@generated";
+import type {ProblemDetail, Sak} from "@generated";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getKodeverkStonadsTypeOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
 
 
 interface SakerTableProps {
@@ -15,6 +17,7 @@ interface SakerTableProps {
 }
 
 export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideActions}: SakerTableProps) {
+    const {data: stonadsTyper} = useSuspenseQuery(getKodeverkStonadsTypeOptions())
 
     if (error) {
         return <ErrorAlert error={error}/>
@@ -48,7 +51,7 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                 {saker.map((sak) => (
                     <Table.Row key={sak.saksnummer} style={{textDecorationLine:sak.status === "FEILREGISTRERT" ? "line-through" : "none"}}>
                         <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
-                        <Table.DataCell>{sak.type}</Table.DataCell>
+                        <Table.DataCell>{stonadsTyper.find(t => t.type === sak.type)?.navn ?? sak.type}</Table.DataCell>
                         <Table.DataCell>{sak.beskrivelse}</Table.DataCell>
                         <Table.DataCell>
                             <SakStatus sak={sak}/>
