@@ -4,6 +4,8 @@ import no.nav.pdl.Adressebeskyttelse
 import no.nav.pdl.AdressebeskyttelseGradering
 import no.nav.pdl.Doedsfall
 import no.nav.pdl.PdlData
+import no.nav.pdl.Tjenesteomraade
+import no.nav.pdl.Tjenesteoppgave
 import no.nav.pdl.VergeEllerFullmektig
 import no.nav.pdl.VergemaalEllerFremtidsfullmakt
 import no.nav.tilgangsmaskin.Avvisningskode
@@ -73,7 +75,10 @@ class PersonTestRepository {
                 doedsfall = listOf(Doedsfall(doedsdato = "2025-12-12")),
                 adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)),
                 vergemaal = listOf(
-                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(motpartsPersonident = "70000000003"))
+                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
+                        motpartsPersonident = "70000000003",
+                        tjenesteomraade = listOf(Tjenesteomraade(Tjenesteoppgave.HJELPEMIDLER, "nav"))
+                    ))
                 )
             )
         )
@@ -82,6 +87,32 @@ class PersonTestRepository {
             fnr = "70000000003",
             data = pdlData(
                 fnr = "70000000003",
+            )
+        )
+        // person med verge som ikke er i tjenesteområde NAV
+        generateAndCacheResponse(
+            fnr = "70000000004",
+            data = pdlData(
+                fnr = "70000000004",
+                vergemaal = listOf(
+                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
+                        motpartsPersonident = "70000000005",
+                        tjenesteomraade = listOf(Tjenesteomraade(Tjenesteoppgave.HJELPEMIDLER, "annen"))
+                    ))
+                )
+            )
+        )
+        // person med verge som ikke har tjenesteoppgave hjelpemidler
+        generateAndCacheResponse(
+            fnr = "70000000005",
+            data = pdlData(
+                fnr = "70000000005",
+                vergemaal = listOf(
+                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
+                        motpartsPersonident = "70000000006",
+                        tjenesteomraade = listOf(Tjenesteomraade(Tjenesteoppgave.ARBEID, "nav"))
+                    ))
+                )
             )
         )
     }

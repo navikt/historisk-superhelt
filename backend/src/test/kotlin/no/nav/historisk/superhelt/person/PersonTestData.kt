@@ -5,6 +5,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.person.Persondata
 import java.time.LocalDate
 import no.nav.pdl.AdressebeskyttelseGradering
+import no.nav.pdl.VergeEllerFullmektig
 
 object PersonTestData {
 
@@ -57,7 +58,7 @@ object PersonTestData {
         alleFnr = setOf(FolkeregisterIdent("12345678904")),
         doedsfall = null,
         foedselsdato = LocalDate.parse("1984-08-20"),
-        verge = FolkeregisterIdent("12345678903"),
+        verge = VergeEllerFullmektig(motpartsPersonident = "12345678903", tjenesteomraade = null),
         harTilgang = true,
         fornavn = "Thomas",
         etternavn = "Andre",

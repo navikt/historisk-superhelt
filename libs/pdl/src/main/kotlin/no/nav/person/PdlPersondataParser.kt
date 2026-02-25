@@ -60,7 +60,7 @@ class PdlPersondataParser {
             hentPerson?.adressebeskyttelse?.firstOrNull()?.gradering
         val dodsDato = hentPerson?.doedsfall?.firstOrNull()?.doedsdato
         val fodselsDato = hentPerson?.foedselsdato?.firstOrNull()?.foedselsdato
-        val verge = hentPerson?.vergemaalEllerFremtidsfullmakt?.firstOrNull()?.vergeEllerFullmektig?.motpartsPersonident
+        val verge = hentPerson?.vergemaalEllerFremtidsfullmakt?.firstOrNull()?.vergeEllerFullmektig
 
         return Persondata(
             navn = getSammensattNavnString(listOf(navn.fornavn, navn.mellomnavn, navn.etternavn)),
@@ -72,7 +72,7 @@ class PdlPersondataParser {
             doedsfall = dodsDato,
             foedselsdato = fodselsDato,
             adressebeskyttelseGradering = adressebeskyttelse,
-            verge = verge?.let { FolkeregisterIdent(it) },
+            verge = verge,
             harTilgang = hentPerson != null
         )
     }

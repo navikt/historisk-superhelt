@@ -52,8 +52,22 @@ data class VergemaalEllerFremtidsfullmakt(
 )
 
 data class VergeEllerFullmektig(
-    val motpartsPersonident: String?
+    val motpartsPersonident: String?,
+    val tjenesteomraade: List<Tjenesteomraade>?,
 )
+
+data class Tjenesteomraade(
+    val tjenesteoppgave: Tjenesteoppgave?,
+    val tjenestevirksomhet: String?
+)
+
+enum class Tjenesteoppgave(string: String) {
+    HJELPEMIDLER("hjelpemidler"),
+    PENSJON("pensjon"),
+    SOSIALE_TJENESTER("sosialeTjenester"),
+    ARBEID("arbeid"),
+    FAMILIE("familie"),
+}
 
 data class Identliste(
     val identer: List<IdentInformasjon>

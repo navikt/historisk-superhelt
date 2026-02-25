@@ -64,9 +64,9 @@ export type Sak = {
     vedtaksbrevBruker?: Brev;
     readonly error: SakError;
     readonly valideringsfeil: Array<ValidationFieldError>;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
     readonly tilstand: SakTilstand;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
 };
 
@@ -1280,7 +1280,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

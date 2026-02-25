@@ -3,6 +3,7 @@ package no.nav.person
 import no.nav.common.types.AktorId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.pdl.AdressebeskyttelseGradering
+import no.nav.pdl.VergeEllerFullmektig
 import java.time.LocalDate
 
 data class Persondata(
@@ -15,7 +16,7 @@ data class Persondata(
     val doedsfall: Doedsfall,
     val foedselsdato: LocalDate?,
     val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
-    val verge: FolkeregisterIdent?,
+    val verge: VergeEllerFullmektig?,
     val harTilgang: Boolean
 )
 

@@ -3,9 +3,12 @@ package no.nav.historisk.superhelt.person
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.pdl.PdlClient
+import no.nav.pdl.Tjenesteoppgave
 import no.nav.person.PdlPersondataParser
 import no.nav.person.Persondata
+import org.slf4j.LoggerFactory
 import org.springframework.cache.CacheManager
+import org.springframework.cache.get
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,6 +16,7 @@ class PersonService(
     private val pdlClient: PdlClient,
     cacheManager: CacheManager
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
     private val pdlParser = PdlPersondataParser()
     private val cache = cacheManager.getCache("pdlCache")
         ?: throw IllegalStateException("Cache 'pdlCache' not found")
@@ -26,6 +30,37 @@ class PersonService(
                 cache.put(cacheKey, result)
             }
     }
+    fun hentVerge(vergetrengende: Persondata): Persondata? {
+        val cacheKey = "${getAuthenticatedUser().navIdent}:verge:${vergetrengende.fnr.value}"
+        val verge = vergetrengende.verge
+
+        if (verge == null) {
+            logger.info("Person ${vergetrengende.fnr.toMaskertPersonIdent()} har ingen verge")
+            return null
+        }
+
+        verge.tjenesteomraade?.let { tjenesteområder ->
+            if (tjenesteområder.isEmpty()) {
+                logger.info("Verge for person ${vergetrengende.fnr.toMaskertPersonIdent()} har tom tjenesteområdeliste. Henter ikke vergeinfo.")
+                return null
+            }
+
+            val harGyldigTjenesteområde = tjenesteområder.any { område ->
+                område.tjenestevirksomhet?.lowercase() == "nav" &&
+                område.tjenesteoppgave == Tjenesteoppgave.HJELPEMIDLER
+            }
+
+            if (!harGyldigTjenesteområde) {
+                logger.info("Verge for person ${vergetrengende.fnr.toMaskertPersonIdent()} har ikke tjenesteområde NAV/HJELPEMIDLER. Henter ikke vergeinfo.")
+                return null
+            }
+        }
+
+        return cache.get<Persondata>(cacheKey)
+            ?: verge.motpartsPersonident?.let { hentPerson(FolkeregisterIdent(it)) }.also { result ->
+                cache.put(cacheKey, result)
+            }
+    }
 
     private fun hentFraPdl(fnr: FolkeregisterIdent): Persondata? {
         val pdlResponse = pdlClient.getPersonOgIdenter(ident = fnr.value)
@@ -34,4 +69,3 @@ class PersonService(
     }
 
 }
-

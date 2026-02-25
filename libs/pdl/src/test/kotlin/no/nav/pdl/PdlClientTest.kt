@@ -395,7 +395,8 @@ class PdlClientTest {
                 vergemaalEllerFremtidsfullmakt = listOf(
                     VergemaalEllerFremtidsfullmakt(
                         vergeEllerFullmektig = VergeEllerFullmektig(
-                            motpartsPersonident = "98765432109"
+                            motpartsPersonident = "98765432109",
+                            tjenesteomraade = null
                         )
                     )
                 )

@@ -27,10 +27,7 @@ class PersonController(
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
         val maskertPersonident = request.fnr.toMaskertPersonIdent()
 
-        val vergeData = persondata.verge
-            ?.let { vergeFnr -> personService.hentPerson(vergeFnr)
-                ?: throw IkkeFunnetException("Ingen verge funnet med ident ${persondata.verge} for person med ident ${request.fnr}")
-            }.also { AuditLog.log(request.fnr, "Hentet opp vergedata fra PDL") }
+        val vergeData = personService.hentVerge(vergetrengende = persondata)
 
         return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang, vergeData))
     }

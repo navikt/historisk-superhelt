@@ -51,7 +51,7 @@ fun Persondata.toDto(
         doed = this.doedsfall != null,
         doedsfall = this.doedsfall,
         adressebeskyttelseGradering = this.adressebeskyttelseGradering,
-        harVerge = this.verge != null,
+        harVerge = this.verge != null && vergeData != null,
         vergeInfo = vergeData?.let {
             VergeInfo(
                 navn = it.navn,
