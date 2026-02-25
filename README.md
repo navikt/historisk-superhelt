@@ -26,6 +26,7 @@ Mock-serveren har forhåndsdefinerte testpersoner for ulike scenarier. Se [mocks
 
 Eksempler:
 - `70000000001` - Person med dødsdato 2023-06-15
+- `70000000002` - Person med verge
 - `60000000001` - Person med strengt fortrolig adresse
 - `40300000001` - Person som avvises av tilgangsmaskin (habilitet)
 
