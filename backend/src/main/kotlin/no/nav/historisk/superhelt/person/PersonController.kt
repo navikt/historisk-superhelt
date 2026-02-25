@@ -19,14 +19,17 @@ class PersonController(
     @Operation(operationId = "findPersonByFnr", summary = "Finn person basert på fødselsnummer")
     @PostMapping()
     fun findPerson(@RequestBody @Valid request: PersonRequest): ResponseEntity<Person> {
-        val persondata = personService.hentPerson(request.fnr)
+        val persondata = personService
+            .let { it.hentPerson(request.fnr)
+                ?: throw IkkeFunnetException("Ingen person funnet med ident ${request.fnr}")
+            }.also { AuditLog.log(request.fnr, "Hentet opp persondata fra PDL") }
+
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
         val maskertPersonident = request.fnr.toMaskertPersonIdent()
-        if (persondata == null) {
-            throw IkkeFunnetException("Ingen person funnet med ident ${request.fnr}")
-        }
-        AuditLog.log(persondata.fnr,"Hentet opp persondata fra PDL")
-        return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang))
+
+        val vergeData = personService.hentVerge(vergetrengende = persondata)
+
+        return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang, vergeData))
     }
 
     @Operation(operationId = "getPersonByMaskertIdent")

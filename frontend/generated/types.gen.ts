@@ -27,6 +27,7 @@ export type SakUpdateRequestDto = {
 export type Brev = {
     saksnummer: string;
     uuid: string;
+    opprettetTidspunkt: string;
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
@@ -59,16 +60,17 @@ export type Sak = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
-    utbetaling?: Utbetaling;
+    utbetalinger: Array<Utbetaling>;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
+    readonly error: SakError;
     readonly tilstand: SakTilstand;
     readonly gjenapnet: boolean;
-    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
-    readonly error: SakError;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly utbetaling?: Utbetaling;
     readonly valideringsfeil: Array<ValidationFieldError>;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly maskertPersonIdent: string;
 };
 
 export type SakError = {
@@ -76,9 +78,9 @@ export type SakError = {
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -152,11 +154,18 @@ export type Person = {
     doed: boolean;
     doedsfall?: string;
     adressebeskyttelseGradering?: 'FORTROLIG' | 'STRENGT_FORTROLIG' | 'STRENGT_FORTROLIG_UTLAND' | 'UGRADERT';
-    verge: boolean;
+    harVerge: boolean;
+    vergeInfo?: VergeInfo;
     avvisningsKode?: 'AVVIST_STRENGT_FORTROLIG_ADRESSE' | 'AVVIST_STRENGT_FORTROLIG_UTLAND' | 'AVVIST_AVDØD' | 'AVVIST_PERSON_UTLAND' | 'AVVIST_SKJERMING' | 'AVVIST_FORTROLIG_ADRESSE' | 'AVVIST_UKJENT_BOSTED' | 'AVVIST_GEOGRAFISK' | 'AVVIST_HABILITET' | 'UKJENT_PERSON';
     avvisningsBegrunnelse?: string;
     foedselsdato?: string;
     alder?: number;
+};
+
+export type VergeInfo = {
+    navn: string;
+    fnr: string;
+    maskertPersonident: string;
 };
 
 export type RetryUtbetalingRequestDto = {
@@ -261,6 +270,7 @@ export type JournalpostSak = {
 export type BrevWritable = {
     saksnummer: string;
     uuid: string;
+    opprettetTidspunkt: string;
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
@@ -283,21 +293,21 @@ export type SakWritable = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
-    utbetaling?: Utbetaling;
+    utbetalinger: Array<Utbetaling>;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevWritable;
 };
 
 export type SakErrorWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
     utbetalingError: boolean;
 };
 
 export type SakTilstandWritable = {
-    sak?: SakWritable;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    sak?: unknown;
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -1278,7 +1288,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: number;
+        dokumentId: string;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

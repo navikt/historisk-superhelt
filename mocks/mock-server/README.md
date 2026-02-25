@@ -22,6 +22,12 @@ Any 11-digit FNR not listed below will generate a random person.
 ### Persons with Death Date
 - `70000000001` - Person with death date: 2023-06-15
 
+### Personer med verge eller fullmektig
+- `7000000002` - Person med verge med tjenestevirksomhet: "nav" og tjenesteoppgave: "hjelpemidler"
+- `7000000003` - Vergen til `7000000002`
+- `7000000004` - Person med verge som ikke er i tjenestevirksomhet: "nav"
+- `7000000005` - Person med verge som ikke har tjenesteoppgave hjelpemidler
+
 ## Usage
 
 Use these FNRs when testing to get consistent, predictable test data instead of random values.

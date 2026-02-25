@@ -55,7 +55,7 @@ class PdlPersondataParserTest {
         assertEquals("Hansen", result?.etternavn)
         assertEquals(AdressebeskyttelseGradering.FORTROLIG, result?.adressebeskyttelseGradering)
         assertEquals("2023-01-15", result?.doedsfall)
-        assertThat(result?.verge).isEqualTo(FolkeregisterIdent("98765432109"))
+        assertThat(result?.verge).isEqualTo(VergeEllerFullmektig(motpartsPersonident = "98765432109", tjenesteomraade = null))
         assertThat(result?.doedsfall).isEqualTo("2023-01-15")
         assertThat(result?.foedselsdato).isEqualTo("1990-05-20")
     }
@@ -273,7 +273,7 @@ class PdlPersondataParserTest {
                     adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)),
                     vergemaalEllerFremtidsfullmakt = listOf(
                         VergemaalEllerFremtidsfullmakt(
-                            vergeEllerFullmektig = VergeEllerFullmektig("98765432109")
+                            vergeEllerFullmektig = VergeEllerFullmektig("98765432109", null)
                         )
                     )
                 ),

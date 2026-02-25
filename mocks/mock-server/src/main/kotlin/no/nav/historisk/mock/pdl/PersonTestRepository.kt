@@ -4,6 +4,9 @@ import no.nav.pdl.Adressebeskyttelse
 import no.nav.pdl.AdressebeskyttelseGradering
 import no.nav.pdl.Doedsfall
 import no.nav.pdl.PdlData
+import no.nav.pdl.Tjenesteomraade
+import no.nav.pdl.VergeEllerFullmektig
+import no.nav.pdl.VergemaalEllerFremtidsfullmakt
 import no.nav.tilgangsmaskin.Avvisningskode
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -61,6 +64,54 @@ class PersonTestRepository {
             data = pdlData(
                 fnr = "70000000001",
                 doedsfall = listOf(Doedsfall(doedsdato = "2023-06-15"))
+            )
+        )
+        // Person med vergemål
+        generateAndCacheResponse(
+            fnr = "70000000002",
+            data = pdlData(
+                fnr = "70000000002",
+                doedsfall = listOf(Doedsfall(doedsdato = "2025-12-12")),
+                adressebeskyttelse = listOf(Adressebeskyttelse(AdressebeskyttelseGradering.FORTROLIG)),
+                vergemaal = listOf(
+                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
+                        motpartsPersonident = "70000000003",
+                        tjenesteomraade = listOf(Tjenesteomraade("hjelpemidler", "nav"))
+                    ))
+                )
+            )
+        )
+        // Person som er verge for 70000000002
+        generateAndCacheResponse(
+            fnr = "70000000003",
+            data = pdlData(
+                fnr = "70000000003",
+            )
+        )
+        // person med verge som ikke er i tjenesteområde NAV
+        generateAndCacheResponse(
+            fnr = "70000000004",
+            data = pdlData(
+                fnr = "70000000004",
+                vergemaal = listOf(
+                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
+                        motpartsPersonident = "70000000005",
+                        tjenesteomraade = listOf(Tjenesteomraade("hjelpemidler", "annen"))
+                    ))
+                )
+            )
+        )
+        // person med verge som ikke har tjenesteoppgave hjelpemidler
+        generateAndCacheResponse(
+            fnr = "70000000005",
+            data = pdlData(
+                fnr = "70000000005",
+                vergemaal = listOf(
+                    VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
+                        motpartsPersonident = "70000000006",
+                        tjenesteomraade = listOf(Tjenesteomraade("arbeid", "nav"))
+                    ))
+                )
             )
         )
     }

@@ -52,7 +52,13 @@ data class VergemaalEllerFremtidsfullmakt(
 )
 
 data class VergeEllerFullmektig(
-    val motpartsPersonident: String?
+    val motpartsPersonident: String?,
+    val tjenesteomraade: List<Tjenesteomraade>?,
+)
+
+data class Tjenesteomraade(
+    val tjenesteoppgave: String?,
+    val tjenestevirksomhet: String?
 )
 
 data class Identliste(

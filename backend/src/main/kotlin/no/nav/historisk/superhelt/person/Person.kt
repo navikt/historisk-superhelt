@@ -23,7 +23,8 @@ data class Person(
     val doed: Boolean = false,
     val doedsfall: String? = null,
     val adressebeskyttelseGradering: AdressebeskyttelseGradering? = null,
-    val verge: Boolean = false,
+    val harVerge: Boolean = false,
+    val vergeInfo: VergeInfo? = null,
     val avvisningsKode: Avvisningskode? = null,
     val avvisningsBegrunnelse: String? = null,
     val foedselsdato: LocalDate? = null
@@ -32,7 +33,17 @@ data class Person(
         get() = foedselsdato?.let { Period.between(it, LocalDate.now()).years }
 }
 
-fun Persondata.toDto(maskertPersonident: MaskertPersonIdent, tilgang: TilgangsmaskinClient.TilgangResult): Person {
+data class VergeInfo(
+    val navn: String,
+    val fnr: FolkeregisterIdent,
+    val maskertPersonident: MaskertPersonIdent
+)
+
+fun Persondata.toDto(
+    maskertPersonident: MaskertPersonIdent,
+    tilgang: TilgangsmaskinClient.TilgangResult,
+    vergeData: Persondata? = null
+): Person {
     return Person(
         navn = this.navn,
         maskertPersonident = maskertPersonident,
@@ -40,7 +51,14 @@ fun Persondata.toDto(maskertPersonident: MaskertPersonIdent, tilgang: Tilgangsma
         doed = this.doedsfall != null,
         doedsfall = this.doedsfall,
         adressebeskyttelseGradering = this.adressebeskyttelseGradering,
-        verge = this.verge != null,
+        harVerge = this.verge != null && vergeData != null,
+        vergeInfo = vergeData?.let {
+            VergeInfo(
+                navn = it.navn,
+                fnr = it.fnr,
+                maskertPersonident = it.fnr.toMaskertPersonIdent()
+            )
+        },
         avvisningsKode = tilgang.response?.title,
         avvisningsBegrunnelse = tilgang.response?.begrunnelse,
         foedselsdato = this.foedselsdato

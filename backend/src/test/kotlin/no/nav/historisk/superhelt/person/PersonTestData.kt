@@ -5,6 +5,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.person.Persondata
 import java.time.LocalDate
 import no.nav.pdl.AdressebeskyttelseGradering
+import no.nav.pdl.VergeEllerFullmektig
 
 object PersonTestData {
 
@@ -34,5 +35,32 @@ object PersonTestData {
         fornavn = "Oline",
         etternavn = "Nordmann",
         adressebeskyttelseGradering = null,
+    )
+
+    val testPersonMedAdressebeskyttelse = Persondata(
+        fnr = FolkeregisterIdent("12345678903"),
+        navn = "Kjell Aronsen",
+        aktorId = AktorId("1234567890125"),
+        alleFnr = setOf(FolkeregisterIdent("12345678903")),
+        doedsfall = null,
+        foedselsdato = LocalDate.parse("1940-04-09"),
+        verge = null,
+        harTilgang = true,
+        fornavn = "Kjell",
+        etternavn = "Aronsen",
+        adressebeskyttelseGradering = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
+    )
+
+    val testPersonMedVerge = Persondata(
+        fnr = FolkeregisterIdent("12345678904"),
+        navn = "Thomas Andre",
+        aktorId = AktorId("1234567890126"),
+        alleFnr = setOf(FolkeregisterIdent("12345678904")),
+        doedsfall = null,
+        foedselsdato = LocalDate.parse("1984-08-20"),
+        verge = VergeEllerFullmektig(motpartsPersonident = "12345678903", tjenesteomraade = null),
+        harTilgang = true,
+        fornavn = "Thomas",
+        etternavn = "Andre",
     )
 }
