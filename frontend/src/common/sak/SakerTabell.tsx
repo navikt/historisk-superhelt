@@ -1,10 +1,10 @@
+import type {ProblemDetail, Sak} from "@generated";
 import {Button, Heading, Skeleton, Table, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 import {isoTilLokal} from "~/common/dato.utils";
-import {ProblemDetail, Sak} from "@generated";
-
+import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
 interface SakerTableProps {
     saker: Array<Sak>,
@@ -15,6 +15,7 @@ interface SakerTableProps {
 }
 
 export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideActions}: SakerTableProps) {
+    const getStonadsTypeNavn = useStonadsTypeNavn()
 
     if (error) {
         return <ErrorAlert error={error}/>
@@ -48,7 +49,7 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                 {saker.map((sak) => (
                     <Table.Row key={sak.saksnummer} style={{textDecorationLine:sak.status === "FEILREGISTRERT" ? "line-through" : "none"}}>
                         <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
-                        <Table.DataCell>{sak.type}</Table.DataCell>
+                        <Table.DataCell>{getStonadsTypeNavn(sak.type)}</Table.DataCell>
                         <Table.DataCell>{sak.beskrivelse}</Table.DataCell>
                         <Table.DataCell>
                             <SakStatus sak={sak}/>

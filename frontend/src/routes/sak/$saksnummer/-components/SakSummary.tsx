@@ -1,11 +1,14 @@
 import {FormSummary} from '@navikt/ds-react';
-import {Sak} from '@generated';
+import type {Sak} from '@generated';
+import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 
 interface SakSummaryProps {
     sak: Sak;
 }
 
 export default function SakSummary({sak}: SakSummaryProps) {
+    const getStonadsTypeNavn = useStonadsTypeNavn()
+
     return (
         <FormSummary>
             <FormSummary.Header>
@@ -15,7 +18,7 @@ export default function SakSummary({sak}: SakSummaryProps) {
 
                 <FormSummary.Answer>
                     <FormSummary.Label>Type</FormSummary.Label>
-                    <FormSummary.Value>{sak.type}</FormSummary.Value>
+                    <FormSummary.Value>{getStonadsTypeNavn(sak.type)}</FormSummary.Value>
                 </FormSummary.Answer>
                 <FormSummary.Answer>
                     <FormSummary.Label>Beskrivelse</FormSummary.Label>
