@@ -69,18 +69,25 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
 
                 UtbetalingsType.FORHANDSTILSAGN -> {
                     entity.setOrUpdateForhandsTilsagn(belop)
-                    entity.utbetaling = null
+                    entity.fjernAktivUtbetaling()
                 }
 
                 UtbetalingsType.INGEN -> {
-                    entity.utbetaling = null
+                    entity.fjernAktivUtbetaling()
                     entity.forhandstilsagn = null
                 }
             }
 
         }
-
         return entity
+    }
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun incrementBehandlingsNummer(saksnummer: Saksnummer): Sak {
+        val sakEntity = getSakEntityOrThrow(saksnummer)
+        sakEntity.behandlingsTeller += 1
+        return jpaRepository.save(sakEntity).toDomain()
     }
 
 

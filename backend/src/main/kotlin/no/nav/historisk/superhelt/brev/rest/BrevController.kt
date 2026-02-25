@@ -12,7 +12,6 @@ import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakRettighet
 import no.nav.historisk.superhelt.sak.SakValidator
 import org.slf4j.LoggerFactory
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -31,15 +30,18 @@ class BrevController(
     @PostMapping
     fun hentEllerOpprettBrev(
         @PathVariable saksnummer: Saksnummer,
-        @Valid @RequestBody request: OpprettBrevRequest): ResponseEntity<Brev> {
+        @Valid @RequestBody request: OpprettBrevRequest): Brev {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak).checkRettighet(SakRettighet.LES).validate()
-        val brev = brevService.finnBrev(sak, request.type, request.mottaker)
-            ?: genererNyttBrev(sak, request.type, request.mottaker)
-            ?: throw IkkeFunnetException("Kunne ikke finne eller generere brev for sak")
 
-        sak.auditLog("Henter brev ${brev.uuid} for sak")
-        return ResponseEntity.ok(brev)
+        val brevListe = brevRepository.findBySak(saksnummer)
+        val brev = brevListe.finnGjeldendeBrev(request.type, request.mottaker)
+
+        if ((brev == null || brev.status.isCompleted()) && sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)) {
+            return brevService.genererNyttBrev(sak, request.type, request.mottaker)
+        }
+
+        return brev ?: throw IkkeFunnetException("Kunne ikke finne eller generere brev for sak")
     }
 
     private fun genererNyttBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev? {

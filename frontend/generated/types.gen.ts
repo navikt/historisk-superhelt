@@ -27,6 +27,7 @@ export type SakUpdateRequestDto = {
 export type Brev = {
     saksnummer: string;
     uuid: string;
+    opprettetTidspunkt: string;
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
@@ -47,7 +48,7 @@ export type NavUser = {
 
 export type Sak = {
     saksnummer: string;
-    behandlingsnummer: string;
+    behandlingsnummer: number;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
@@ -59,13 +60,15 @@ export type Sak = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
-    utbetaling?: Utbetaling;
+    utbetalinger: Array<Utbetaling>;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: Brev;
     readonly error: SakError;
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
     readonly tilstand: SakTilstand;
+    readonly gjenapnet: boolean;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
+    readonly utbetaling?: Utbetaling;
+    readonly valideringsfeil: Array<ValidationFieldError>;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
 };
@@ -75,9 +78,9 @@ export type SakError = {
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -101,6 +104,10 @@ export type UtbetalingRequestDto = {
 export type HenlagtSakRequestDto = {
     aarsak: string;
     henleggelseBrevId: string;
+};
+
+export type GjenapneSakRequestDto = {
+    aarsak: string;
 };
 
 export type FeilregisterRequestDto = {
@@ -173,7 +180,7 @@ export type User = {
 
 export type Vedtak = {
     saksnummer: string;
-    behandlingsnummer: string;
+    behandlingsnummer: number;
     stonadstype: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     beskrivelse: string;
@@ -263,6 +270,7 @@ export type JournalpostSak = {
 export type BrevWritable = {
     saksnummer: string;
     uuid: string;
+    opprettetTidspunkt: string;
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
@@ -273,7 +281,7 @@ export type BrevWritable = {
 
 export type SakWritable = {
     saksnummer: string;
-    behandlingsnummer: string;
+    behandlingsnummer: number;
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
@@ -285,7 +293,7 @@ export type SakWritable = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
-    utbetaling?: Utbetaling;
+    utbetalinger: Array<Utbetaling>;
     forhandstilsagn?: Forhandstilsagn;
     vedtaksbrevBruker?: BrevWritable;
 };
@@ -297,9 +305,9 @@ export type SakErrorWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -492,7 +500,7 @@ export type HenleggSakResponses = {
 };
 
 export type GjenapneSakData = {
-    body?: never;
+    body: GjenapneSakRequestDto;
     path: {
         saksnummer: string;
     };
@@ -1280,7 +1288,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: number;
+        dokumentId: string;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

@@ -16,7 +16,7 @@ class SakTilstandTest {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 beskrivelse = null,
                 begrunnelse = null,
-                utbetaling = null,
+                utbetalinger = emptyList(),
                 forhandstilsagn = null,
                 vedtaksResultat = null
             )

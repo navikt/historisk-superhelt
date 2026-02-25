@@ -14,14 +14,14 @@ function BrevPage() {
     const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer))
     const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE")
     const {data: brev} = useQuery({
-            ...getOrCreateBrevOptions(saksnummer, "VEDTAKSBREV", "BRUKER"),
-            enabled: hasSaksbehandleRettighet && !sak.vedtaksbrevBruker,
+            ...getOrCreateBrevOptions(saksnummer, "VEDTAKSBREV", "BRUKER")
         }
     )
     const navigate = useNavigate()
+
     const gotoOppsummering = () => navigate({to: "/sak/$saksnummer/oppsummering", params: {saksnummer}});
 
-    const brevId = sak.vedtaksbrevBruker?.uuid ?? brev?.uuid
+    const brevId = brev?.uuid
 
     return <BrevEditor sak={sak}
                        brevId={brevId}

@@ -27,8 +27,10 @@ object SakTestData {
     fun sakMedUtbetaling(): Sak {
         val sakUtenUtbetaling = sakUtenUtbetaling()
         return sakUtenUtbetaling.copy(
-            utbetaling = UtbetalingTestData.utbetalingMinimum()
-                .copy(saksnummer = sakUtenUtbetaling.saksnummer)
+            utbetalinger = listOf(
+                UtbetalingTestData.utbetalingMinimum()
+                    .copy(saksnummer = sakUtenUtbetaling.saksnummer)
+            )
         )
     }
 
@@ -36,7 +38,7 @@ object SakTestData {
         val saksnummer = Saksnummer(faker.numerify("Mock-#####"))
         return Sak(
             saksnummer = saksnummer,
-            behandlingsnummer = Behandlingsnummer(saksnummer, 1),
+            behandlingsnummer = Behandlingsnummer( 1),
             type = faker.options().option(StonadsType::class.java),
             fnr = FolkeregisterIdent(faker.numerify("###########")),
             beskrivelse = faker.greekPhilosopher().quote(),
@@ -51,7 +53,7 @@ object SakTestData {
             tildelingsAar = Aar(faker.number().numberBetween(2020, 2026)),
             begrunnelse = faker.lebowski().quote(),
             attestant = null,
-            utbetaling = null,
+            utbetalinger = emptyList(),
             forhandstilsagn = null
         )
     }

@@ -6,5 +6,11 @@ enum class SakStatus {
     TIL_ATTESTERING,
     FERDIG_ATTESTERT,
     FERDIG,
-    FEILREGISTRERT
+    FEILREGISTRERT;
+
+     fun isFinal(): Boolean {
+        return this == SakStatus.FERDIG || this == SakStatus.FEILREGISTRERT
+    }
+
+
 }

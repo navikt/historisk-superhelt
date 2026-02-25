@@ -1,9 +1,6 @@
 package no.nav.historisk.superhelt.oppgave
 
-import no.nav.common.types.EksternOppgaveId
-import no.nav.common.types.FolkeregisterIdent
-import no.nav.common.types.NavIdent
-import no.nav.common.types.Saksnummer
+import no.nav.common.types.*
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
@@ -150,6 +147,7 @@ class OppgaveService(
             OpprettOppgaveRequest(
                 tema = TEMA_HEL,
                 oppgavetype = type.oppgavetype,
+                opprettetAvEnhetsnr = defaultEnhetsnummer.value,
 //                journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,

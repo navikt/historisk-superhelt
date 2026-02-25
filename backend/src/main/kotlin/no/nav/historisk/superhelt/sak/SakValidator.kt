@@ -71,7 +71,7 @@ class SakValidator(private val sak: Sak): Validator() {
                 when (utbetalingsType) {
                     UtbetalingsType.BRUKER -> {
                         check(
-                            utbetaling != null && utbetaling.belop.value <= 0,
+                            utbetaling != null && utbetaling!!.belop.value <= 0,
                             "utbetaling.belop",
                             "Beløpet må settes og være positivt"
                         )
@@ -80,15 +80,20 @@ class SakValidator(private val sak: Sak): Validator() {
                     UtbetalingsType.FORHANDSTILSAGN -> {}
                     UtbetalingsType.INGEN -> {}
                 }
-
             }
-
         }
         return this
     }
 
     fun checkRettighet(rettighet: SakRettighet): SakValidator {
         check(!sak.rettigheter.contains(rettighet), "rettighet", "Manglende rettighet i sak: $rettighet")
+        return this
+    }
+
+    fun checkUpdate(updateSakDto: UpdateSakDto): SakValidator {
+       if (sak.gjenapnet){
+           check(updateSakDto.type != null && updateSakDto.type != sak.type, "type", "Kan ikke endre type på en gjenåpnet sak")
+       }
         return this
     }
 }

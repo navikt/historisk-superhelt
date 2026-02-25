@@ -33,7 +33,7 @@ class BrevTekstGenerator(private val sak: Sak) {
                  
                     <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
-                        ${if (sak.utbetaling != null) "<li>Utbetaling: ${sak.utbetaling.belop} kr til din konto</li>" else ""}
+                        ${sak.utbetaling?.let { "<li>Utbetaling: ${it.belop} kr til din konto</li>" } ?: ""}
                         ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn: ${sak.forhandstilsagn.belop} kr</li>" else ""}
                       </ul> 
                 """.trimIndent()
@@ -46,7 +46,7 @@ class BrevTekstGenerator(private val sak: Sak) {
          
                     <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
-                        ${if (sak.utbetaling != null) "<li>Utbetaling: ${sak.utbetaling.belop} kr</li>" else ""}
+                        ${sak.utbetaling?.let { "<li>Utbetaling: ${it.belop} kr</li>" } ?: ""}
                         ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn på inntil ${sak.forhandstilsagn.belop} kr</li>" else ""}
                       </ul> 
                 """.trimIndent()

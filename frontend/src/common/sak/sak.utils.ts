@@ -1,5 +1,5 @@
-import {SakStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
-import {Sak} from "@generated";
+import type {SakStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import type {Sak} from "@generated";
 
 const ferdigStatus: Array<SakStatusType>= ["FERDIG","FEILREGISTRERT"]
 

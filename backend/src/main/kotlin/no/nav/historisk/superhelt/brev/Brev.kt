@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
+import java.time.Instant
 
 
 data class Brev(
     val saksnummer: Saksnummer,
     val uuid: BrevId,
+    val opprettetTidspunkt: Instant,
     val tittel: String?,
     /** html innholdet i brevet */
     val innhold: String?,

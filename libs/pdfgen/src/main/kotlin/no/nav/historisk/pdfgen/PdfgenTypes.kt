@@ -1,13 +1,12 @@
 package no.nav.historisk.pdfgen
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.FolkeregisterIdent
 import java.time.LocalDate
 
 
 data class PdfgenRequest(
-    val behandlingsnummer: Behandlingsnummer,
+    val behandlingsnummer: String,
     val personalia: Personalia,
     @get:JsonFormat(pattern = "dd.MM.yyyy")
     val datoForUtsending: LocalDate,
