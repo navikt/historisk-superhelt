@@ -5,7 +5,6 @@ import no.nav.pdl.AdressebeskyttelseGradering
 import no.nav.pdl.Doedsfall
 import no.nav.pdl.PdlData
 import no.nav.pdl.Tjenesteomraade
-import no.nav.pdl.Tjenesteoppgave
 import no.nav.pdl.VergeEllerFullmektig
 import no.nav.pdl.VergemaalEllerFremtidsfullmakt
 import no.nav.tilgangsmaskin.Avvisningskode
@@ -77,7 +76,7 @@ class PersonTestRepository {
                 vergemaal = listOf(
                     VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
                         motpartsPersonident = "70000000003",
-                        tjenesteomraade = listOf(Tjenesteomraade(Tjenesteoppgave.HJELPEMIDLER, "nav"))
+                        tjenesteomraade = listOf(Tjenesteomraade("hjelpemidler", "nav"))
                     ))
                 )
             )
@@ -97,7 +96,7 @@ class PersonTestRepository {
                 vergemaal = listOf(
                     VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
                         motpartsPersonident = "70000000005",
-                        tjenesteomraade = listOf(Tjenesteomraade(Tjenesteoppgave.HJELPEMIDLER, "annen"))
+                        tjenesteomraade = listOf(Tjenesteomraade("hjelpemidler", "annen"))
                     ))
                 )
             )
@@ -110,7 +109,7 @@ class PersonTestRepository {
                 vergemaal = listOf(
                     VergemaalEllerFremtidsfullmakt(VergeEllerFullmektig(
                         motpartsPersonident = "70000000006",
-                        tjenesteomraade = listOf(Tjenesteomraade(Tjenesteoppgave.ARBEID, "nav"))
+                        tjenesteomraade = listOf(Tjenesteomraade("arbeid", "nav"))
                     ))
                 )
             )

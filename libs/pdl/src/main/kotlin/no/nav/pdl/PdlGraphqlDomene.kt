@@ -57,17 +57,9 @@ data class VergeEllerFullmektig(
 )
 
 data class Tjenesteomraade(
-    val tjenesteoppgave: Tjenesteoppgave?,
+    val tjenesteoppgave: String?,
     val tjenestevirksomhet: String?
 )
-
-enum class Tjenesteoppgave(string: String) {
-    HJELPEMIDLER("hjelpemidler"),
-    PENSJON("pensjon"),
-    SOSIALE_TJENESTER("sosialeTjenester"),
-    ARBEID("arbeid"),
-    FAMILIE("familie"),
-}
 
 data class Identliste(
     val identer: List<IdentInformasjon>

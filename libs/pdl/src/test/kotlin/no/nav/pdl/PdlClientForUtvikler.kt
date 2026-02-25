@@ -62,6 +62,12 @@ class PdlClientForUtvikler {
         println(personInfo)
     }
 
+    @Test
+    fun `verge`() {
+        val personInfo = getAndParse("24528927773")
+        println(personInfo)
+    }
+
     private fun getRestClient(): RestClient {
         return RestClient.builder()
             .baseUrl(baseUrl)

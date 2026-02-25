@@ -8,7 +8,6 @@ import no.nav.historisk.superhelt.test.WithLeseBruker
 import no.nav.person.Persondata
 import no.nav.pdl.AdressebeskyttelseGradering
 import no.nav.pdl.Tjenesteomraade
-import no.nav.pdl.Tjenesteoppgave
 import no.nav.pdl.VergeEllerFullmektig
 import no.nav.tilgangsmaskin.Avvisningskode
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
@@ -217,7 +216,7 @@ class PersonControllerTest {
         val fnr = FolkeregisterIdent("12345678905")
         val vergeFnr = FolkeregisterIdent("12345678903")
         val testPerson = PersonTestData.testPersonMedVerge.copy(fnr = fnr, verge = VergeEllerFullmektig(motpartsPersonident = vergeFnr.value, tjenesteomraade = listOf(
-            Tjenesteomraade(Tjenesteoppgave.HJELPEMIDLER, "annet")
+            Tjenesteomraade("hjelpemidler", "annet")
         )))
         val testVerge = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = vergeFnr)
         mockPerson(fnr, testPerson)
@@ -241,7 +240,7 @@ class PersonControllerTest {
         val fnr = FolkeregisterIdent("12345678906")
         val vergeFnr = FolkeregisterIdent("12345678903")
         val testPerson = PersonTestData.testPersonMedVerge.copy(fnr = fnr, verge = VergeEllerFullmektig(motpartsPersonident = vergeFnr.value, tjenesteomraade = listOf(
-            Tjenesteomraade(Tjenesteoppgave.ARBEID, "nav")
+            Tjenesteomraade("arbeid", "nav")
         )))
         val testVerge = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = vergeFnr)
         mockPerson(fnr, testPerson)

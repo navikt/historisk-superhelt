@@ -3,7 +3,6 @@ package no.nav.historisk.superhelt.person
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.pdl.PdlClient
-import no.nav.pdl.Tjenesteoppgave
 import no.nav.person.PdlPersondataParser
 import no.nav.person.Persondata
 import org.slf4j.LoggerFactory
@@ -47,7 +46,7 @@ class PersonService(
 
             val harGyldigTjenesteområde = tjenesteområder.any { område ->
                 område.tjenestevirksomhet?.lowercase() == "nav" &&
-                område.tjenesteoppgave == Tjenesteoppgave.HJELPEMIDLER
+                område.tjenesteoppgave?.lowercase() == "hjelpemidler"
             }
 
             if (!harGyldigTjenesteområde) {
