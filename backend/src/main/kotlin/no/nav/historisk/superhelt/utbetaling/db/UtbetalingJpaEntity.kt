@@ -19,7 +19,8 @@ class UtbetalingJpaEntity(
     @Column(name = "utbetaling_uuid", nullable = false, unique = true)
     var uuid: UUID = UUID.randomUUID(),
 
-    @OneToOne(mappedBy = "utbetaling")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sak_id", nullable = false)
     val sak: SakJpaEntity,
 
     var belop: Int,

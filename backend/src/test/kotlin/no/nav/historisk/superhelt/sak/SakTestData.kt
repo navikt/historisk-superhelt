@@ -27,8 +27,10 @@ object SakTestData {
     fun sakMedUtbetaling(): Sak {
         val sakUtenUtbetaling = sakUtenUtbetaling()
         return sakUtenUtbetaling.copy(
-            utbetaling = UtbetalingTestData.utbetalingMinimum()
-                .copy(saksnummer = sakUtenUtbetaling.saksnummer)
+            utbetalinger = listOf(
+                UtbetalingTestData.utbetalingMinimum()
+                    .copy(saksnummer = sakUtenUtbetaling.saksnummer)
+            )
         )
     }
 
@@ -51,7 +53,7 @@ object SakTestData {
             tildelingsAar = Aar(faker.number().numberBetween(2020, 2026)),
             begrunnelse = faker.lebowski().quote(),
             attestant = null,
-            utbetaling = null,
+            utbetalinger = emptyList(),
             forhandstilsagn = null
         )
     }

@@ -12,6 +12,7 @@ import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
+import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.Instant
@@ -49,11 +50,16 @@ data class Sak(
     val saksbehandler: NavUser,
     val attestant: NavUser? = null,
 
-    val utbetaling: Utbetaling? = null,
+    val utbetalinger: List<Utbetaling> = emptyList(),
     val forhandstilsagn: Forhandstilsagn? = null,
 
     val vedtaksbrevBruker: Brev? = null
 ) {
+
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val utbetaling: Utbetaling?
+        get() = utbetalinger.firstOrNull { !it.utbetalingStatus.isFinal() }
+            ?: utbetalinger.lastOrNull()
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val utbetalingsType: UtbetalingsType
