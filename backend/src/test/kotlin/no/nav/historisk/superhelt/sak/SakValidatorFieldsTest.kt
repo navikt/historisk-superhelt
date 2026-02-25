@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
+import no.nav.historisk.superhelt.forhandstilsagn.Forhandstilsagn
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.assertj.core.api.Assertions.assertThat
@@ -170,7 +170,7 @@ class SakValidatorFieldsTest {
         fun `should fail when vedtaksResultat is INNVILGET and neither utbetaling nor forhandstilsagn is set`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.INNVILGET,
-                utbetaling = null,
+                utbetalinger = emptyList(),
                 forhandstilsagn = null
             )
             val validator = SakValidator(sak)
@@ -186,7 +186,7 @@ class SakValidatorFieldsTest {
         fun `should fail when vedtaksResultat is DELVIS_INNVILGET and neither utbetaling nor forhandstilsagn is set`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.DELVIS_INNVILGET,
-                utbetaling = null,
+                utbetalinger = emptyList(),
                 forhandstilsagn = null
             )
             val validator = SakValidator(sak)
@@ -218,7 +218,7 @@ class SakValidatorFieldsTest {
         fun `should fail when utbetalingsType is BRUKER and utbetaling belop is zero or negative`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.INNVILGET,
-                utbetaling = UtbetalingTestData.utbetalingMinimum(0)
+                utbetalinger = listOf(UtbetalingTestData.utbetalingMinimum(0))
             )
             val validator = SakValidator(sak)
 
@@ -233,7 +233,7 @@ class SakValidatorFieldsTest {
         fun `should pass when utbetalingsType is FORHANDSTILSAGN`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.INNVILGET,
-                utbetaling = null,
+                utbetalinger = emptyList(),
                 forhandstilsagn = Forhandstilsagn()
             )
             val validator = SakValidator(sak)

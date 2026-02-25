@@ -1,9 +1,9 @@
-package no.nav.historisk.superhelt.utbetaling.db
+package no.nav.historisk.superhelt.forhandstilsagn.db
 
 import jakarta.persistence.*
 import no.nav.common.types.Belop
+import no.nav.historisk.superhelt.forhandstilsagn.Forhandstilsagn
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
-import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
 import org.hibernate.Hibernate
 import java.time.Instant
 import java.util.*

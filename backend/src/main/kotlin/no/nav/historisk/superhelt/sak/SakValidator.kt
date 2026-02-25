@@ -71,7 +71,7 @@ class SakValidator(private val sak: Sak): Validator() {
                 when (utbetalingsType) {
                     UtbetalingsType.BRUKER -> {
                         check(
-                            utbetaling != null && utbetaling.belop.value <= 0,
+                            utbetaling != null && utbetaling!!.belop.value <= 0,
                             "utbetaling.belop",
                             "Beløpet må settes og være positivt"
                         )

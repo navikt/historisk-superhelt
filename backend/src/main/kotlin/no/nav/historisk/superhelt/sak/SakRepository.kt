@@ -69,11 +69,11 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
 
                 UtbetalingsType.FORHANDSTILSAGN -> {
                     entity.setOrUpdateForhandsTilsagn(belop)
-                    entity.utbetaling = null
+                    entity.fjernAktivUtbetaling()
                 }
 
                 UtbetalingsType.INGEN -> {
-                    entity.utbetaling = null
+                    entity.fjernAktivUtbetaling()
                     entity.forhandstilsagn = null
                 }
             }
