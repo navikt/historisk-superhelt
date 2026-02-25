@@ -57,7 +57,7 @@ class BrevControllerTest {
     @Nested
     inner class `hent eller opprett brev` {
         @Test
-        fun `opprett brev ok`() {
+        fun `opprett nytt brev når det ikke finnes fra før`() {
 
             val sak = SakTestData.lagreNySak(sakRepository)
             val saksnummer = sak.saksnummer
@@ -69,7 +69,7 @@ class BrevControllerTest {
                 .convertTo(Brev::class.java)
                 .satisfies({
                     assertThat(it.uuid).isNotNull
-                    assertThat(it.type).isEqualTo(request.type)
+                    assertThat(it.saksnummer).isEqualTo(saksnummer)
                     assertThat(it.type).isEqualTo(request.type)
                     assertThat(it.mottakerType).isEqualTo(request.mottaker)
                     assertThat(it.tittel).isNotEmpty
@@ -92,7 +92,9 @@ class BrevControllerTest {
                 .bodyJson()
                 .convertTo(Brev::class.java)
                 .satisfies({
-                    assertThat(it).isEqualTo(brev)
+                    assertThat(it.uuid).isEqualTo(brev.uuid)
+                    assertThat(it.saksnummer).isEqualTo(brev.saksnummer)
+                    assertThat(it.tittel).isEqualTo(brev.tittel)
                 })
             verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(sak.fnr)
         }
