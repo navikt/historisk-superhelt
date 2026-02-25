@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.utbetaling.Forhandstilsagn
+import no.nav.historisk.superhelt.forhandstilsagn.Forhandstilsagn
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.assertj.core.api.Assertions.assertThat

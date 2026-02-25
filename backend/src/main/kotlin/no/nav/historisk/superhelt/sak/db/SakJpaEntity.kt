@@ -9,11 +9,11 @@ import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.db.BrevJpaEntity
 import no.nav.historisk.superhelt.brev.finnGjeldendeBrev
+import no.nav.historisk.superhelt.forhandstilsagn.db.ForhandTilsagnJpaEntity
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.StonadsType
-import no.nav.historisk.superhelt.utbetaling.db.ForhandTilsagnJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.hibernate.Hibernate
