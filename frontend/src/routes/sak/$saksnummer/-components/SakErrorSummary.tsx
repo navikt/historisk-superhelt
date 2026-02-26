@@ -1,9 +1,9 @@
-import {Sak} from "@generated";
-import {InfoCard, VStack} from "@navikt/ds-react";
-import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";
-import RetryFerdigstillSakButton from "~/routes/sak/$saksnummer/-components/RetryFerdigstillSakButton";
-import {useSuspenseQuery} from "@tanstack/react-query";
+import type {Sak} from "@generated";
 import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
+import {InfoCard, VStack} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import RetryFerdigstillSakButton from "~/routes/sak/$saksnummer/-components/RetryFerdigstillSakButton";
+import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";
 
 interface Props {
     sak: Sak
