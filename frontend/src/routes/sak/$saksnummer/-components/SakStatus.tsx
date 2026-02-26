@@ -28,7 +28,7 @@ export default function SakStatus({sak}: Props) {
 
     function getAlertIcon() {
         if (hasError) {
-            return <ExclamationmarkTriangleIcon title="Det er oe feil med saken"/>;
+            return <ExclamationmarkTriangleIcon title="Det er noe feil med saken"/>;
         }
     }
 
