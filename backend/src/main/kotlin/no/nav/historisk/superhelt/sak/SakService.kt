@@ -4,7 +4,6 @@ import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.sak.rest.UtbetalingRequestDto
-import no.nav.historisk.superhelt.utbetaling.UtbetalingUpdateDto
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -22,10 +21,8 @@ class SakService(
         val sak = sakRepository.getSak(saksnummer)
 
         val updateDto = UpdateSakDto(
-            utbetalingUpdateDto = UtbetalingUpdateDto(
-                belop = req.belop,
-                utbetalingsType = req.utbetalingsType
-            )
+            utbetalingsType = req.utbetalingsType,
+            belop = req.belop,
         )
 
         logger.debug("Oppdaterer utbetaling på sak {}", saksnummer)

@@ -1,13 +1,27 @@
 package no.nav.historisk.superhelt.utbetaling
 
+import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.sak.db.SakJpaRepository
+import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.*
 
 @Repository
-class UtbetalingRepository(private val utbetalingJpaRepository: UtbetalingJpaRepository) {
+class UtbetalingRepository(
+    private val utbetalingJpaRepository: UtbetalingJpaRepository,
+    private val sakJpaRepository: SakJpaRepository,
+) {
+
+    //TODO sortere?
+    fun findActiveBySaksnummer(saksnummer: Saksnummer): Utbetaling? {
+        val utbetalinger = utbetalingJpaRepository.findBySakId(saksnummer.id)
+        return (utbetalinger.firstOrNull { !it.utbetalingStatus.isFinal() }
+            ?: utbetalinger.lastOrNull())?.toDomain()
+    }
 
     fun findByUuid(uuid: UUID): Utbetaling? {
         return utbetalingJpaRepository.findByUuid(uuid)?.toDomain()
@@ -16,6 +30,13 @@ class UtbetalingRepository(private val utbetalingJpaRepository: UtbetalingJpaRep
     fun findUtbetalingerFeilet(): List<Utbetaling> {
         return utbetalingJpaRepository.findByUtbetalingStatus(UtbetalingStatus.FEILET)
             .map { it.toDomain() }
+    }
+
+    fun opprettUtbetaling(saksnummer: Saksnummer, belop: Int): Utbetaling {
+        val sakEntity = sakJpaRepository.findByIdOrNull(saksnummer.id)
+            ?: throw IllegalStateException("Sak ${saksnummer} ikke funnet")
+        val entity = UtbetalingJpaEntity(sak = sakEntity, belop = belop)
+        return utbetalingJpaRepository.save(entity).toDomain()
     }
 
     @Transactional

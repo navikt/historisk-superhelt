@@ -72,10 +72,10 @@ class SakActionController(
             .checkStatusTransition(SakStatus.FERDIG)
             .validate()
 
-        logger.info("Ferdigstiller sak $saksnummer på nytt")
+        logger.info("Ferdigstiller sak $saksnummer")
 
         sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it) }
-        sak.utbetaling?.let { utbetalingService.sendTilUtbetaling(sak) }
+        utbetalingService.opprettOgSendTilUtbetaling(sak)
 
         sakService.endreStatus(sak, SakStatus.FERDIG)
         vedtakService.fattVedtak(sak.saksnummer)
