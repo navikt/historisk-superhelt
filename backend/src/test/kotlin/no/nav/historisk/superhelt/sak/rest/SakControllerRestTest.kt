@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak.rest
 
+import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
@@ -12,6 +13,7 @@ import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithLeseBruker
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -228,5 +230,68 @@ class SakControllerRestTest() {
         private fun finnSakerForPerson(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder =
             mockMvc.get().uri("/api/sak")
                 .queryParam("maskertPersonId", fnr.toMaskertPersonIdent().value)
+    }
+
+    @WithSaksbehandler
+    @Nested
+    inner class `oppdater utbetaling på sak` {
+
+        @Test
+        fun `sett utbetalingstype BRUKER og belop`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val belop = Belop(5000)
+
+            assertThat(
+                oppdaterSak(sak.saksnummer, SakUpdateRequestDto(utbetalingsType = UtbetalingsType.BRUKER, belop = belop))
+            )
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.utbetalingsType).isEqualTo(UtbetalingsType.BRUKER)
+                    assertThat(it.belop).isEqualTo(belop)
+                })
+        }
+
+        @Test
+        fun `sett utbetalingstype INGEN fjerner belop`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+
+            assertThat(
+                oppdaterSak(sak.saksnummer, SakUpdateRequestDto(utbetalingsType = UtbetalingsType.INGEN))
+            )
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.utbetalingsType).isEqualTo(UtbetalingsType.INGEN)
+                    assertThat(it.belop).isNull()
+                })
+        }
+
+        @Test
+        fun `oppdater belop uten å endre andre felt`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val nyttBelop = Belop(12345)
+
+            assertThat(
+                oppdaterSak(sak.saksnummer, SakUpdateRequestDto(utbetalingsType = UtbetalingsType.BRUKER, belop = nyttBelop))
+            )
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.saksnummer).isEqualTo(sak.saksnummer)
+                    assertThat(it.beskrivelse).isEqualTo(sak.beskrivelse)
+                    assertThat(it.belop).isEqualTo(nyttBelop)
+                    assertThat(it.utbetalingsType).isEqualTo(UtbetalingsType.BRUKER)
+                })
+        }
+
+        private fun oppdaterSak(saksnummer: Saksnummer, dto: SakUpdateRequestDto) =
+            mockMvc.put().uri("/api/sak/{saksnummer}", saksnummer)
+                .with(csrf())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(dto))
     }
 }

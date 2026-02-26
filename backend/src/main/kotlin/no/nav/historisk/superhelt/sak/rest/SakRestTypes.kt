@@ -19,6 +19,8 @@ data class SakUpdateRequestDto(
     val soknadsDato: LocalDate? = null,
     val tildelingsAar: Aar? = null,
     val vedtaksResultat: VedtaksResultat? = null,
+    val utbetalingsType: UtbetalingsType? = null,
+    val belop: Belop? = null,
 )
 
 data class AttesterSakRequestDto(
@@ -44,4 +46,4 @@ data class GjenapneSakRequestDto(
 )
 
 
-data class UtbetalingRequestDto(val utbetalingsType: UtbetalingsType, val belop: Belop?)
+

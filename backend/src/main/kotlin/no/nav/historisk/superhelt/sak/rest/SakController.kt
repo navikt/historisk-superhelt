@@ -3,7 +3,6 @@ package no.nav.historisk.superhelt.sak.rest
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/sak")
 class SakController(
-    private val sakService: SakService,
     private val sakRepository: SakRepository,
-    private val endringsloggService: EndringsloggService,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -46,7 +43,9 @@ class SakController(
             soknadsDato = req.soknadsDato,
             tildelingsAar = req.tildelingsAar,
             vedtaksResultat = req.vedtaksResultat,
-            saksbehandler = getAuthenticatedUser().navUser
+            saksbehandler = getAuthenticatedUser().navUser,
+            utbetalingsType = req.utbetalingsType,
+            belop = req.belop,
         )
 
         SakValidator(sak)
@@ -57,20 +56,6 @@ class SakController(
         val updated = sakRepository.updateSak(
             saksnummer, updateSakDto
         )
-        return ResponseEntity.ok(updated)
-    }
-
-    @Operation(operationId = "oppdaterUtbetaling")
-    @PutMapping("{saksnummer}/utbetaling")
-    fun oppdaterUtbetaling(
-        @PathVariable saksnummer: Saksnummer,
-        @RequestBody @Valid req: UtbetalingRequestDto,
-    ): ResponseEntity<Sak> {
-        val sak = sakRepository.getSak(saksnummer)
-        SakValidator(sak)
-            .checkRettighet(SakRettighet.SAKSBEHANDLE)
-            .validate()
-        val updated = sakService.updateUtbetaling(saksnummer, req)
         return ResponseEntity.ok(updated)
     }
 
