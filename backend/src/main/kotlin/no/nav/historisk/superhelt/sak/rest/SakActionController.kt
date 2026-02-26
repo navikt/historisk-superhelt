@@ -75,7 +75,7 @@ class SakActionController(
         logger.info("Ferdigstiller sak $saksnummer")
 
         sak.vedtaksbrevBruker?.let { brevSendingService.sendBrev(sak = sak, brev = it) }
-        utbetalingService.opprettOgSendTilUtbetaling(sak)
+        utbetalingService.sendTilUtbetaling(sak)
 
         sakService.endreStatus(sak, SakStatus.FERDIG)
         vedtakService.fattVedtak(sak.saksnummer)

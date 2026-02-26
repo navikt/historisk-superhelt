@@ -18,24 +18,17 @@ class UtbetalingService(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    //TODO Slå sammen med sendTilUtbetaling
     @PreAuthorize("hasAuthority('WRITE')")
-    fun opprettOgSendTilUtbetaling(sak: Sak) {
+    fun sendTilUtbetaling(sak: Sak) {
         if (sak.utbetalingsType != UtbetalingsType.BRUKER) {
             logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, ingen utbetaling opprettes")
             return
         }
-        val belop = sak.belop ?: throw IllegalStateException("Beløp er ikke satt for sak ${sak.saksnummer}")
-        val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, belop.value)
-        utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
-        utbetalingKafkaProducer.sendTilUtbetaling(sak, utbetaling)
-    }
-
-    //TODO sjekke tilgang på saken i stedet for write
-    @PreAuthorize("hasAuthority('WRITE')")
-    fun sendTilUtbetaling(sak: Sak) {
-        val utbetaling = utbetalingRepository.findActiveBySaksnummer(sak.saksnummer) ?: return
-
+        val utbetaling = utbetalingRepository.findActiveBySaksnummer(sak.saksnummer)
+            ?: run {
+                val belop = sak.belop ?: throw IllegalStateException("Beløp er ikke satt for sak ${sak.saksnummer}")
+                utbetalingRepository.opprettUtbetaling(sak.saksnummer, belop.value)
+            }
         if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
             logger.info("Utbetaling ${utbetaling.uuid} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
             return
