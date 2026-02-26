@@ -7,6 +7,8 @@ import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedU
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
+import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
+import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/sak")
 class SakController(
     private val sakRepository: SakRepository,
+    private val utbetalingRepository: UtbetalingRepository,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -68,8 +71,27 @@ class SakController(
             .validate()
         sak.auditLog("Hentet opp sak")
         return ResponseEntity.ok(sak)
-
     }
 
+    @Operation(operationId = "getSakStatus", summary = "Hent aggregert status for sak, utbetaling og brev")
+    @GetMapping("{saksnummer}/status")
+    fun getSakStatus(@PathVariable saksnummer: Saksnummer): ResponseEntity<SakStatusDto> {
+        val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak).checkRettighet(SakRettighet.LES).validate()
 
+        val utbetalingStatus = utbetalingRepository.findActiveBySaksnummer(saksnummer)?.utbetalingStatus
+        val brevStatus = sak.vedtaksbrevBruker?.status
+
+        val aggregertStatus = if (utbetalingStatus == UtbetalingStatus.FEILET) AggregertSakStatus.FEILET
+                              else AggregertSakStatus.OK
+
+        return ResponseEntity.ok(
+            SakStatusDto(
+                sakStatus = sak.status,
+                utbetalingStatus = utbetalingStatus,
+                brevStatus = brevStatus,
+                aggregertStatus = aggregertStatus,
+            )
+        )
+    }
 }

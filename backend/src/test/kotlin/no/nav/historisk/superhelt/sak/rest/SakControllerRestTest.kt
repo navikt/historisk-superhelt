@@ -13,6 +13,8 @@ import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithLeseBruker
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
+import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
+import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
@@ -41,6 +43,9 @@ class SakControllerRestTest() {
 
     @Autowired
     private lateinit var repository: SakRepository
+
+    @Autowired
+    private lateinit var utbetalingRepository: UtbetalingRepository
 
     @MockitoBean
     private lateinit var tilgangsmaskinService: TilgangsmaskinService
@@ -293,5 +298,66 @@ class SakControllerRestTest() {
                 .with(csrf())
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(dto))
+    }
+
+    @WithSaksbehandler
+    @Nested
+    inner class `hent sak status` {
+
+        @Test
+        fun `sak uten utbetaling gir OK aggregert status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPathSatisfying("$.sakStatus") { assertThat(it).isEqualTo("UNDER_BEHANDLING") }
+                .hasPathSatisfying("$.utbetalingStatus") { assertThat(it).isNull() }
+                .hasPathSatisfying("$.brevStatus") { assertThat(it).isNull() }
+                .hasPathSatisfying("$.aggregertStatus") { assertThat(it).isEqualTo("OK") }
+        }
+
+        @Test
+        fun `sak med utbetaling under behandling gir OK aggregert status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPathSatisfying("$.utbetalingStatus") { assertThat(it).isEqualTo("UTKAST") }
+                .hasPathSatisfying("$.aggregertStatus") { assertThat(it).isEqualTo("OK") }
+        }
+
+        @Test
+        fun `sak med feilet utbetaling gir FEILET aggregert status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.FEILET)
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPathSatisfying("$.utbetalingStatus") { assertThat(it).isEqualTo("FEILET") }
+                .hasPathSatisfying("$.aggregertStatus") { assertThat(it).isEqualTo("FEILET") }
+        }
+
+        @Test
+        fun `sak som ikke finnes gir 404`() {
+            assertThat(hentSakStatus(Saksnummer(999999)))
+                .hasStatus(HttpStatus.NOT_FOUND)
+        }
+
+        @WithLeseBruker
+        @Test
+        fun `lesebruker kan hente sak status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+        }
+
+        private fun hentSakStatus(saksnummer: Saksnummer) =
+            mockMvc.get().uri("/api/sak/{saksnummer}/status", saksnummer)
     }
 }

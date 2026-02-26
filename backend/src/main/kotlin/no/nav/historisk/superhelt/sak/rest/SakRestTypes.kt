@@ -4,7 +4,10 @@ import jakarta.validation.constraints.Size
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
 import no.nav.historisk.superhelt.brev.BrevId
+import no.nav.historisk.superhelt.brev.BrevStatus
+import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.StonadsType
+import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.LocalDate
@@ -43,6 +46,18 @@ data class HenlagtSakRequestDto(
 data class GjenapneSakRequestDto(
     @field:Size(min = 5, max = 1000)
     val aarsak: String,
+)
+
+enum class AggregertSakStatus {
+    OK,
+    FEILET,
+}
+
+data class SakStatusDto(
+    val sakStatus: SakStatus,
+    val utbetalingStatus: UtbetalingStatus?,
+    val brevStatus: BrevStatus?,
+    val aggregertStatus: AggregertSakStatus,
 )
 
 
