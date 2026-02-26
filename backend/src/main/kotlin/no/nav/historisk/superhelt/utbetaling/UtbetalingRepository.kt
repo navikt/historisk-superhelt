@@ -16,9 +16,9 @@ class UtbetalingRepository(
     private val sakJpaRepository: SakJpaRepository,
 ) {
 
-    //TODO sortere?
     fun findActiveBySaksnummer(saksnummer: Saksnummer): Utbetaling? {
         val utbetalinger = utbetalingJpaRepository.findBySakId(saksnummer.id)
+            .sortedByDescending { it.utbetalingTidspunkt }
         return (utbetalinger.firstOrNull { !it.utbetalingStatus.isFinal() }
             ?: utbetalinger.lastOrNull())?.toDomain()
     }

@@ -19,6 +19,7 @@ class UtbetalingService(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
     fun sendTilUtbetaling(sak: Sak) {
         if (sak.utbetalingsType != UtbetalingsType.BRUKER) {
             logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, ingen utbetaling opprettes")
@@ -82,6 +83,7 @@ class UtbetalingService(
 
         utbetalingRepository.setUtbetalingStatus(uuid = utbetalingsId, status = newStatus)
     }
+
     @PreAuthorize("hasAuthority('WRITE')")
     fun retryUtbetaling(sak: Sak) {
         val utbetaling = utbetalingRepository.findActiveBySaksnummer(sak.saksnummer)

@@ -14,12 +14,13 @@ SET utbetalings_type = 'BRUKER',
 FROM utbetaling u
 WHERE u.sak_id = s.sak_id;
 
--- Steg 3: Populer fra forhandtilsagn (FORHANDSTILSAGN-type) – overstyrer BRUKER hvis begge finnes
+-- Steg 3: Populer fra forhandtilsagn (FORHANDSTILSAGN-type) – kun der BRUKER-data ikke finnes
 UPDATE sak s
 SET utbetalings_type = 'FORHANDSTILSAGN',
     belop             = f.belop
 FROM forhandtilsagn f
-WHERE s.forhandtilsagn_id = f.forhandtilsagn_id;
+WHERE s.forhandtilsagn_id = f.forhandtilsagn_id
+  AND s.utbetalings_type IS NULL;
 
 -- Steg 4: Fjern forhandtilsagn_id FK og kolonne fra sak
 ALTER TABLE sak
