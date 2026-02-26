@@ -1,11 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import no.nav.common.types.Aar
-import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Belop
-import no.nav.common.types.FolkeregisterIdent
-import no.nav.common.types.Saksnummer
+import no.nav.common.types.*
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
@@ -69,10 +65,6 @@ data class Sak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val tilstand: SakTilstand
         get() = SakTilstand(this)
-
-    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val error: SakError
-        get() = SakError(this)
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val gjenapnet: Boolean
