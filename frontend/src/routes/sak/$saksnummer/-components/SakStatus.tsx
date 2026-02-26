@@ -24,14 +24,15 @@ export default function SakStatus({sak}: Props) {
         }
         return undefined;
     }
+    const hasError = sakStatus.aggregertStatus === "FEILET"
 
     function getAlertIcon() {
-        if (sakStatus.aggregertStatus === "FEILET") {
-            return <ExclamationmarkTriangleIcon title="Det oppstod en feil ved utbetaling"/>;
+        if (hasError) {
+            return <ExclamationmarkTriangleIcon title="Det er oe feil med saken"/>;
         }
     }
 
-    const hasError = false
+
     const status: SakStatusType = sak.status;
 
     const renderFerdigStatusTag = () => {
