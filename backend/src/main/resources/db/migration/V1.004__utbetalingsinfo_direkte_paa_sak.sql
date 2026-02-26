@@ -12,8 +12,7 @@ UPDATE sak s
 SET utbetalings_type = 'BRUKER',
     belop             = u.belop
 FROM utbetaling u
-WHERE u.sak_id = s.sak_id
-  AND u.utbetaling_status NOT IN ('UTBETALT', 'FEILET');
+WHERE u.sak_id = s.sak_id;
 
 -- Steg 3: Populer fra forhandtilsagn (FORHANDSTILSAGN-type) – overstyrer BRUKER hvis begge finnes
 UPDATE sak s
