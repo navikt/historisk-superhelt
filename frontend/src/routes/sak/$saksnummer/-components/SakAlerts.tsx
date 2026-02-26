@@ -1,16 +1,17 @@
+import type {Sak} from "@generated";
+import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
 import {LocalAlert} from "@navikt/ds-react";
-import {Sak} from "@generated";
+import {useSuspenseQuery} from "@tanstack/react-query";
 
 interface Props {
     sak: Sak
 }
 
 export default function SakAlert({sak}: Props) {
-    // TODO: Hent utbetalingsstatus via eget endepunkt når det er tilgjengelig i API (sak.error finnes ikke lenger)
-    const utbetalingError = false
+    const {data: sakStatus} = useSuspenseQuery(getSakStatusOptions({path: {saksnummer: sak.saksnummer}}))
 
-    if (utbetalingError) {
-       return <LocalAlert status="error">
+    if (sakStatus.utbetalingStatus === "FEILET") {
+        return <LocalAlert status="error">
             <LocalAlert.Header>
                 <LocalAlert.Title>
                     Utbetaling feilet

@@ -2,15 +2,17 @@ import {Sak} from "@generated";
 import {InfoCard, VStack} from "@navikt/ds-react";
 import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";
 import RetryFerdigstillSakButton from "~/routes/sak/$saksnummer/-components/RetryFerdigstillSakButton";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
 
 interface Props {
     sak: Sak
 }
 
 export default function SakErrorSummary({sak}: Props) {
-    // TODO: Hent utbetalingsstatus via eget endepunkt når det er tilgjengelig i API (sak.utbetaling finnes ikke lenger)
-    const utbetalingError = false
-    const vedtakBrevError = sak.vedtaksbrevBruker != null && sak.vedtaksbrevBruker.status !== "SENDT"
+    const {data: sakStatus}=useSuspenseQuery(getSakStatusOptions({path: {saksnummer: sak.saksnummer}}))
+    const utbetalingError = sakStatus.utbetalingStatus === "FEILET"
+    const vedtakBrevError = sakStatus.brevStatus !== "SENDT"
 
     const hasError = utbetalingError || vedtakBrevError
 

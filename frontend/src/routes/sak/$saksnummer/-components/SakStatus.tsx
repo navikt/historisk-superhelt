@@ -1,12 +1,16 @@
 import {Tag} from "@navikt/ds-react";
 import {Sak} from "@generated";
 import {SakStatusType, SakVedtakType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
+import {ExclamationmarkTriangleIcon} from "@navikt/aksel-icons";
 
 interface Props {
     sak: Sak
 }
 
 export default function SakStatus({sak}: Props) {
+    const {data: sakStatus}=useSuspenseQuery(getSakStatusOptions({path: {saksnummer: sak.saksnummer}}))
     function ferdigText(vedtak: SakVedtakType | undefined) {
         switch (vedtak) {
             case "AVSLATT":
@@ -22,8 +26,9 @@ export default function SakStatus({sak}: Props) {
     }
 
     function getAlertIcon() {
-        // TODO: Hent utbetalingsstatus via eget endepunkt når det er tilgjengelig i API (sak.error finnes ikke lenger)
-        return undefined;
+        if (sakStatus.aggregertStatus === "FEILET") {
+            return <ExclamationmarkTriangleIcon title="Det oppstod en feil ved utbetaling"/>;
+        }
     }
 
     const hasError = false
@@ -38,7 +43,6 @@ export default function SakStatus({sak}: Props) {
 
         return <Tag variant={variant} size="small" icon={icon}>{ferdigText(sak.vedtaksResultat)}</Tag>
     }
-//TODO oppdatere til aksel v8 og sette bedre farge
     switch (status) {
         case "FEILREGISTRERT":
             return <Tag data-color="neutral" variant="strong" size="small">Feilregistert</Tag>;
