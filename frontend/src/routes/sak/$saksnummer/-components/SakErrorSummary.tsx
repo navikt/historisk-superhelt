@@ -8,7 +8,8 @@ interface Props {
 }
 
 export default function SakErrorSummary({sak}: Props) {
-    const utbetalingError = sak.utbetaling?.utbetalingStatus == "FEILET"
+    // TODO: Hent utbetalingsstatus via eget endepunkt når det er tilgjengelig i API (sak.utbetaling finnes ikke lenger)
+    const utbetalingError = false
     const vedtakBrevError = sak.vedtaksbrevBruker != null && sak.vedtaksbrevBruker.status !== "SENDT"
 
     const hasError = utbetalingError || vedtakBrevError

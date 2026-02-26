@@ -24,8 +24,9 @@ export default function UtbetalingRetryButton({sak}: Props) {
     }
 
     return <VStack>
+        {/* TODO: Hent utbetalingsstatus via eget endepunkt når det er tilgjengelig i API (sak.error finnes ikke lenger) */}
         <Button variant="secondary" data-color={"warning"} onClick={retryUtbetaling}
-                disabled={!sak.error.utbetalingError}
+                disabled={true}
                 loading={retryMutation.status === "pending"}
                 icon={<ArrowCirclepathReverseIcon/>}>Prøv å sende utbetaling på nytt</Button>
         <ErrorAlert error={retryMutation.error}/>

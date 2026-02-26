@@ -1,7 +1,6 @@
 import {Tag} from "@navikt/ds-react";
 import {Sak} from "@generated";
 import {SakStatusType, SakVedtakType} from "~/routes/sak/$saksnummer/-types/sak.types";
-import {ExclamationmarkTriangleIcon} from "@navikt/aksel-icons";
 
 interface Props {
     sak: Sak
@@ -23,13 +22,11 @@ export default function SakStatus({sak}: Props) {
     }
 
     function getAlertIcon() {
-        if (sak.error.utbetalingError) {
-            return <ExclamationmarkTriangleIcon title="Det oppstod en feil ved utbetaling"/>;
-        }
+        // TODO: Hent utbetalingsstatus via eget endepunkt når det er tilgjengelig i API (sak.error finnes ikke lenger)
         return undefined;
     }
 
-    const hasError = sak.error.utbetalingError
+    const hasError = false
     const status: SakStatusType = sak.status;
 
     const renderFerdigStatusTag = () => {

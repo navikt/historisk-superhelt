@@ -6,9 +6,10 @@ interface Props {
 }
 
 export default function SakAlert({sak}: Props) {
-    const {error}= sak
+    // TODO: Hent utbetalingsstatus via eget endepunkt når det er tilgjengelig i API (sak.error finnes ikke lenger)
+    const utbetalingError = false
 
-    if (error.utbetalingError) {
+    if (utbetalingError) {
        return <LocalAlert status="error">
             <LocalAlert.Header>
                 <LocalAlert.Title>
