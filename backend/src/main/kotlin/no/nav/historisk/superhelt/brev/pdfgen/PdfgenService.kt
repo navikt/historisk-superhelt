@@ -22,7 +22,7 @@ class PdfgenService(
 
         val beslutterNavn = when (brev.type) {
             BrevType.VEDTAKSBREV -> sak.attestant?.navn ?: "<attestant>"
-            else ->  sak.attestant?.navn
+            else -> sak.attestant?.navn
         }
 
         return PdfgenRequest(
