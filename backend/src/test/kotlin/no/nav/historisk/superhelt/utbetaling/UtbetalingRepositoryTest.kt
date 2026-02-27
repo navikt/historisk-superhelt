@@ -30,6 +30,7 @@ class UtbetalingRepositoryTest {
         assertThat(utbetaling.behandlingsnummer).isEqualTo(sak.behandlingsnummer)
         assertThat(utbetaling.belop).isEqualTo(sak.belop)
         assertThat(utbetaling.saksnummer).isEqualTo(sak.saksnummer)
+        assertThat (utbetaling.utbetalingsUuid).isNotNull
         assertThat(utbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.UTKAST)
         assertThat(utbetaling.utbetalingTidspunkt).isNull()
     }
@@ -91,5 +92,21 @@ class UtbetalingRepositoryTest {
         val funnet = utbetalingRepository.findActiveByBehandling(sak)
 
         assertThat(funnet!!.transaksjonsId).isEqualTo(utbetaling.transaksjonsId)
+    }
+
+
+    @Test
+    fun `opprettUtbetaling på gjenopptatt sak gjenbruker utbetalingsid`() {
+        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val gammelUtbetaling = utbetalingRepository.opprettUtbetaling(sak)
+        utbetalingRepository.setUtbetalingStatus(gammelUtbetaling.transaksjonsId, UtbetalingStatus.UTBETALT)
+
+        val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
+        val nyUtbetaling=utbetalingRepository.opprettUtbetaling(gjenapnetSak)
+
+        assertThat(nyUtbetaling.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
+        assertThat(nyUtbetaling.utbetalingsUuid).isEqualTo(gammelUtbetaling.utbetalingsUuid)
+        assertThat(nyUtbetaling.saksnummer).isEqualTo(sak.saksnummer)
+        assertThat(nyUtbetaling.behandlingsnummer).isEqualTo(gjenapnetSak.behandlingsnummer)
     }
 }

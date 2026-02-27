@@ -19,8 +19,9 @@ class UtbetalingRepository(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun findActiveByBehandling(sak: Sak): Utbetaling? {
-        val utbetalinger = utbetalingJpaRepository.findBySakIdAndBehandlingsnummer(sak.saksnummer.id, sak.behandlingsnummer)
-            .sortedByDescending { it.utbetalingTidspunkt }
+        val utbetalinger =
+            utbetalingJpaRepository.findBySakIdAndBehandlingsnummer(sak.saksnummer.id, sak.behandlingsnummer)
+                .sortedByDescending { it.utbetalingTidspunkt }
         return (utbetalinger.firstOrNull { !it.utbetalingStatus.isFinal() }
             ?: utbetalinger.lastOrNull())?.toDomain()
     }
@@ -36,9 +37,22 @@ class UtbetalingRepository(
 
     fun opprettUtbetaling(sak: Sak): Utbetaling {
         val belop = sak.belop?.value ?: throw IllegalArgumentException("Beløp er ikke satt for sak ${sak.saksnummer}")
+        var utbetalingsUuid = UtbetalingUuid.random()
+        if (sak.gjenapnet) {
+            logger.debug("Finner tidligere utbetaling og setter uuid lik")
+            val tidligereUtbetaling = utbetalingJpaRepository.findBySakId(sak.saksnummer.id)
+                .sortedByDescending { it.utbetalingTidspunkt }
+                .firstOrNull { it.utbetalingStatus.isFinal() }
+            utbetalingsUuid = tidligereUtbetaling?.utbetalingsUuid ?: UtbetalingUuid.random()
+        }
+
         val sakEntity = sakRepository.getSakEntityOrThrow(sak.saksnummer)
-        val utbetalingsUuid = UtbetalingUuid.random()
-        val entity = UtbetalingJpaEntity(sak = sakEntity, behandlingsnummer = sak.behandlingsnummer, belop = belop, utbetalingsUuid = utbetalingsUuid)
+        val entity = UtbetalingJpaEntity(
+            sak = sakEntity,
+            behandlingsnummer = sak.behandlingsnummer,
+            belop = belop,
+            utbetalingsUuid = utbetalingsUuid
+        )
         logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sak.saksnummer} behandling ${sak.behandlingsnummer} med beløp $belop")
         return utbetalingJpaRepository.save(entity).toDomain()
     }
