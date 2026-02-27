@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak.rest
 
+import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
@@ -12,6 +13,9 @@ import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithLeseBruker
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
+import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
+import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -39,6 +43,9 @@ class SakControllerRestTest() {
 
     @Autowired
     private lateinit var repository: SakRepository
+
+    @Autowired
+    private lateinit var utbetalingRepository: UtbetalingRepository
 
     @MockitoBean
     private lateinit var tilgangsmaskinService: TilgangsmaskinService
@@ -228,5 +235,129 @@ class SakControllerRestTest() {
         private fun finnSakerForPerson(fnr: FolkeregisterIdent): MockMvcTester.MockMvcRequestBuilder =
             mockMvc.get().uri("/api/sak")
                 .queryParam("maskertPersonId", fnr.toMaskertPersonIdent().value)
+    }
+
+    @WithSaksbehandler
+    @Nested
+    inner class `oppdater utbetaling på sak` {
+
+        @Test
+        fun `sett utbetalingstype BRUKER og belop`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val belop = Belop(5000)
+
+            assertThat(
+                oppdaterSak(sak.saksnummer, SakUpdateRequestDto(utbetalingsType = UtbetalingsType.BRUKER, belop = belop))
+            )
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.utbetalingsType).isEqualTo(UtbetalingsType.BRUKER)
+                    assertThat(it.belop).isEqualTo(belop)
+                })
+        }
+
+        @Test
+        fun `sett utbetalingstype INGEN fjerner belop`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+
+            assertThat(
+                oppdaterSak(sak.saksnummer, SakUpdateRequestDto(utbetalingsType = UtbetalingsType.INGEN))
+            )
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.utbetalingsType).isEqualTo(UtbetalingsType.INGEN)
+                    assertThat(it.belop).isNull()
+                })
+        }
+
+        @Test
+        fun `oppdater belop uten å endre andre felt`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val nyttBelop = Belop(12345)
+
+            assertThat(
+                oppdaterSak(sak.saksnummer, SakUpdateRequestDto(utbetalingsType = UtbetalingsType.BRUKER, belop = nyttBelop))
+            )
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Sak::class.java)
+                .satisfies({
+                    assertThat(it.saksnummer).isEqualTo(sak.saksnummer)
+                    assertThat(it.beskrivelse).isEqualTo(sak.beskrivelse)
+                    assertThat(it.belop).isEqualTo(nyttBelop)
+                    assertThat(it.utbetalingsType).isEqualTo(UtbetalingsType.BRUKER)
+                })
+        }
+
+        private fun oppdaterSak(saksnummer: Saksnummer, dto: SakUpdateRequestDto) =
+            mockMvc.put().uri("/api/sak/{saksnummer}", saksnummer)
+                .with(csrf())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(dto))
+    }
+
+    @WithSaksbehandler
+    @Nested
+    inner class `hent sak status` {
+
+        @Test
+        fun `sak uten utbetaling gir OK aggregert status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPathSatisfying("$.sakStatus") { assertThat(it).isEqualTo("UNDER_BEHANDLING") }
+                .hasPathSatisfying("$.utbetalingStatus") { assertThat(it).isNull() }
+                .hasPathSatisfying("$.brevStatus") { assertThat(it).isNull() }
+                .hasPathSatisfying("$.aggregertStatus") { assertThat(it).isEqualTo("OK") }
+        }
+
+        @Test
+        fun `sak med utbetaling under behandling gir OK aggregert status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPathSatisfying("$.utbetalingStatus") { assertThat(it).isEqualTo("UTKAST") }
+                .hasPathSatisfying("$.aggregertStatus") { assertThat(it).isEqualTo("OK") }
+        }
+
+        @Test
+        fun `sak med feilet utbetaling gir FEILET aggregert status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.FEILET)
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPathSatisfying("$.utbetalingStatus") { assertThat(it).isEqualTo("FEILET") }
+                .hasPathSatisfying("$.aggregertStatus") { assertThat(it).isEqualTo("FEILET") }
+        }
+
+        @Test
+        fun `sak som ikke finnes gir 404`() {
+            assertThat(hentSakStatus(Saksnummer(999999)))
+                .hasStatus(HttpStatus.NOT_FOUND)
+        }
+
+        @WithLeseBruker
+        @Test
+        fun `lesebruker kan hente sak status`() {
+            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+
+            assertThat(hentSakStatus(sak.saksnummer))
+                .hasStatus(HttpStatus.OK)
+        }
+
+        private fun hentSakStatus(saksnummer: Saksnummer) =
+            mockMvc.get().uri("/api/sak/{saksnummer}/status", saksnummer)
     }
 }

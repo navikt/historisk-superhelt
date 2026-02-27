@@ -22,6 +22,8 @@ export type SakUpdateRequestDto = {
     soknadsDato?: string;
     tildelingsAar?: number;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
+    utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    belop?: number;
 };
 
 export type Brev = {
@@ -35,10 +37,6 @@ export type Brev = {
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
-};
-
-export type Forhandstilsagn = {
-    belop?: number;
 };
 
 export type NavUser = {
@@ -60,45 +58,25 @@ export type Sak = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
-    utbetalinger: Array<Utbetaling>;
-    forhandstilsagn?: Forhandstilsagn;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly error: SakError;
     readonly tilstand: SakTilstand;
     readonly gjenapnet: boolean;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
-    readonly utbetaling?: Utbetaling;
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     readonly maskertPersonIdent: string;
-};
-
-export type SakError = {
-    utbetalingError: boolean;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
+    readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-};
-
-export type Utbetaling = {
-    saksnummer: string;
-    belop: number;
-    uuid: string;
-    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
-    utbetalingTidspunkt?: string;
 };
 
 export type ValidationFieldError = {
     field: string;
     message: string;
-};
-
-export type UtbetalingRequestDto = {
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
 };
 
 export type HenlagtSakRequestDto = {
@@ -172,6 +150,14 @@ export type RetryUtbetalingRequestDto = {
     utbetalingIds: Array<string>;
 };
 
+export type Utbetaling = {
+    saksnummer: string;
+    belop: number;
+    uuid: string;
+    utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
+    utbetalingTidspunkt?: string;
+};
+
 export type User = {
     name: string;
     ident: string;
@@ -193,6 +179,13 @@ export type Vedtak = {
     attestant: NavUser;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
+};
+
+export type SakStatusDto = {
+    sakStatus: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
+    utbetalingStatus?: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
+    brevStatus?: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
+    aggregertStatus: 'OK' | 'FEILET';
 };
 
 export type EndringsloggLinje = {
@@ -293,21 +286,16 @@ export type SakWritable = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser;
-    utbetalinger: Array<Utbetaling>;
-    forhandstilsagn?: Forhandstilsagn;
+    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    belop?: number;
     vedtaksbrevBruker?: BrevWritable;
 };
 
-export type SakErrorWritable = {
-    sak?: SakWritable;
-    utbetalingError: boolean;
-};
-
 export type SakTilstandWritable = {
-    sak?: unknown;
+    sak?: SakWritable;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -397,41 +385,6 @@ export type OppdaterSakResponses = {
 };
 
 export type OppdaterSakResponse = OppdaterSakResponses[keyof OppdaterSakResponses];
-
-export type OppdaterUtbetalingData = {
-    body: UtbetalingRequestDto;
-    path: {
-        saksnummer: string;
-    };
-    query?: never;
-    url: '/api/sak/{saksnummer}/utbetaling';
-};
-
-export type OppdaterUtbetalingErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type OppdaterUtbetalingError = OppdaterUtbetalingErrors[keyof OppdaterUtbetalingErrors];
-
-export type OppdaterUtbetalingResponses = {
-    /**
-     * OK
-     */
-    200: Sak;
-};
-
-export type OppdaterUtbetalingResponse = OppdaterUtbetalingResponses[keyof OppdaterUtbetalingResponses];
 
 export type SendTilAttesteringData = {
     body?: never;
@@ -1041,6 +994,41 @@ export type HentVedtakForSakResponses = {
 };
 
 export type HentVedtakForSakResponse = HentVedtakForSakResponses[keyof HentVedtakForSakResponses];
+
+export type GetSakStatusData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status';
+};
+
+export type GetSakStatusErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetSakStatusError = GetSakStatusErrors[keyof GetSakStatusErrors];
+
+export type GetSakStatusResponses = {
+    /**
+     * OK
+     */
+    200: SakStatusDto;
+};
+
+export type GetSakStatusResponse = GetSakStatusResponses[keyof GetSakStatusResponses];
 
 export type HentEndringsloggForSakData = {
     body?: never;

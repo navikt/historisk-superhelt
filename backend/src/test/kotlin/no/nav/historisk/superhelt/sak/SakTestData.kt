@@ -5,7 +5,6 @@ import no.nav.common.types.*
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.test.withMockedUser
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
-import no.nav.historisk.superhelt.utbetaling.UtbetalingUpdateDto
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.LocalDate
@@ -27,10 +26,8 @@ object SakTestData {
     fun sakMedUtbetaling(): Sak {
         val sakUtenUtbetaling = sakUtenUtbetaling()
         return sakUtenUtbetaling.copy(
-            utbetalinger = listOf(
-                UtbetalingTestData.utbetalingMinimum()
-                    .copy(saksnummer = sakUtenUtbetaling.saksnummer)
-            )
+            utbetalingsType = UtbetalingsType.BRUKER,
+            belop = UtbetalingTestData.utbetalingMinimum().belop,
         )
     }
 
@@ -53,8 +50,8 @@ object SakTestData {
             tildelingsAar = Aar(faker.number().numberBetween(2020, 2026)),
             begrunnelse = faker.lebowski().quote(),
             attestant = null,
-            utbetalinger = emptyList(),
-            forhandstilsagn = null
+            utbetalingsType = UtbetalingsType.INGEN,
+            belop = null
         )
     }
 
@@ -86,10 +83,8 @@ object SakTestData {
             status = sakStatus,
             vedtaksResultat = faker.options().option(VedtaksResultat::class.java),
             saksbehandler = NavUser(NavIdent(saksbehandlerIdent), faker.name().name()),
-            utbetalingUpdateDto = UtbetalingUpdateDto(
-                belop = Belop(faker.number().numberBetween(10, 99999)),
-                utbetalingsType = UtbetalingsType.BRUKER
-            )
+            utbetalingsType = UtbetalingsType.BRUKER,
+            belop = Belop(faker.number().numberBetween(10, 99999)),
         )
         return nySakMinimum(fnr)
             .copy(properties = properties)

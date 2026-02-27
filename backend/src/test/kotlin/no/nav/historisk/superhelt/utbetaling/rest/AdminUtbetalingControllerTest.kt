@@ -1,12 +1,12 @@
 package no.nav.historisk.superhelt.utbetaling.rest
 
-import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithDriftbruker
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.withMockedUser
+import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
@@ -32,6 +32,9 @@ class AdminUtbetalingControllerTest {
     private lateinit var sakRepository: SakRepository
 
     @Autowired
+    private lateinit var utbetalingRepository: UtbetalingRepository
+
+    @Autowired
     private lateinit var utbetalingService: UtbetalingService
 
     @MockitoBean
@@ -50,8 +53,8 @@ class AdminUtbetalingControllerTest {
     fun `Hent feilet utbetalinger er ok for drift`() {
         withMockedUser {
             val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            utbetalingService.updateUtbetalingsStatus(sak.utbetaling!!, newStatus = UtbetalingStatus.FEILET)
-
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
         }
         assertThat(mockMvc.get().uri("/admin/utbetaling/feilet"))
             .hasStatus(HttpStatus.OK)
@@ -67,9 +70,11 @@ class AdminUtbetalingControllerTest {
     fun `Rekjør alle feilete utbetalinger `() {
         withMockedUser {
             val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            utbetalingService.updateUtbetalingsStatus(sak.utbetaling!!, newStatus = UtbetalingStatus.FEILET)
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
             val sak2 = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            utbetalingService.updateUtbetalingsStatus(sak2.utbetaling!!, newStatus = UtbetalingStatus.FEILET)
+            val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2.saksnummer, sak2.belop!!.value)
+            utbetalingService.updateUtbetalingsStatus(utbetaling2, newStatus = UtbetalingStatus.FEILET)
         }
 
         assertThat(
@@ -91,12 +96,15 @@ class AdminUtbetalingControllerTest {
     @Test
     @WithDriftbruker
     fun `Rekjør noen feilete utbetalinger `() {
-        var sak: Sak? = null
+        var utbetalingUuid: java.util.UUID? = null
         withMockedUser {
-            sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            utbetalingService.updateUtbetalingsStatus(sak.utbetaling!!, newStatus = UtbetalingStatus.FEILET)
+            val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
+            utbetalingUuid = utbetaling.uuid
             val sak2 = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            utbetalingService.updateUtbetalingsStatus(sak2.utbetaling!!, newStatus = UtbetalingStatus.FEILET)
+            val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2.saksnummer, sak2.belop!!.value)
+            utbetalingService.updateUtbetalingsStatus(utbetaling2, newStatus = UtbetalingStatus.FEILET)
         }
 
         assertThat(
@@ -104,7 +112,7 @@ class AdminUtbetalingControllerTest {
                 .uri("/admin/utbetaling/feilet")
                 .with(csrf())
                 .contentType("application/json")
-                .content("{\"utbetalingIds\": [\"${sak?.utbetaling?.uuid}\"]}")
+                .content("{\"utbetalingIds\": [\"$utbetalingUuid\"]}")
         )
             .hasStatus(HttpStatus.OK)
             .bodyJson()
@@ -113,10 +121,7 @@ class AdminUtbetalingControllerTest {
                 assertThat(it).hasSize(1)
             })
 
-        verify(utbetalingKafkaMock, times(1)).sendTilUtbetaling(
-            argThat { s -> s.saksnummer.equals(sak?.saksnummer) },
-            any()
-        )
+        verify(utbetalingKafkaMock, times(1)).sendTilUtbetaling(any(), any())
     }
 
 

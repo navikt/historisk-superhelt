@@ -5,6 +5,7 @@ import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.withMockedUser
+import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
@@ -29,6 +30,9 @@ class UtbetalingControllerTest {
     private lateinit var sakRepository: SakRepository
 
     @Autowired
+    private lateinit var utbetalingRepository: UtbetalingRepository
+
+    @Autowired
     private lateinit var utbetalingService: UtbetalingService
 
     @WithSaksbehandler
@@ -36,7 +40,8 @@ class UtbetalingControllerTest {
     fun `Retry utbetaling for saksbehandler`() {
         val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
         withMockedUser {
-            utbetalingService.updateUtbetalingsStatus(sak.utbetaling!!, newStatus = UtbetalingStatus.FEILET)
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
         }
         assertThat(
             mockMvc.post()

@@ -1,15 +1,18 @@
-import {Sak} from "@generated";
+import type {Sak} from "@generated";
+import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
 import {InfoCard, VStack} from "@navikt/ds-react";
-import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import RetryFerdigstillSakButton from "~/routes/sak/$saksnummer/-components/RetryFerdigstillSakButton";
+import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";
 
 interface Props {
     sak: Sak
 }
 
 export default function SakErrorSummary({sak}: Props) {
-    const utbetalingError = sak.utbetaling?.utbetalingStatus == "FEILET"
-    const vedtakBrevError = sak.vedtaksbrevBruker != null && sak.vedtaksbrevBruker.status !== "SENDT"
+    const {data: sakStatus}=useSuspenseQuery(getSakStatusOptions({path: {saksnummer: sak.saksnummer}}))
+    const utbetalingError = sakStatus.utbetalingStatus === "FEILET"
+    const vedtakBrevError = sakStatus.brevStatus !== "SENDT"
 
     const hasError = utbetalingError || vedtakBrevError
 

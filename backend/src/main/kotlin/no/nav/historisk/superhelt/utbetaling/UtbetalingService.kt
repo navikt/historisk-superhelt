@@ -18,23 +18,24 @@ class UtbetalingService(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    //TODO sjekke tilgang på saken i stedet for write
     @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
     fun sendTilUtbetaling(sak: Sak) {
-        sak.utbetaling?.let {
-            val utbetaling = utbetalingRepository.findByUuid(it.uuid)
-                ?: throw IllegalStateException("Utbetaling med uuid ${it.uuid} ikke funnet")
-
-            if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
-                logger.info("Utbetaling ${utbetaling.uuid} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
-                return
-            }
-            // Setter først status i egen transaksjon
-            utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
-            //Ny transaksjon for å sende til kafka og oppdatere databasen med ny status
-            utbetalingKafkaProducer.sendTilUtbetaling(sak, utbetaling)
-
+        if (sak.utbetalingsType != UtbetalingsType.BRUKER) {
+            logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, ingen utbetaling opprettes")
+            return
         }
+        val utbetaling = utbetalingRepository.findActiveBySaksnummer(sak.saksnummer)
+            ?: run {
+                val belop = sak.belop ?: throw IllegalStateException("Beløp er ikke satt for sak ${sak.saksnummer}")
+                utbetalingRepository.opprettUtbetaling(sak.saksnummer, belop.value)
+            }
+        if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
+            logger.info("Utbetaling ${utbetaling.uuid} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
+            return
+        }
+        utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
+        utbetalingKafkaProducer.sendTilUtbetaling(sak, utbetaling)
     }
 
     @Transactional
@@ -82,10 +83,12 @@ class UtbetalingService(
 
         utbetalingRepository.setUtbetalingStatus(uuid = utbetalingsId, status = newStatus)
     }
+
     @PreAuthorize("hasAuthority('WRITE')")
     fun retryUtbetaling(sak: Sak) {
-        val utbetaling = sak.utbetaling?: throw IllegalStateException("Utbetaling er ikke funnet")
-        if (utbetaling.utbetalingStatus!= UtbetalingStatus.FEILET) {
+        val utbetaling = utbetalingRepository.findActiveBySaksnummer(sak.saksnummer)
+            ?: throw IllegalStateException("Utbetaling er ikke funnet for sak ${sak.saksnummer}")
+        if (utbetaling.utbetalingStatus != UtbetalingStatus.FEILET) {
             throw IllegalStateException("Utbetaling i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke kjøres på nytt")
         }
         utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)

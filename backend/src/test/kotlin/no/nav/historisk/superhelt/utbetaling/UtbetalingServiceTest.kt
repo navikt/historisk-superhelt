@@ -35,16 +35,16 @@ class UtbetalingServiceTest {
     private lateinit var kafkaTemplate: KafkaTemplate<String, UtbetalingMelding>
 
 
-    private fun lagreSakMedUtbetaling(status: UtbetalingStatus = UtbetalingStatus.UTKAST): Sak {
-        val sak = withMockedUser {
+    private fun lagreSakMedUtbetaling(status: UtbetalingStatus = UtbetalingStatus.UTKAST): Pair<Sak, Utbetaling> {
+        val savedSak = withMockedUser {
             SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
         }
-        val utbetalingUuid = sak.utbetaling!!.uuid
+        // Opprett utbetaling-rad i DB (simulerer ferdigstilling)
+        val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak.saksnummer, savedSak.belop!!.value)
         withMockedUser {
-            utbetalingRepository.setUtbetalingStatus(utbetalingUuid, status)
+            utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, status)
         }
-        return sak
-
+        return Pair(savedSak, utbetalingRepository.findByUuid(utbetaling.uuid)!!)
     }
 
     private fun mockKafkaSuccess() {
@@ -65,28 +65,27 @@ class UtbetalingServiceTest {
     @Test
     fun `skal sende utbetaling når status er UTKAST`() {
         mockKafkaSuccess()
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
-        val utbetalingUuid = sak.utbetaling!!.uuid
+        val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
 
         utbetalingService.sendTilUtbetaling(sak)
 
-        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetalingUuid)
+        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
         assertThat(oppdatertUtbetaling?.utbetalingTidspunkt).isNotNull()
-        verify(kafkaTemplate).send(any<String>(), eq(utbetalingUuid.toString()), any<UtbetalingMelding>())
+        verify(kafkaTemplate).send(any<String>(), eq(utbetaling.uuid.toString()), any<UtbetalingMelding>())
     }
 
 
     @Test
     fun `skal ignorere når status er SENDT_TIL_UTBETALING`() {
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.SENDT_TIL_UTBETALING)
+        val (sak, _) = lagreSakMedUtbetaling(status = UtbetalingStatus.SENDT_TIL_UTBETALING)
         utbetalingService.sendTilUtbetaling(sak)
         verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
     }
 
     @Test
     fun `skal ignorere når status er UTBETALT`() {
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+        val (sak, _) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
         utbetalingService.sendTilUtbetaling(sak)
         verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
     }
@@ -102,16 +101,15 @@ class UtbetalingServiceTest {
     @Test
     fun `skal endre status på utbetaling selv om kafka feiler`() {
         mockKafkaFailure()
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
-        val utbetalingUuid = sak.utbetaling!!.uuid
+        val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
 
         assertThrows<Exception> {
             utbetalingService.sendTilUtbetaling(sak)
         }
 
-        val utbetaling = utbetalingRepository.findByUuid(utbetalingUuid)
-        assertThat(utbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
-        verify(kafkaTemplate).send(any<String>(), eq(utbetalingUuid.toString()), any<UtbetalingMelding>())
+        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
+        verify(kafkaTemplate).send(any<String>(), eq(utbetaling.uuid.toString()), any<UtbetalingMelding>())
     }
 
 
@@ -119,68 +117,66 @@ class UtbetalingServiceTest {
     fun `skal sende korrekt melding til kafka topic`() {
         mockKafkaSuccess()
 
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
-        val utbetalingUuid = sak.utbetaling!!.uuid
+        val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
 
         utbetalingService.sendTilUtbetaling(sak)
 
         verify(kafkaTemplate).send(
             any<String>(),
-            eq(utbetalingUuid.toString()),
+            eq(utbetaling.uuid.toString()),
             argThat { melding ->
-                melding.id == utbetalingUuid.toString() &&
+                melding.id == utbetaling.uuid.toString() &&
                         melding.sakId == sak.saksnummer.value &&
                         melding.behandlingId == sak.behandlingsnummer.toString() &&
                         melding.personident == sak.fnr.value &&
-                        melding.perioder.first().beløp == sak.utbetaling!!.belop.value &&
+                        melding.perioder.first().beløp == sak.belop!!.value &&
                         melding.saksbehandler == sak.saksbehandler.navIdent.value
             }
         )
-        val utbetaling = utbetalingRepository.findByUuid(utbetalingUuid)
-        assertThat(utbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
+        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
     }
 
     @Test
     fun `skal sende når status er Klar til utbetaling`() {
         mockKafkaSuccess()
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.KLAR_TIL_UTBETALING)
-        val utbetalingUuid = sak.utbetaling!!.uuid
+        val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.KLAR_TIL_UTBETALING)
 
         utbetalingService.sendTilUtbetaling(sak)
 
         verify(kafkaTemplate).send(
             any<String>(),
-            eq(utbetalingUuid.toString()),
+            eq(utbetaling.uuid.toString()),
             any<UtbetalingMelding>()
         )
-        val utbetaling = utbetalingRepository.findByUuid(utbetalingUuid)
-        assertThat(utbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
+        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
     }
 
     @Test
     fun `skal håndtere kafka broker unavailable exception`() {
         mockKafkaFailure(KafkaException("Broker not available"))
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
+        val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
 
         assertThrows<Exception> {
             utbetalingService.sendTilUtbetaling(sak)
         }
 
-        val utbetaling = utbetalingRepository.findByUuid(sak.utbetaling!!.uuid)
-        assertThat(utbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
+        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
     }
 
     @Test
     fun `skal håndtere serialization exception fra kafka`() {
         mockKafkaFailure(RuntimeException("Serialization failed"))
-        val sak = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
+        val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
 
         assertThrows<Exception> {
             utbetalingService.sendTilUtbetaling(sak)
         }
 
-        val utbetaling = utbetalingRepository.findByUuid(sak.utbetaling!!.uuid)
-        assertThat(utbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
+        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
     }
 
 }

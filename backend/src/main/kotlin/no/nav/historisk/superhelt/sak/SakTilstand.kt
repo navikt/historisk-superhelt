@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.historisk.superhelt.infrastruktur.validation.TilstandStatus
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 
 /** Representerer tilstanden til en sak i forhold til utfylling og validering
  *
@@ -14,8 +15,7 @@ class SakTilstand(private val sak: Sak) {
             // Sjekk om det ikke er startet på saken i det hele tatt
             if (sak.beskrivelse.isNullOrBlank()
                 && sak.begrunnelse.isNullOrBlank()
-                && sak.utbetaling == null
-                && sak.forhandstilsagn == null
+                && sak.utbetalingsType == UtbetalingsType.INGEN
                 && sak.vedtaksResultat == null
             ) {
                 return TilstandStatus.IKKE_STARTET

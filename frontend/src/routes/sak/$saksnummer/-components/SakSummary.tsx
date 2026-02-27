@@ -40,16 +40,9 @@ export default function SakSummary({sak}: SakSummaryProps) {
                     <FormSummary.Value>{sak.status} / {sak.vedtaksResultat}</FormSummary.Value>
                 </FormSummary.Answer>
 
-                {sak.utbetaling && <FormSummary.Answer>
-                    <FormSummary.Label>Utbetaling til bruker</FormSummary.Label>
-                    <FormSummary.Value>{sak.utbetaling?.belop} kr</FormSummary.Value>
-                    <FormSummary.Value>{sak.utbetaling.utbetalingStatus.toLowerCase()} - {sak.utbetaling.utbetalingTidspunkt}</FormSummary.Value>
-                </FormSummary.Answer>
-                }
-                {sak.forhandstilsagn && <FormSummary.Answer>
-                    <FormSummary.Label>Forhåndstilsagn</FormSummary.Label>
-                    <FormSummary.Value>Det er gitt forhåndstilsagn til å sende inn faktura</FormSummary.Value>
-                    <FormSummary.Value>{sak.forhandstilsagn?.belop} kr</FormSummary.Value>
+                {sak.belop != null && <FormSummary.Answer>
+                    <FormSummary.Label>Utbetalingsbeløp</FormSummary.Label>
+                    <FormSummary.Value>{sak.belop} kr</FormSummary.Value>
                 </FormSummary.Answer>
                 }
                 <FormSummary.Answer>

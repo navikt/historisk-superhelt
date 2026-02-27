@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.brev
 
 import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -33,8 +34,8 @@ class BrevTekstGenerator(private val sak: Sak) {
                  
                     <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
-                        ${sak.utbetaling?.let { "<li>Utbetaling: ${it.belop} kr til din konto</li>" } ?: ""}
-                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn: ${sak.forhandstilsagn.belop} kr</li>" else ""}
+                        ${if (sak.utbetalingsType == UtbetalingsType.BRUKER && sak.belop != null) "<li>Utbetaling: ${sak.belop} kr til din konto</li>" else ""}
+                        ${if (sak.utbetalingsType == UtbetalingsType.FORHANDSTILSAGN && sak.belop != null) "<li>Forhåndstilsagn: ${sak.belop} kr</li>" else ""}
                       </ul> 
                 """.trimIndent()
             }
@@ -46,8 +47,8 @@ class BrevTekstGenerator(private val sak: Sak) {
          
                     <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
-                        ${sak.utbetaling?.let { "<li>Utbetaling: ${it.belop} kr</li>" } ?: ""}
-                        ${if (sak.forhandstilsagn != null) "<li>Forhåndstilsagn på inntil ${sak.forhandstilsagn.belop} kr</li>" else ""}
+                        ${if (sak.utbetalingsType == UtbetalingsType.BRUKER && sak.belop != null) "<li>Utbetaling: ${sak.belop} kr</li>" else ""}
+                        ${if (sak.utbetalingsType == UtbetalingsType.FORHANDSTILSAGN && sak.belop != null) "<li>Forhåndstilsagn på inntil ${sak.belop} kr</li>" else ""}
                       </ul> 
                 """.trimIndent()
             }

@@ -1,20 +1,10 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.common.types.Belop
 import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
-import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.Vedtak
 import java.time.Instant
 
 object SakExtensions {
-    fun Sak.getBelop(): Belop? {
-        return when (this.utbetalingsType) {
-            UtbetalingsType.BRUKER -> this.utbetaling?.belop
-            UtbetalingsType.FORHANDSTILSAGN -> this.forhandstilsagn?.belop
-            UtbetalingsType.INGEN -> null
-        }
-
-    }
 
     fun Sak.createVedtak(vedtaksTidspunkt: Instant = Instant.now()): Vedtak {
         val sak = this
@@ -31,7 +21,7 @@ object SakExtensions {
             resultat = sak.vedtaksResultat!!,
             begrunnelse = sak.begrunnelse,
             utbetalingsType = sak.utbetalingsType,
-            belop = sak.getBelop(),
+            belop = sak.belop,
             saksbehandler = sak.saksbehandler,
             attestant = sak.attestant!!,
             soknadsDato = sak.soknadsDato!!,
@@ -40,7 +30,7 @@ object SakExtensions {
         )
     }
 
-    fun Sak.auditLog(message : String) {
+    fun Sak.auditLog(message: String) {
         AuditLog.log(
             fnr = this.fnr,
             message = message,

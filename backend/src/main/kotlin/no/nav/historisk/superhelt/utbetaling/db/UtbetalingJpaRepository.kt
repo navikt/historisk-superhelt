@@ -13,4 +13,6 @@ interface UtbetalingJpaRepository : JpaRepository<UtbetalingJpaEntity, Long> {
     fun findByUtbetalingStatus(utbetalingStatus: UtbetalingStatus): List<UtbetalingJpaEntity>
 
     fun findByUuid(uuid: UUID): UtbetalingJpaEntity?
+
+    fun findBySakId(sakId: Long): List<UtbetalingJpaEntity>
 }

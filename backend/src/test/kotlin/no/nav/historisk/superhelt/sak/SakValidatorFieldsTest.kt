@@ -1,7 +1,8 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.forhandstilsagn.Forhandstilsagn
+import no.nav.common.types.Belop
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -157,7 +158,7 @@ class SakValidatorFieldsTest {
         fun `should pass when vedtaksResultat is DELVIS_INNVILGET and forhandstilsagn is set`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.DELVIS_INNVILGET,
-                forhandstilsagn = Forhandstilsagn()
+                utbetalingsType = UtbetalingsType.FORHANDSTILSAGN,
             )
             val validator = SakValidator(sak)
 
@@ -170,8 +171,8 @@ class SakValidatorFieldsTest {
         fun `should fail when vedtaksResultat is INNVILGET and neither utbetaling nor forhandstilsagn is set`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.INNVILGET,
-                utbetalinger = emptyList(),
-                forhandstilsagn = null
+                utbetalingsType = UtbetalingsType.INGEN,
+                belop = null,
             )
             val validator = SakValidator(sak)
 
@@ -186,8 +187,8 @@ class SakValidatorFieldsTest {
         fun `should fail when vedtaksResultat is DELVIS_INNVILGET and neither utbetaling nor forhandstilsagn is set`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.DELVIS_INNVILGET,
-                utbetalinger = emptyList(),
-                forhandstilsagn = null
+                utbetalingsType = UtbetalingsType.INGEN,
+                belop = null,
             )
             val validator = SakValidator(sak)
 
@@ -218,7 +219,8 @@ class SakValidatorFieldsTest {
         fun `should fail when utbetalingsType is BRUKER and utbetaling belop is zero or negative`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.INNVILGET,
-                utbetalinger = listOf(UtbetalingTestData.utbetalingMinimum(0))
+                utbetalingsType = UtbetalingsType.BRUKER,
+                belop = Belop(0),
             )
             val validator = SakValidator(sak)
 
@@ -233,8 +235,8 @@ class SakValidatorFieldsTest {
         fun `should pass when utbetalingsType is FORHANDSTILSAGN`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.INNVILGET,
-                utbetalinger = emptyList(),
-                forhandstilsagn = Forhandstilsagn()
+                utbetalingsType = UtbetalingsType.FORHANDSTILSAGN,
+                belop = null,
             )
             val validator = SakValidator(sak)
 
