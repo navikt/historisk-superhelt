@@ -35,7 +35,7 @@ class UtbetalingRepository(
     }
 
     fun opprettUtbetaling(sak: Sak): Utbetaling {
-        val belop = sak.belop?.value ?: throw IllegalStateException("Beløp er ikke satt for sak ${sak.saksnummer}")
+        val belop = sak.belop?.value ?: throw IllegalArgumentException("Beløp er ikke satt for sak ${sak.saksnummer}")
         val sakEntity = sakJpaRepository.findByIdOrNull(sak.saksnummer.id)
             ?: throw IllegalStateException("Sak ${sak.saksnummer} ikke funnet")
         val entity = UtbetalingJpaEntity(sak = sakEntity, behandlingsnummer = sak.behandlingsnummer, belop = belop)
