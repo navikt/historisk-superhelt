@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.utbetaling
 
 import net.datafaker.Faker
+import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
 import no.nav.common.types.Saksnummer
 import java.util.*
@@ -14,6 +15,7 @@ object UtbetalingTestData {
         utbetalingStatus = UtbetalingStatus.UTKAST,
         utbetalingTidspunkt = null,
         saksnummer = Saksnummer(faker.number().positive().toLong()),
+        behandlingsnummer = Behandlingsnummer(1),
     )
 
 }

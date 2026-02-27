@@ -48,9 +48,16 @@ class UtbetalingStatusConsumer(
                 Permission.IGNORE_TILGANGSMASKIN
             )
         ) {
-            logger.debug("Mottatt melding på topic: ${record.topic()} med key: ${record.key()}")
             val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
             val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
+            val belop= statusMessage.detaljer?.linjer?.first()?.beløp
+            logger.debug(
+                "Mottatt melding på topic: {} med key: {}. Ny status {} beløp utbetalt {} ",
+                record.topic(),
+                record.key(),
+                newStatus,
+                belop
+            )
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
         }
     }

@@ -40,7 +40,7 @@ class UtbetalingServiceTest {
             SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
         }
         // Opprett utbetaling-rad i DB (simulerer ferdigstilling)
-        val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak.saksnummer, savedSak.belop!!.value)
+        val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak)
         withMockedUser {
             utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, status)
         }
