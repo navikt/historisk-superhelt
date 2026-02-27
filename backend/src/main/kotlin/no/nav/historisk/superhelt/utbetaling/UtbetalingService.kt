@@ -25,10 +25,10 @@ class UtbetalingService(
             logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, ingen utbetaling opprettes")
             return
         }
-        val utbetaling = utbetalingRepository.findActiveBySaksnummer(sak.saksnummer)
+        val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
             ?: run {
-                val belop = sak.belop ?: throw IllegalStateException("Beløp er ikke satt for sak ${sak.saksnummer}")
-                utbetalingRepository.opprettUtbetaling(sak.saksnummer, belop.value)
+                // TODO. Skal vi sende oppdatering om det ikke er noen endring?
+                utbetalingRepository.opprettUtbetaling(sak)
             }
         if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
             logger.info("Utbetaling ${utbetaling.uuid} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
@@ -86,7 +86,7 @@ class UtbetalingService(
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun retryUtbetaling(sak: Sak) {
-        val utbetaling = utbetalingRepository.findActiveBySaksnummer(sak.saksnummer)
+        val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
             ?: throw IllegalStateException("Utbetaling er ikke funnet for sak ${sak.saksnummer}")
         if (utbetaling.utbetalingStatus != UtbetalingStatus.FEILET) {
             throw IllegalStateException("Utbetaling i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke kjøres på nytt")

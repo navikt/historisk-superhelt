@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.utbetaling.db
 
+import no.nav.common.types.Behandlingsnummer
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
@@ -15,4 +16,6 @@ interface UtbetalingJpaRepository : JpaRepository<UtbetalingJpaEntity, Long> {
     fun findByUuid(uuid: UUID): UtbetalingJpaEntity?
 
     fun findBySakId(sakId: Long): List<UtbetalingJpaEntity>
+
+    fun findBySakIdAndBehandlingsnummer(sakId: Long, behandlingsnummer: Behandlingsnummer): List<UtbetalingJpaEntity>
 }

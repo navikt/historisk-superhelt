@@ -53,7 +53,7 @@ class AdminUtbetalingControllerTest {
     fun `Hent feilet utbetalinger er ok for drift`() {
         withMockedUser {
             val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
         }
         assertThat(mockMvc.get().uri("/admin/utbetaling/feilet"))
@@ -70,10 +70,10 @@ class AdminUtbetalingControllerTest {
     fun `Rekjør alle feilete utbetalinger `() {
         withMockedUser {
             val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
             val sak2 = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2.saksnummer, sak2.belop!!.value)
+            val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2)
             utbetalingService.updateUtbetalingsStatus(utbetaling2, newStatus = UtbetalingStatus.FEILET)
         }
 
@@ -99,11 +99,11 @@ class AdminUtbetalingControllerTest {
         var utbetalingUuid: java.util.UUID? = null
         withMockedUser {
             val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            val utbetaling = utbetalingRepository.opprettUtbetaling(sak.saksnummer, sak.belop!!.value)
+            val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
             utbetalingUuid = utbetaling.uuid
             val sak2 = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
-            val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2.saksnummer, sak2.belop!!.value)
+            val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2)
             utbetalingService.updateUtbetalingsStatus(utbetaling2, newStatus = UtbetalingStatus.FEILET)
         }
 

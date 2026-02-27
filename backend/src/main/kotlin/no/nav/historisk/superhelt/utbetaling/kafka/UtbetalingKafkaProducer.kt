@@ -31,7 +31,7 @@ class UtbetalingKafkaProducer(
         val vedtaksTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now()
         val melding =
             UtbetalingMelding(
-                id = id,
+                id = sak.saksnummer.value,
                 sakId = sak.saksnummer.value,
                 behandlingId = sak.behandlingsnummer.toString(),
                 personident = sak.fnr.value,

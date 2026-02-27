@@ -79,7 +79,7 @@ class SakController(
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak).checkRettighet(SakRettighet.LES).validate()
 
-        val utbetalingStatus = utbetalingRepository.findActiveBySaksnummer(saksnummer)?.utbetalingStatus
+        val utbetalingStatus = utbetalingRepository.findActiveByBehandling(sak)?.utbetalingStatus
         val brevStatus = sak.vedtaksbrevBruker?.status
 
         val aggregertStatus = if (utbetalingStatus == UtbetalingStatus.FEILET) AggregertSakStatus.FEILET

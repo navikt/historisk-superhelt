@@ -40,7 +40,7 @@ class UtbetalingServiceTest {
             SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
         }
         // Opprett utbetaling-rad i DB (simulerer ferdigstilling)
-        val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak.saksnummer, savedSak.belop!!.value)
+        val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak)
         withMockedUser {
             utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, status)
         }
@@ -125,7 +125,7 @@ class UtbetalingServiceTest {
             any<String>(),
             eq(utbetaling.uuid.toString()),
             argThat { melding ->
-                melding.id == utbetaling.uuid.toString() &&
+                melding.id == utbetaling.saksnummer.value &&
                         melding.sakId == sak.saksnummer.value &&
                         melding.behandlingId == sak.behandlingsnummer.toString() &&
                         melding.personident == sak.fnr.value &&
@@ -164,6 +164,41 @@ class UtbetalingServiceTest {
 
         val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
+    }
+
+    @Test
+    fun `skal opprette ny utbetaling når sak er gjenåpnet med nytt behandlingsnummer`() {
+        mockKafkaSuccess()
+        val (sak, gammelUtbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+
+        val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
+
+        utbetalingService.sendTilUtbetaling(gjenapnetSak)
+
+        // Gammel utbetaling skal være uendret
+        val gammelOppdatert = utbetalingRepository.findByUuid(gammelUtbetaling.uuid)
+        assertThat(gammelOppdatert?.utbetalingStatus).isEqualTo(UtbetalingStatus.UTBETALT)
+
+        // Ny utbetaling skal ha nytt behandlingsnummer
+        val nyUtbetaling = utbetalingRepository.findActiveByBehandling(gjenapnetSak)
+        assertThat(nyUtbetaling).isNotNull
+        assertThat(nyUtbetaling!!.behandlingsnummer).isEqualTo(gjenapnetSak.behandlingsnummer)
+        assertThat(nyUtbetaling.uuid).isNotEqualTo(gammelUtbetaling.uuid)
+        assertThat(nyUtbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
+    }
+
+    @Test
+    fun `skal ikke sende på nytt for gammelt behandlingsnummer når ny finnes`() {
+        mockKafkaSuccess()
+        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+
+        utbetalingService.sendTilUtbetaling(sak)
+        clearInvocations(kafkaTemplate)
+
+        // Samme behandlingsnummer – skal ikke sende på nytt (status er SENDT)
+        utbetalingService.sendTilUtbetaling(sak)
+
+        verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
     }
 
     @Test

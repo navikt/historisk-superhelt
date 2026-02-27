@@ -1,12 +1,12 @@
-import {createFileRoute, useNavigate} from '@tanstack/react-router'
+import {gjenapneSakMutation} from "@generated/@tanstack/react-query.gen";
+import {PadlockUnlockedIcon} from "@navikt/aksel-icons";
 import {BodyLong, Button, Modal, Textarea, VStack} from "@navikt/ds-react";
 import {useMutation, useSuspenseQuery} from "@tanstack/react-query";
-import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
+import {createFileRoute, useNavigate} from '@tanstack/react-router'
 import {useRef, useState} from "react";
-import {PadlockUnlockedIcon} from "@navikt/aksel-icons";
-import {gjenapneSakMutation} from "@generated/@tanstack/react-query.gen";
-import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {getSakOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
+import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
 export const Route = createFileRoute('/sak/$saksnummer/gjenapne')({
     component: GjenapnePage,
@@ -29,9 +29,7 @@ function GjenapnePage() {
         }
     })
 
-    // TODO foreløpig skal ingen kunne gjenåpne saker, så denne er deaktivert. Når det blir aktuelt å åpne opp for dette
-    // const hasPermission = sak.rettigheter.includes("GJENAPNE")
-    const hasPermission = false
+    const hasPermission = sak.rettigheter.includes("GJENAPNE")
 
     const navigateBack = () => {
         navigate({to: "/sak/$saksnummer/opplysninger", params: {saksnummer}});

@@ -1,8 +1,8 @@
-import {ActionMenu, Button} from "@navikt/ds-react";
+import type {Sak} from "@generated";
 import {ChevronDownIcon, EnvelopeClosedIcon, GavelIcon, PadlockUnlockedIcon, TrashIcon} from "@navikt/aksel-icons";
-import {Sak} from "@generated";
-import {RettighetType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {ActionMenu, Button} from "@navikt/ds-react";
 import {Link as RouterLink} from "@tanstack/react-router";
+import type {RettighetType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 interface SakMenyProps {
     sak: Sak
@@ -40,9 +40,7 @@ export default function BehandlingsMeny({sak}: SakMenyProps) {
                 <ActionMenu.Item
                     as={RouterLink}
                     to={`/sak/${sak.saksnummer}/gjenapne`}
-                    // TODO foreløpig skal ingen kunne gjenåpne saker, så denne er deaktivert. Når det blir aktuelt å åpne opp for dette
-                    // disabled={!hasRettighet("GJENAPNE")}
-                    disabled={true}
+                    disabled={!hasRettighet("GJENAPNE")}
                     icon={<PadlockUnlockedIcon aria-hidden/>}>Gjenåpne sak</ActionMenu.Item>
             </ActionMenu.Group>
             <ActionMenu.Group label={"Brev"}>

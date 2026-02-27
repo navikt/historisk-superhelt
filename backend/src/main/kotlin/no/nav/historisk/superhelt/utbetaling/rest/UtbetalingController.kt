@@ -28,7 +28,7 @@ class UtbetalingController(
     fun retryFeiletUtbetaling(@PathVariable saksnummer: Saksnummer) {
         logger.info("Retry feilet utbetaling med saksnummer $saksnummer")
         val sak = sakRepository.getSak(saksnummer)
-        val utbetaling = utbetalingRepository.findActiveBySaksnummer(saksnummer)
+        val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
             ?: throw IkkeFunnetException("Utbetaling for sak med saksnummer $saksnummer ikke funnet")
         if (utbetaling.utbetalingStatus != UtbetalingStatus.FEILET) {
             throw IllegalStateException("Utbetaling med saksnummer $saksnummer er ikke i FEILET status")
