@@ -50,7 +50,7 @@ class UtbetalingStatusConsumer(
         ) {
             val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
             val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
-            val belop= statusMessage.detaljer?.linjer?.first()?.beløp
+            val belop= statusMessage.detaljer?.linjer?.firstOrNull()?.beløp
             logger.debug(
                 "Mottatt melding på topic: {} med key: {}. Ny status {} beløp utbetalt {} ",
                 record.topic(),

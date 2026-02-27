@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.Instant
 import java.time.LocalDate
 
-// key i kafka er key på tilbakemedlinger
+// key i kafka er key på tilbakemedlinger og brukes som en transasksjonsid
 data class UtbetalingMelding(
-    val id: String, // unik id for utbetalingmelding, brukes som transaksjonsid hos helved
+    val id: String,
     val sakId: String,
     val behandlingId: String,
     val personident: String,
