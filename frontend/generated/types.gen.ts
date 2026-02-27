@@ -62,9 +62,9 @@ export type Sak = {
     belop?: number;
     vedtaksbrevBruker?: Brev;
     readonly tilstand: SakTilstand;
-    readonly gjenapnet: boolean;
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
+    readonly gjenapnet: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
@@ -152,8 +152,10 @@ export type RetryUtbetalingRequestDto = {
 
 export type Utbetaling = {
     saksnummer: string;
+    behandlingsnummer: number;
     belop: number;
-    uuid: string;
+    transaksjonsId: string;
+    utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
 };
