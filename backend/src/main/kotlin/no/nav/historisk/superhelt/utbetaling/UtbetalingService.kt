@@ -25,10 +25,9 @@ class UtbetalingService(
             logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, ingen utbetaling opprettes")
             return
         }
-        // finne utbetaling for sak og behandling. Opprertt ny hvis det trengs
         val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
             ?: run {
-                val belop = sak.belop ?: throw IllegalStateException("Beløp er ikke satt for sak ${sak.saksnummer}")
+                // TODO. Skal vi sende oppdatering om det ikke er noen endring?
                 utbetalingRepository.opprettUtbetaling(sak)
             }
         if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {

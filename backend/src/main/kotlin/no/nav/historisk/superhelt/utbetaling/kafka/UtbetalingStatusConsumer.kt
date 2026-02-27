@@ -58,6 +58,7 @@ class UtbetalingStatusConsumer(
                 newStatus,
                 belop
             )
+            //TODO hvis riktig sum kommer tilbake kan dette logges
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
         }
     }
@@ -78,5 +79,4 @@ class UtbetalingStatusConsumer(
             StatusType.HOS_OPPDRAG -> UtbetalingStatus.BEHANDLET_AV_UTBETALING
         }
     }
-
 }
