@@ -73,12 +73,12 @@ class UtbetalingRepositoryTest {
     fun `findActiveByBehandling foretrekker ikke-final utbetaling`() {
         val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
         val utbetaling1 = utbetalingRepository.opprettUtbetaling(sak)
-        utbetalingRepository.setUtbetalingStatus(utbetaling1.uuid, UtbetalingStatus.UTBETALT)
+        utbetalingRepository.setUtbetalingStatus(utbetaling1.transaksjonsId, UtbetalingStatus.UTBETALT)
         val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak)
 
         val funnet = utbetalingRepository.findActiveByBehandling(sak)
 
-        assertThat(funnet!!.uuid).isEqualTo(utbetaling2.uuid)
+        assertThat(funnet!!.transaksjonsId).isEqualTo(utbetaling2.transaksjonsId)
         assertThat(funnet.utbetalingStatus).isEqualTo(UtbetalingStatus.UTKAST)
     }
 
@@ -86,10 +86,10 @@ class UtbetalingRepositoryTest {
     fun `findActiveByBehandling returnerer siste final utbetaling når alle er ferdige`() {
         val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
         val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
-        utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.UTBETALT)
+        utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.UTBETALT)
 
         val funnet = utbetalingRepository.findActiveByBehandling(sak)
 
-        assertThat(funnet!!.uuid).isEqualTo(utbetaling.uuid)
+        assertThat(funnet!!.transaksjonsId).isEqualTo(utbetaling.transaksjonsId)
     }
 }

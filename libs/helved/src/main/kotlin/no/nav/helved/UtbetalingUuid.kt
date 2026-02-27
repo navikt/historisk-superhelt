@@ -9,4 +9,7 @@ value class UtbetalingUuid(val value: UUID) {
     override fun toString(): String {
         return value.toString()
     }
+    companion object {
+        fun random(): UtbetalingUuid = UtbetalingUuid(UUID.randomUUID())
+    }
 }
