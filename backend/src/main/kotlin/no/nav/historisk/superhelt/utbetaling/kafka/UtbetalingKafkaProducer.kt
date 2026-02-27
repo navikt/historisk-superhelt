@@ -26,12 +26,12 @@ class UtbetalingKafkaProducer(
 
     @Transactional
     fun sendTilUtbetaling(sak: Sak, utbetaling: Utbetaling) {
-        val id = utbetaling.uuid.toString()
+        val id = utbetaling.uuid
         // TODO vedtakstidspunkt fra sak/utbetaling når vi har det
         val vedtaksTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now()
         val melding =
             UtbetalingMelding(
-                id = sak.saksnummer.value,
+                id = id,
                 sakId = sak.saksnummer.value,
                 behandlingId = sak.behandlingsnummer.toString(),
                 personident = sak.fnr.value,
@@ -52,7 +52,7 @@ class UtbetalingKafkaProducer(
             )
 
         logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, id)
-        val result = kafkaTemplate.send(utbetalingTopic, id, melding).get()
+        val result = kafkaTemplate.send(utbetalingTopic, id.toString(), melding).get()
         //TODO håndter feilsituasjoner
         utbetalingRepository.setUtbetalingStatusSendt(utbetaling.uuid)
 
