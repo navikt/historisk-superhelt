@@ -30,7 +30,7 @@ class UtbetalingRepositoryTest {
         assertThat(utbetaling.behandlingsnummer).isEqualTo(sak.behandlingsnummer)
         assertThat(utbetaling.belop).isEqualTo(sak.belop)
         assertThat(utbetaling.saksnummer).isEqualTo(sak.saksnummer)
-        assertThat (utbetaling.utbetalingsUuid).isNotNull
+        assertThat(utbetaling.utbetalingsUuid).isNotNull
         assertThat(utbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.UTKAST)
         assertThat(utbetaling.utbetalingTidspunkt).isNull()
     }
@@ -102,7 +102,7 @@ class UtbetalingRepositoryTest {
         utbetalingRepository.setUtbetalingStatus(gammelUtbetaling.transaksjonsId, UtbetalingStatus.UTBETALT)
 
         val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
-        val nyUtbetaling=utbetalingRepository.opprettUtbetaling(gjenapnetSak)
+        val nyUtbetaling = utbetalingRepository.opprettUtbetaling(gjenapnetSak)
 
         assertThat(nyUtbetaling.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
         assertThat(nyUtbetaling.utbetalingsUuid).isEqualTo(gammelUtbetaling.utbetalingsUuid)
