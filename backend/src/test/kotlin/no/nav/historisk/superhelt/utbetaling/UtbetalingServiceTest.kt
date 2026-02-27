@@ -5,6 +5,7 @@ import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.withMockedUser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,12 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.KafkaException
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import java.util.concurrent.CompletableFuture
 
 @MockedSpringBootTest
-@WithMockUser(authorities = ["WRITE"])
+@WithSaksbehandler
 class UtbetalingServiceTest {
 
     @Autowired
@@ -40,11 +40,13 @@ class UtbetalingServiceTest {
             SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
         }
         // Opprett utbetaling-rad i DB (simulerer ferdigstilling)
-        val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak)
-        withMockedUser {
-            utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, status)
-        }
-        return Pair(savedSak, utbetalingRepository.findByUuid(utbetaling.uuid)!!)
+        val utbetaling =
+            withMockedUser {
+                val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak)
+                utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, status)
+                utbetaling
+            }
+        return Pair(savedSak, utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)!!)
     }
 
     private fun mockKafkaSuccess() {
@@ -69,10 +71,10 @@ class UtbetalingServiceTest {
 
         utbetalingService.sendTilUtbetaling(sak)
 
-        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
         assertThat(oppdatertUtbetaling?.utbetalingTidspunkt).isNotNull()
-        verify(kafkaTemplate).send(any<String>(), eq(utbetaling.uuid.toString()), any<UtbetalingMelding>())
+        verify(kafkaTemplate).send(any<String>(), eq(utbetaling.transaksjonsId.toString()), any<UtbetalingMelding>())
     }
 
 
@@ -107,9 +109,9 @@ class UtbetalingServiceTest {
             utbetalingService.sendTilUtbetaling(sak)
         }
 
-        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
-        verify(kafkaTemplate).send(any<String>(), eq(utbetaling.uuid.toString()), any<UtbetalingMelding>())
+        verify(kafkaTemplate).send(any<String>(), eq(utbetaling.transaksjonsId.toString()), any<UtbetalingMelding>())
     }
 
 
@@ -123,9 +125,9 @@ class UtbetalingServiceTest {
 
         verify(kafkaTemplate).send(
             any<String>(),
-            eq(utbetaling.uuid.toString()),
+            eq(utbetaling.transaksjonsId.toString()),
             argThat { melding ->
-                melding.id == utbetaling.saksnummer.value &&
+                melding.id == utbetaling.utbetalingsUuid &&
                         melding.sakId == sak.saksnummer.value &&
                         melding.behandlingId == sak.behandlingsnummer.toString() &&
                         melding.personident == sak.fnr.value &&
@@ -133,7 +135,7 @@ class UtbetalingServiceTest {
                         melding.saksbehandler == sak.saksbehandler.navIdent.value
             }
         )
-        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
     }
 
@@ -146,10 +148,10 @@ class UtbetalingServiceTest {
 
         verify(kafkaTemplate).send(
             any<String>(),
-            eq(utbetaling.uuid.toString()),
+            eq(utbetaling.transaksjonsId.toString()),
             any<UtbetalingMelding>()
         )
-        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
     }
 
@@ -162,7 +164,7 @@ class UtbetalingServiceTest {
             utbetalingService.sendTilUtbetaling(sak)
         }
 
-        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
     }
 
@@ -176,14 +178,14 @@ class UtbetalingServiceTest {
         utbetalingService.sendTilUtbetaling(gjenapnetSak)
 
         // Gammel utbetaling skal være uendret
-        val gammelOppdatert = utbetalingRepository.findByUuid(gammelUtbetaling.uuid)
+        val gammelOppdatert = utbetalingRepository.findByTransaksjonsId(gammelUtbetaling.transaksjonsId)
         assertThat(gammelOppdatert?.utbetalingStatus).isEqualTo(UtbetalingStatus.UTBETALT)
 
         // Ny utbetaling skal ha nytt behandlingsnummer
         val nyUtbetaling = utbetalingRepository.findActiveByBehandling(gjenapnetSak)
         assertThat(nyUtbetaling).isNotNull
         assertThat(nyUtbetaling!!.behandlingsnummer).isEqualTo(gjenapnetSak.behandlingsnummer)
-        assertThat(nyUtbetaling.uuid).isNotEqualTo(gammelUtbetaling.uuid)
+        assertThat(nyUtbetaling.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
         assertThat(nyUtbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
     }
 
@@ -210,7 +212,7 @@ class UtbetalingServiceTest {
             utbetalingService.sendTilUtbetaling(sak)
         }
 
-        val oppdatertUtbetaling = utbetalingRepository.findByUuid(utbetaling.uuid)
+        val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
         assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.KLAR_TIL_UTBETALING)
     }
 

@@ -333,7 +333,7 @@ class SakControllerRestTest() {
         fun `sak med feilet utbetaling gir FEILET aggregert status`() {
             val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
             val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
-            utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.FEILET)
+            utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.FEILET)
 
             assertThat(hentSakStatus(sak.saksnummer))
                 .hasStatus(HttpStatus.OK)

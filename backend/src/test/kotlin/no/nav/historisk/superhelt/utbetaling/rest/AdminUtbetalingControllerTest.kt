@@ -101,7 +101,7 @@ class AdminUtbetalingControllerTest {
             val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
             val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
-            utbetalingUuid = utbetaling.uuid
+            utbetalingUuid = utbetaling.transaksjonsId
             val sak2 = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
             val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2)
             utbetalingService.updateUtbetalingsStatus(utbetaling2, newStatus = UtbetalingStatus.FEILET)

@@ -31,16 +31,16 @@ class UtbetalingService(
                 utbetalingRepository.opprettUtbetaling(sak)
             }
         if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
-            logger.info("Utbetaling ${utbetaling.uuid} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
+            logger.info("Utbetaling ${utbetaling.transaksjonsId} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
             return
         }
-        utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
+        utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.KLAR_TIL_UTBETALING)
         utbetalingKafkaProducer.sendTilUtbetaling(sak, utbetaling)
     }
 
     @Transactional
     fun updateUtbetalingsStatus(utbetaling: Utbetaling, newStatus: UtbetalingStatus) {
-        val utbetalingsId = utbetaling.uuid
+        val utbetalingsId = utbetaling.transaksjonsId
         val currentStatus = utbetaling.utbetalingStatus
 
         if (currentStatus.isFinal()) {
@@ -81,7 +81,7 @@ class UtbetalingService(
             }
         }
 
-        utbetalingRepository.setUtbetalingStatus(uuid = utbetalingsId, status = newStatus)
+        utbetalingRepository.setUtbetalingStatus(transaksjonsId = utbetalingsId, status = newStatus)
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
@@ -91,7 +91,7 @@ class UtbetalingService(
         if (utbetaling.utbetalingStatus != UtbetalingStatus.FEILET) {
             throw IllegalStateException("Utbetaling i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke kjøres på nytt")
         }
-        utbetalingRepository.setUtbetalingStatus(utbetaling.uuid, UtbetalingStatus.KLAR_TIL_UTBETALING)
+        utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.KLAR_TIL_UTBETALING)
         sendTilUtbetaling(sak)
     }
 

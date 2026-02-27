@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 // key i kafka er key på tilbakemedlinger og brukes som en transasksjonsid
 data class UtbetalingMelding(
-    val id: String,
+    val id: UtbetalingUuid,
     val sakId: String,
     val behandlingId: String,
     val personident: String,

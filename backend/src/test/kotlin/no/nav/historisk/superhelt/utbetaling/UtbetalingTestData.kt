@@ -4,6 +4,7 @@ import net.datafaker.Faker
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
 import no.nav.common.types.Saksnummer
+import no.nav.helved.UtbetalingUuid
 import java.util.*
 
 object UtbetalingTestData {
@@ -11,7 +12,8 @@ object UtbetalingTestData {
 
     fun utbetalingMinimum(belop: Int? = null) = Utbetaling(
         belop = Belop(belop ?: faker.number().positive()),
-        uuid = UUID.randomUUID(),
+        transaksjonsId = UUID.randomUUID(),
+        utbetalingsUuid = UtbetalingUuid(UUID.randomUUID()),
         utbetalingStatus = UtbetalingStatus.UTKAST,
         utbetalingTidspunkt = null,
         saksnummer = Saksnummer(faker.number().positive().toLong()),

@@ -34,10 +34,10 @@ class UtbetalingStatusConsumer(
         filter = "helvedStatusFagsystemHeaderFilter",
     )
     fun statusMessage(record: ConsumerRecord<String, String>) {
-        val utbetalingsId = UUID.fromString(record.key())
-        val utbetaling = utbetalingRepository.findByUuid(utbetalingsId)
+        val transaksjonsId = UUID.fromString(record.key())
+        val utbetaling = utbetalingRepository.findByTransaksjonsId(transaksjonsId)
         if (utbetaling == null) {
-            logger.warn("Fant ikke utbetaling med id: {}. Ignoring message", utbetalingsId)
+            logger.warn("Fant ikke utbetaling med transaksjonsId: {}. Ignoring message", transaksjonsId)
             return
         }
         SecurityContextUtils.runAsSystemuser(
@@ -66,7 +66,7 @@ class UtbetalingStatusConsumer(
     private fun calculateNewStatus(
         utbetaling: Utbetaling,
         statusMessage: UtbetalingStatusMelding): UtbetalingStatus {
-        val utbetalingsId = utbetaling.uuid
+        val utbetalingsId = utbetaling.transaksjonsId
 
         return when (statusMessage.status) {
             StatusType.OK -> UtbetalingStatus.UTBETALT
