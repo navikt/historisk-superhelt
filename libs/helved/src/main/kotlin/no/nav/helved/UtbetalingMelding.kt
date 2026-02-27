@@ -3,11 +3,10 @@ package no.nav.helved
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.Instant
 import java.time.LocalDate
-import java.util.UUID
 
 // key i kafka er key på tilbakemedlinger og brukes som en transasksjonsid
 data class UtbetalingMelding(
-    val id: UUID,
+    val id: UtbetalingUuid,
     val sakId: String,
     val behandlingId: String,
     val personident: String,

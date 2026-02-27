@@ -125,7 +125,7 @@ class UtbetalingServiceTest {
             any<String>(),
             eq(utbetaling.uuid.toString()),
             argThat { melding ->
-                melding.id == utbetaling.uuid &&
+                melding.id.value == utbetaling.uuid &&
                         melding.sakId == sak.saksnummer.value &&
                         melding.behandlingId == sak.behandlingsnummer.toString() &&
                         melding.personident == sak.fnr.value &&

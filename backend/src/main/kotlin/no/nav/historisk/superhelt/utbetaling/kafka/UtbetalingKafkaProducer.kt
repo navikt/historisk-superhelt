@@ -1,8 +1,6 @@
 package no.nav.historisk.superhelt.utbetaling.kafka
 
-import no.nav.helved.Periode
-import no.nav.helved.Periodetype
-import no.nav.helved.UtbetalingMelding
+import no.nav.helved.*
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
@@ -26,7 +24,8 @@ class UtbetalingKafkaProducer(
 
     @Transactional
     fun sendTilUtbetaling(sak: Sak, utbetaling: Utbetaling) {
-        val id = utbetaling.uuid
+        val id = UtbetalingUuid(utbetaling.uuid)
+        val key= UtbetalingTransaksjonId(utbetaling.uuid)
         // TODO vedtakstidspunkt fra sak/utbetaling når vi har det
         val vedtaksTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now()
         val melding =
@@ -51,8 +50,8 @@ class UtbetalingKafkaProducer(
                 beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
             )
 
-        logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, id)
-        val result = kafkaTemplate.send(utbetalingTopic, id.toString(), melding).get()
+        logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, key)
+        val result = kafkaTemplate.send(utbetalingTopic, key.toString(), melding).get()
         //TODO håndter feilsituasjoner
         utbetalingRepository.setUtbetalingStatusSendt(utbetaling.uuid)
 
