@@ -50,15 +50,12 @@ class UtbetalingStatusConsumer(
         ) {
             val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
             val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
-            val belop= statusMessage.detaljer?.linjer?.firstOrNull()?.beløp
             logger.debug(
-                "Mottatt melding på topic: {} med key: {}. Ny status {} beløp utbetalt {} ",
+                "Mottatt melding på topic: {} med key: {}. Ny status {}",
                 record.topic(),
                 record.key(),
-                newStatus,
-                belop
+                newStatus
             )
-            //TODO hvis riktig sum kommer tilbake kan dette logges
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
         }
     }

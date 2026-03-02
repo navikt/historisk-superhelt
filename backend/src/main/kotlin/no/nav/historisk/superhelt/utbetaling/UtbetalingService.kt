@@ -68,7 +68,7 @@ class UtbetalingService(
                 UtbetalingStatus.UTBETALT -> sakEndringsloggService.logChange(
                     saksnummer = utbetaling.saksnummer,
                     endringsType = EndringsloggType.UTBETALING_OK,
-                    endring = "Utbetalt ${utbetaling.belop} til bruker"
+                    endring = "Kr ${utbetaling.belop} er satt til utbetaling til bruker"
                 )
 
                 UtbetalingStatus.FEILET -> sakEndringsloggService.logChange(
