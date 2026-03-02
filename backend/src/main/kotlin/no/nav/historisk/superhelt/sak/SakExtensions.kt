@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.Vedtak
 import java.time.Instant
 
@@ -36,6 +37,14 @@ object SakExtensions {
             message = message,
             customIdentifierAndValue = Pair("Saksnummer", this.saksnummer.value)
         )
+    }
+
+    fun Sak.utbetalingInfo(): String{
+        return when(this.utbetalingsType){
+            UtbetalingsType.BRUKER -> "Utbetaling til bruker på ${this.belop?.value ?: "ukjent beløp"} kr"
+            UtbetalingsType.FORHANDSTILSAGN -> "Forhåndstilsagn"
+            UtbetalingsType.INGEN -> ""
+        }
     }
 
 }

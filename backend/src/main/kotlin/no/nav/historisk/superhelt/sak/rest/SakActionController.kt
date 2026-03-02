@@ -11,6 +11,7 @@ import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.SakExtensions.utbetalingInfo
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakService
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
@@ -83,7 +84,8 @@ class SakActionController(
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
             endringsType = EndringsloggType.FERDIGSTILT_SAK,
-            endring = "Sak ferdigstilt"
+            endring = "Sak ferdigstilt",
+            beskrivelse = "Resultat: ${sak.vedtaksResultat?.navn}, ${sak.utbetalingInfo()}"
         )
         return ResponseEntity.ok().build()
     }
@@ -200,11 +202,13 @@ class SakActionController(
             .validate()
 
         logger.info("Henlegger sak $saksnummer")
-        sakRepository.updateSak(sak.saksnummer, UpdateSakDto(
-            status = SakStatus.FERDIG,
-            saksbehandler = getAuthenticatedUser().navUser,
-            vedtaksResultat = VedtaksResultat.HENLAGT
-        ))
+        sakRepository.updateSak(
+            sak.saksnummer, UpdateSakDto(
+                status = SakStatus.FERDIG,
+                saksbehandler = getAuthenticatedUser().navUser,
+                vedtaksResultat = VedtaksResultat.HENLAGT
+            )
+        )
         brevSendingService.sendBrev(sak, request.henleggelseBrevId)
 
         oppgaveService.ferdigstillOppgaver(saksnummer)
@@ -220,8 +224,9 @@ class SakActionController(
 
     @Operation(operationId = "gjenapneSak")
     @PutMapping("status/gjenapne")
-    fun gjenapneSak(@PathVariable saksnummer: Saksnummer,
-                    @Valid @RequestBody request: GjenapneSakRequestDto): ResponseEntity<Unit> {
+    fun gjenapneSak(
+        @PathVariable saksnummer: Saksnummer,
+        @Valid @RequestBody request: GjenapneSakRequestDto): ResponseEntity<Unit> {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkRettighet(SakRettighet.GJENAPNE)
