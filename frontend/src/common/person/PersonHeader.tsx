@@ -42,13 +42,6 @@ export function PersonHeader({ maskertPersonId }: Props) {
                             {person?.navn}
                             {!person.doed && ` (${person.alder ?? "-"} år)`}
                         </BodyShort>
-                        {person.doed && (
-                            <Tooltip content={`Brukeren døde ${isoTilLokal(person.doedsfall)}`} placement="bottom">
-                                <Tag data-color="meta-purple" variant="outline" size="small">
-                                    Død
-                                </Tag>
-                            </Tooltip>
-                        )}
                     </HStack>
                     <BodyShort>/</BodyShort>
                     <HStack gap="space-2" align="center" justify="start">
@@ -65,6 +58,13 @@ export function PersonHeader({ maskertPersonId }: Props) {
                     <Alert variant="error" size="small">
                         {person.avvisningsBegrunnelse}
                     </Alert>
+                )}
+                {person.doed && (
+                    <Tooltip content={`Brukeren døde ${isoTilLokal(person.doedsfall)}`} placement="bottom">
+                        <Tag data-color="neutral" variant="outline" size="small">
+                            Dødsdato: {isoTilLokal(person.doedsfall)}
+                        </Tag>
+                    </Tooltip>
                 )}
                 {harBeskyttetAdresse && (
                     <Tooltip
