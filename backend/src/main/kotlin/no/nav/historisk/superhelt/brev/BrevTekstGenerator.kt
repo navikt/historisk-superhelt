@@ -21,7 +21,7 @@ class BrevTekstGenerator(private val sak: Sak) {
     private fun generateHenleggelsebrev(): String {
         return """
             <h1>Søknad om ${sak.type.navn.lowercase()} er henlagt</h1>
-            <p>Søknad ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er henlagt.</p>
+            <p>Søknad datert ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er henlagt.</p>
         """.trimIndent()
     }
 
@@ -29,13 +29,13 @@ class BrevTekstGenerator(private val sak: Sak) {
         when (mottaker) {
             BrevMottaker.BRUKER -> {
                 val showUtbetaling =
-                    sak.utbetalingsType == UtbetalingsType.BRUKER && sak.vedtaksResultat?.isInnvliget() == true
+                    sak.utbetalingsType == UtbetalingsType.BRUKER && sak.vedtaksResultat?.isInnvilget() == true && sak.belop != null
 
                 return """
                     <h1>Vedtak om ${sak.type.navn.lowercase()}</h1>
                     <p>Søknaden din av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}.</p>
-                    <p/>
-                    ${if (showUtbetaling) "<p>Vi har utbetalt ${sak.belop} kr til konto som er registert hos Nav. Pengene vil være på din konto innen 1-4 virkedager</p>" else ""}
+                    <p></p>
+                    ${if (showUtbetaling) "<p>Vi har utbetalt ${sak.belop} kr til konto som er registrert hos Nav. Pengene vil være på din konto innen 1-4 virkedager</p>" else ""}
                            
                 """.trimIndent()
             }
@@ -57,19 +57,19 @@ class BrevTekstGenerator(private val sak: Sak) {
 
     fun generateTittel(type: BrevType, mottaker: BrevMottaker): String {
         return when (type) {
-            BrevType.VEDTAKSBREV -> generateVedaksabrevTittel(mottaker)
+            BrevType.VEDTAKSBREV -> generateVedtaksbrevTittel(mottaker)
             BrevType.HENLEGGESEBREV -> "Henleggelsebrev for ${sak.type.navn.lowercase()}"
             BrevType.FRITEKSTBREV -> ""
         }
     }
 
-    private fun generateVedaksabrevTittel(mottaker: BrevMottaker): String {
+    private fun generateVedtaksbrevTittel(mottaker: BrevMottaker): String {
         return when (mottaker) {
             BrevMottaker.BRUKER -> {
                 if (sak.gjenapnet) {
-                    "Korrigert vedtaksbrev om ${sak.type.navn.lowercase()}, ${sak.vedtaksResultat?.navn?.lowercase()} "
+                    "Korrigert vedtaksbrev om ${sak.type.navn.lowercase()}, ${sak.vedtaksResultat?.navn?.lowercase()}"
                 } else {
-                    "Vedtaksbrev om ${sak.type.navn.lowercase()}, ${sak.vedtaksResultat?.navn?.lowercase()} "
+                    "Vedtaksbrev om ${sak.type.navn.lowercase()}, ${sak.vedtaksResultat?.navn?.lowercase()}"
                 }
             }
 
