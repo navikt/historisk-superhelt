@@ -9,8 +9,8 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>helved</artifactId>
-    <description>Lib for utbetalign og helved</description>
+    <artifactId>statistikk</artifactId>
+    <description>Lib for statistikk</description>
 
     <dependencies>
         <dependency>
