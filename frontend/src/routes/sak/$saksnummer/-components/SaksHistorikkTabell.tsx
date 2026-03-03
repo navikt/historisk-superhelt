@@ -1,6 +1,7 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
 import {SakerTabell} from "~/common/sak/SakerTabell";
+import {isSakFerdig} from "~/common/sak/sak.utils";
 
 
 interface SakerTableProps {
@@ -14,7 +15,10 @@ export function SaksHistorikkTabell({maskertPersonIdent}: SakerTableProps) {
         ...findSakerForPersonOptions({query: {maskertPersonId: maskertPersonIdent}})
     }))
 
-    return <SakerTabell saker={data} isPending={isPending} error={error} hideSaksbehandler={true}
+    //todo lik SakerFerdig filter
+    const saker = data.filter(sak => sak.status === "FERDIG")
+
+    return <SakerTabell saker={saker} isPending={isPending} error={error} hideSaksbehandler={true}
                         hideActions={true}/>
 }
 

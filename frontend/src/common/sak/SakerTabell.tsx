@@ -32,6 +32,7 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
             </div>
         </VStack>
     }
+
     return (
         <Table>
             <Table.Header>
@@ -40,6 +41,8 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                     <Table.HeaderCell scope="col">Type</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Beskrivelse</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Status</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Tildelingsår</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Beløp</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Opprettet</Table.HeaderCell>
                     {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
                     {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
@@ -54,6 +57,8 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                         <Table.DataCell>
                             <SakStatus sak={sak}/>
                         </Table.DataCell>
+                        <Table.DataCell>{sak.tildelingsAar ?? '–'}</Table.DataCell>
+                        <Table.DataCell>{sak.utbetaling?.belop != null ? `${sak.utbetaling.belop} kr` : '–'}</Table.DataCell>
                         <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>}
                         {!hideActions && <Table.DataCell>
