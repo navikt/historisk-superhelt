@@ -5,17 +5,16 @@ import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
+import no.nav.common.types.Belop
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.db.BrevJpaEntity
 import no.nav.historisk.superhelt.brev.finnGjeldendeBrev
-import no.nav.historisk.superhelt.forhandstilsagn.db.ForhandTilsagnJpaEntity
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.StonadsType
-import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
-import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.hibernate.Hibernate
 import java.time.Instant
@@ -68,12 +67,12 @@ class SakJpaEntity(
     var soknadsDato: LocalDate? = null,
     var tildelingsAar: Int? = null,
 
-    @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
-    var utbetalinger: MutableList<UtbetalingJpaEntity> = mutableListOf(),
+    @Enumerated(EnumType.STRING)
+    @Column(name = "utbetalings_type")
+    var utbetalingsType: UtbetalingsType? = null,
 
-    @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "forhandtilsagn_id")
-    var forhandstilsagn: ForhandTilsagnJpaEntity? = null,
+    @Column(name = "belop")
+    var belop: Int? = null,
 
     @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     private var brev: MutableList<BrevJpaEntity> = mutableListOf()
@@ -97,22 +96,6 @@ class SakJpaEntity(
         get() = Behandlingsnummer(behandlingsTeller)
 
 
-    fun setOrUpdateUtbetaling(belop: Int) {
-        val entity = this.utbetalinger.firstOrNull { !it.utbetalingStatus.isFinal() }
-            ?: UtbetalingJpaEntity(sak = this, belop = 0).also { this.utbetalinger.add(it) }
-        entity.belop = belop
-    }
-
-    fun fjernAktivUtbetaling() {
-        this.utbetalinger.removeIf { !it.utbetalingStatus.isFinal() }
-    }
-
-    fun setOrUpdateForhandsTilsagn(belop: Int) {
-        val entity = this.forhandstilsagn ?: ForhandTilsagnJpaEntity(sak = this, belop = 0)
-        entity.belop = belop
-        this.forhandstilsagn = entity
-    }
-
     private fun getVedtaksbrevBrev() = brev.map { it.toDomain() }
         .finnGjeldendeBrev(BrevType.VEDTAKSBREV, BrevMottaker.BRUKER)
 
@@ -132,8 +115,8 @@ class SakJpaEntity(
             opprettetDato = this.opprettet,
             soknadsDato = this.soknadsDato,
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
-            utbetalinger = this.utbetalinger.map { it.toDomain() },
-            forhandstilsagn = this.forhandstilsagn?.toDomain(),
+            utbetalingsType = this.utbetalingsType ?: UtbetalingsType.INGEN,
+            belop = this.belop?.let { Belop(it) },
             vedtaksbrevBruker = this.getVedtaksbrevBrev()
         )
     }

@@ -63,7 +63,7 @@ class SakValidator(private val sak: Sak): Validator() {
 
             if (listOf(VedtaksResultat.INNVILGET, VedtaksResultat.DELVIS_INNVILGET).contains(vedtaksResultat)) {
                 check(
-                    utbetaling == null && forhandstilsagn == null,
+                    utbetalingsType == UtbetalingsType.INGEN,
                     "utbetaling",
                     "Det må velges enten utbetaling eller forhandstilsagn"
                 )
@@ -71,7 +71,7 @@ class SakValidator(private val sak: Sak): Validator() {
                 when (utbetalingsType) {
                     UtbetalingsType.BRUKER -> {
                         check(
-                            utbetaling != null && utbetaling!!.belop.value <= 0,
+                            belop == null || belop.value <= 0,
                             "utbetaling.belop",
                             "Beløpet må settes og være positivt"
                         )

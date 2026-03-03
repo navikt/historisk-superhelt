@@ -34,10 +34,10 @@ class UtbetalingStatusConsumer(
         filter = "helvedStatusFagsystemHeaderFilter",
     )
     fun statusMessage(record: ConsumerRecord<String, String>) {
-        val utbetalingsId = UUID.fromString(record.key())
-        val utbetaling = utbetalingRepository.findByUuid(utbetalingsId)
+        val transaksjonsId = UUID.fromString(record.key())
+        val utbetaling = utbetalingRepository.findByTransaksjonsId(transaksjonsId)
         if (utbetaling == null) {
-            logger.warn("Fant ikke utbetaling med id: {}. Ignoring message", utbetalingsId)
+            logger.warn("Fant ikke utbetaling med transaksjonsId: {}. Ignoring message", transaksjonsId)
             return
         }
         SecurityContextUtils.runAsSystemuser(
@@ -48,9 +48,14 @@ class UtbetalingStatusConsumer(
                 Permission.IGNORE_TILGANGSMASKIN
             )
         ) {
-            logger.debug("Mottatt melding på topic: ${record.topic()} med key: ${record.key()}")
             val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
             val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
+            logger.debug(
+                "Mottatt melding på topic: {} med key: {}. Ny status {}",
+                record.topic(),
+                record.key(),
+                newStatus
+            )
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
         }
     }
@@ -58,7 +63,7 @@ class UtbetalingStatusConsumer(
     private fun calculateNewStatus(
         utbetaling: Utbetaling,
         statusMessage: UtbetalingStatusMelding): UtbetalingStatus {
-        val utbetalingsId = utbetaling.uuid
+        val utbetalingsId = utbetaling.transaksjonsId
 
         return when (statusMessage.status) {
             StatusType.OK -> UtbetalingStatus.UTBETALT
@@ -71,5 +76,4 @@ class UtbetalingStatusConsumer(
             StatusType.HOS_OPPDRAG -> UtbetalingStatus.BEHANDLET_AV_UTBETALING
         }
     }
-
 }

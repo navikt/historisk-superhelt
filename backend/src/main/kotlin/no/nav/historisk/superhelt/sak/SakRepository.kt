@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Aar
+import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
@@ -8,7 +9,6 @@ import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedU
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.db.SakJpaRepository
-import no.nav.historisk.superhelt.utbetaling.UtbetalingUpdateDto
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
@@ -59,25 +59,10 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.vedtaksResultat?.let { entity.vedtaksResultat = it }
         dto.saksbehandler?.let { entity.saksbehandler = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
-        dto.utbetalingUpdateDto?.let {
-            val belop = it.belop?.value ?: 0
-            when (it.utbetalingsType) {
-                UtbetalingsType.BRUKER -> {
-                    entity.setOrUpdateUtbetaling(belop)
-                    entity.forhandstilsagn = null
-                }
-
-                UtbetalingsType.FORHANDSTILSAGN -> {
-                    entity.setOrUpdateForhandsTilsagn(belop)
-                    entity.fjernAktivUtbetaling()
-                }
-
-                UtbetalingsType.INGEN -> {
-                    entity.fjernAktivUtbetaling()
-                    entity.forhandstilsagn = null
-                }
-            }
-
+        dto.utbetalingsType?.let { entity.utbetalingsType = it }
+        dto.belop?.let { entity.belop = it.value }
+        if (dto.utbetalingsType == UtbetalingsType.INGEN) {
+            entity.belop = null
         }
         return entity
     }
@@ -130,6 +115,7 @@ data class UpdateSakDto(
     val vedtaksResultat: VedtaksResultat? = null,
     val saksbehandler: NavUser? = null,
     val attestant: NavUser? = null,
-    val utbetalingUpdateDto: UtbetalingUpdateDto? = null,
+    val utbetalingsType: UtbetalingsType? = null,
+    val belop: Belop? = null,
 )
 

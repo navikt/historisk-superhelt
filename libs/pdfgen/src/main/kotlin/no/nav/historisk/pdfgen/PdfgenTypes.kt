@@ -11,7 +11,7 @@ data class PdfgenRequest(
     @get:JsonFormat(pattern = "dd.MM.yyyy")
     val datoForUtsending: LocalDate,
     val saksbehandlerNavn: String,
-    val beslutterNavn: String,
+    val beslutterNavn: String?,
     val kontor: String,
     val html: String,
     val brevtype: PdfgenBrevtype,

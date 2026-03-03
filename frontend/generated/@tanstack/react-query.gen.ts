@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { attersterSak, feilregisterSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, finnJournalposterForSak, getKodeverkStonadType, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getUserInfo, gjenapneSak, henleggSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentFeileteUtbetalinger, hentJournalpostMetaData, hentOppgaverForPerson, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalfor, lastnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, oppdaterUtbetaling, type Options, rekjorFeileteUtbetalinger, retryFeiletUtbetaling, sendBrev, sendTilAttestering } from '../sdk.gen';
-import type { AttersterSakData, AttersterSakError, FeilregisterSakData, FeilregisterSakError, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, FinnJournalposterForSakData, FinnJournalposterForSakError, FinnJournalposterForSakResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HenleggSakData, HenleggSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentFeileteUtbetalingerData, HentFeileteUtbetalingerError, HentFeileteUtbetalingerResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForPersonData, HentOppgaverForPersonError, HentOppgaverForPersonResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforData, JournalforError, JournalforResponse, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, OppdaterUtbetalingData, OppdaterUtbetalingError, OppdaterUtbetalingResponse, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerError, RekjorFeileteUtbetalingerResponse, RetryFeiletUtbetalingData, RetryFeiletUtbetalingError, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
+import { attersterSak, feilregisterSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, finnJournalposterForSak, getKodeverkStonadType, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getSakStatus, getUserInfo, gjenapneSak, henleggSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentFeileteUtbetalinger, hentJournalpostMetaData, hentOppgaverForPerson, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalfor, lastnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, type Options, rekjorFeileteUtbetalinger, retryFeiletUtbetaling, sendBrev, sendTilAttestering } from '../sdk.gen';
+import type { AttersterSakData, AttersterSakError, FeilregisterSakData, FeilregisterSakError, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, FinnJournalposterForSakData, FinnJournalposterForSakError, FinnJournalposterForSakResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetSakStatusData, GetSakStatusError, GetSakStatusResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HenleggSakData, HenleggSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentFeileteUtbetalingerData, HentFeileteUtbetalingerError, HentFeileteUtbetalingerResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForPersonData, HentOppgaverForPersonError, HentOppgaverForPersonResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforData, JournalforError, JournalforResponse, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerError, RekjorFeileteUtbetalingerResponse, RetryFeiletUtbetalingData, RetryFeiletUtbetalingError, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -61,20 +61,6 @@ export const oppdaterSakMutation = (options?: Partial<Options<OppdaterSakData>>)
     const mutationOptions: UseMutationOptions<OppdaterSakResponse, OppdaterSakError, Options<OppdaterSakData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await oppdaterSak({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const oppdaterUtbetalingMutation = (options?: Partial<Options<OppdaterUtbetalingData>>): UseMutationOptions<OppdaterUtbetalingResponse, OppdaterUtbetalingError, Options<OppdaterUtbetalingData>> => {
-    const mutationOptions: UseMutationOptions<OppdaterUtbetalingResponse, OppdaterUtbetalingError, Options<OppdaterUtbetalingData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await oppdaterUtbetaling({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -361,6 +347,24 @@ export const hentVedtakForSakOptions = (options: Options<HentVedtakForSakData>) 
         return data;
     },
     queryKey: hentVedtakForSakQueryKey(options)
+});
+
+export const getSakStatusQueryKey = (options: Options<GetSakStatusData>) => createQueryKey('getSakStatus', options);
+
+/**
+ * Hent aggregert status for sak, utbetaling og brev
+ */
+export const getSakStatusOptions = (options: Options<GetSakStatusData>) => queryOptions<GetSakStatusResponse, GetSakStatusError, GetSakStatusResponse, ReturnType<typeof getSakStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSakStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSakStatusQueryKey(options)
 });
 
 export const hentEndringsloggForSakQueryKey = (options: Options<HentEndringsloggForSakData>) => createQueryKey('hentEndringsloggForSak', options);

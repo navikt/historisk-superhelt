@@ -1,7 +1,9 @@
 package no.nav.historisk.superhelt.utbetaling.db
 
 import jakarta.persistence.*
+import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
+import no.nav.helved.UtbetalingUuid
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
@@ -16,12 +18,18 @@ class UtbetalingJpaEntity(
     @Column(name = "utbetaling_id")
     var id: Long? = null,
 
-    @Column(name = "utbetaling_uuid", nullable = false, unique = true)
-    var uuid: UUID = UUID.randomUUID(),
+    @Column(name = "transaksjons_id", nullable = false, unique = true)
+    var transaksjonsId: UUID = UUID.randomUUID(),
+
+    @Column(name = "utbetalings_uuid", nullable = false)
+    var utbetalingsUuid: UtbetalingUuid,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sak_id", nullable = false)
     val sak: SakJpaEntity,
+
+    @Column(name = "behandlingsnummer", nullable = false)
+    var behandlingsnummer: Behandlingsnummer,
 
     var belop: Int,
 
@@ -45,10 +53,11 @@ class UtbetalingJpaEntity(
         return Utbetaling(
             belop = Belop(this.belop),
             saksnummer = this.sak.saksnummer,
-            uuid = this.uuid,
+            behandlingsnummer = this.behandlingsnummer,
+            transaksjonsId = this.transaksjonsId,
+            utbetalingsUuid = this.utbetalingsUuid,
             utbetalingStatus = this.utbetalingStatus,
             utbetalingTidspunkt = this.utbetalingTidspunkt
-
         )
     }
 }

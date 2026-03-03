@@ -70,7 +70,7 @@ class UtbetalingStatusConsumerTest {
     @Test
     fun `should ignore message if utbetaling not found`() {
         val uuid = UUID.randomUUID()
-        whenever(utbetalingRepository.findByUuid(uuid)).thenReturn(null)
+        whenever(utbetalingRepository.findByTransaksjonsId(uuid)).thenReturn(null)
         val melding = UtbetalingStatusMelding(status = StatusType.OK)
 
         sendKafkaMessage(uuid, melding, fagsystemHeader = "HISTORISK")
@@ -83,7 +83,7 @@ class UtbetalingStatusConsumerTest {
         val melding = UtbetalingStatusMelding(status = StatusType.OK)
         sendKafkaMessage(uuid, melding, fagsystemHeader = "ANNET_FAGSYSTEM")
 
-        verify(utbetalingRepository, never()).findByUuid(any())
+        verify(utbetalingRepository, never()).findByTransaksjonsId(any())
         verify(utbetalingService, never()).updateUtbetalingsStatus(any(), any())
     }
 
@@ -93,15 +93,15 @@ class UtbetalingStatusConsumerTest {
         val melding = UtbetalingStatusMelding(status = StatusType.OK)
         sendKafkaMessage(uuid, melding, fagsystemHeader = null)
 
-        verify(utbetalingRepository, never()).findByUuid(any())
+        verify(utbetalingRepository, never()).findByTransaksjonsId(any())
         verify(utbetalingService, never()).updateUtbetalingsStatus(any(), any())
     }
 
 
     private fun sendUtbetaling(status: StatusType, fagsystemHeader: String? = "HISTORISK"): Utbetaling {
         val utbetaling = UtbetalingTestData.utbetalingMinimum()
-        val uuid = utbetaling.uuid
-        whenever(utbetalingRepository.findByUuid(uuid)).thenReturn(utbetaling)
+        val uuid = utbetaling.transaksjonsId
+        whenever(utbetalingRepository.findByTransaksjonsId(uuid)).thenReturn(utbetaling)
         val melding = UtbetalingStatusMelding(status = status)
         sendKafkaMessage(uuid, melding, fagsystemHeader)
         return utbetaling

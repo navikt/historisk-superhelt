@@ -34,7 +34,7 @@ class PersonService(
         val verge = vergetrengende.verge
 
         if (verge == null) {
-            logger.debug("Person ${vergetrengende.fnr.toMaskertPersonIdent()} har ingen verge")
+            logger.trace("Person ${vergetrengende.fnr.toMaskertPersonIdent()} har ingen verge")
             return null
         }
 

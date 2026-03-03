@@ -1,18 +1,12 @@
 package no.nav.historisk.superhelt.sak
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import no.nav.common.types.Aar
-import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.FolkeregisterIdent
-import no.nav.common.types.Saksnummer
+import no.nav.common.types.*
 import no.nav.historisk.superhelt.brev.Brev
-import no.nav.historisk.superhelt.forhandstilsagn.Forhandstilsagn
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
-import no.nav.historisk.superhelt.utbetaling.Utbetaling
-import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import java.time.Instant
@@ -50,24 +44,11 @@ data class Sak(
     val saksbehandler: NavUser,
     val attestant: NavUser? = null,
 
-    val utbetalinger: List<Utbetaling> = emptyList(),
-    val forhandstilsagn: Forhandstilsagn? = null,
+    val utbetalingsType: UtbetalingsType = UtbetalingsType.INGEN,
+    val belop: Belop? = null,
 
     val vedtaksbrevBruker: Brev? = null
 ) {
-
-    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val utbetaling: Utbetaling?
-        get() = utbetalinger.firstOrNull { !it.utbetalingStatus.isFinal() }
-            ?: utbetalinger.lastOrNull()
-
-    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val utbetalingsType: UtbetalingsType
-        get() = when {
-            forhandstilsagn != null -> UtbetalingsType.FORHANDSTILSAGN
-            utbetaling != null -> UtbetalingsType.BRUKER
-            else -> UtbetalingsType.INGEN
-        }
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent
@@ -84,10 +65,6 @@ data class Sak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val tilstand: SakTilstand
         get() = SakTilstand(this)
-
-    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val error: SakError
-        get() = SakError(this)
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val gjenapnet: Boolean

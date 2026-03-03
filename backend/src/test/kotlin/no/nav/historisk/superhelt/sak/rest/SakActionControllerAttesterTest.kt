@@ -54,7 +54,7 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
                 assertThat(it.vedtaksTidspunkt).isCloseTo(Instant.now(), within(5, ChronoUnit.SECONDS))
             })
 
-        verify(utbetalingService).sendTilUtbetaling(any())
+        verify(utbetalingService).sendTilUtbetaling(any<Sak>())
         verify(brevSendingService).sendBrev(any<Sak>(), any<Brev>())
 
         verify(oppgaveService).ferdigstillOppgaver(

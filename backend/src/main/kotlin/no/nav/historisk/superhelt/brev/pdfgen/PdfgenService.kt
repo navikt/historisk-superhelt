@@ -20,6 +20,11 @@ class PdfgenService(
         val person = personService.hentPerson(sak.fnr)
             ?: throw IllegalStateException("Fant ikke persondata for person i sak ${sak.saksnummer}")
 
+        val beslutterNavn = when (brev.type) {
+            BrevType.VEDTAKSBREV -> sak.attestant?.navn ?: "<attestant>"
+            else -> sak.attestant?.navn
+        }
+
         return PdfgenRequest(
             behandlingsnummer = "${sak.saksnummer}-${sak.behandlingsnummer}",
             personalia = Personalia(
@@ -29,7 +34,7 @@ class PdfgenService(
             ),
             datoForUtsending = LocalDate.now(),
             saksbehandlerNavn = sak.saksbehandler.navn,
-            beslutterNavn = sak.attestant?.navn ?: "<attestant>",
+            beslutterNavn = beslutterNavn,
             kontor = "NAV Arbeid og ytelser",
             html = htmlToXhtml(brev.innhold ?: ""),
             brevtype = brev.type.asPdfGenBrevType(),

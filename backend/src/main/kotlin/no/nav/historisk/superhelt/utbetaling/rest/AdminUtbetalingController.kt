@@ -34,12 +34,12 @@ class AdminUtbetalingController(
         val findUtbetalingerFeilet = utbetalingRepository.findUtbetalingerFeilet()
 
         val utbetalingerToRetry = request?.utbetalingIds?.let { ider ->
-            findUtbetalingerFeilet.filter { it.uuid in ider }
+            findUtbetalingerFeilet.filter { it.transaksjonsId in ider }
         } ?: findUtbetalingerFeilet
 
         logger.info(
             "Kjører på nytt feilete utbetalinger {}",
-            utbetalingerToRetry.map { "${it.saksnummer}: ${it.uuid}" })
+            utbetalingerToRetry.map { "${it.saksnummer}: ${it.transaksjonsId}" })
 
         SecurityContextUtils.runWithPermissions(listOf(Permission.READ, Permission.WRITE, Permission.IGNORE_TILGANGSMASKIN)) {
             utbetalingerToRetry.forEach {

@@ -20,10 +20,8 @@ import {useEffect, useState} from "react";
 import {dateTilIsoDato} from "~/common/dato.utils";
 import {NumericInput} from "~/common/NumericInput";
 import useDebounce from "~/common/useDebounce";
-import UtbetalingEditor from "~/routes/sak/$saksnummer/-components/UtbetalingEditor";
-import type {SakVedtakType, StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import type {SakVedtakType, StonadType, UtbetalingsType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
-
 
 interface Props {
     sak: Sak,
@@ -55,10 +53,11 @@ export default function SakEditor({sak}: Props) {
         beskrivelse: sak.beskrivelse,
         vedtaksResultat: sak.vedtaksResultat,
         soknadsDato: sak.soknadsDato,
-        begrunnelse: sak.begrunnelse
+        begrunnelse: sak.begrunnelse,
+        utbetalingsType: sak.utbetalingsType,
+        belop: sak.belop,
     })
     const debouncedSak = useDebounce(updateSakData, 2000)
-
 
     const {datepickerProps, inputProps} = useDatepicker({
         toDate: new Date(),
@@ -163,10 +162,23 @@ export default function SakEditor({sak}: Props) {
                         </RadioGroup>
 
                         {["INNVILGET", "DELVIS_INNVILGET"].includes(updateSakData.vedtaksResultat ?? "") && (
-                            <UtbetalingEditor sak={sak}
-                                              errorUtbetaling={getErrorMessage("utbetaling")}
-                                              errorBelop={getErrorMessage("utbetaling.belop")}
-                            />
+                            <>
+                                <RadioGroup
+                                    legend="Utbetaling"
+                                    value={updateSakData.utbetalingsType}
+                                    onChange={(value) => patchSak({utbetalingsType: value as UtbetalingsType})}
+                                    error={getErrorMessage("utbetaling")}
+                                >
+                                    <Radio value="BRUKER">Direkte til bruker</Radio>
+                                    <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
+                                </RadioGroup>
+                                <NumericInput
+                                    value={updateSakData.belop}
+                                    error={getErrorMessage("utbetaling.belop")}
+                                    onChange={(belop) => patchSak({belop: belop})}
+                                    label="Beløp som skal utbetales (kr)"
+                                />
+                            </>
                         )}
 
                         <Textarea

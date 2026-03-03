@@ -14,10 +14,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>no.nav.historisk</groupId>
+            <artifactId>common-types</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jackson</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>
