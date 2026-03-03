@@ -11,7 +11,7 @@ import {isSakFerdig} from "~/common/sak/sak.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
-import {SaksHistorikkTabell} from "~/routes/sak/$saksnummer/-components/SaksHistorikkTabell";
+import {SakshistorikkSakTabell} from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
 import type {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
 import {getSakOptions} from "./-api/sak.query";
 
@@ -109,7 +109,7 @@ function SakLayout() {
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
                                 <Box width="100%" height="6rem" padding="space-16">
-                                    <SaksHistorikkTabell
+                                    <SakshistorikkSakTabell
                                         maskertPersonIdent={sak.maskertPersonIdent}
                                     />
                                 </Box>

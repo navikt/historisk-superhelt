@@ -7,7 +7,7 @@ interface SakerTableProps {
     maskertPersonIdent: string
 }
 
-export function SakerFerdigTabell({maskertPersonIdent}: SakerTableProps) {
+export function SakshistorikkPersonTabell({maskertPersonIdent}: SakerTableProps) {
 
     const {data, isPending, error} = useSuspenseQuery(({
         ...findSakerForPersonOptions({query: {maskertPersonId: maskertPersonIdent}}),
@@ -19,4 +19,5 @@ export function SakerFerdigTabell({maskertPersonIdent}: SakerTableProps) {
     return <SakerTabell saker={saker} isPending={isPending} error={error}/>
 
 }
+
 
