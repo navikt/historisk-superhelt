@@ -1,3 +1,4 @@
+import {ArrowRightIcon} from "@navikt/aksel-icons";
 import type {ProblemDetail, Sak} from "@generated";
 import {Button, Heading, Skeleton, Table, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
@@ -12,9 +13,10 @@ interface SakerTableProps {
     error?: ProblemDetail | null,
     hideSaksbehandler?: boolean,
     hideActions?: boolean,
+    openInNewTab?: boolean,
 }
 
-export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideActions}: SakerTableProps) {
+export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideActions, openInNewTab}: SakerTableProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn()
 
     if (error) {
@@ -62,9 +64,21 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                         <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>}
                         {!hideActions && <Table.DataCell>
-                            <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
-                                Åpne sak
-                            </Button>
+                            {openInNewTab
+                                ? <Button
+                                    size="small"
+                                    variant="secondary"
+                                    as="a"
+                                    href={`/sak/${sak.saksnummer}`}
+                                    target={`sak-${sak.saksnummer}`}
+                                    rel="noopener noreferrer"
+                                    icon={<ArrowRightIcon aria-hidden/>}
+                                    aria-label="Åpne sak"
+                                />
+                                : <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
+                                    Åpne sak
+                                </Button>
+                            }
                         </Table.DataCell>
                         }
                     </Table.Row>
