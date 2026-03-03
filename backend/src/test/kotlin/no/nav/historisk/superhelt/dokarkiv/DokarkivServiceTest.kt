@@ -7,6 +7,7 @@ import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
+import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.sak.StonadsType
 import org.junit.jupiter.api.Assertions.*
@@ -31,6 +32,9 @@ class DokarkivServiceTest {
 
     @InjectMocks
     private lateinit var dokarkivService: DokarkivService
+
+    @Mock
+    private lateinit var personService: PersonService
 
     @Test
     @WithMockUser(authorities = ["WRITE"])
