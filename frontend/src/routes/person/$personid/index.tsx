@@ -3,7 +3,7 @@ import {createFileRoute} from '@tanstack/react-router'
 import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {PersonHeader} from "~/common/person/PersonHeader";
 import {OppgaverForPersonTabell} from "~/routes/person/$personid/-components/OppgaverForPersonTabell";
-import {SakerFerdigTabell} from "~/routes/person/$personid/-components/SakerFerdigTabell";
+import {SakshistorikkPersonTabell} from "~/routes/person/$personid/-components/SakshistorikkPersonTabell";
 import {SakerUnderArbeidTabell} from "~/routes/person/$personid/-components/SakerUnderArbeidTabell";
 
 export const Route = createFileRoute('/person/$personid/')({
@@ -36,7 +36,7 @@ function PersonPage() {
                                     <VStack gap="space-16">
                                         <Heading size="small">Sakshistorikk</Heading>
                                         <BodyShort>Saker som er ferdig behandlet</BodyShort>
-                                        <SakerFerdigTabell maskertPersonIdent={personid}/>
+                                        <SakshistorikkPersonTabell maskertPersonIdent={personid}/>
                                     </VStack>
                                 </Box>
                             </Tabs.Panel>

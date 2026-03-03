@@ -1,3 +1,4 @@
+import {ArrowRightIcon} from "@navikt/aksel-icons";
 import type {ProblemDetail, Sak} from "@generated";
 import {Button, Heading, Skeleton, Table, VStack} from '@navikt/ds-react'
 import {Link} from '@tanstack/react-router'
@@ -12,9 +13,10 @@ interface SakerTableProps {
     error?: ProblemDetail | null,
     hideSaksbehandler?: boolean,
     hideActions?: boolean,
+    openInNewTab?: boolean,
 }
 
-export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideActions}: SakerTableProps) {
+export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideActions, openInNewTab}: SakerTableProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn()
 
     if (error) {
@@ -32,6 +34,7 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
             </div>
         </VStack>
     }
+
     return (
         <Table>
             <Table.Header>
@@ -40,6 +43,8 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                     <Table.HeaderCell scope="col">Type</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Beskrivelse</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Status</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Tildelingsår</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Beløp</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Opprettet</Table.HeaderCell>
                     {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
                     {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
@@ -54,12 +59,26 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                         <Table.DataCell>
                             <SakStatus sak={sak}/>
                         </Table.DataCell>
+                        <Table.DataCell>{sak.tildelingsAar ?? '–'}</Table.DataCell>
+                        <Table.DataCell>{sak.belop != null ? `${sak.belop} kr` : '–'}</Table.DataCell>
                         <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>}
                         {!hideActions && <Table.DataCell>
-                            <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
-                                Åpne sak
-                            </Button>
+                            {openInNewTab
+                                ? <Button
+                                    size="small"
+                                    variant="secondary"
+                                    as="a"
+                                    href={`/sak/${sak.saksnummer}`}
+                                    target={`sak-${sak.saksnummer}`}
+                                    rel="noopener noreferrer"
+                                    icon={<ArrowRightIcon aria-hidden/>}
+                                    aria-label="Åpne sak"
+                                />
+                                : <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
+                                    Åpne sak
+                                </Button>
+                            }
                         </Table.DataCell>
                         }
                     </Table.Row>
