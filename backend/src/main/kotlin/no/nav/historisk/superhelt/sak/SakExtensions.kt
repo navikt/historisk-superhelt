@@ -41,7 +41,7 @@ object SakExtensions {
 
     fun Sak.utbetalingInfo(): String{
         return when(this.utbetalingsType){
-            UtbetalingsType.BRUKER -> "Utbetaling til bruker på ${this.belop?.value ?: "ukjent beløp"} kr"
+            UtbetalingsType.BRUKER -> "Utbetaling til bruker på ${this.belop?.value ?: "ukjent beløp"}"
             UtbetalingsType.FORHANDSTILSAGN -> "Forhåndstilsagn"
             UtbetalingsType.INGEN -> ""
         }

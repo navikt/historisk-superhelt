@@ -16,7 +16,7 @@ test.describe("Gjenåpne sak", () => {
     });
 
     test("Behandle sak som Sara Saksbehandler", async ({auth, sak, journalforing}) => {
-        await test.step("Logg in Sara", async () => {
+        await test.step("Logg inn Sara", async () => {
             await auth.loginSara();
         });
 
@@ -69,7 +69,7 @@ test.describe("Gjenåpne sak", () => {
         });
     });
 
-    test("Gjenåpne sak igjen som Sa", async ({page, auth, sok, sak}) => {
+    test("Gjenåpne sak igjen som Sara", async ({page, auth, sok, sak}) => {
         await test.step("Logg in Sara", async () => {
             await auth.loginSara();
         });
@@ -96,7 +96,7 @@ test.describe("Gjenåpne sak", () => {
 
 
         await test.step("Verifier at sak er gjenåpnet", async () => {
-            await expect(page.getByText('Gjenåpnet')).toBeVisible();
+            await expect(page.getByText("Gjenåpnet")).toBeVisible();
             await sak.fyllInnOpplysninger({
                 beskrivelse: "Søknad om superkrefter v2",
                 belop: "11",
