@@ -58,7 +58,7 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                             <SakStatus sak={sak}/>
                         </Table.DataCell>
                         <Table.DataCell>{sak.tildelingsAar ?? '–'}</Table.DataCell>
-                        <Table.DataCell>{sak.utbetaling?.belop != null ? `${sak.utbetaling.belop} kr` : '–'}</Table.DataCell>
+                        <Table.DataCell>{sak.belop != null ? `${sak.belop} kr` : '–'}</Table.DataCell>
                         <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>}
                         {!hideActions && <Table.DataCell>
