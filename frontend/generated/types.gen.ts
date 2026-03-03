@@ -31,7 +31,7 @@ export type Brev = {
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
-    mottakerType: 'BRUKER' | 'SAMHANDLER';
+    mottakerType: 'BRUKER' | 'VERGE' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
@@ -68,8 +68,8 @@ export type Sak = {
     readonly gjenapnet: boolean;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
     readonly utbetaling?: Utbetaling;
-    readonly valideringsfeil: Array<ValidationFieldError>;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
 };
 
@@ -78,9 +78,9 @@ export type SakError = {
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type Utbetaling = {
@@ -140,7 +140,7 @@ export type JournalforRequest = {
 
 export type OpprettBrevRequest = {
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
-    mottaker: 'BRUKER' | 'SAMHANDLER';
+    mottaker: 'BRUKER' | 'VERGE' | 'SAMHANDLER';
 };
 
 export type PersonRequest = {
@@ -274,7 +274,7 @@ export type BrevWritable = {
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
-    mottakerType: 'BRUKER' | 'SAMHANDLER';
+    mottakerType: 'BRUKER' | 'VERGE' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
 };
@@ -305,9 +305,9 @@ export type SakErrorWritable = {
 
 export type SakTilstandWritable = {
     sak?: unknown;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {

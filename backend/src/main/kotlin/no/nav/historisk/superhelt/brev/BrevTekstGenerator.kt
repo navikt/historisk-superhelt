@@ -26,7 +26,8 @@ class BrevTekstGenerator(private val sak: Sak) {
 
     private fun generateVedtaksbrev(mottaker: BrevMottaker): String {
         when (mottaker) {
-            BrevMottaker.BRUKER -> {
+            BrevMottaker.BRUKER, BrevMottaker.VERGE->
+                {
                 return """
                     <h1>Vedtaksbrev</h1>
                     <p>Søknaden din av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}.</p>
@@ -57,7 +58,7 @@ class BrevTekstGenerator(private val sak: Sak) {
     fun generateTittel(type: BrevType, mottaker: BrevMottaker): String {
         return when (type) {
             BrevType.VEDTAKSBREV -> when (mottaker) {
-                BrevMottaker.BRUKER -> "Vedtaksbrev, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
+                BrevMottaker.BRUKER, BrevMottaker.VERGE-> "Vedtaksbrev, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
                 BrevMottaker.SAMHANDLER -> "Vedtaksbrev til samhandler, ${sak.vedtaksResultat?.navn?.lowercase()} for ${sak.type.navn.lowercase()}"
             }
             BrevType.HENLEGGESEBREV -> "Henleggelsebrev for ${sak.type.navn.lowercase()}"
