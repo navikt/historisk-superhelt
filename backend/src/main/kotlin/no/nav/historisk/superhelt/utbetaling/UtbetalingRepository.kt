@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.utbetaling
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.utbetaling.UtbetalingSakExtentions.newUtbetaling
+import no.nav.historisk.superhelt.utbetaling.UtbetalingSakExtensions.newUtbetaling
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaRepository
 import org.slf4j.LoggerFactory
@@ -47,7 +47,6 @@ class UtbetalingRepository(
             utbetalingsUuid = utbetaling.utbetalingsUuid,
             utbetalingStatus = utbetaling.utbetalingStatus,
             transaksjonsId = utbetaling.transaksjonsId,
-//            utbetalingTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now(),
         )
         logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sakEntity.saksnummer} behandling ${utbetaling.behandlingsnummer} med beløp ${utbetaling.belop}")
         return utbetalingJpaRepository.save(entity).toDomain()

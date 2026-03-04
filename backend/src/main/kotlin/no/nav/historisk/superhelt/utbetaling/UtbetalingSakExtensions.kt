@@ -3,10 +3,9 @@ package no.nav.historisk.superhelt.utbetaling
 import no.nav.common.types.Belop.Companion.ZeroBelop
 import no.nav.helved.UtbetalingUuid
 import no.nav.historisk.superhelt.sak.Sak
-import java.time.Instant
 import java.util.*
 
-object UtbetalingSakExtentions {
+object UtbetalingSakExtensions {
 
     fun Sak.newUtbetaling(tidligereUtbetaling: Utbetaling? = null) = Utbetaling(
         saksnummer = this.saksnummer,
@@ -15,6 +14,6 @@ object UtbetalingSakExtentions {
         transaksjonsId = UUID.randomUUID(),
         utbetalingsUuid = tidligereUtbetaling?.utbetalingsUuid ?: UtbetalingUuid.random(),
         utbetalingStatus = UtbetalingStatus.UTKAST,
-        utbetalingTidspunkt = Instant.now(),
+        utbetalingTidspunkt = null,
     )
 }

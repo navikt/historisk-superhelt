@@ -4,7 +4,7 @@ import no.nav.common.types.Belop.Companion.ZeroBelop
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.utbetaling.UtbetalingSakExtentions.newUtbetaling
+import no.nav.historisk.superhelt.utbetaling.UtbetalingSakExtensions.newUtbetaling
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory

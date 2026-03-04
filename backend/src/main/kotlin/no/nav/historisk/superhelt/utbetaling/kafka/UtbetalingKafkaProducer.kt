@@ -30,27 +30,6 @@ class UtbetalingKafkaProducer(
         val key = utbetaling.transaksjonsId
         val vedtaksTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now()
 
-        val baseUtbetalingsMelding = UtbetalingMelding(
-            id = id,
-            sakId = sak.saksnummer.value,
-            behandlingId = sak.behandlingsnummer.toString(),
-            personident = sak.fnr.value,
-            stønad = sak.type.klassekode,
-
-            vedtakstidspunkt = vedtaksTidspunkt,
-            periodetype = Periodetype.EN_GANG,
-            perioder =
-                listOf(
-                    Periode(
-                        fom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
-                        tom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
-                        beløp = utbetaling.belop.value
-                    )
-                ),
-            saksbehandler = sak.saksbehandler.navIdent.value,
-            beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
-        )
-
         val perioder: List<Periode> = if (utbetaling.annulleres) {
             emptyList()
         } else {
@@ -62,13 +41,28 @@ class UtbetalingKafkaProducer(
                 )
             )
         }
+        
+        val utbetalingMelding = UtbetalingMelding(
+            id = id,
+            sakId = sak.saksnummer.value,
+            behandlingId = sak.behandlingsnummer.toString(),
+            personident = sak.fnr.value,
+            stønad = sak.type.klassekode,
 
-        val utbetalingMelding = baseUtbetalingsMelding.copy(perioder = perioder)
+            vedtakstidspunkt = vedtaksTidspunkt,
+            periodetype = Periodetype.EN_GANG,
+            perioder = perioder,
+            saksbehandler = sak.saksbehandler.navIdent.value,
+            beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
+        )
+
+       
+
         if (perioder.isEmpty()) {
-            logger.info("Annulerer utbetaling {} for sak {}, sender melding med tomme period", utbetaling.transaksjonsId, sak.saksnummer)
+            logger.info("Annulerer utbetaling {} for sak {}, sender melding med tomme perioder", utbetaling.transaksjonsId, sak.saksnummer)
         }
 
-        logger.debug("Sender til melding til utbetaling {}:{}", utbetalingTopic, key)
+        logger.debug("Sender melding til utbetaling {}:{}", utbetalingTopic, key)
         kafkaTemplate.send(utbetalingTopic, key.toString(), utbetalingMelding).get()
         utbetalingRepository.setUtbetalingStatusSendt(utbetaling.transaksjonsId)
     }
