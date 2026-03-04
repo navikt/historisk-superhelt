@@ -64,42 +64,12 @@ class UtbetalingKafkaProducer(
         }
 
         val utbetalingMelding = baseUtbetalingsMelding.copy(perioder = perioder)
+        if (perioder.isEmpty()) {
+            logger.info("Annulerer utbetaling {} for sak {}, sender melding med tomme period", utbetaling.transaksjonsId, sak.saksnummer)
+        }
 
-        logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, key)
+        logger.debug("Sender til melding til utbetaling {}:{}", utbetalingTopic, key)
         kafkaTemplate.send(utbetalingTopic, key.toString(), utbetalingMelding).get()
-        utbetalingRepository.setUtbetalingStatusSendt(utbetaling.transaksjonsId)
-    }
-
-    @Transactional
-    fun endreUtbetaling(sak: Sak, utbetaling: Utbetaling) {
-        val id = utbetaling.utbetalingsUuid
-        val key = utbetaling.transaksjonsId
-        // TODO vedtakstidspunkt fra sak/utbetaling når vi har det
-        val vedtaksTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now()
-        val utbetalingsMelding = UtbetalingMelding(
-            id = id,
-            sakId = sak.saksnummer.value,
-            behandlingId = sak.behandlingsnummer.toString(),
-            personident = sak.fnr.value,
-            stønad = sak.type.klassekode,
-
-            vedtakstidspunkt = vedtaksTidspunkt,
-            periodetype = Periodetype.EN_GANG,
-            perioder =
-                listOf(
-                    Periode(
-                        fom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
-                        tom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
-                        beløp = utbetaling.belop.value
-                    )
-                ),
-            saksbehandler = sak.saksbehandler.navIdent.value,
-            beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
-        )
-
-        logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, key)
-        val result = kafkaTemplate.send(utbetalingTopic, key.toString(), utbetalingsMelding).get()
-        //TODO håndter feilsituasjoner
         utbetalingRepository.setUtbetalingStatusSendt(utbetaling.transaksjonsId)
     }
 }
