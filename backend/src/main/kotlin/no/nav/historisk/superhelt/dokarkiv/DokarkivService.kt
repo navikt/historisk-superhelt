@@ -39,7 +39,8 @@ class DokarkivService(
 
                 BrevMottaker.VERGE ->
                     AvsenderMottaker(
-                        id = personService.hentPerson(sak.fnr)?.verge?.motpartsPersonident,
+                        id = personService.hentPerson(sak.fnr)?.verge?.motpartsPersonident
+                            ?: throw IllegalStateException("Brev skal sendes til verge, men verge er ikke registrert på personen"),
                         idType = AvsenderMottakerIdType.FNR
                     )
 

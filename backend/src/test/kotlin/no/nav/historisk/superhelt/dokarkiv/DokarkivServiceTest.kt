@@ -8,6 +8,7 @@ import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
 import no.nav.historisk.superhelt.person.PersonService
+import no.nav.historisk.superhelt.person.PersonTestData
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.sak.StonadsType
 import org.junit.jupiter.api.Assertions.*
@@ -30,11 +31,11 @@ class DokarkivServiceTest {
     @Mock
     private lateinit var dokdistClient: DokdistClient
 
-    @InjectMocks
-    private lateinit var dokarkivService: DokarkivService
-
     @Mock
     private lateinit var personService: PersonService
+
+    @InjectMocks
+    private lateinit var dokarkivService: DokarkivService
 
     @Test
     @WithMockUser(authorities = ["WRITE"])
@@ -73,6 +74,61 @@ class DokarkivServiceTest {
         assertEquals(1, capturedRequest.dokumenter.size)
         assertEquals(brev.tittel, capturedRequest.dokumenter[0].tittel)
         assertEquals(brev.type.name, capturedRequest.dokumenter[0].brevkode)
+    }
+
+    @Test
+    @WithMockUser(authorities = ["WRITE"])
+    fun `arkiver skal bruke verges FNR når mottaker er verge`() {
+        val sak = SakTestData.sakUtenUtbetaling().copy(fnr = PersonTestData.testPersonMedVerge.fnr)
+        val brev = BrevTestdata.vedtaksbrevVerge()
+        val pdf = "test pdf".toByteArray()
+
+        val expectedResponse = JournalpostResponse(
+            journalpostId = EksternJournalpostId("JP123"),
+            journalpostferdigstilt = true,
+            dokumenter = emptyList()
+        )
+
+        whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
+        whenever(personService.hentPerson(sak.fnr)).thenReturn(PersonTestData.testPersonMedVerge)
+
+        val result = dokarkivService.arkiver(sak, brev, pdf)
+
+        val journalpostRequestCaptor = argumentCaptor<JournalpostRequest>()
+        verify(dokarkivClient).opprett(journalpostRequestCaptor.capture(), eq(true))
+
+        val capturedRequest = journalpostRequestCaptor.firstValue
+        assertEquals(brev.tittel, capturedRequest.tittel)
+        assertEquals(JournalpostType.UTGAAENDE, capturedRequest.journalpostType)
+        assertEquals(EksternFellesKodeverkTema.HEL, capturedRequest.tema)
+        // Verifiser at vergens FNR brukes som avsender
+        assertEquals(PersonTestData.testPersonMedVerge.verge?.motpartsPersonident, capturedRequest.avsenderMottaker?.id)
+        assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)
+        // Bruker er fortsatt sakseieren
+        assertEquals(sak.fnr.value, capturedRequest.bruker.id)
+        assertEquals(BrukerIdType.FNR, capturedRequest.bruker.idType)
+        assertEquals(Kanal.NAV_NO, capturedRequest.kanal)
+        assertEquals(sak.saksnummer, capturedRequest.sak.fagsakId)
+        assertEquals(Sakstype.FAGSAK, capturedRequest.sak.sakstype)
+        assertEquals("HELT", capturedRequest.sak.fagsaksystem)
+    }
+
+    @Test
+    @WithMockUser(authorities = ["WRITE"])
+    fun `arkiver skal kaste exception når verge mangler og brevmottaker er verge`() {
+        val sak = SakTestData.sakUtenUtbetaling()
+        val brev = BrevTestdata.vedtaksbrevVerge()
+        val pdf = "test pdf".toByteArray()
+
+        // Returnerer person uten verge
+        whenever(personService.hentPerson(sak.fnr)).thenReturn(PersonTestData.testPerson)
+
+        val exception = assertThrows(IllegalStateException::class.java) {
+            dokarkivService.arkiver(sak, brev, pdf)
+        }
+
+        assertTrue(exception.message!!.contains("Brev skal sendes til verge, men verge er ikke registrert"))
+        verify(dokarkivClient, never()).opprett(any(), any())
     }
 
     @Test
