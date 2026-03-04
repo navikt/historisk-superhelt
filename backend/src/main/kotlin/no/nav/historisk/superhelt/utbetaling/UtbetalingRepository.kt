@@ -1,8 +1,9 @@
 package no.nav.historisk.superhelt.utbetaling
 
-import no.nav.helved.UtbetalingUuid
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.utbetaling.UtbetalingSakExtentions.newUtbetaling
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaRepository
 import org.slf4j.LoggerFactory
@@ -19,11 +20,12 @@ class UtbetalingRepository(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun findActiveByBehandling(sak: Sak): Utbetaling? {
-        val utbetalinger =
-            utbetalingJpaRepository.findBySakIdAndBehandlingsnummer(sak.saksnummer.id, sak.behandlingsnummer)
-                .sortedByDescending { it.utbetalingTidspunkt }
-        return (utbetalinger.firstOrNull { !it.utbetalingStatus.isFinal() }
-            ?: utbetalinger.lastOrNull())?.toDomain()
+        return utbetalingJpaRepository.findBySakIdAndBehandlingsnummer(sak.saksnummer.id, sak.behandlingsnummer)
+            ?.toDomain()
+    }
+
+    fun findBySak(saksnummer: Saksnummer): List<Utbetaling> {
+        return utbetalingJpaRepository.findBySakId(saksnummer.id).map { it.toDomain() }
     }
 
     fun findByTransaksjonsId(transaksjonsId: UUID): Utbetaling? {
@@ -35,26 +37,24 @@ class UtbetalingRepository(
             .map { it.toDomain() }
     }
 
-    fun opprettUtbetaling(sak: Sak): Utbetaling {
-        val belop = sak.belop?.value ?: throw IllegalArgumentException("Beløp er ikke satt for sak ${sak.saksnummer}")
-        var utbetalingsUuid = UtbetalingUuid.random()
-        if (sak.gjenapnet) {
-            logger.debug("Finner tidligere utbetaling og setter uuid lik")
-            val tidligereUtbetaling = utbetalingJpaRepository.findBySakId(sak.saksnummer.id)
-                .sortedByDescending { it.utbetalingTidspunkt }
-                .firstOrNull { it.utbetalingStatus.isFinal() }
-            utbetalingsUuid = tidligereUtbetaling?.utbetalingsUuid ?: UtbetalingUuid.random()
-        }
+    fun lagreUtbetaling(utbetaling: Utbetaling): Utbetaling {
+        val sakEntity = sakRepository.getSakEntityOrThrow(utbetaling.saksnummer)
 
-        val sakEntity = sakRepository.getSakEntityOrThrow(sak.saksnummer)
         val entity = UtbetalingJpaEntity(
             sak = sakEntity,
-            behandlingsnummer = sak.behandlingsnummer,
-            belop = belop,
-            utbetalingsUuid = utbetalingsUuid
+            behandlingsnummer = sakEntity.behandlingsnummer,
+            belop = utbetaling.belop.value,
+            utbetalingsUuid = utbetaling.utbetalingsUuid,
+            utbetalingStatus = utbetaling.utbetalingStatus,
+            transaksjonsId = utbetaling.transaksjonsId,
+            utbetalingTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now(),
         )
-        logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sak.saksnummer} behandling ${sak.behandlingsnummer} med beløp $belop")
+        logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sakEntity.saksnummer} behandling ${utbetaling.behandlingsnummer} med beløp ${utbetaling.belop}")
         return utbetalingJpaRepository.save(entity).toDomain()
+    }
+
+    fun opprettUtbetaling(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling {
+        return lagreUtbetaling(sak.newUtbetaling(tidligereUtbetaling))
     }
 
     @Transactional

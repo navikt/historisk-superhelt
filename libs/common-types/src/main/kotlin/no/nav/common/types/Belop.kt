@@ -14,4 +14,7 @@ value class Belop(val value: Int) {
         return value.toString()
     }
 
+    companion object {
+        val ZeroBelop = Belop(0)
+    }
 }
