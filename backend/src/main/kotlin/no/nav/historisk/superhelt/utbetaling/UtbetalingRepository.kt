@@ -47,7 +47,7 @@ class UtbetalingRepository(
             utbetalingsUuid = utbetaling.utbetalingsUuid,
             utbetalingStatus = utbetaling.utbetalingStatus,
             transaksjonsId = utbetaling.transaksjonsId,
-            utbetalingTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now(),
+//            utbetalingTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now(),
         )
         logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sakEntity.saksnummer} behandling ${utbetaling.behandlingsnummer} med beløp ${utbetaling.belop}")
         return utbetalingJpaRepository.save(entity).toDomain()
