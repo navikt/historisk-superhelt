@@ -1,10 +1,8 @@
 package no.nav.historisk.superhelt.utbetaling
 
-import no.nav.common.types.Belop.Companion.ZeroBelop
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.utbetaling.UtbetalingSakExtensions.newUtbetaling
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
@@ -40,11 +38,15 @@ class UtbetalingService(
     }
 
     private fun opprettNyUtbetaling(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling? {
-        if (sak.utbetalingsType != UtbetalingsType.BRUKER || sak.vedtaksResultat !in listOf(VedtaksResultat.INNVILGET, VedtaksResultat.DELVIS_INNVILGET)) {
+        if (sak.utbetalingsType != UtbetalingsType.BRUKER || sak.vedtaksResultat !in listOf(
+                VedtaksResultat.INNVILGET,
+                VedtaksResultat.DELVIS_INNVILGET
+            )
+        ) {
             logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType} og resultat ${sak.vedtaksResultat}, ingen utbetaling opprettes")
             return null
         }
-        return utbetalingRepository.lagreUtbetaling(sak.newUtbetaling(tidligereUtbetaling))
+        return utbetalingRepository.opprettUtbetaling(sak, tidligereUtbetaling)
     }
 
     private fun endreUtbetaling(sak: Sak) {
@@ -73,8 +75,7 @@ class UtbetalingService(
         sak: Sak,
         tidligereUtbetaling: Utbetaling) {
         logger.info("Sak ${sak.saksnummer} har vedtaksresultat ${sak.vedtaksResultat}, Tidligere utbetaling skal annuleres")
-        val annullering = sak.newUtbetaling(tidligereUtbetaling).copy(belop = ZeroBelop)
-        utbetalingRepository.lagreUtbetaling(annullering)
+        val annullering = utbetalingRepository.opprettAnnullering(sak, tidligereUtbetaling)
         utbetal(annullering, sak)
     }
 
@@ -83,8 +84,7 @@ class UtbetalingService(
         tidligereUtbetaling: Utbetaling) {
         if (sak.utbetalingsType != UtbetalingsType.BRUKER) {
             logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, Annulerer tidligere utbetaling ${tidligereUtbetaling.transaksjonsId}")
-            val annullering = sak.newUtbetaling(tidligereUtbetaling).copy(belop = ZeroBelop)
-            utbetalingRepository.lagreUtbetaling(annullering)
+            val annullering = utbetalingRepository.opprettAnnullering(sak, tidligereUtbetaling)
             utbetal(annullering, sak)
         } else {
             opprettNyUtbetaling(sak, tidligereUtbetaling)?.let { utbetal(it, sak) }

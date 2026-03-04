@@ -1,9 +1,10 @@
 package no.nav.historisk.superhelt.utbetaling
 
+import no.nav.common.types.Belop
 import no.nav.common.types.Saksnummer
+import no.nav.helved.UtbetalingUuid
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.utbetaling.UtbetalingSakExtensions.newUtbetaling
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaEntity
 import no.nav.historisk.superhelt.utbetaling.db.UtbetalingJpaRepository
 import org.slf4j.LoggerFactory
@@ -37,23 +38,40 @@ class UtbetalingRepository(
             .map { it.toDomain() }
     }
 
-    fun lagreUtbetaling(utbetaling: Utbetaling): Utbetaling {
-        val sakEntity = sakRepository.getSakEntityOrThrow(utbetaling.saksnummer)
+    private fun lagreUtbetaling(
+        saksnummer: Saksnummer,
+        belop: Belop,
+        utbetalingUuid: UtbetalingUuid? = null,
+        utbetalingStatus: UtbetalingStatus = UtbetalingStatus.UTKAST,
+    ): Utbetaling {
+        val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
 
         val entity = UtbetalingJpaEntity(
             sak = sakEntity,
             behandlingsnummer = sakEntity.behandlingsnummer,
-            belop = utbetaling.belop.value,
-            utbetalingsUuid = utbetaling.utbetalingsUuid,
-            utbetalingStatus = utbetaling.utbetalingStatus,
-            transaksjonsId = utbetaling.transaksjonsId,
+            belop = belop.value,
+            utbetalingsUuid = utbetalingUuid ?: UtbetalingUuid.random(),
+            utbetalingStatus = utbetalingStatus,
+            transaksjonsId = UUID.randomUUID(),
         )
-        logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sakEntity.saksnummer} behandling ${utbetaling.behandlingsnummer} med beløp ${utbetaling.belop}")
+        logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sakEntity.saksnummer} behandling ${entity.behandlingsnummer} med beløp $belop")
         return utbetalingJpaRepository.save(entity).toDomain()
+    }
+    fun opprettAnnullering(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling {
+        return lagreUtbetaling(
+            saksnummer = sak.saksnummer,
+            belop = Belop.ZeroBelop,
+            utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
+        )
     }
 
     fun opprettUtbetaling(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling {
-        return lagreUtbetaling(sak.newUtbetaling(tidligereUtbetaling))
+        return lagreUtbetaling(
+            saksnummer = sak.saksnummer,
+            belop = sak.belop
+                ?: throw IllegalStateException("Sak ${sak.saksnummer} har ingen beløp, kan ikke opprette utbetaling"),
+            utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
+        )
     }
 
     @Transactional
