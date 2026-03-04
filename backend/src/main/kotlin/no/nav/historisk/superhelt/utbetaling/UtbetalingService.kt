@@ -40,8 +40,8 @@ class UtbetalingService(
     }
 
     private fun opprettNyUtbetaling(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling? {
-        if (sak.utbetalingsType != UtbetalingsType.BRUKER) {
-            logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, ingen utbetaling opprettes")
+        if (sak.utbetalingsType != UtbetalingsType.BRUKER || sak.vedtaksResultat !in listOf(VedtaksResultat.INNVILGET, VedtaksResultat.DELVIS_INNVILGET)) {
+            logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType} og resultat ${sak.vedtaksResultat}, ingen utbetaling opprettes")
             return null
         }
         return utbetalingRepository.lagreUtbetaling(sak.newUtbetaling(tidligereUtbetaling))
