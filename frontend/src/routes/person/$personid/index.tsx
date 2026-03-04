@@ -17,7 +17,7 @@ function PersonPage() {
         <VStack gap="space-24">
 
             <PersonHeader maskertPersonId={personid}/>
-            <RfcErrorBoundary>
+            <RfcErrorBoundary key={personid}>
                 <Heading size="large">Personside</Heading>
                 <VStack gap="space-48">
                     <Box background={"accent-soft"} padding="space-24" borderWidth="1" borderRadius="4">
