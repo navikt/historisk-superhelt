@@ -150,6 +150,17 @@ class UtbetalingServiceTest {
             verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
         }
 
+        @EnumSource(names = ["INNVILGET", "DELVIS_INNVILGET"])
+        @ParameterizedTest
+        fun `skal sende utbetaling ved vedtaksresultat`(vedtaksResultat: VedtaksResultat) {
+            mockKafkaSuccess()
+            val sak = lagreSak(utbetalingsType = UtbetalingsType.BRUKER, vedtaksResultat = vedtaksResultat)
+
+            utbetalingService.sendTilUtbetaling(sak)
+
+            verify(kafkaTemplate).send(any<String>(), any<String>(), any<UtbetalingMelding>())
+        }
+
         @EnumSource(names = ["SENDT_TIL_UTBETALING", "MOTTATT_AV_UTBETALING", "UTBETALT", "FEILET"])
         @ParameterizedTest
         fun `skal ignorere når utbetaling finnes og status er `(utbetalingsStatus: UtbetalingStatus) {
@@ -260,6 +271,41 @@ class UtbetalingServiceTest {
                 argThat { melding -> melding.id == annullering.utbetalingsUuid && melding.perioder.isEmpty() })
         }
 
+        @EnumSource(names = ["INNVILGET", "DELVIS_INNVILGET"])
+        @ParameterizedTest
+        fun `skal opprette ny utbetaling ved gjenåpning uten tidligere utbetaling og vedtaksresultat`(resultat: VedtaksResultat) {
+            mockKafkaSuccess()
+            val sak = lagreSak(vedtaksResultat = resultat)
+            withMockedUser { sakRepository.updateSak(sak.saksnummer, UpdateSakDto(vedtaksResultat = resultat)) }
+            val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
+
+            utbetalingService.sendTilUtbetaling(gjenapnetSak)
+
+            val nyUtbetaling = utbetalingRepository.findActiveByBehandling(gjenapnetSak)
+            assertThat(nyUtbetaling).isNotNull()
+            assertThat(nyUtbetaling!!.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
+            verify(kafkaTemplate).send(any<String>(), any<String>(), any<UtbetalingMelding>())
+        }
+
+        @EnumSource(names = ["INNVILGET", "DELVIS_INNVILGET"])
+        @ParameterizedTest
+        fun `skal opprette ny utbetaling ved gjenåpning med tidligere utbetaling og vedtaksresultat`(resultat: VedtaksResultat) {
+            mockKafkaSuccess()
+            val (sak, gammelUtbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+            withMockedUser { sakRepository.updateSak(sak.saksnummer, UpdateSakDto(vedtaksResultat = resultat)) }
+            val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
+
+            utbetalingService.sendTilUtbetaling(gjenapnetSak)
+
+            val nyUtbetaling = utbetalingRepository.findActiveByBehandling(gjenapnetSak)!!
+            assertThat(nyUtbetaling.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
+            assertThat(nyUtbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
+            assertThat(nyUtbetaling.belop.value).isGreaterThan(0)
+            verify(kafkaTemplate).send(any<String>(), eq(nyUtbetaling.transaksjonsId.toString()), argThat { melding ->
+                melding.perioder.isNotEmpty()
+            })
+        }
+
         @EnumSource(names = ["AVSLATT", "HENLAGT"])
         @ParameterizedTest
         fun `skal ignorere ved gjenåpning uten tidligere utbetaling og vedtaksresultat`(resultat: VedtaksResultat) {
@@ -345,6 +391,17 @@ class UtbetalingServiceTest {
 
             val oppdatert = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
             assertThat(oppdatert?.utbetalingStatus).isEqualTo(UtbetalingStatus.MOTTATT_AV_UTBETALING)
+            verify(sakEndringsloggService, never()).logChange(any(), any(), any(), any(), anyOrNull(), any())
+        }
+
+        @Test
+        fun `skal oppdatere til BEHANDLET_AV_UTBETALING uten endringslogg`() {
+            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.MOTTATT_AV_UTBETALING)
+
+            utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.BEHANDLET_AV_UTBETALING)
+
+            val oppdatert = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
+            assertThat(oppdatert?.utbetalingStatus).isEqualTo(UtbetalingStatus.BEHANDLET_AV_UTBETALING)
             verify(sakEndringsloggService, never()).logChange(any(), any(), any(), any(), anyOrNull(), any())
         }
 
