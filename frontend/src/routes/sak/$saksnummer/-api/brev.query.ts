@@ -1,20 +1,20 @@
-import {BrevMottakerType, BrevType} from "~/routes/sak/$saksnummer/-types/brev.types";
-import {hentEllerOpprettBrev} from "@generated";
+import { hentEllerOpprettBrev } from "@generated";
+import type { BrevMottakerType, BrevType } from "~/routes/sak/$saksnummer/-types/brev.types";
 
 export const getOrCreateBrevQueryKey = (saksnummer: string, type: BrevType, mottaker: BrevMottakerType) => {
     return ["brev", saksnummer, type, mottaker];
-}
+};
 /**
  * Oppretter ett nytt brev om det ikke allerede finnes ett av denne typen for denne saken.
  *
  * Bruker post mot backend så derfor er denne laget custom */
-export const getOrCreateBrevOptions= (saksnummer: string, type: BrevType, mottaker: BrevMottakerType) => ({
+export const getOrCreateBrevOptions = (saksnummer: string, type: BrevType, mottaker: BrevMottakerType) => ({
     queryKey: getOrCreateBrevQueryKey(saksnummer, type, mottaker),
     queryFn: async () => {
-        const {data}= await hentEllerOpprettBrev({
-            path: {saksnummer: saksnummer},
-            body: {type: type, mottaker: mottaker},
-        })
-        return data
+        const { data } = await hentEllerOpprettBrev({
+            path: { saksnummer: saksnummer },
+            body: { type: type, mottaker: mottaker },
+        });
+        return data;
     },
 });

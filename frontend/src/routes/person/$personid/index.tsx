@@ -1,34 +1,33 @@
-import {BodyShort, Box, Heading, Tabs, VStack} from '@navikt/ds-react'
-import {createFileRoute} from '@tanstack/react-router'
-import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
-import {PersonHeader} from "~/common/person/PersonHeader";
-import {OppgaverForPersonTabell} from "~/routes/person/$personid/-components/OppgaverForPersonTabell";
-import {SakshistorikkPersonTabell} from "~/routes/person/$personid/-components/SakshistorikkPersonTabell";
-import {SakerUnderArbeidTabell} from "~/routes/person/$personid/-components/SakerUnderArbeidTabell";
+import { BodyShort, Box, Heading, Tabs, VStack } from "@navikt/ds-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
+import { PersonHeader } from "~/common/person/PersonHeader";
+import { OppgaverForPersonTabell } from "~/routes/person/$personid/-components/OppgaverForPersonTabell";
+import { SakerUnderArbeidTabell } from "~/routes/person/$personid/-components/SakerUnderArbeidTabell";
+import { SakshistorikkPersonTabell } from "~/routes/person/$personid/-components/SakshistorikkPersonTabell";
 
-export const Route = createFileRoute('/person/$personid/')({
+export const Route = createFileRoute("/person/$personid/")({
     component: PersonPage,
-})
+});
 
 function PersonPage() {
-    const {personid} = Route.useParams()
+    const { personid } = Route.useParams();
 
     return (
         <VStack gap="space-24">
-
-            <PersonHeader maskertPersonId={personid}/>
+            <PersonHeader maskertPersonId={personid} />
             <RfcErrorBoundary key={personid}>
                 <Heading size="large">Personside</Heading>
                 <VStack gap="space-48">
                     <Box background={"accent-soft"} padding="space-24" borderWidth="1" borderRadius="4">
                         <Heading size="medium">Saker under behandling</Heading>
-                        <SakerUnderArbeidTabell maskertPersonIdent={personid}/>
+                        <SakerUnderArbeidTabell maskertPersonIdent={personid} />
                     </Box>
                     <Box background={"default"} borderRadius="4">
                         <Tabs defaultValue="saker">
                             <Tabs.List>
-                                <Tabs.Tab value="saker" label="Sakshistorikk"/>
-                                <Tabs.Tab value="oppgaver" label="Oppgaver"/>
+                                <Tabs.Tab value="saker" label="Sakshistorikk" />
+                                <Tabs.Tab value="oppgaver" label="Oppgaver" />
                             </Tabs.List>
 
                             <Tabs.Panel value="saker">
@@ -36,7 +35,7 @@ function PersonPage() {
                                     <VStack gap="space-16">
                                         <Heading size="small">Sakshistorikk</Heading>
                                         <BodyShort>Saker som er ferdig behandlet</BodyShort>
-                                        <SakshistorikkPersonTabell maskertPersonIdent={personid}/>
+                                        <SakshistorikkPersonTabell maskertPersonIdent={personid} />
                                     </VStack>
                                 </Box>
                             </Tabs.Panel>
@@ -44,9 +43,11 @@ function PersonPage() {
                                 <Box padding="space-16" borderWidth="1" borderRadius="2">
                                     <VStack gap="space-16">
                                         <Heading size="small">Åpne oppgaver</Heading>
-                                        <BodyShort>Alle oppgaver på personen innen relevant tema. Oppgaver som er under
-                                            behandling her vises ikke her</BodyShort>
-                                        <OppgaverForPersonTabell maskertPersonIdent={personid}/>
+                                        <BodyShort>
+                                            Alle oppgaver på personen innen relevant tema. Oppgaver som er under
+                                            behandling her vises ikke her
+                                        </BodyShort>
+                                        <OppgaverForPersonTabell maskertPersonIdent={personid} />
                                     </VStack>
                                 </Box>
                             </Tabs.Panel>

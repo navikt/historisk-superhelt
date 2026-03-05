@@ -1,8 +1,7 @@
-
 .redigeringsMeny {
     padding: 2px;
 
-    button{
+    button {
         vertical-align: top;
         height: 32px;
         margin-left: 2px;
@@ -12,7 +11,7 @@
         background-color: darkgrey;
     }
 }
-.editor{
+.editor {
     /* Fjerner blå fokus-ring rundt editoren  */
     *:focus {
         outline: none;
@@ -24,4 +23,3 @@
     border: 2px solid var(--ax-border-danger);
     border-radius: var(--ax-radius-8);
 }
-

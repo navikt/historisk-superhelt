@@ -5,7 +5,15 @@
         "clientKind": "git"
     },
     "files": {
-        "includes": ["**", "!!**/dist", "!!**/generated", "!!**/node", "!!**/node_modules", "!!**/target", "!!package-lock.json"]
+        "includes": [
+            "**",
+            "!!**/dist",
+            "!!**/generated",
+            "!!**/node",
+            "!!**/node_modules",
+            "!!**/target",
+            "!!package-lock.json"
+        ]
     },
     "formatter": {
         "enabled": true,

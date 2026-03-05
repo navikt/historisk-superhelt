@@ -1,49 +1,49 @@
-import {BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer} from "@navikt/ds-react";
-import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {LeaveIcon} from "@navikt/aksel-icons";
-import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
-import {useState} from "react";
-import {findPersonByFnr as findPerson} from "@generated";
+import { findPersonByFnr as findPerson } from "@generated";
+import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
+import { LeaveIcon } from "@navikt/aksel-icons";
+import { BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
 export function Header() {
     const [search, setSearch] = useState<string>();
     const [searchError, setSearchError] = useState<string>();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const {data: user} = useSuspenseQuery({
-        ...getUserInfoOptions()
-    })
+    const { data: user } = useSuspenseQuery({
+        ...getUserInfoOptions(),
+    });
 
     const hasAccess = user.roles.length > 0;
 
     async function doSearch() {
-        setSearchError(undefined)
+        setSearchError(undefined);
         if (search?.length !== 11) {
-            setSearchError("Ugyldig fødselsnummer")
-            return
+            setSearchError("Ugyldig fødselsnummer");
+            return;
         }
 
-        const {data, error} = await findPerson({
-                body: {fnr: search!}
-            }
-        )
+        const { data, error } = await findPerson({
+            body: { fnr: search! },
+        });
         if (error) {
             const errorMessage = error.detail ?? "Noe gikk galt";
-            setSearchError(errorMessage)
-            return
+            setSearchError(errorMessage);
+            return;
         }
-        await navigate({to: "/person/$personid", params: {personid: data?.maskertPersonident!}})
-        setSearch("")
-        setSearchError(undefined)
-
+        await navigate({ to: "/person/$personid", params: { personid: data?.maskertPersonident! } });
+        setSearch("");
+        setSearchError(undefined);
     }
 
     return (
         <InternalHeader>
             <InternalHeader.Title as="h1">
-                <Link data-color="neutral" as={RouterLink} to={"/"} underline={false}><img src="/logo.svg" height="35rem"
-                                                                                          alt={""}/>Superhelt</Link>
+                <Link data-color="neutral" as={RouterLink} to={"/"} underline={false}>
+                    <img src="/logo.svg" height="35rem" alt={""} />
+                    Superhelt
+                </Link>
             </InternalHeader.Title>
             <HStack
                 as="form"
@@ -65,13 +65,10 @@ export function Header() {
                     error={searchError}
                 />
             </HStack>
-            <Spacer/>
+            <Spacer />
 
             <Dropdown>
-                <InternalHeader.UserButton
-                    as={Dropdown.Toggle}
-                    name={user?.name ?? "--"}
-                />
+                <InternalHeader.UserButton as={Dropdown.Toggle} name={user?.name ?? "--"} />
                 <Dropdown.Menu>
                     <dl>
                         <BodyShort as="dt" size="small">
@@ -79,10 +76,10 @@ export function Header() {
                         </BodyShort>
                         <Detail as="dd">Roller: {user?.roles}</Detail>
                     </dl>
-                    <Dropdown.Menu.Divider/>
+                    <Dropdown.Menu.Divider />
                     <Dropdown.Menu.List>
                         <Dropdown.Menu.List.Item as="a" href="/oauth2/logout">
-                            Logg ut <Spacer/> <LeaveIcon aria-hidden fontSize="1.5rem"/>
+                            Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
                         </Dropdown.Menu.List.Item>
                     </Dropdown.Menu.List>
                 </Dropdown.Menu>

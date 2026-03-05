@@ -1,33 +1,41 @@
-import {Button, VStack} from "@navikt/ds-react";
-import {Sak} from "@generated";
-import {ArrowCirclepathReverseIcon} from "@navikt/aksel-icons";
-import {useMutation} from "@tanstack/react-query";
-import {ferdigstillSakMutation} from "@generated/@tanstack/react-query.gen";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import type { Sak } from "@generated";
+import { ferdigstillSakMutation } from "@generated/@tanstack/react-query.gen";
+import { ArrowCirclepathReverseIcon } from "@navikt/aksel-icons";
+import { Button, VStack } from "@navikt/ds-react";
+import { useMutation } from "@tanstack/react-query";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
 interface Props {
-    sak: Sak
+    sak: Sak;
 }
 
-export default function RetryFerdigstillSakButton({sak}: Props) {
+export default function RetryFerdigstillSakButton({ sak }: Props) {
     const invalidateSakQuery = useInvalidateSakQuery();
     const ferdigstillMutation = useMutation({
-        ...ferdigstillSakMutation()
-        , onSuccess: () => {
+        ...ferdigstillSakMutation(),
+        onSuccess: () => {
             invalidateSakQuery(sak.saksnummer);
-        }
-    })
+        },
+    });
 
     function retryUtbetaling() {
-        ferdigstillMutation.mutate({path: {saksnummer: sak.saksnummer}})
+        ferdigstillMutation.mutate({ path: { saksnummer: sak.saksnummer } });
     }
 
-    return <VStack>
-        <Button variant="secondary" data-color={"warning"} onClick={retryUtbetaling}
-                disabled={sak.status!== "FERDIG_ATTESTERT"}
+    return (
+        <VStack>
+            <Button
+                variant="secondary"
+                data-color={"warning"}
+                onClick={retryUtbetaling}
+                disabled={sak.status !== "FERDIG_ATTESTERT"}
                 loading={ferdigstillMutation.status === "pending"}
-                icon={<ArrowCirclepathReverseIcon/>}>Ferdigstill sak</Button>
-        <ErrorAlert error={ferdigstillMutation.error}/>
-    </VStack>
+                icon={<ArrowCirclepathReverseIcon />}
+            >
+                Ferdigstill sak
+            </Button>
+            <ErrorAlert error={ferdigstillMutation.error} />
+        </VStack>
+    );
 }
