@@ -1,7 +1,7 @@
 import {
-    getKodeverkSakStatusOptions,
+    getKodeverkSakStatusOptions as getKodeverkSakStatusQueryOptions,
     getKodeverkStonadTypeOptions,
-    getKodeverkVedtaksResultatOptions,
+    getKodeverkVedtaksResultatOptions as getKodeverkVedtaksResultatQueryOptions,
     getSakBySaksnummerOptions,
     getSakBySaksnummerQueryKey,
 } from "@generated/@tanstack/react-query.gen";
@@ -18,12 +18,12 @@ export const getKodeverkStonadsTypeOptions = () => ({
     staleTime: Infinity,
 });
 
-export const getKodeverkSakStatusKodeOptions = () => ({
-    ...getKodeverkSakStatusOptions(),
+export const getKodeverkSakStatusOptions = () => ({
+    ...getKodeverkSakStatusQueryOptions(),
     staleTime: Infinity,
 });
 
-export const getKodeverkVedtaksResultatKodeOptions = () => ({
-    ...getKodeverkVedtaksResultatOptions(),
+export const getKodeverkVedtaksResultatOptions = () => ({
+    ...getKodeverkVedtaksResultatQueryOptions(),
     staleTime: Infinity,
 });
