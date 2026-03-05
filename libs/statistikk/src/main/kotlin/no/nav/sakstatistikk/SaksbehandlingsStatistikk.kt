@@ -11,7 +11,7 @@ import java.time.LocalDate
  * Generert med copilot fra https://confluence.adeo.no/spaces/navdvh/pages/494772092/Teknisk+beskrivelse+av+behov+til+felles+saksbehandlingsstatistikk
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class Saksbehandlingsstatistikk(
+data class SaksbehandlingsStatistikk(
 
     /**
      * Løpenummer med identifiserende unik verdi for hver enkelt rad i BigQuery.
