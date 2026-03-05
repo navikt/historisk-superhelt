@@ -4,7 +4,7 @@ Saksbehandling og engangsutbetaling på enkle helseytelser. Erstatter InfoTrygd-
 
 > Alle trenger hjelp av en superhelt en gang i blant
 
-### Stønader som støttes
+## Stønader som støttes
 - Ortoser
 - Parykk
 - Fottøy
@@ -81,13 +81,6 @@ Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
 ### Testpersoner
 
 Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
-
-| FNR | Scenario |
-|-----|----------|
-| `70000000001` | Person med dødsdato 2023-06-15 |
-| `70000000002` | Person med verge |
-| `60000000001` | Person med strengt fortrolig adresse |
-| `40300000001` | Person som avvises av tilgangsmaskin (habilitet) |
 
 ### Formatering og linting (frontend)
 
