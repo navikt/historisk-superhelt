@@ -4,6 +4,10 @@ import type { SakVedtakType } from "~/routes/sak/$saksnummer/-types/sak.types";
 
 export function useSakVedtakNavn() {
     const { data: vedtaksResultater } = useSuspenseQuery(getKodeverkVedtaksResultatKodeOptions());
-    return (vedtak: SakVedtakType | undefined | null) =>
-        vedtaksResultater.find((v) => v.vedtaksResultat === vedtak)?.navn;
+    return (vedtak: SakVedtakType | undefined | null) => {
+        if (vedtak == null) {
+            return "";
+        }
+        return vedtaksResultater.find((v) => v.vedtaksResultat === vedtak)?.navn ?? vedtak;
+    };
 }

@@ -14,9 +14,10 @@ interface JournalpostDokument {
     dokumentTittel?: string;
 }
 
-const generateDokId = (dok?: JournalpostDokument) => {
-    return `${dok?.journalpostId}@${dok?.dokumentInfoId}`;
-};
+const generateDokId = (dok?: JournalpostDokument): string | undefined => {
+    if (!dok) return undefined;
+    return `${dok.journalpostId}@${dok.dokumentInfoId}`;
+}
 
 const getTitle = (d: JournalpostDokument, index: number) => {
     const { dokumentTittel, journalpostTittel } = d;
@@ -43,7 +44,7 @@ export function MultiPdfViewer({ journalPoster }: Props) {
     const [selected, setSelected] = useState<string | undefined>(generateDokId(firstDokument));
     const [journalpostId, dokId] = selected ? selected.split("@") : [undefined, undefined];
 
-    if (journalPoster.length === 0) {
+    if (journalPoster.length === 0 || dokumenter.length === 0) {
         return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>;
     }
 
@@ -51,7 +52,7 @@ export function MultiPdfViewer({ journalPoster }: Props) {
         <Box width={"100%"}>
             <Select label="Dokumenter i saken" hideLabel value={selected} onChange={(e) => setSelected(e.target.value)}>
                 {dokumenter.map((d, index) => (
-                    <option key={generateDokId(d)} value={generateDokId(d)}>
+                    <option key={generateDokId(d)} value={generateDokId(d) ?? ""}>
                         {getTitle(d, index)}
                     </option>
                 ))}
