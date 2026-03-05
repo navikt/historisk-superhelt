@@ -1,9 +1,9 @@
-import { Alert, BodyShort, Box, CopyButton, HStack, Link, Tag, Tooltip } from "@navikt/ds-react";
 import { PersonIcon } from "@navikt/aksel-icons";
-import { Link as RouterLink } from "@tanstack/react-router";
+import { Alert, BodyShort, Box, CopyButton, HStack, Link, Tag, Tooltip } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { finnPersonQuery } from "~/common/person/person.query";
+import { Link as RouterLink } from "@tanstack/react-router";
 import { isoTilLokal } from "~/common/dato.utils";
+import { finnPersonQuery } from "~/common/person/person.query";
 import { enumkodeTilTekst } from "~/common/string.utils";
 
 interface Props {

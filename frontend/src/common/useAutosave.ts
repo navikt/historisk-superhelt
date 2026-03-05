@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import { useEffect, useRef } from "react";
 import useDebounce from "./useDebounce";
 
 /**
@@ -15,4 +15,3 @@ export function useAutoSave<T>(value: T, saveFunction: (value: T) => void, delay
         saveFunction(debouncedValue);
     }, [debouncedValue]);
 }
-

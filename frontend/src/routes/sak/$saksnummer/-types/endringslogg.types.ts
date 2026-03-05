@@ -1,3 +1,3 @@
-import {EndringsloggLinje} from "@generated";
+import type { EndringsloggLinje } from "@generated";
 
-export type EndringsloggType = EndringsloggLinje["type"]
+export type EndringsloggType = EndringsloggLinje["type"];

@@ -1,6 +1,6 @@
 .pdfViewer {
-   select {
-      background-color: var(--ax-neutral-900);
-      color: var(--ax-text-neutral-contrast);
-   }
+    select {
+        background-color: var(--ax-neutral-900);
+        color: var(--ax-text-neutral-contrast);
+    }
 }

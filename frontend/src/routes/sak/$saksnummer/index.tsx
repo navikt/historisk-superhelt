@@ -1,16 +1,15 @@
-import {createFileRoute, useNavigate} from '@tanstack/react-router'
-import {useEffect} from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
-export const Route = createFileRoute('/sak/$saksnummer/')({
+export const Route = createFileRoute("/sak/$saksnummer/")({
     component: SakIndex,
-})
+});
 
 function SakIndex() {
-    const {saksnummer} = Route.useParams()
+    const { saksnummer } = Route.useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        navigate({to: "/sak/$saksnummer/opplysninger", params: {saksnummer}, replace: true});
-    }, [saksnummer])
-
+        navigate({ to: "/sak/$saksnummer/opplysninger", params: { saksnummer }, replace: true });
+    }, [saksnummer]);
 }

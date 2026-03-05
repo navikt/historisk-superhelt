@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from "react";
 
 /**
  * Debounce hook to delay updating the value until after a specified delay

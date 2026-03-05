@@ -1,33 +1,31 @@
-import {createFileRoute, redirect} from '@tanstack/react-router'
-import {getOppgaveOptions} from "@generated/@tanstack/react-query.gen";
-import {BodyShort, Heading, VStack} from "@navikt/ds-react";
+import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
+import { BodyShort, Heading, VStack } from "@navikt/ds-react";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/oppgave/$oppgaveid/')({
-    loader: async ({params: {oppgaveid}, context}) => {
-        const oppgave = await context.queryClient.ensureQueryData(getOppgaveOptions({path: {oppgaveId: Number(oppgaveid)}}));
+export const Route = createFileRoute("/oppgave/$oppgaveid/")({
+    loader: async ({ params: { oppgaveid }, context }) => {
+        const oppgave = await context.queryClient.ensureQueryData(
+            getOppgaveOptions({ path: { oppgaveId: Number(oppgaveid) } }),
+        );
 
         if (oppgave.oppgavetype === "JFR") {
-            throw redirect({to: "/oppgave/$oppgaveid/journalfor", params: {oppgaveid}});
+            throw redirect({ to: "/oppgave/$oppgaveid/journalfor", params: { oppgaveid } });
         }
         if (oppgave.saksnummer) {
-            throw redirect({to: "/sak/$saksnummer/opplysninger", params: {saksnummer: oppgave.saksnummer}});
+            throw redirect({ to: "/sak/$saksnummer/opplysninger", params: { saksnummer: oppgave.saksnummer } });
         }
         return oppgave;
-
-
     },
-    component: OppgaveComponent
-})
+    component: OppgaveComponent,
+});
 
 function OppgaveComponent() {
-    const oppgave = Route.useLoaderData()
+    const oppgave = Route.useLoaderData();
     return (
         <VStack gap={"space-24"}>
             <Heading size="xlarge">Oppgave {oppgave.oppgaveId}</Heading>
             <BodyShort>Vet ikke hvordan denne skal behandles</BodyShort>
-            <pre>
-            {JSON.stringify(oppgave, null, 2)}
-        </pre>
+            <pre>{JSON.stringify(oppgave, null, 2)}</pre>
         </VStack>
     );
 }

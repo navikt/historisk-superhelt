@@ -1,18 +1,18 @@
-import {TextField, VStack} from '@navikt/ds-react'
+import { TextField, VStack } from "@navikt/ds-react";
 
 interface Props {
-    value?: string
-    index?: number
-    name?: string
-    error?: string
-    readOnly?: boolean
+    value?: string;
+    index?: number;
+    name?: string;
+    error?: string;
+    readOnly?: boolean;
 }
 
 function getDokumentLabel(index: number): string {
-    return index > 0 ? `Dokumenttittel ${index + 1}` : 'Dokumenttittel'
+    return index > 0 ? `Dokumenttittel ${index + 1}` : "Dokumenttittel";
 }
 
-export function DokumentTittelFelt({value, error, name, index = 0, readOnly}: Props) {
+export function DokumentTittelFelt({ value, error, name, index = 0, readOnly }: Props) {
     return (
         <VStack gap="space-16">
             <TextField
@@ -23,5 +23,5 @@ export function DokumentTittelFelt({value, error, name, index = 0, readOnly}: Pr
                 readOnly={readOnly}
             />
         </VStack>
-    )
+    );
 }
