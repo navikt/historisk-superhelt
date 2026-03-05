@@ -1,59 +1,98 @@
 # Superhelt
 
-Saksbehanding og Utbetaling På Enkle Regler innen Helsetjenster
+Saksbehandling og engangsutbetaling på enkle helseytelser. Erstatter InfoTrygd-rutiner HT-MV, SB-SA og GE-PP.
 
->Alle trenger hjelp av en superhelt en gang i blant
+> Alle trenger hjelp av en superhelt en gang i blant
 
-App som skal tilby saksbehandling og engangsutbetaling på en rekke enkle stønader. 
-Målet med appen er å erstatte infotrygd rutiner  HT-MV, SB-SA og GE-PP
-
-### Stønader som skal støttes
+### Stønader som støttes
 - Ortoser
 - Parykk
 - Fottøy
 - Proteser
 - Reiseutgifter
 
-## Lokal utvikling
+## Arkitektur
 
-### TestContainers
-For å kjøre tester lokalt må du ha Docker installert og kjørende på maskinen din. TestContainers vil automatisk laste ned og starte nødvendige containere for testene.
-
-For Colima på Mac, sjekk https://golang.testcontainers.org/system_requirements/using_colima/
-
-### Test personer
-Mock-serveren har forhåndsdefinerte testpersoner for ulike scenarier. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
-
-Eksempler:
-- `70000000001` - Person med dødsdato 2023-06-15
-- `70000000002` - Person med verge
-- `60000000001` - Person med strengt fortrolig adresse
-- `40300000001` - Person som avvises av tilgangsmaskin (habilitet)
-
-### Tjenester som appen trenger
-```shell
-docker-compose up
 ```
-### Backend
-Start backend i ved å kjøre [DevApplication.kt](./backend/src/test/kotlin/no/nav/historisk/superhelt/DevApplication.kt) i IDE
-
-Appen er da tilgjengelig på http://localhost:4000 med pålogging via wonderwall. Frontend blir oppdatert ved bygg av frontend
-
-### Frontend
-```shell
-# i /frontend
-npm start 
+root (Maven multi-module)
+├── backend/    Spring Boot + Kotlin – REST API, Kafka, JPA
+├── frontend/   React 19 + TanStack Router/Query + Nav Aksel DS
+├── libs/       Interne Kotlin-biblioteker (common-types, pdl, helved, tilgangsmaskin, dokarkiv, oppgave, pdfgen)
+├── mocks/      Mock-server + mock-oidc for lokal utvikling
+├── pdfgen/     Brevgenerator (Docker)
+└── e2e/        Playwright-tester (kjøres mot kjørende app)
 ```
 
-Appen er da tilgjengelig på http://localhost:3000 med hot reload, devtools mm ++
-Pålogging må skje via http://localhost:4000
+### Saksflyten
 
-#### Formatering og linting
-Prosjektet bruker Biome for formatering og linting av frontend koden
+1. Saksbehandler oppretter **Sak** → fyller inn opplysninger → sender til attestering
+2. Attestant attesterer → sak ferdigstilles → **Vedtak** lagres
+3. Ved innvilgelse sendes **Utbetaling** til Helved via Kafka (`historisk.utbetaling.v1`) og vedtaket journalføres i Dokarkiv og distribueres
+4. Helved returnerer utbetalingsstatuser tilbake på `helved.status.v1`
 
-```shell
-npm run biome # kjører formatter og linter
-npm run biome:write # kjører formatter og linter, og skriver endringer til filene
-```
+**Auth:** Azure AD via Nais Wonderwall (sidecar). Lokalt kjøres mock-oidc + Wonderwall i Docker.
 
 ![nettverksopplegg](./docs/super-docker-compose.png)
+
+## Lokal utvikling
+
+### Oppstartsrekkefølge
+
+**1. Start avhengigheter (Postgres, Kafka, Wonderwall, mock-oidc):**
+```shell
+docker compose up
+```
+
+**2. Start backend** ved å kjøre [DevApplication.kt](./backend/src/test/kotlin/no/nav/historisk/superhelt/DevApplication.kt) i IDE.
+
+Appen er tilgjengelig på http://localhost:4000 (gjennom Wonderwall med mock-auth).
+
+**3. Start frontend:**
+```shell
+# i /frontend
+npm start
+```
+
+Frontend er tilgjengelig på http://localhost:3000 med hot reload.  
+Innlogging skjer via http://localhost:4000 (Wonderwall håndterer auth – `:3000` alene vil ikke fungere).
+
+### Tester
+
+**Backend** – krever Docker kjørende (TestContainers):
+```shell
+mvn test
+```
+For Colima på Mac, se https://golang.testcontainers.org/system_requirements/using_colima/
+
+**Frontend:**
+```shell
+# i /frontend
+npm run test
+```
+
+**E2E** – krever at hele appen kjører:
+```shell
+# i /e2e
+npx playwright test        # headless
+npx playwright test --ui   # med UI
+```
+Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
+
+### Testpersoner
+
+Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
+
+| FNR | Scenario |
+|-----|----------|
+| `70000000001` | Person med dødsdato 2023-06-15 |
+| `70000000002` | Person med verge |
+| `60000000001` | Person med strengt fortrolig adresse |
+| `40300000001` | Person som avvises av tilgangsmaskin (habilitet) |
+
+### Formatering og linting (frontend)
+
+```shell
+# i /frontend
+npm run biome        # sjekk
+npm run biome:write  # sjekk og skriv endringer
+```
