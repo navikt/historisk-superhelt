@@ -46,7 +46,7 @@ class SakRettigheterTest {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.UNDER_BEHANDLING
             )
-            assertThat( sak.gjenapnet ).isTrue
+
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE,
@@ -61,6 +61,7 @@ class SakRettigheterTest {
                 status = SakStatus.UNDER_BEHANDLING,
                 behandlingsnummer = Behandlingsnummer(2)
             )
+            assertThat( sak.gjenapnet ).isTrue
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE
