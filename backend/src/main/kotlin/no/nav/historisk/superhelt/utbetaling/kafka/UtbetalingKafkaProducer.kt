@@ -41,7 +41,7 @@ class UtbetalingKafkaProducer(
                 )
             )
         }
-        
+
         val utbetalingMelding = UtbetalingMelding(
             id = id,
             sakId = sak.saksnummer.value,
@@ -56,13 +56,13 @@ class UtbetalingKafkaProducer(
             beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
         )
 
-       
+
 
         if (perioder.isEmpty()) {
-            logger.info("Annulerer utbetaling {} for sak {}, sender melding med tomme perioder", utbetaling.transaksjonsId, sak.saksnummer)
+            logger.info("Annulerer utbetaling {}, sender melding med tomme perioder", utbetaling.loggId)
         }
 
-        logger.debug("Sender melding til utbetaling {}:{}", utbetalingTopic, key)
+        logger.debug("Sender melding til utbetaling {}  på topic {}", utbetaling.loggId, utbetalingTopic)
         kafkaTemplate.send(utbetalingTopic, key.toString(), utbetalingMelding).get()
         utbetalingRepository.setUtbetalingStatusSendt(utbetaling.transaksjonsId)
     }
