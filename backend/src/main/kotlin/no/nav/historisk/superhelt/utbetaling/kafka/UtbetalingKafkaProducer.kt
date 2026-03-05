@@ -28,34 +28,42 @@ class UtbetalingKafkaProducer(
     fun sendTilUtbetaling(sak: Sak, utbetaling: Utbetaling) {
         val id = utbetaling.utbetalingsUuid
         val key = utbetaling.transaksjonsId
-        // TODO vedtakstidspunkt fra sak/utbetaling når vi har det
         val vedtaksTidspunkt = utbetaling.utbetalingTidspunkt ?: Instant.now()
-        val melding =
-            UtbetalingMelding(
-                id = id,
-                sakId = sak.saksnummer.value,
-                behandlingId = sak.behandlingsnummer.toString(),
-                personident = sak.fnr.value,
-                stønad = sak.type.klassekode,
 
-                vedtakstidspunkt = vedtaksTidspunkt,
-                periodetype = Periodetype.EN_GANG,
-                perioder =
-                    listOf(
-                        Periode(
-                            fom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
-                            tom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
-                            beløp = utbetaling.belop.value
-                        )
-                    ),
-                saksbehandler = sak.saksbehandler.navIdent.value,
-                beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
+        val perioder: List<Periode> = if (utbetaling.annulleres) {
+            emptyList()
+        } else {
+            listOf(
+                Periode(
+                    fom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
+                    tom = LocalDate.ofInstant(vedtaksTidspunkt, ZoneOffset.systemDefault()),
+                    beløp = utbetaling.belop.value
+                )
             )
+        }
+        
+        val utbetalingMelding = UtbetalingMelding(
+            id = id,
+            sakId = sak.saksnummer.value,
+            behandlingId = sak.behandlingsnummer.toString(),
+            personident = sak.fnr.value,
+            stønad = sak.type.klassekode,
 
-        logger.debug("Sender til utbetaling {}:{}", utbetalingTopic, key)
-        val result = kafkaTemplate.send(utbetalingTopic, key.toString(), melding).get()
-        //TODO håndter feilsituasjoner
+            vedtakstidspunkt = vedtaksTidspunkt,
+            periodetype = Periodetype.EN_GANG,
+            perioder = perioder,
+            saksbehandler = sak.saksbehandler.navIdent.value,
+            beslutter = sak.attestant?.navIdent?.value ?: sak.saksbehandler.navIdent.value,
+        )
+
+       
+
+        if (perioder.isEmpty()) {
+            logger.info("Annulerer utbetaling {} for sak {}, sender melding med tomme perioder", utbetaling.transaksjonsId, sak.saksnummer)
+        }
+
+        logger.debug("Sender melding til utbetaling {}:{}", utbetalingTopic, key)
+        kafkaTemplate.send(utbetalingTopic, key.toString(), utbetalingMelding).get()
         utbetalingRepository.setUtbetalingStatusSendt(utbetaling.transaksjonsId)
-
     }
 }
