@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.utbetaling
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
@@ -22,6 +23,9 @@ class UtbetalingService(
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
     fun sendTilUtbetaling(sak: Sak) {
+        if (sak.status !in listOf(SakStatus.FERDIG_ATTESTERT, SakStatus.FERDIG)) {
+           throw IllegalArgumentException("Sak ${sak.saksnummer} er i status ${sak.status} og kan derfor ikke sendes til utbetaling")
+        }
         val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
         if (utbetaling != null) {
             logger.debug(

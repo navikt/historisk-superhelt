@@ -4,10 +4,7 @@ import no.nav.common.types.Belop
 import no.nav.helved.UtbetalingMelding
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
-import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.sak.UpdateSakDto
+import no.nav.historisk.superhelt.sak.*
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.withMockedUser
@@ -49,23 +46,30 @@ class UtbetalingServiceTest {
     private lateinit var sakEndringsloggService: EndringsloggService
 
 
-    private fun lagreSakMedUtbetaling(status: UtbetalingStatus = UtbetalingStatus.UTKAST): Pair<Sak, Utbetaling> {
+    private fun lagreSakMedUtbetaling(utbetalingStatus: UtbetalingStatus = UtbetalingStatus.UTKAST): Pair<Sak, Utbetaling> {
         val savedSak = lagreSak()
         val utbetaling = withMockedUser {
             val utbetaling = utbetalingRepository.opprettUtbetaling(savedSak)
-            utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, status)
+            utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, utbetalingStatus)
             utbetaling
         }
         return Pair(savedSak, utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)!!)
     }
 
-    private fun lagreSak(utbetalingsType: UtbetalingsType= UtbetalingsType.BRUKER, vedtaksResultat: VedtaksResultat= VedtaksResultat.INNVILGET): Sak {
+    private fun lagreSak(
+        utbetalingsType: UtbetalingsType = UtbetalingsType.BRUKER,
+        vedtaksResultat: VedtaksResultat = VedtaksResultat.INNVILGET,
+        sakStatus: SakStatus = SakStatus.FERDIG
+    ): Sak {
         val savedSak = withMockedUser {
             val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
-            sakRepository.updateSak(sak.saksnummer, UpdateSakDto(
-                utbetalingsType = utbetalingsType,
-                vedtaksResultat = vedtaksResultat
-            ))
+            sakRepository.updateSak(
+                sak.saksnummer, UpdateSakDto(
+                    status = sakStatus,
+                    utbetalingsType = utbetalingsType,
+                    vedtaksResultat = vedtaksResultat
+                )
+            )
         }
         return savedSak
     }
@@ -87,11 +91,26 @@ class UtbetalingServiceTest {
     @Nested
     inner class SendTilUtbetaling {
 
+        @EnumSource(names = ["UNDER_BEHANDLING", "TIL_ATTESTERING", "FEILREGISTRERT"])
+        @ParameterizedTest
+        fun `skal kaste exeption når sakstatus er`(sakStatus: SakStatus) {
+            val sak = lagreSak(sakStatus = sakStatus)
+            assertThrows<IllegalArgumentException> { utbetalingService.sendTilUtbetaling(sak) }
+        }
+
+        @EnumSource(names = ["FERDIG_ATTESTERT", "FERDIG"])
+        @ParameterizedTest
+        fun `skal behandle saker med sakstatus`(sakStatus: SakStatus) {
+            mockKafkaSuccess()
+            val sak = lagreSak(sakStatus = sakStatus)
+            utbetalingService.sendTilUtbetaling(sak)
+        }
+
         @EnumSource(names = ["UTKAST", "KLAR_TIL_UTBETALING"])
         @ParameterizedTest
-        fun `skal sende utbetaling når status er`(utbetalingsStatus: UtbetalingStatus) {
+        fun `skal sende utbetaling når utbetalngs status er`(utbetalingsStatus: UtbetalingStatus) {
             mockKafkaSuccess()
-            val (sak, utbetaling) = lagreSakMedUtbetaling(status = utbetalingsStatus)
+            val (sak, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = utbetalingsStatus)
 
             utbetalingService.sendTilUtbetaling(sak)
 
@@ -108,7 +127,7 @@ class UtbetalingServiceTest {
         @Test
         fun `skal sende korrekt melding til kafka topic`() {
             mockKafkaSuccess()
-            val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
+            val (sak, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTKAST)
 
             utbetalingService.sendTilUtbetaling(sak)
 
@@ -130,7 +149,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal ikke gjøre noe når sak mangler utbetaling`() {
-            val sak = SakTestData.sakUtenUtbetaling()
+            val sak = lagreSak(utbetalingsType = UtbetalingsType.INGEN)
             utbetalingService.sendTilUtbetaling(sak)
             verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
         }
@@ -164,7 +183,7 @@ class UtbetalingServiceTest {
         @EnumSource(names = ["SENDT_TIL_UTBETALING", "MOTTATT_AV_UTBETALING", "UTBETALT", "FEILET"])
         @ParameterizedTest
         fun `skal ignorere når utbetaling finnes og status er `(utbetalingsStatus: UtbetalingStatus) {
-            val (sak, _) = lagreSakMedUtbetaling(status = utbetalingsStatus)
+            val (sak, _) = lagreSakMedUtbetaling(utbetalingStatus = utbetalingsStatus)
             utbetalingService.sendTilUtbetaling(sak)
             verify(kafkaTemplate, never()).send(any<String>(), any<String>(), any<UtbetalingMelding>())
         }
@@ -189,7 +208,7 @@ class UtbetalingServiceTest {
         @Test
         fun `skal sette status KLAR_TIL_UTBETALING selv om kafka feiler`() {
             mockKafkaFailure()
-            val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
+            val (sak, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTKAST)
 
             assertThrows<Exception> { utbetalingService.sendTilUtbetaling(sak) }
 
@@ -205,7 +224,7 @@ class UtbetalingServiceTest {
         @Test
         fun `skal håndtere kafka broker unavailable exception`() {
             mockKafkaFailure(KafkaException("Broker not available"))
-            val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
+            val (sak, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTKAST)
 
             assertThrows<Exception> { utbetalingService.sendTilUtbetaling(sak) }
 
@@ -216,7 +235,7 @@ class UtbetalingServiceTest {
         @Test
         fun `skal håndtere serialization exception fra kafka`() {
             mockKafkaFailure(RuntimeException("Serialization failed"))
-            val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTKAST)
+            val (sak, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTKAST)
 
             assertThrows<Exception> { utbetalingService.sendTilUtbetaling(sak) }
 
@@ -231,7 +250,7 @@ class UtbetalingServiceTest {
         @Test
         fun `skal opprette ny utbetaling med nytt behandlingsnummer`() {
             mockKafkaSuccess()
-            val (sak, gammelUtbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+            val (sak, gammelUtbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTBETALT)
             val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
 
             utbetalingService.sendTilUtbetaling(gjenapnetSak)
@@ -255,7 +274,7 @@ class UtbetalingServiceTest {
         @ParameterizedTest
         fun `skal annullere ved gjenåpning og vedtaksresultat`(resultat: VedtaksResultat) {
             mockKafkaSuccess()
-            val (sak, _) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+            val (sak, _) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTBETALT)
             withMockedUser { sakRepository.updateSak(sak.saksnummer, UpdateSakDto(vedtaksResultat = resultat)) }
             val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
 
@@ -291,7 +310,7 @@ class UtbetalingServiceTest {
         @ParameterizedTest
         fun `skal opprette ny utbetaling ved gjenåpning med tidligere utbetaling og vedtaksresultat`(resultat: VedtaksResultat) {
             mockKafkaSuccess()
-            val (sak, gammelUtbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+            val (sak, gammelUtbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTBETALT)
             withMockedUser { sakRepository.updateSak(sak.saksnummer, UpdateSakDto(vedtaksResultat = resultat)) }
             val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
 
@@ -323,7 +342,7 @@ class UtbetalingServiceTest {
         @Test
         fun `skal annullere ved INNVILGET vedtaksresultat og forhandstilsagn`() {
             mockKafkaSuccess()
-            val (sak, tidligereUtbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+            val (sak, tidligereUtbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTBETALT)
             withMockedUser {
                 sakRepository.updateSak(
                     sak.saksnummer,
@@ -353,7 +372,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal oppdatere status fra SENDT til MOTTATT`() {
-            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.SENDT_TIL_UTBETALING)
+            val (_, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.SENDT_TIL_UTBETALING)
 
             utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.MOTTATT_AV_UTBETALING)
 
@@ -363,7 +382,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal ikke oppdatere status når utbetaling er i final status UTBETALT`() {
-            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.UTBETALT)
+            val (_, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTBETALT)
 
             utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.MOTTATT_AV_UTBETALING)
 
@@ -374,7 +393,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal ikke oppdatere status når utbetaling er i final status FEILET`() {
-            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.FEILET)
+            val (_, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.FEILET)
 
             utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.BEHANDLET_AV_UTBETALING)
 
@@ -385,7 +404,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal ikke oppdatere status når ny status er lavere enn eksisterende`() {
-            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.MOTTATT_AV_UTBETALING)
+            val (_, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.MOTTATT_AV_UTBETALING)
 
             utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.SENDT_TIL_UTBETALING)
 
@@ -396,7 +415,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal oppdatere til BEHANDLET_AV_UTBETALING uten endringslogg`() {
-            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.MOTTATT_AV_UTBETALING)
+            val (_, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.MOTTATT_AV_UTBETALING)
 
             utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.BEHANDLET_AV_UTBETALING)
 
@@ -407,7 +426,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal logge endringslogg UTBETALING_OK og oppdatere status ved UTBETALT`() {
-            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.SENDT_TIL_UTBETALING)
+            val (_, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.SENDT_TIL_UTBETALING)
 
             utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.UTBETALT)
 
@@ -425,7 +444,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal logge endringslogg UTBETALING_FEILET og oppdatere status ved FEILET`() {
-            val (_, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.SENDT_TIL_UTBETALING)
+            val (_, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.SENDT_TIL_UTBETALING)
 
             utbetalingService.updateUtbetalingsStatus(utbetaling, UtbetalingStatus.FEILET)
 
@@ -448,7 +467,7 @@ class UtbetalingServiceTest {
         @Test
         fun `skal sende utbetaling på nytt ved FEILET status`() {
             mockKafkaSuccess()
-            val (sak, utbetaling) = lagreSakMedUtbetaling(status = UtbetalingStatus.FEILET)
+            val (sak, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.FEILET)
 
             utbetalingService.retryUtbetaling(sak)
 
@@ -472,7 +491,7 @@ class UtbetalingServiceTest {
 
         @Test
         fun `skal kaste feil når utbetaling ikke er i FEILET status`() {
-            val (sak, _) = lagreSakMedUtbetaling(status = UtbetalingStatus.SENDT_TIL_UTBETALING)
+            val (sak, _) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.SENDT_TIL_UTBETALING)
 
             assertThrows<IllegalStateException> { utbetalingService.retryUtbetaling(sak) }
 
