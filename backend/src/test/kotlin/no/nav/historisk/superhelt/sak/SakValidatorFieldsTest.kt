@@ -83,17 +83,19 @@ class SakValidatorFieldsTest {
     inner class BegrunnelseValidation {
 
         @Test
-        fun `should pass when begrunnelse is null`() {
+        fun `should fail when begrunnelse is null or blank`() {
             val sak = okSak().copy(begrunnelse = null)
             val validator = SakValidator(sak)
 
             validator.checkSoknad()
 
-            assertThat(validator.validationErrors).isEmpty()
+            assertThat(validator.validationErrors)
+                .hasSize(1)
+                .anyMatch { it.field == "begrunnelse" && it.message.contains("Begrunnelse må være satt") }
         }
 
         @Test
-        fun `should pass when begrunnelse is within length limit`() {
+        fun `should pass when begrunnelse is set and within length limit`() {
             val sak = okSak().copy(begrunnelse = "Valid begrunnelse")
             val validator = SakValidator(sak)
 
