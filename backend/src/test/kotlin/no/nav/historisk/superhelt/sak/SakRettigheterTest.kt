@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak
 
+import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.Role
@@ -45,11 +46,25 @@ class SakRettigheterTest {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.UNDER_BEHANDLING
             )
+
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE,
                 SakRettighet.FEILREGISTERE,
                 SakRettighet.HENLEGGE
+            )
+        }
+
+        @Test
+        fun `får ikke feilregister og henlegg når sak er gjenåpnet`() {
+            val sak = SakTestData.sakUtenUtbetaling().copy(
+                status = SakStatus.UNDER_BEHANDLING,
+                behandlingsnummer = Behandlingsnummer(2)
+            )
+            assertThat( sak.gjenapnet ).isTrue
+            assertThat(sak.rettigheter).containsExactlyInAnyOrder(
+                SakRettighet.LES,
+                SakRettighet.SAKSBEHANDLE
             )
         }
 

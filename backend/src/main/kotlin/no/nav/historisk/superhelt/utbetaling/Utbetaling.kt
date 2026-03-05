@@ -19,6 +19,9 @@ data class Utbetaling(
     /** Skal utbetaling opphøre/annuleres */
     val annulleres: Boolean
         get() = belop.value <= 0
+
+    /** Aggregert loggId for enklere logging */
+    internal val loggId= "sak:$saksnummer-$behandlingsnummer, id:$utbetalingsUuid, transaksjon:$transaksjonsId"
 }
 
 

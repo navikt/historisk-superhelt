@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service
 import tools.jackson.databind.ObjectMapper
 import java.util.*
 
+
 @Service
 class UtbetalingStatusConsumer(
     properties: UtbetalingConfigProperties,
@@ -50,12 +51,7 @@ class UtbetalingStatusConsumer(
         ) {
             val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)
             val newStatus = calculateNewStatus(utbetaling = utbetaling, statusMessage = statusMessage)
-            logger.debug(
-                "Mottatt melding på topic: {} med key: {}. Ny status {}",
-                record.topic(),
-                record.key(),
-                newStatus
-            )
+            logger.debug("Mottatt melding {} . Ny status {}", utbetaling.loggId, newStatus)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus)
         }
     }
@@ -63,12 +59,11 @@ class UtbetalingStatusConsumer(
     private fun calculateNewStatus(
         utbetaling: Utbetaling,
         statusMessage: UtbetalingStatusMelding): UtbetalingStatus {
-        val utbetalingsId = utbetaling.transaksjonsId
 
         return when (statusMessage.status) {
             StatusType.OK -> UtbetalingStatus.UTBETALT
             StatusType.FEILET -> {
-                logger.error("Feilet {} med status {}", utbetalingsId, statusMessage)
+                logger.error("Utbetaling {} feilet med status {}", utbetaling.loggId, statusMessage)
                 UtbetalingStatus.FEILET
             }
 

@@ -54,9 +54,11 @@ class UtbetalingRepository(
             utbetalingStatus = utbetalingStatus,
             transaksjonsId = UUID.randomUUID(),
         )
-        logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sakEntity.saksnummer} behandling ${entity.behandlingsnummer} med beløp $belop")
-        return utbetalingJpaRepository.save(entity).toDomain()
+        val utbetaling = utbetalingJpaRepository.save(entity).toDomain()
+        logger.info("Oppretter utbetaling med ${utbetaling.loggId} med beløp $belop")
+        return utbetaling
     }
+
     fun opprettAnnullering(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling {
         return lagreUtbetaling(
             saksnummer = sak.saksnummer,

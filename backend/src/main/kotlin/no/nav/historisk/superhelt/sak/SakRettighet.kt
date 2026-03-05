@@ -32,10 +32,13 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
-                    rettigheter.add(SakRettighet.HENLEGGE)
-                    // TODO ikke kunne feilregistere en gjenåpnet sak
-                    rettigheter.add(SakRettighet.FEILREGISTERE)
+
+                    if (!gjenapnet) {
+                        rettigheter.add(SakRettighet.HENLEGGE)
+                        rettigheter.add(SakRettighet.FEILREGISTERE)
+                    }
                 }
+
             }
 
             SakStatus.TIL_ATTESTERING -> {
