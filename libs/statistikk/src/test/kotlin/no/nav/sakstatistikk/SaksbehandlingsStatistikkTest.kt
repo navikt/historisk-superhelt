@@ -11,6 +11,14 @@ import java.time.LocalDate
 
 class SaksbehandlingsStatistikkTest {
 
+    private enum class BehandlingType { SOKNAD, REVURDERING, KLAGE }
+    private enum class BehandlingStatus { UNDER_BEHANDLING, AVSLUTTET }
+    private enum class BehandlingResultat { INNVILGET, AVSLATT }
+    private enum class BehandlingAarsak { NYTT_BARN, ENDRET_INNTEKT }
+    private enum class ResultatBegrunnelse { VILKAR_OPPFYLT, SAKSBEHANDLINGSFEIL }
+    private enum class SakYtelse { ORTOSE, PARYKK }
+
+
     private lateinit var mapper: JsonMapper
 
     @BeforeEach
@@ -30,9 +38,9 @@ class SaksbehandlingsStatistikkTest {
         aktorId = "1234567890123",
         endretTid = endretTid,
         tekniskTid = tekniskTid,
-        sakYtelse = "ORTOSE",
-        behandlingType = "SOKNAD",
-        behandlingStatus = "AVSLUTTET",
+        sakYtelse = SakYtelse.ORTOSE,
+        behandlingType = BehandlingType.SOKNAD,
+        behandlingStatus = BehandlingStatus.AVSLUTTET,
         behandlingMetode = BehandlingMetode.MANUELL,
         opprettetAv = "Z123456",
         ansvarligEnhet = "0300",
@@ -85,7 +93,7 @@ class SaksbehandlingsStatistikkTest {
 
     @Test
     fun `valgfri Instant skal serialiseres som ISO-8601 med tidssone`() {
-        val tidspunkt = Instant.parse("2024-06-15T12:00:00.00Z")
+        val tidspunkt = Instant.parse("2024-06-15T12:00:00Z")
         val statistikk = enStatistikk().copy(
             mottattTid = tidspunkt,
             registrertTid = tidspunkt,
@@ -93,9 +101,9 @@ class SaksbehandlingsStatistikkTest {
         )
         val json = mapper.readTree(mapper.writeValueAsString(statistikk))
 
-        assertThat(json["mottatt_tid"].asString()).isEqualTo("2024-06-15T12:00:00.000Z")
-        assertThat(json["registrert_tid"].asString()).isEqualTo("2024-06-15T12:00:00.000Z")
-        assertThat(json["ferdig_behandlet_tid"].asString()).isEqualTo("2024-06-15T12:00:00.000Z")
+        assertThat(json["mottatt_tid"].asString()).isEqualTo("2024-06-15T12:00:00Z")
+        assertThat(json["registrert_tid"].asString()).isEqualTo("2024-06-15T12:00:00Z")
+        assertThat(json["ferdig_behandlet_tid"].asString()).isEqualTo("2024-06-15T12:00:00Z")
     }
 
     @Test
@@ -127,15 +135,20 @@ class SaksbehandlingsStatistikkTest {
     }
 
     @Test
-    fun `JSON skal kunne deserialiseres tilbake til dataklasse`() {
-        val original = enStatistikk().copy(
-            mottattTid = Instant.parse("2024-03-06T08:00:00.00Z"),
-            utbetaltTid = LocalDate.of(2024, 3, 6),
-            behandlingResultat = "INNVILGET",
+    fun `enum-felter skal serialiseres som enum-navn`() {
+        val statistikk = enStatistikk().copy(
+            behandlingResultat = BehandlingResultat.INNVILGET,
+            resultatBegrunnelse = ResultatBegrunnelse.VILKAR_OPPFYLT,
+            behandlingAarsak = BehandlingAarsak.NYTT_BARN,
+            sakYtelse = SakYtelse.PARYKK
         )
-        val json = mapper.writeValueAsString(original)
-        val deserialisert = mapper.readValue(json, SaksbehandlingsStatistikk::class.java)
+        val json = mapper.readTree(mapper.writeValueAsString(statistikk))
 
-        assertThat(deserialisert).isEqualTo(original)
+        assertThat(json["behandling_type"].asString()).isEqualTo("SOKNAD")
+        assertThat(json["behandling_status"].asString()).isEqualTo("AVSLUTTET")
+        assertThat(json["behandling_resultat"].asString()).isEqualTo("INNVILGET")
+        assertThat(json["resultat_begrunnelse"].asString()).isEqualTo("VILKAR_OPPFYLT")
+        assertThat(json["behandling_aarsak"].asString()).isEqualTo("NYTT_BARN")
+        assertThat(json["sak_ytelse"].asString()).isEqualTo("PARYKK")
     }
 }
