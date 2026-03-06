@@ -1,0 +1,48 @@
+name: Bygg og deploy pdfgen
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pdfgen/**'
+      - '.nais/app/pdfgen.yaml'
+      - '.github/workflows/pdfgen.yml'
+
+jobs:
+  build_and_deploy:
+    name: "Bygg og deploy pdfgen"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      # Verify: curl -s https://api.github.com/repos/nais/docker-build-push/git/refs/tags/v0 | jq -r '.object.sha'
+      - name: Bygg og push docker image til GAR
+        uses: nais/docker-build-push@ae613eff6f44f0323476eda1c3994a7c518761c3 #v0
+        id: docker-build-push
+        with:
+          team: historisk
+          docker_context: ./pdfgen
+
+      # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
+      - name: Deploy til dev-gcp
+        uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/app/pdfgen.yaml
+          VARS: .nais/dev.json
+          IMAGE: ${{ steps.docker-build-push.outputs.image }}
+          TELEMETRY: ${{ steps.docker-build-push.outputs.telemetry }}
+
+      # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
+      - name: Deploy til prod-gcp
+        uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/app/pdfgen.yaml
+          VARS: .nais/prod.json
+          IMAGE: ${{ steps.docker-build-push.outputs.image }}
+          TELEMETRY: ${{ steps.docker-build-push.outputs.telemetry }}
