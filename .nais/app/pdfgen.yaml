@@ -5,8 +5,6 @@ metadata:
   namespace: historisk
   labels:
     team: historisk
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
 spec:
   image: "{{image}}"
   port: 8080
@@ -18,11 +16,11 @@ spec:
     application:
       enabled: false
   liveness:
-    path: internal/is_alive
+    path: /internal/is_alive
     initialDelay: 5
     timeout: 10
   readiness:
-    path: internal/is_ready
+    path: /internal/is_ready
     initialDelay: 5
     timeout: 10
   prometheus:
