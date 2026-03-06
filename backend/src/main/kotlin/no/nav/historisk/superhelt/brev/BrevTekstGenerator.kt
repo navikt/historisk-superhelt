@@ -27,7 +27,7 @@ class BrevTekstGenerator(private val sak: Sak) {
 
     private fun generateVedtaksbrev(mottaker: BrevMottaker): String {
         when (mottaker) {
-            BrevMottaker.BRUKER, BrevMottaker.VERGE -> {
+            BrevMottaker.BRUKER -> {
                 val showUtbetaling =
                     sak.utbetalingsType == UtbetalingsType.BRUKER && sak.vedtaksResultat?.isInnvilget() == true && sak.belop != null
 
@@ -65,7 +65,7 @@ class BrevTekstGenerator(private val sak: Sak) {
 
     private fun generateVedtaksbrevTittel(mottaker: BrevMottaker): String {
         return when (mottaker) {
-            BrevMottaker.BRUKER, BrevMottaker.VERGE -> {
+            BrevMottaker.BRUKER -> {
                 if (sak.gjenapnet) {
                     "Korrigert vedtaksbrev om ${sak.type.navn.lowercase()}, ${sak.vedtaksResultat?.navn?.lowercase()}"
                 } else {

@@ -191,7 +191,7 @@ class PersonControllerTest {
         val testVerge = PersonTestData.testPersonMedAdressebeskyttelse.copy(fnr = vergeFnr)
         mockPerson(fnr, testPerson)
         mockPerson(vergeFnr, testVerge)
-        whenever(personService.hentVerge(argThat { this.fnr == fnr })) doReturn testVerge
+        whenever(personService.hentVerge(fnr)) doReturn testVerge
 
         assertThat(findPersonByFnr(fnr))
             .hasStatusOk()

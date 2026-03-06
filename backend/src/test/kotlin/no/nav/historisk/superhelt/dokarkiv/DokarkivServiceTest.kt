@@ -80,7 +80,7 @@ class DokarkivServiceTest {
     @WithMockUser(authorities = ["WRITE"])
     fun `arkiver skal bruke verges FNR når mottaker er verge`() {
         val sak = SakTestData.sakUtenUtbetaling().copy(fnr = PersonTestData.testPersonMedVerge.fnr)
-        val brev = BrevTestdata.vedtaksbrevVerge()
+        val brev = BrevTestdata.vedtaksbrevBruker()
         val pdf = "test pdf".toByteArray()
 
         val expectedResponse = JournalpostResponse(
@@ -90,7 +90,7 @@ class DokarkivServiceTest {
         )
 
         whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
-        whenever(personService.hentPerson(sak.fnr)).thenReturn(PersonTestData.testPersonMedVerge)
+        whenever(personService.hentVerge(sak.fnr)).thenReturn(PersonTestData.testPersonMedVerge)
 
         val result = dokarkivService.arkiver(sak, brev, pdf)
 
@@ -115,20 +115,28 @@ class DokarkivServiceTest {
 
     @Test
     @WithMockUser(authorities = ["WRITE"])
-    fun `arkiver skal kaste exception når verge mangler og brevmottaker er verge`() {
+    fun `arkiver skal bruke brukers FNR når verge mangler`() {
         val sak = SakTestData.sakUtenUtbetaling()
-        val brev = BrevTestdata.vedtaksbrevVerge()
+        val brev = BrevTestdata.vedtaksbrevBruker()
         val pdf = "test pdf".toByteArray()
 
-        // Returnerer person uten verge
-        whenever(personService.hentPerson(sak.fnr)).thenReturn(PersonTestData.testPerson)
+        val expectedResponse = JournalpostResponse(
+            journalpostId = EksternJournalpostId("JP123"),
+            journalpostferdigstilt = true,
+            dokumenter = emptyList()
+        )
 
-        val exception = assertThrows(IllegalStateException::class.java) {
-            dokarkivService.arkiver(sak, brev, pdf)
-        }
+        whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
+        whenever(personService.hentVerge(sak.fnr)).thenReturn(null)
 
-        assertTrue(exception.message!!.contains("Brev skal sendes til verge, men verge er ikke registrert"))
-        verify(dokarkivClient, never()).opprett(any(), any())
+        dokarkivService.arkiver(sak, brev, pdf)
+
+        val journalpostRequestCaptor = argumentCaptor<JournalpostRequest>()
+        verify(dokarkivClient).opprett(journalpostRequestCaptor.capture(), eq(true))
+
+        val capturedRequest = journalpostRequestCaptor.firstValue
+        assertEquals(sak.fnr.value, capturedRequest.avsenderMottaker?.id)
+        assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)
     }
 
     @Test

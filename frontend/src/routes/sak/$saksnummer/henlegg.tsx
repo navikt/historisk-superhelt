@@ -9,7 +9,6 @@ import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalida
 import { GavelIcon } from "@navikt/aksel-icons";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
-import { finnPersonQuery } from "~/common/person/person.query";
 
 export const Route = createFileRoute("/sak/$saksnummer/henlegg")({
     component: HenleggPage,
@@ -18,10 +17,9 @@ export const Route = createFileRoute("/sak/$saksnummer/henlegg")({
 function HenleggPage() {
     const { saksnummer } = Route.useParams();
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
-    const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
     const hasPermission = sak.rettigheter.includes("HENLEGGE");
     const { data: brev } = useQuery({
-        ...getOrCreateBrevOptions(saksnummer, "HENLEGGESEBREV", person.harVerge ? "VERGE" : "BRUKER"),
+        ...getOrCreateBrevOptions(saksnummer, "HENLEGGESEBREV", "BRUKER"),
         enabled: hasPermission,
     });
 

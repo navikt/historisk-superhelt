@@ -23,6 +23,11 @@ class DokarkivService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    private fun sjekkForVerge(fnr: FolkeregisterIdent): FolkeregisterIdent {
+        val verge = personService.hentVerge(vergetrengendeFnr = fnr)
+        return verge?.verge?.motpartsPersonident?.let { FolkeregisterIdent(it) } ?: fnr
+    }
+
     @PreAuthorize("hasAuthority('WRITE')")
     fun arkiver(sak: Sak, brev: Brev, pdf: ByteArray): JournalpostResponse {
 
@@ -33,15 +38,8 @@ class DokarkivService(
             avsenderMottaker = when (brev.mottakerType) {
                 BrevMottaker.BRUKER ->
                     AvsenderMottaker(
-                        id = sak.fnr.value,
+                        id = sjekkForVerge(sak.fnr).value,
                         idType = AvsenderMottakerIdType.FNR,
-                    )
-
-                BrevMottaker.VERGE ->
-                    AvsenderMottaker(
-                        id = personService.hentPerson(sak.fnr)?.verge?.motpartsPersonident
-                            ?: throw IllegalStateException("Brev skal sendes til verge, men verge er ikke registrert på personen"),
-                        idType = AvsenderMottakerIdType.FNR
                     )
 
                 BrevMottaker.SAMHANDLER -> TODO("Send til samhandler")

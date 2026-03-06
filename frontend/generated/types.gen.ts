@@ -33,7 +33,7 @@ export type Brev = {
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
-    mottakerType: 'BRUKER' | 'VERGE' | 'SAMHANDLER';
+    mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
@@ -61,11 +61,11 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly tilstand: SakTilstand;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
-    readonly gjenapnet: boolean;
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly gjenapnet: boolean;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
@@ -118,7 +118,7 @@ export type JournalforRequest = {
 
 export type OpprettBrevRequest = {
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
-    mottaker: 'BRUKER' | 'VERGE' | 'SAMHANDLER';
+    mottaker: 'BRUKER' | 'SAMHANDLER';
 };
 
 export type PersonRequest = {
@@ -269,7 +269,7 @@ export type BrevWritable = {
     tittel?: string;
     innhold?: string;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
-    mottakerType: 'BRUKER' | 'VERGE' | 'SAMHANDLER';
+    mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
     journalpostId?: string;
 };
@@ -1278,7 +1278,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: 'JANUARY' | 'FEBRUARY' | 'MARCH' | 'APRIL' | 'MAY' | 'JUNE' | 'JULY' | 'AUGUST' | 'SEPTEMBER' | 'OCTOBER' | 'NOVEMBER' | 'DECEMBER';
+        dokumentId: string;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

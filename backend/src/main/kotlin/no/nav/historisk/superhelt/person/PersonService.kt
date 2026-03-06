@@ -29,9 +29,10 @@ class PersonService(
                 cache.put(cacheKey, result)
             }
     }
-    fun hentVerge(vergetrengende: Persondata): Persondata? {
-        val cacheKey = "${getAuthenticatedUser().navIdent}:verge:${vergetrengende.fnr.value}"
-        val verge = vergetrengende.verge
+    fun hentVerge(vergetrengendeFnr: FolkeregisterIdent): Persondata? {
+        val cacheKey = "${getAuthenticatedUser().navIdent}:verge:${vergetrengendeFnr.value}"
+        val vergetrengende = hentPerson(vergetrengendeFnr)
+        val verge = vergetrengende?.verge
 
         if (verge == null) {
             return null

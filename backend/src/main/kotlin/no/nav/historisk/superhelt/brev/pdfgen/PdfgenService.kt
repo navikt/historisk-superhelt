@@ -61,7 +61,7 @@ class PdfgenService(
 
     private fun BrevMottaker.asPdfgenMottakerType(): PdfgenMottakerType {
         return when (this) {
-            BrevMottaker.BRUKER, BrevMottaker.VERGE -> PdfgenMottakerType.BRUKER
+            BrevMottaker.BRUKER -> PdfgenMottakerType.BRUKER
             BrevMottaker.SAMHANDLER -> PdfgenMottakerType.SAMHANDLER
         }
     }

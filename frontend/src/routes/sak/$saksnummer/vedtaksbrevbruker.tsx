@@ -3,7 +3,6 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
 import { BrevEditor } from "~/routes/sak/$saksnummer/-components/BrevEditor";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
-import { finnPersonQuery } from "~/common/person/person.query";
 
 export const Route = createFileRoute("/sak/$saksnummer/vedtaksbrevbruker")({
     component: BrevPage,
@@ -12,10 +11,9 @@ export const Route = createFileRoute("/sak/$saksnummer/vedtaksbrevbruker")({
 function BrevPage() {
     const { saksnummer } = Route.useParams();
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
-    const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
     const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE");
     const { data: brev } = useQuery({
-        ...getOrCreateBrevOptions(saksnummer, "VEDTAKSBREV", person.harVerge ? "VERGE" : "BRUKER"),
+        ...getOrCreateBrevOptions(saksnummer, "VEDTAKSBREV", "BRUKER"),
     });
     const navigate = useNavigate();
 
