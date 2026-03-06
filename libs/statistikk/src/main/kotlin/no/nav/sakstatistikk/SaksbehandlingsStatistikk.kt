@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonInclude
+import tools.jackson.databind.PropertyNamingStrategies
+import tools.jackson.databind.annotation.JsonNaming
 import java.time.Instant
 import java.time.LocalDate
 
@@ -11,6 +13,7 @@ import java.time.LocalDate
  * Generert med copilot fra https://confluence.adeo.no/spaces/navdvh/pages/494772092/Teknisk+beskrivelse+av+behov+til+felles+saksbehandlingsstatistikk
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class SaksbehandlingsStatistikk(
 
     /**
@@ -63,7 +66,7 @@ data class SaksbehandlingsStatistikk(
      * Tidligere meldinger må re-sendes ved oppdatering av dette feltet.
      * Tidssone: UTC.
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy hh:mm:ssZ", timezone = "UTC")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
     val mottattTid: Instant? = null,
 
     /**
@@ -71,20 +74,20 @@ data class SaksbehandlingsStatistikk(
      * Ved digitale søknader bør denne være tilnærmet lik [mottattTid].
      * Tidssone: UTC.
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy hh:mm:ssZ", timezone = "UTC")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
     val registrertTid: Instant ?= null,
 
     /**
      * Tidspunkt når behandlingen ble avsluttet – enten avbrutt, henlagt, vedtak innvilget/avslått, osv.
      * Tidssone: UTC.
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy hh:mm:ssZ", timezone = "UTC")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
     val ferdigBehandletTid: Instant? = null,
 
     /**
      * Dato for første utbetaling av ytelse.
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val utbetaltTid: LocalDate? = null,
 
     /**
@@ -92,7 +95,7 @@ data class SaksbehandlingsStatistikk(
      * Ved første melding vil denne være lik [registrertTid].
      * Tidssone: UTC, inkl. millisekunder.
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy hh:mm:ssZ", timezone = "UTC")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
     val endretTid: Instant,
 
     /**
@@ -104,8 +107,8 @@ data class SaksbehandlingsStatistikk(
      * Tidspunktet da fagsystemet legger hendelsen på grensesnittet/topicen.
      * Tidssone: UTC, inkl. millisekunder.
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy hh:mm:ssZ", timezone = "UTC")
-    val tekniskTid: Instant,
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC")
+    val tekniskTid: Instant = Instant.now(),
 
     /**
      * Kode som angir hvilken ytelse/stønad behandlingen gjelder.
@@ -122,19 +125,19 @@ data class SaksbehandlingsStatistikk(
     /**
      * Kode som angir hvilken type behandling det er snakk om.
      */
-    val behandlingType: BehandlingType,
+    val behandlingType: String,
 
     /**
      * Kode som angir hvilken status behandlingen har.
      */
-    val behandlingStatus: BehandlingStatus,
+    val behandlingStatus: String,
 
     /**
      * Kode som angir resultatet på behandlingen.
      * Må være utfylt hvis [behandlingStatus] er [BehandlingStatus.AVSLUTTET].
      * Ved klage: angi behandlingsresultat fra vedtaksinstans selv om det ikke er endelig.
      */
-    val behandlingResultat: BehandlingResultat? = null,
+    val behandlingResultat: String? = null,
 
     /**
      * Kode som angir begrunnelse til resultat.
@@ -195,13 +198,13 @@ data class SaksbehandlingsStatistikk(
     /**
      * Start på perioden feilutbetalingen gjelder. Gjelder kun [BehandlingType.TILBAKEKREVING].
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val funksjonellPeriodeFom: LocalDate? = null,
 
     /**
      * Slutten av perioden feilutbetalingen gjelder. Gjelder kun [BehandlingType.TILBAKEKREVING].
      */
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.mm.yyyy")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val funksjonellPeriodeTom: LocalDate? = null,
 
     /**
@@ -230,78 +233,6 @@ enum class SakUtland {
     EOS, // EØS
 }
 
-/**
- * Angir hvilken type behandling det er snakk om.
- */
-enum class BehandlingType {
-    /** Søknad fra bruker. */
-    SOKNAD,
-
-    /** Revurdering av tidligere vedtak. */
-    REVURDERING,
-
-    /** Klage på vedtak. */
-    KLAGE,
-
-    /** Anke på vedtak. */
-    ANKE,
-
-    /** Tilbakekrevingsbehandling. */
-    TILBAKEKREVING,
-}
-
-/**
- * Angir hvilken status behandlingen har.
- */
-enum class BehandlingStatus {
-    /** Behandlingen er første gang registrert i fagsystemet. */
-    REGISTRERT,
-
-    /** Tilstrekkelige opplysninger er mottatt fra bruker. */
-    KOMPLETT,
-
-    /** All nødvendig dokumentasjon er mottatt, inkl. info fra lege, arbeidsgiver osv. */
-    KAN_BEHANDLES,
-
-    /** Behandlingen har startet. */
-    UNDER_BEHANDLING,
-
-    /** Saksbehandlingen er avsluttet i vedtaksinstans og oversendt Klageinstans. */
-    OVERSENDT_KA,
-
-    /** Forespørsel er sendt til utenlandsk trygdemyndighet. */
-    VENTER_UTLAND,
-
-    /** Saken er til to-trinnskontroll og beslutter underkjenner innstilling/vedtak fra saksbehandler. */
-    UNDERKJENT_BESLUTTER,
-
-    /** Saksbehandlingen er ferdig. */
-    AVSLUTTET,
-}
-
-/**
- * Angir resultatet på behandlingen.
- * Ved klage: angi behandlingsresultat fra vedtaksinstans.
- */
-enum class BehandlingResultat {
-    /** Behandlingen ble avbrutt. */
-    AVBRUTT,
-
-    /** Søknaden ble innvilget i sin helhet. */
-    INNVILGET,
-
-    /** Søknaden ble delvis innvilget. */
-    DELVIS_INNVILGET,
-
-    /** Behandlingen ble henlagt. */
-    HENLAGT,
-
-    /** Klage: vedtaket fra vedtaksinstans ble fastholdt. */
-    FASTHOLDT,
-
-    /** Klage: vedtaket fra vedtaksinstans ble omgjort. */
-    OMGJORT,
-}
 
 /**
  * Angir om behandlingshendelsen er manuell eller automatisk.
@@ -313,3 +244,31 @@ enum class BehandlingMetode {
     /** Behandlingen er utført automatisk av systemet. */
     AUTOMATISK,
 }
+
+/**
+ * Extension-funksjoner som lar konsumenter bruke egne enums i stedet for rå String-verdier.
+ * Enum-verdiens `.name` brukes som statistikk-kode, slik at lib-en forblir String-basert.
+ *
+ * Eksempel:
+ * ```kotlin
+ * enum class BehandlingResultat { INNVILGET, AVSLATT }
+ *
+ * val statistikk = SaksbehandlingsStatistikk(...)
+ *     .medBehandlingResultat(BehandlingResultat.INNVILGET)
+ *     .medBehandlingStatus(MinBehandlingStatus.AVSLUTTET)
+ * ```
+ */
+fun SaksbehandlingsStatistikk.medBehandlingResultat(resultat: Enum<*>?) =
+    copy(behandlingResultat = resultat?.name)
+
+fun SaksbehandlingsStatistikk.medResultatBegrunnelse(begrunnelse: Enum<*>?) =
+    copy(resultatBegrunnelse = begrunnelse?.name)
+
+fun SaksbehandlingsStatistikk.medBehandlingStatus(status: Enum<*>) =
+    copy(behandlingStatus = status.name)
+
+fun SaksbehandlingsStatistikk.medBehandlingType(type: Enum<*>) =
+    copy(behandlingType = type.name)
+
+fun SaksbehandlingsStatistikk.medBehandlingAarsak(aarsak: Enum<*>?) =
+    copy(behandlingAarsak = aarsak?.name)
