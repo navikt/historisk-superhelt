@@ -43,6 +43,8 @@ npm run biome:write # lint + format, skriv endringer
 npm run openapi-ts  # generer typer fra backend-API (backend må kjøre)
 ```
 
+Når Biome kjøres for å validere endringer: kjør kun på filer som er endret i sesjonen (`npx biome check <fil>`), ikke hele prosjektet.
+
 ### E2E
 ```bash
 # i /e2e
