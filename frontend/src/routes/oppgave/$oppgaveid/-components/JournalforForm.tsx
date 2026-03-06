@@ -60,8 +60,12 @@ export function JournalforForm({
     const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype);
     const [bruker, setBruker] = useState<PersonValue>({ fnr: person.fnr, navn: person.navn });
     const [avsender, setAvsender] = useState<PersonValue>({
-        fnr: journalPost?.avsenderMottaker?.id || person.fnr,
-        navn: journalPost?.avsenderMottaker?.navn || person.navn,
+        fnr:
+            journalPost?.avsenderMottaker?.id ||
+            (person.harVerge && person.vergeInfo ? person.vergeInfo.fnr : person.fnr),
+        navn:
+            journalPost?.avsenderMottaker?.navn ||
+            (person.harVerge && person.vergeInfo ? person.vergeInfo?.navn : person.navn),
     });
     const [logiskeVedlegg, setLogiskeVedlegg] = useState<string[]>([]);
 
