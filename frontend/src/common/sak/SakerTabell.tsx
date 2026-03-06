@@ -30,23 +30,25 @@ export function SakerTabell({
     openInNewTab,
 }: SakerTableProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
-    const [sort, setSort] = useState<ScopedSortState | undefined>({
+    const defaultDescendingColumns: Array<ScopedSortState["orderBy"]> = ["opprettetDato", "tildelingsAar"];
+
+    const [sort, setSort] = useState<ScopedSortState>({
         orderBy: "opprettetDato",
         direction: "descending",
     });
 
     const handleSort = (sortKey: ScopedSortState["orderBy"]) => {
-        setSort(
-            sort && sortKey === sort.orderBy && sort.direction === "descending"
-                ? undefined
-                : {
-                      orderBy: sortKey,
-                      direction:
-                          sort && sortKey === sort.orderBy && sort.direction === "ascending"
-                              ? "descending"
-                              : "ascending",
-                  },
-        );
+        setSort({
+            orderBy: sortKey,
+            direction:
+                sortKey === sort.orderBy
+                    ? sort.direction === "ascending"
+                        ? "descending"
+                        : "ascending"
+                    : defaultDescendingColumns.includes(sortKey)
+                      ? "descending"
+                      : "ascending",
+        });
     };
 
     function comparator<T>(a: T, b: T, orderBy: keyof T): number {
@@ -60,10 +62,7 @@ export function SakerTabell({
     }
 
     const sortedData = saker.slice().sort((a, b) => {
-        if (sort) {
-            return sort.direction === "ascending" ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy);
-        }
-        return 1;
+        return sort.direction === "ascending" ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy);
     });
 
     if (error) {
