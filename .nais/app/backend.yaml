@@ -40,6 +40,9 @@ spec:
           - id: {{gruppe.les}}
           - id: {{gruppe.drift}}
 
+  startup:
+    path: /actuator/health/liveness
+    initialDelay: 20
   liveness:
     path: /actuator/health/liveness
   readiness:

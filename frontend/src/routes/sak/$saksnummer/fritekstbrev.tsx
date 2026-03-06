@@ -1,13 +1,13 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { sendBrevMutation } from "@generated/@tanstack/react-query.gen";
+import { DocPencilIcon } from "@navikt/aksel-icons";
 import { ErrorSummary, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef } from "react";
-import { BrevEditor } from "~/routes/sak/$saksnummer/-components/BrevEditor";
-import { DocPencilIcon } from "@navikt/aksel-icons";
-import { sendBrevMutation } from "@generated/@tanstack/react-query.gen";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
+import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
+import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import { BrevEditor } from "~/routes/sak/$saksnummer/-components/BrevEditor";
 
 export const Route = createFileRoute("/sak/$saksnummer/fritekstbrev")({
     component: FritekstBrevPage,

@@ -1,16 +1,23 @@
+import type {
+    JournalforDokument,
+    JournalforRequest,
+    Journalpost,
+    OppgaveMedSak,
+    Person,
+    ProblemDetail,
+} from "@generated";
+import { journalforMutation } from "@generated/@tanstack/react-query.gen";
 import { Button, Heading, VStack } from "@navikt/ds-react";
-import { useState } from "react";
-import { StonadsTypeVelger } from "./StonadsTypeVelger";
-import { DokumentTittelFelt } from "./DokumentTittelFelt";
-import { type PersonValue, PersonVelger } from "./PersonVelger";
-import { JournalforDokument, JournalforRequest, Journalpost, OppgaveMedSak, Person, ProblemDetail } from "@generated";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { StonadType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import { useState } from "react";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { hasSize, isValidFnr } from "~/common/validation.utils";
 import { AnnetInnholdCombobox } from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
-import { useMutation } from "@tanstack/react-query";
-import { journalforMutation } from "@generated/@tanstack/react-query.gen";
-import { ErrorAlert } from "~/common/error/ErrorAlert";
+import type { StonadType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import { DokumentTittelFelt } from "./DokumentTittelFelt";
+import { type PersonValue, PersonVelger } from "./PersonVelger";
+import { StonadsTypeVelger } from "./StonadsTypeVelger";
 
 interface DokumentError {
     dokumentInfoId: string;
@@ -34,7 +41,14 @@ interface Props {
     readOnly?: boolean;
 }
 
-export function JournalforForm({ person, oppgaveMedSak, journalPost, defaultStonadstype, onBrukerUpdate, readOnly }: Props) {
+export function JournalforForm({
+    person,
+    oppgaveMedSak,
+    journalPost,
+    defaultStonadstype,
+    onBrukerUpdate,
+    readOnly,
+}: Props) {
     const navigate = useNavigate();
     const [backendError, setBackendError] = useState<ProblemDetail | undefined>();
     const journalfor = useMutation({

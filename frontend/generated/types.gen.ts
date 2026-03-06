@@ -61,16 +61,16 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly gjenapnet: boolean;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
+    readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -158,6 +158,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
+    annulleres: boolean;
+    loggId$superhelt_backend: string;
 };
 
 export type User = {
@@ -199,10 +201,20 @@ export type EndringsloggLinje = {
     endretAv: string;
 };
 
+export type VedtaksResultatDto = {
+    vedtaksResultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
+    navn: string;
+};
+
 export type StonadsTypeDto = {
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     navn: string;
     beskrivelse?: string;
+};
+
+export type SakStatusKodeDto = {
+    status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
+    navn: string;
 };
 
 export type OppgaveMedSak = {
@@ -295,8 +307,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -1103,6 +1115,39 @@ export type HtmlBrevResponses = {
 
 export type HtmlBrevResponse = HtmlBrevResponses[keyof HtmlBrevResponses];
 
+export type GetKodeverkVedtaksResultatData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/sak/kodeverk/vedtaksresultater';
+};
+
+export type GetKodeverkVedtaksResultatErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkVedtaksResultatError = GetKodeverkVedtaksResultatErrors[keyof GetKodeverkVedtaksResultatErrors];
+
+export type GetKodeverkVedtaksResultatResponses = {
+    /**
+     * OK
+     */
+    200: Array<VedtaksResultatDto>;
+};
+
+export type GetKodeverkVedtaksResultatResponse = GetKodeverkVedtaksResultatResponses[keyof GetKodeverkVedtaksResultatResponses];
+
 export type GetKodeverkStonadTypeData = {
     body?: never;
     path?: never;
@@ -1135,6 +1180,39 @@ export type GetKodeverkStonadTypeResponses = {
 };
 
 export type GetKodeverkStonadTypeResponse = GetKodeverkStonadTypeResponses[keyof GetKodeverkStonadTypeResponses];
+
+export type GetKodeverkSakStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/sak/kodeverk/sakstatuser';
+};
+
+export type GetKodeverkSakStatusErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkSakStatusError = GetKodeverkSakStatusErrors[keyof GetKodeverkSakStatusErrors];
+
+export type GetKodeverkSakStatusResponses = {
+    /**
+     * OK
+     */
+    200: Array<SakStatusKodeDto>;
+};
+
+export type GetKodeverkSakStatusResponse = GetKodeverkSakStatusResponses[keyof GetKodeverkSakStatusResponses];
 
 export type GetPersonByMaskertIdentData = {
     body?: never;
@@ -1278,7 +1356,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: 'JANUARY' | 'FEBRUARY' | 'MARCH' | 'APRIL' | 'MAY' | 'JUNE' | 'JULY' | 'AUGUST' | 'SEPTEMBER' | 'OCTOBER' | 'NOVEMBER' | 'DECEMBER';
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

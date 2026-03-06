@@ -17,6 +17,8 @@ local.env
 .vscode
 
 
+test-coverage-suggestions.md
+
 ### Playwright ###
 frontend/playwright-report/
 frontend/playwright/.cache/

@@ -1,6 +1,6 @@
-import {ReactNode, useState} from 'react';
-import {ChevronDownIcon, ChevronUpIcon} from '@navikt/aksel-icons';
-import styles from './BrevExpandable.module.css';
+import { ChevronDownIcon, ChevronUpIcon } from "@navikt/aksel-icons";
+import { type ReactNode, useState } from "react";
+import styles from "./BrevExpandable.module.css";
 
 interface AccordionProps {
     title: string;
@@ -22,11 +22,7 @@ export function BrevExpandable({ title, children, defaultExpanded = false }: Acc
                 <span>{title}</span>
                 {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
             </button>
-            {isExpanded && (
-                <div className={styles.accordionContent}>
-                    {children}
-                </div>
-            )}
+            {isExpanded && <div className={styles.accordionContent}>{children}</div>}
         </div>
     );
 }

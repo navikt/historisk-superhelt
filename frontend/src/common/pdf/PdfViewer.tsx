@@ -1,35 +1,36 @@
-import {Box, InlineMessage, Select} from '@navikt/ds-react'
-import {useEffect, useState} from 'react'
-import styles from './PdfViewer.module.css'
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {hentJournalpostMetaDataOptions} from "@generated/@tanstack/react-query.gen";
+import { hentJournalpostMetaDataOptions } from "@generated/@tanstack/react-query.gen";
+import { Box, InlineMessage, Select } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import styles from "./PdfViewer.module.css";
 
 interface Props {
-    journalpostId?: string
+    journalpostId?: string;
 }
 
-export function PdfViewer({journalpostId}: Props) {
+export function PdfViewer({ journalpostId }: Props) {
     if (!journalpostId) {
-        return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>
+        return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>;
     }
-    return <PdfViewer2 journalpostId={journalpostId}/>
+    return <PdfViewer2 journalpostId={journalpostId} />;
 }
 
-function PdfViewer2({journalpostId}: { journalpostId: string }) {
-    const {data: journalpost} = useSuspenseQuery(hentJournalpostMetaDataOptions({
-        path: {
-            journalpostId: journalpostId
-        }
-    }))
-    const [dokId, setDokId] = useState<string | undefined>(journalpost.dokumenter?.at(0)?.dokumentInfoId)
+function PdfViewer2({ journalpostId }: { journalpostId: string }) {
+    const { data: journalpost } = useSuspenseQuery(
+        hentJournalpostMetaDataOptions({
+            path: {
+                journalpostId: journalpostId,
+            },
+        }),
+    );
+    const [dokId, setDokId] = useState<string | undefined>(journalpost.dokumenter?.at(0)?.dokumentInfoId);
 
     useEffect(() => {
-        setDokId(journalpost.dokumenter?.at(0)?.dokumentInfoId)
-    }, [journalpostId, journalpost.dokumenter])
-
+        setDokId(journalpost.dokumenter?.at(0)?.dokumentInfoId);
+    }, [journalpostId, journalpost.dokumenter]);
 
     if (!dokId) {
-        return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>
+        return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>;
     }
 
     return (
@@ -49,5 +50,5 @@ function PdfViewer2({journalpostId}: { journalpostId: string }) {
                 title="Embedded PDF Viewer"
             />
         </Box>
-    )
+    );
 }

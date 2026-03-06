@@ -1,34 +1,44 @@
-Welcome to your new TanStack app! 
+# Frontend – Superhelt
 
-# Getting Started
+React 19-frontend for Superhelt, bygget med TanStack Router/Query og Nav Aksel Design System.
 
-To run this application:
+## Kom i gang
 
 ```bash
 npm install
-npm run start
+npm start   # dev-server på :3000 med hot reload
 ```
 
-# Building For Production
+Innlogging skjer via http://localhost:4000 (Wonderwall). Backend og `docker compose up` må kjøre først – se [rotmappens README](../README.md).
 
-To build this application for production:
+## Produksjonsbygg
 
 ```bash
 npm run build
 ```
 
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+## Tester
 
 ```bash
 npm run test
 ```
 
-# Generere typer
-Backend server må kjøre lokalt for at dette skal fungere.
-Typer genereres ved hjelp av hey-api.
+## Generere API-typer
+
+Typer genereres automatisk fra backend sin OpenAPI-spec. Backend må kjøre lokalt på `:8080`.
 
 ```bash
-npm run openapi-ts  
+npm run openapi-ts
+```
+
+Genererte typer havner i `generated/` og importeres via `@generated`-aliaset:
+```ts
+import type { Sak } from "@generated"
+```
+
+## Formatering og linting
+
+```bash
+npm run biome        # sjekk
+npm run biome:write  # sjekk og skriv endringer
 ```

@@ -3,7 +3,9 @@ package no.nav.historisk.superhelt.utbetaling
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingKafkaProducer
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -21,19 +23,85 @@ class UtbetalingService(
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
     fun sendTilUtbetaling(sak: Sak) {
-        if (sak.utbetalingsType != UtbetalingsType.BRUKER) {
-            logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, ingen utbetaling opprettes")
-            return
+        if (sak.status !in listOf(SakStatus.FERDIG_ATTESTERT, SakStatus.FERDIG)) {
+            throw IllegalArgumentException("Sak ${sak.saksnummer} er i status ${sak.status} og kan derfor ikke sendes til utbetaling")
         }
         val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
-            ?: run {
-                // TODO. Skal vi sende oppdatering om det ikke er noen endring?
-                utbetalingRepository.opprettUtbetaling(sak)
+        if (utbetaling != null) {
+            logger.debug(
+                "Utbetaling {} finnes allerede for sak {}, sender denne på nytt til utbetaling",
+                utbetaling.loggId,
+                sak.saksnummer
+            )
+            return utbetal(utbetaling, sak)
+        }
+        if (sak.gjenapnet) {
+            return endreUtbetaling(sak)
+        }
+        opprettNyUtbetaling(sak)?.let { utbetal(it, sak) }
+    }
+
+    private fun opprettNyUtbetaling(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling? {
+        if (sak.utbetalingsType != UtbetalingsType.BRUKER || sak.vedtaksResultat !in listOf(
+                VedtaksResultat.INNVILGET,
+                VedtaksResultat.DELVIS_INNVILGET
+            )
+        ) {
+            logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType} og resultat ${sak.vedtaksResultat}, ingen utbetaling opprettes")
+            return null
+        }
+        return utbetalingRepository.opprettUtbetaling(sak, tidligereUtbetaling)
+    }
+
+    private fun endreUtbetaling(sak: Sak) {
+        val tidligereUtbetaling =
+            utbetalingRepository.findBySak(sak.saksnummer).sortedByDescending { it.utbetalingTidspunkt }.firstOrNull()
+        if (tidligereUtbetaling == null) {
+            opprettNyUtbetaling(sak)?.let { utbetal(it, sak) }
+        } else {
+            logger.info("Sak ${sak.saksnummer} er gjenåpnet, oppretter ny utbetaling basert på tidligere utbetaling ${tidligereUtbetaling.transaksjonsId}")
+
+            when (sak.vedtaksResultat) {
+                VedtaksResultat.INNVILGET, VedtaksResultat.DELVIS_INNVILGET -> {
+                    endreInnvilgtUtbetaling(sak, tidligereUtbetaling)
+                }
+
+                VedtaksResultat.AVSLATT, VedtaksResultat.HENLAGT -> {
+                    endreAvslattUtbetaling(sak, tidligereUtbetaling)
+                }
+
+                null -> logger.error("Sak ${sak.saksnummer} har null vedtaksresultat, kan ikke opprette ny utbetaling ved gjenåpning")
             }
+        }
+    }
+
+    private fun endreAvslattUtbetaling(
+        sak: Sak,
+        tidligereUtbetaling: Utbetaling) {
+        logger.info("Sak ${sak.saksnummer} har vedtaksresultat ${sak.vedtaksResultat}, Tidligere utbetaling skal annuleres")
+        val annullering = utbetalingRepository.opprettAnnullering(sak, tidligereUtbetaling)
+        utbetal(annullering, sak)
+    }
+
+    private fun endreInnvilgtUtbetaling(
+        sak: Sak,
+        tidligereUtbetaling: Utbetaling) {
+        if (sak.utbetalingsType != UtbetalingsType.BRUKER) {
+            logger.info("Sak ${sak.saksnummer} har utbetalingsType ${sak.utbetalingsType}, Annulerer tidligere utbetaling ${tidligereUtbetaling.transaksjonsId}")
+            val annullering = utbetalingRepository.opprettAnnullering(sak, tidligereUtbetaling)
+            utbetal(annullering, sak)
+        } else {
+            opprettNyUtbetaling(sak, tidligereUtbetaling)?.let { utbetal(it, sak) }
+        }
+    }
+
+
+    private fun utbetal(utbetaling: Utbetaling, sak: Sak) {
         if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
-            logger.info("Utbetaling ${utbetaling.transaksjonsId} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
+            logger.info("Utbetaling ${utbetaling.loggId} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
             return
         }
+
         utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.KLAR_TIL_UTBETALING)
         utbetalingKafkaProducer.sendTilUtbetaling(sak, utbetaling)
     }
@@ -42,11 +110,10 @@ class UtbetalingService(
     fun updateUtbetalingsStatus(utbetaling: Utbetaling, newStatus: UtbetalingStatus) {
         val utbetalingsId = utbetaling.transaksjonsId
         val currentStatus = utbetaling.utbetalingStatus
-
         if (currentStatus.isFinal()) {
             logger.info(
                 "Utbetaling {} er i final status {}. Ignoring update til {}",
-                utbetalingsId,
+                utbetaling.loggId,
                 currentStatus,
                 newStatus
             )
@@ -56,7 +123,7 @@ class UtbetalingService(
         if (!currentStatus.shouldBeUpdatedTo(newStatus)) {
             logger.debug(
                 "Utbetaling {} er allerede i samme eller nyere status {}, {}. Ignoring update",
-                utbetalingsId,
+                utbetaling.loggId,
                 currentStatus,
                 newStatus
             )
@@ -68,7 +135,7 @@ class UtbetalingService(
                 UtbetalingStatus.UTBETALT -> sakEndringsloggService.logChange(
                     saksnummer = utbetaling.saksnummer,
                     endringsType = EndringsloggType.UTBETALING_OK,
-                    endring = "Kr ${utbetaling.belop} er satt til utbetaling til bruker"
+                    endring = "Utbetaling på ${utbetaling.belop} kr er registrert i utbetalingsystemet"
                 )
 
                 UtbetalingStatus.FEILET -> sakEndringsloggService.logChange(
@@ -84,6 +151,7 @@ class UtbetalingService(
         utbetalingRepository.setUtbetalingStatus(transaksjonsId = utbetalingsId, status = newStatus)
     }
 
+    @Transactional
     @PreAuthorize("hasAuthority('WRITE')")
     fun retryUtbetaling(sak: Sak) {
         val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
@@ -91,9 +159,13 @@ class UtbetalingService(
         if (utbetaling.utbetalingStatus != UtbetalingStatus.FEILET) {
             throw IllegalStateException("Utbetaling i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og kan derfor ikke kjøres på nytt")
         }
-        utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.KLAR_TIL_UTBETALING)
-        sendTilUtbetaling(sak)
+        utbetalingRepository.setUtbetalingStatus(
+            utbetaling.transaksjonsId,
+            UtbetalingStatus.KLAR_TIL_UTBETALING
+        )
+        utbetalingKafkaProducer.sendTilUtbetaling(sak, utbetaling)
     }
-
-
 }
+
+
+

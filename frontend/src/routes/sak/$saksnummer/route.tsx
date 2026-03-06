@@ -1,41 +1,39 @@
-import {FilePdfIcon, TasklistIcon} from "@navikt/aksel-icons";
-import {Box, HGrid, Tabs, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {createFileRoute, Outlet} from "@tanstack/react-router";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
-import {PersonHeader} from "~/common/person/PersonHeader";
-import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
-import {StepType} from "~/common/process-menu/StepType";
-import {isSakFerdig} from "~/common/sak/sak.utils";
+import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { Box, HGrid, Tabs, VStack } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
+import { PersonHeader } from "~/common/person/PersonHeader";
+import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
+import { StepType } from "~/common/process-menu/StepType";
+import { isSakFerdig } from "~/common/sak/sak.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
-import {SaksHistorikkTabell} from "~/routes/sak/$saksnummer/-components/SaksHistorikkTabell";
-import type {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
-import {getSakOptions} from "./-api/sak.query";
+import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
+import type { TilstandStatusType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import { getSakOptions } from "./-api/sak.query";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
-    loader: ({params: {saksnummer}, context}) => {
+    loader: ({ params: { saksnummer }, context }) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer));
     },
-    errorComponent: ({error}) => {
-        return <ErrorAlert error={error}/>;
+    errorComponent: ({ error }) => {
+        return <ErrorAlert error={error} />;
     },
 });
 
 function SakLayout() {
-    const {saksnummer} = Route.useParams();
-    const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer));
+    const { saksnummer } = Route.useParams();
+    const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
 
-    const isFerdig = isSakFerdig(sak)
+    const isFerdig = isSakFerdig(sak);
 
-    const calculateStepType = (
-        tilstandResultat: TilstandStatusType,
-    ): StepType => {
+    const calculateStepType = (tilstandResultat: TilstandStatusType): StepType => {
         if (isFerdig) {
-            return StepType.success
+            return StepType.success;
         }
         switch (tilstandResultat) {
             case "IKKE_STARTET":
@@ -51,16 +49,16 @@ function SakLayout() {
 
     const steptypeForOpplysninger = () => {
         if (sak?.tilstand.vedtaksbrevBruker === "IKKE_STARTET") {
-            return StepType.success
+            return StepType.success;
         }
         return calculateStepType(sak?.tilstand.opplysninger);
-    }
+    };
     return (
         <>
-            <PersonHeader maskertPersonId={sak.maskertPersonIdent}/>
+            <PersonHeader maskertPersonId={sak.maskertPersonIdent} />
             <RfcErrorBoundary>
-                <SakAlert sak={sak}/>
-                <HGrid gap="space-24" columns={{lg: 1, xl: 2}} marginBlock={"space-16"}>
+                <SakAlert sak={sak} />
+                <HGrid gap="space-24" columns={{ lg: 1, xl: 2 }} marginBlock={"space-16"}>
                     <VStack gap="space-16">
                         <ProcessMenu>
                             <ProcessMenu.Item
@@ -85,33 +83,23 @@ function SakLayout() {
                             />
                         </ProcessMenu>
 
-                        <Outlet/>
+                        <Outlet />
                     </VStack>
                     <VStack gap="space-16">
-                        <SakHeading sak={sak}/>
+                        <SakHeading sak={sak} />
                         <Tabs defaultValue="dokumenter">
                             <Tabs.List>
-                                <Tabs.Tab
-                                    value="dokumenter"
-                                    label="Dokumenter"
-                                    icon={<FilePdfIcon aria-hidden/>}
-                                />
-                                <Tabs.Tab
-                                    value="historikk"
-                                    label="Sakshistorikk"
-                                    icon={<TasklistIcon aria-hidden/>}
-                                />
+                                <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />
+                                <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter">
                                 <Box width="100%" height="6rem" padding="space-16">
-                                    <DokumentViewer saksnummer={saksnummer}/>
+                                    <DokumentViewer saksnummer={saksnummer} />
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
                                 <Box width="100%" height="6rem" padding="space-16">
-                                    <SaksHistorikkTabell
-                                        maskertPersonIdent={sak.maskertPersonIdent}
-                                    />
+                                    <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
                                 </Box>
                             </Tabs.Panel>
                         </Tabs>

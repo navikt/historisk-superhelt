@@ -1,12 +1,12 @@
 package no.nav.historisk.superhelt.sak
 
 
-enum class SakStatus {
-    UNDER_BEHANDLING,
-    TIL_ATTESTERING,
-    FERDIG_ATTESTERT,
-    FERDIG,
-    FEILREGISTRERT;
+enum class SakStatus(val navn: String) {
+    UNDER_BEHANDLING("Under behandling"),
+    TIL_ATTESTERING("Til attestering"),
+    FERDIG_ATTESTERT("Ferdig attestert"),
+    FERDIG("Ferdig"),
+    FEILREGISTRERT("Feilregistrert");
 
      fun isFinal(): Boolean {
         return this == SakStatus.FERDIG || this == SakStatus.FEILREGISTRERT

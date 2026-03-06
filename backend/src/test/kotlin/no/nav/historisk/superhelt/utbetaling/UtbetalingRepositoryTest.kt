@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.test.context.support.WithMockUser
 
 @MockedSpringBootTest
@@ -45,6 +46,14 @@ class UtbetalingRepositoryTest {
     }
 
     @Test
+    fun `utbetaling skal være unik for sak og behandlingsnummer `() {
+        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val utbetaling1 = utbetalingRepository.opprettUtbetaling(sak)
+        utbetalingRepository.setUtbetalingStatus(utbetaling1.transaksjonsId, UtbetalingStatus.UTBETALT)
+        assertThrows<DataIntegrityViolationException> { utbetalingRepository.opprettUtbetaling(sak) }
+    }
+
+    @Test
     fun `findActiveByBehandling returnerer aktiv utbetaling for gjeldende behandlingsnummer`() {
         val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
         utbetalingRepository.opprettUtbetaling(sak)
@@ -71,19 +80,6 @@ class UtbetalingRepositoryTest {
     }
 
     @Test
-    fun `findActiveByBehandling foretrekker ikke-final utbetaling`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
-        val utbetaling1 = utbetalingRepository.opprettUtbetaling(sak)
-        utbetalingRepository.setUtbetalingStatus(utbetaling1.transaksjonsId, UtbetalingStatus.UTBETALT)
-        val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak)
-
-        val funnet = utbetalingRepository.findActiveByBehandling(sak)
-
-        assertThat(funnet!!.transaksjonsId).isEqualTo(utbetaling2.transaksjonsId)
-        assertThat(funnet.utbetalingStatus).isEqualTo(UtbetalingStatus.UTKAST)
-    }
-
-    @Test
     fun `findActiveByBehandling returnerer siste final utbetaling når alle er ferdige`() {
         val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
         val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
@@ -92,21 +88,5 @@ class UtbetalingRepositoryTest {
         val funnet = utbetalingRepository.findActiveByBehandling(sak)
 
         assertThat(funnet!!.transaksjonsId).isEqualTo(utbetaling.transaksjonsId)
-    }
-
-
-    @Test
-    fun `opprettUtbetaling på gjenopptatt sak gjenbruker utbetalingsid`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
-        val gammelUtbetaling = utbetalingRepository.opprettUtbetaling(sak)
-        utbetalingRepository.setUtbetalingStatus(gammelUtbetaling.transaksjonsId, UtbetalingStatus.UTBETALT)
-
-        val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
-        val nyUtbetaling = utbetalingRepository.opprettUtbetaling(gjenapnetSak)
-
-        assertThat(nyUtbetaling.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
-        assertThat(nyUtbetaling.utbetalingsUuid).isEqualTo(gammelUtbetaling.utbetalingsUuid)
-        assertThat(nyUtbetaling.saksnummer).isEqualTo(sak.saksnummer)
-        assertThat(nyUtbetaling.behandlingsnummer).isEqualTo(gjenapnetSak.behandlingsnummer)
     }
 }

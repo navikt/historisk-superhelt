@@ -53,6 +53,7 @@ class SakValidator(private val sak: Sak): Validator() {
                 "Tildelingsår må være et gyldig årstall"
             )
 
+            check(begrunnelse.isNullOrBlank(), "begrunnelse", "Begrunnelse må være satt")
             check(
                 (begrunnelse?.length ?: 0) > 1000,
                 "begrunnelse",

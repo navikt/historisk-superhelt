@@ -1,37 +1,49 @@
-import type {ProblemDetail, Sak} from "@generated";
-import {Button, Heading, Skeleton, Table, VStack} from '@navikt/ds-react'
-import {Link} from '@tanstack/react-router'
-import {isoTilLokal} from "~/common/dato.utils";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import type { ProblemDetail, Sak } from "@generated";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { Button, Heading, Skeleton, Table, VStack } from "@navikt/ds-react";
+import { Link } from "@tanstack/react-router";
+import { isoTilLokal } from "~/common/dato.utils";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
 interface SakerTableProps {
-    saker: Array<Sak>,
-    isPending?: boolean,
-    error?: ProblemDetail | null,
-    hideSaksbehandler?: boolean,
-    hideActions?: boolean,
+    saker: Array<Sak>;
+    isPending?: boolean;
+    error?: ProblemDetail | null;
+    hideSaksbehandler?: boolean;
+    hideActions?: boolean;
+    openInNewTab?: boolean;
 }
 
-export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideActions}: SakerTableProps) {
-    const getStonadsTypeNavn = useStonadsTypeNavn()
+export function SakerTabell({
+    saker,
+    isPending,
+    error,
+    hideSaksbehandler,
+    hideActions,
+    openInNewTab,
+}: SakerTableProps) {
+    const getStonadsTypeNavn = useStonadsTypeNavn();
 
     if (error) {
-        return <ErrorAlert error={error}/>
+        return <ErrorAlert error={error} />;
     }
     if (isPending) {
-        return <VStack gap="space-8">
-            <Skeleton variant="text" width="100%"/>
-            {/* 'as'-prop kan brukes på all typografien vår med Skeleton */}
-            <Heading as={Skeleton} size="xlarge" width="100%">
-                Placeholder
-            </Heading>
-            <div style={{fontSize: "5rem"}}>
-                <Skeleton variant="text" width="100%"/>
-            </div>
-        </VStack>
+        return (
+            <VStack gap="space-8">
+                <Skeleton variant="text" width="100%" />
+                {/* 'as'-prop kan brukes på all typografien vår med Skeleton */}
+                <Heading as={Skeleton} size="xlarge" width="100%">
+                    Placeholder
+                </Heading>
+                <div style={{ fontSize: "5rem" }}>
+                    <Skeleton variant="text" width="100%" />
+                </div>
+            </VStack>
+        );
     }
+
     return (
         <Table>
             <Table.Header>
@@ -40,6 +52,8 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
                     <Table.HeaderCell scope="col">Type</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Beskrivelse</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Status</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Tildelingsår</Table.HeaderCell>
+                    <Table.HeaderCell scope="col">Beløp</Table.HeaderCell>
                     <Table.HeaderCell scope="col">Opprettet</Table.HeaderCell>
                     {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
                     {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
@@ -47,25 +61,43 @@ export function SakerTabell({saker, isPending, error, hideSaksbehandler, hideAct
             </Table.Header>
             <Table.Body>
                 {saker.map((sak) => (
-                    <Table.Row key={sak.saksnummer} style={{textDecorationLine:sak.status === "FEILREGISTRERT" ? "line-through" : "none"}}>
+                    <Table.Row
+                        key={sak.saksnummer}
+                        style={{ textDecorationLine: sak.status === "FEILREGISTRERT" ? "line-through" : "none" }}
+                    >
                         <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
                         <Table.DataCell>{getStonadsTypeNavn(sak.type)}</Table.DataCell>
                         <Table.DataCell>{sak.beskrivelse}</Table.DataCell>
                         <Table.DataCell>
-                            <SakStatus sak={sak}/>
+                            <SakStatus sak={sak} />
                         </Table.DataCell>
+                        <Table.DataCell>{sak.tildelingsAar ?? "–"}</Table.DataCell>
+                        <Table.DataCell>{sak.belop != null ? `${sak.belop} kr` : "–"}</Table.DataCell>
                         <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>}
-                        {!hideActions && <Table.DataCell>
-                            <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
-                                Åpne sak
-                            </Button>
-                        </Table.DataCell>
-                        }
+                        {!hideActions && (
+                            <Table.DataCell>
+                                {openInNewTab ? (
+                                    <Button
+                                        size="small"
+                                        variant="secondary"
+                                        as="a"
+                                        href={`/sak/${sak.saksnummer}`}
+                                        target={`sak-${sak.saksnummer}`}
+                                        rel="noopener noreferrer"
+                                        icon={<ArrowRightIcon aria-hidden />}
+                                        aria-label="Åpne sak"
+                                    />
+                                ) : (
+                                    <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
+                                        Åpne sak
+                                    </Button>
+                                )}
+                            </Table.DataCell>
+                        )}
                     </Table.Row>
                 ))}
             </Table.Body>
         </Table>
-    )
+    );
 }
-
