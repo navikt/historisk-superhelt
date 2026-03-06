@@ -23,9 +23,10 @@ class DokarkivService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private fun sjekkForVerge(fnr: FolkeregisterIdent): FolkeregisterIdent {
+    private fun settMottakerFnrSomVergeEllerBruker(fnr: FolkeregisterIdent): FolkeregisterIdent {
         val verge = personService.hentVerge(vergetrengendeFnr = fnr)
-        return verge?.verge?.motpartsPersonident?.let { FolkeregisterIdent(it) } ?: fnr
+        if (verge != null) logger.debug("Fant verge for bruker, setter verge som mottaker.")
+        return verge?.fnr ?: fnr
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
@@ -38,7 +39,7 @@ class DokarkivService(
             avsenderMottaker = when (brev.mottakerType) {
                 BrevMottaker.BRUKER ->
                     AvsenderMottaker(
-                        id = sjekkForVerge(sak.fnr).value,
+                        id = settMottakerFnrSomVergeEllerBruker(sak.fnr).value,
                         idType = AvsenderMottakerIdType.FNR,
                     )
 

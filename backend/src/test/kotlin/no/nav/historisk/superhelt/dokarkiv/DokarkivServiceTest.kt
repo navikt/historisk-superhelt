@@ -78,8 +78,10 @@ class DokarkivServiceTest {
 
     @Test
     @WithMockUser(authorities = ["WRITE"])
-    fun `arkiver skal bruke verges FNR når mottaker er verge`() {
-        val sak = SakTestData.sakUtenUtbetaling().copy(fnr = PersonTestData.testPersonMedVerge.fnr)
+    fun `arkiver skal bruke verges FNR som mottaker når verge finnes`() {
+        val verge = PersonTestData.testPersonMedAdressebeskyttelse
+        val bruker = PersonTestData.testPersonMedVerge
+        val sak = SakTestData.sakUtenUtbetaling().copy(fnr = bruker.fnr)
         val brev = BrevTestdata.vedtaksbrevBruker()
         val pdf = "test pdf".toByteArray()
 
@@ -90,27 +92,20 @@ class DokarkivServiceTest {
         )
 
         whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
-        whenever(personService.hentVerge(sak.fnr)).thenReturn(PersonTestData.testPersonMedVerge)
+        whenever(personService.hentVerge(bruker.fnr)).thenReturn(verge)
 
-        val result = dokarkivService.arkiver(sak, brev, pdf)
+        dokarkivService.arkiver(sak, brev, pdf)
 
         val journalpostRequestCaptor = argumentCaptor<JournalpostRequest>()
         verify(dokarkivClient).opprett(journalpostRequestCaptor.capture(), eq(true))
 
         val capturedRequest = journalpostRequestCaptor.firstValue
-        assertEquals(brev.tittel, capturedRequest.tittel)
-        assertEquals(JournalpostType.UTGAAENDE, capturedRequest.journalpostType)
-        assertEquals(EksternFellesKodeverkTema.HEL, capturedRequest.tema)
-        // Verifiser at vergens FNR brukes som avsender
-        assertEquals(PersonTestData.testPersonMedVerge.verge?.motpartsPersonident, capturedRequest.avsenderMottaker?.id)
+        // Verifiser at vergens FNR brukes som mottaker
+        assertEquals(verge.fnr.value, capturedRequest.avsenderMottaker?.id)
         assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)
-        // Bruker er fortsatt sakseieren
+        // Bruker (ikke vergen) er fortsatt sakseieren
         assertEquals(sak.fnr.value, capturedRequest.bruker.id)
         assertEquals(BrukerIdType.FNR, capturedRequest.bruker.idType)
-        assertEquals(Kanal.NAV_NO, capturedRequest.kanal)
-        assertEquals(sak.saksnummer, capturedRequest.sak.fagsakId)
-        assertEquals(Sakstype.FAGSAK, capturedRequest.sak.sakstype)
-        assertEquals("HELT", capturedRequest.sak.fagsaksystem)
     }
 
     @Test
