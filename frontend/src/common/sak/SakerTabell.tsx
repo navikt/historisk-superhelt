@@ -1,7 +1,8 @@
 import type { ProblemDetail, Sak } from "@generated";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Button, Heading, Skeleton, Table, VStack } from "@navikt/ds-react";
+import { Button, Heading, Skeleton, type SortState, Table, VStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { isoTilLokal } from "~/common/dato.utils";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
@@ -16,6 +17,10 @@ interface SakerTableProps {
     openInNewTab?: boolean;
 }
 
+type ScopedSortState = {
+    orderBy: keyof Sak;
+} & SortState;
+
 export function SakerTabell({
     saker,
     isPending,
@@ -25,6 +30,40 @@ export function SakerTabell({
     openInNewTab,
 }: SakerTableProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
+    const defaultDescendingColumns: Array<ScopedSortState["orderBy"]> = ["opprettetDato", "tildelingsAar"];
+
+    const [sort, setSort] = useState<ScopedSortState>({
+        orderBy: "opprettetDato",
+        direction: "descending",
+    });
+
+    const handleSort = (sortKey: ScopedSortState["orderBy"]) => {
+        setSort({
+            orderBy: sortKey,
+            direction:
+                sortKey === sort.orderBy
+                    ? sort.direction === "ascending"
+                        ? "descending"
+                        : "ascending"
+                    : defaultDescendingColumns.includes(sortKey)
+                      ? "descending"
+                      : "ascending",
+        });
+    };
+
+    function comparator<T>(a: T, b: T, orderBy: keyof T): number {
+        if (b[orderBy] == null || b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    const sortedData = saker.slice().sort((a, b) => {
+        return sort.direction === "ascending" ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy);
+    });
 
     if (error) {
         return <ErrorAlert error={error} />;
@@ -45,22 +84,36 @@ export function SakerTabell({
     }
 
     return (
-        <Table>
+        <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}>
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell scope="col">Saksnummer</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Type</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Beskrivelse</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Status</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Tildelingsår</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Beløp</Table.HeaderCell>
-                    <Table.HeaderCell scope="col">Opprettet</Table.HeaderCell>
+                    <Table.ColumnHeader sortKey="saksnummer" sortable>
+                        Saksnummer
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader sortKey="type" sortable>
+                        Type
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader sortKey="beskrivelse" sortable>
+                        Beskrivelse
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader sortKey="status" sortable>
+                        Status
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader sortKey="tildelingsAar" sortable>
+                        Tildelingsår
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader sortKey="belop" sortable>
+                        Beløp
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader sortKey="opprettetDato" sortable>
+                        Opprettet
+                    </Table.ColumnHeader>
                     {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
                     {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {saker.map((sak) => (
+                {sortedData.map((sak) => (
                     <Table.Row
                         key={sak.saksnummer}
                         style={{ textDecorationLine: sak.status === "FEILREGISTRERT" ? "line-through" : "none" }}
