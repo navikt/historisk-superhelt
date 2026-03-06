@@ -8,6 +8,12 @@ app:
     # todo rette opp navn når vi det er testet
     saks-behandling-statistikk-topic: historisk.superhelt.statistikk.saksbehandling.test
 
+info:
+  nais:
+    app: ${NAIS_APP_NAME:superhelt}
+    image: ${NAIS_APP_IMAGE}
+    cluster: ${NAIS_CLUSTER_NAME}
+
 spring:
   application:
     name: superhelt
@@ -67,6 +73,9 @@ management:
     web:
       exposure:
         include: health,info,prometheus
+  info:
+    env:
+      enabled: true
 springdoc:
   api-docs:
     enabled: true
