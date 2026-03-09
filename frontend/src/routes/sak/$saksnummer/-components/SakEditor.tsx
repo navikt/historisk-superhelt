@@ -1,11 +1,13 @@
 import type { Sak, SakUpdateRequestDto } from "@generated";
 import { oppdaterSakMutation } from "@generated/@tanstack/react-query.gen";
+import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import {
     Box,
     Button,
     DatePicker,
     ErrorSummary,
     HStack,
+    Link,
     Radio,
     RadioGroup,
     Select,
@@ -131,6 +133,12 @@ export default function SakEditor({ sak }: Props) {
                         </option>
                     ))}
                 </Select>
+
+                {updateSakData.type === "REISEUTGIFTER" && (
+                    <Link href="https://avstandskalkulator.netlify.app" target="_blank">
+                        Avstandskalkulator <ExternalLinkIcon aria-hidden />
+                    </Link>
+                )}
 
                 <HStack gap="space-24">
                     <DatePicker {...datepickerProps}>
