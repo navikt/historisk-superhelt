@@ -91,6 +91,9 @@ class UtbetalingRepository(
 
     private fun updateUtbetalingStatus(transaksjonsId: UUID, status: UtbetalingStatus) {
         utbetalingJpaRepository.findByTransaksjonsId(transaksjonsId)?.let {
+            if (it.utbetalingTidspunkt == null) {
+                it.utbetalingTidspunkt = Instant.now()
+            }
             it.utbetalingStatus = status
             utbetalingJpaRepository.save(it)
         }
