@@ -20,7 +20,7 @@ class SakStatistikkKafkaProducer(
     fun registrerStatistikk(statistikk: SaksbehandlingsStatistikk) {
         val key = UUID.randomUUID()
         val sakOgBehandling = statistikk.saksnummer + "-" + statistikk.behandlingId
-        statistikk.behandlingStatus
+
         logger.debug(
             "Sender statistikk til topic {} med key {} for sak {} status: {}",
             saksbehandlingStatistikkTopic,

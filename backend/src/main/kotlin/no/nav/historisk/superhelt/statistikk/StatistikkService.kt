@@ -4,7 +4,7 @@ import no.nav.common.types.defaultEnhetsnummer
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.statistikk.kafka.SakStatistikkKafkaProducer
-import no.nav.sakstatistikk.BehandingType
+import no.nav.sakstatistikk.BehandlingType
 import no.nav.sakstatistikk.SaksbehandlingsStatistikk
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -42,7 +42,7 @@ class StatistikkService(
             aktorId = sak.fnr.value,
             endretTid = Instant.now(),
             sakYtelse = sak.type,
-            behandlingType = BehandingType.SØKNAD,
+            behandlingType = BehandlingType.SØKNAD,
             saksbehandler = sak.saksbehandler.navIdent.value,
             ansvarligEnhet = defaultEnhetsnummer.value,
             fagsystemNavn = "SUPERHELT",
@@ -71,7 +71,7 @@ class StatistikkService(
             EndringsloggType.GJENAPNET_SAK -> statistikk.copy(
                 registrertTid = tidspunkt,
                 opprettetAv = sak.saksbehandler.navIdent.value,
-                behandlingType = BehandingType.REVURDERING
+                behandlingType = BehandlingType.REVURDERING
             )
 
             EndringsloggType.SENDT_BREV -> null

@@ -36,7 +36,7 @@ class SaksbehandlingsStatistikkTest {
         endretTid = endretTid,
         tekniskTid = tekniskTid,
         sakYtelse = SakYtelse.ORTOSE,
-        behandlingType = BehandingType.SØKNAD,
+        behandlingType = BehandlingType.SØKNAD,
         behandlingStatus = BehandlingStatus.AVSLUTTET,
         behandlingMetode = BehandlingMetode.MANUELL,
         opprettetAv = "Z123456",
@@ -141,7 +141,7 @@ class SaksbehandlingsStatistikkTest {
         )
         val json = mapper.readTree(mapper.writeValueAsString(statistikk))
 
-        assertThat(json["behandling_type"].asString()).isEqualTo("SOKNAD")
+        assertThat(json["behandling_type"].asString()).isEqualTo("SØKNAD")
         assertThat(json["behandling_status"].asString()).isEqualTo("AVSLUTTET")
         assertThat(json["behandling_resultat"].asString()).isEqualTo("INNVILGET")
         assertThat(json["resultat_begrunnelse"].asString()).isEqualTo("VILKAR_OPPFYLT")
