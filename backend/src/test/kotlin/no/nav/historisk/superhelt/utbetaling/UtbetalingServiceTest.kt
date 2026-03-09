@@ -108,7 +108,7 @@ class UtbetalingServiceTest {
 
         @EnumSource(names = ["UTKAST", "KLAR_TIL_UTBETALING"])
         @ParameterizedTest
-        fun `skal sende utbetaling når utbetalngs status er`(utbetalingsStatus: UtbetalingStatus) {
+        fun `skal sende utbetaling når utbetalingstatus er`(utbetalingsStatus: UtbetalingStatus) {
             mockKafkaSuccess()
             val (sak, utbetaling) = lagreSakMedUtbetaling(utbetalingStatus = utbetalingsStatus)
 
@@ -116,7 +116,7 @@ class UtbetalingServiceTest {
 
             val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)
             assertThat(oppdatertUtbetaling?.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
-            assertThat(oppdatertUtbetaling?.utbetalingTidspunkt).isNotNull()
+            assertThat(oppdatertUtbetaling?.utbetalingTidspunkt).isNotNull
             verify(kafkaTemplate).send(
                 any<String>(),
                 eq(utbetaling.transaksjonsId.toString()),
@@ -262,6 +262,8 @@ class UtbetalingServiceTest {
             assertThat(nyUtbetaling).isNotNull
             assertThat(nyUtbetaling.behandlingsnummer).isEqualTo(gjenapnetSak.behandlingsnummer)
             assertThat(nyUtbetaling.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
+            assertThat(nyUtbetaling.utbetalingsUuid).isEqualTo(gammelUtbetaling.utbetalingsUuid)
+            assertThat(nyUtbetaling.utbetalingTidspunkt).isEqualTo(gammelUtbetaling.utbetalingTidspunkt)
             assertThat(nyUtbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
             verify(kafkaTemplate).send(
                 any<String>(),
@@ -274,7 +276,7 @@ class UtbetalingServiceTest {
         @ParameterizedTest
         fun `skal annullere ved gjenåpning og vedtaksresultat`(resultat: VedtaksResultat) {
             mockKafkaSuccess()
-            val (sak, _) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTBETALT)
+            val (sak, gammelUtbetaling) = lagreSakMedUtbetaling(utbetalingStatus = UtbetalingStatus.UTBETALT)
             withMockedUser { sakRepository.updateSak(sak.saksnummer, UpdateSakDto(vedtaksResultat = resultat)) }
             val gjenapnetSak = withMockedUser { sakRepository.incrementBehandlingsNummer(sak.saksnummer) }
 
@@ -284,6 +286,9 @@ class UtbetalingServiceTest {
             assertThat(annullering).isNotNull
             assertThat(annullering.belop).isEqualTo(Belop.ZeroBelop)
             assertThat(annullering.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
+            assertThat(annullering.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
+            assertThat(annullering.utbetalingsUuid).isEqualTo(gammelUtbetaling.utbetalingsUuid)
+            assertThat(annullering.utbetalingTidspunkt).isEqualTo(gammelUtbetaling.utbetalingTidspunkt)
             verify(kafkaTemplate).send(
                 any<String>(),
                 eq(annullering.transaksjonsId.toString()),
@@ -302,6 +307,7 @@ class UtbetalingServiceTest {
 
             val nyUtbetaling = utbetalingRepository.findActiveByBehandling(gjenapnetSak)
             assertThat(nyUtbetaling).isNotNull()
+            assertThat(nyUtbetaling?.utbetalingTidspunkt).isNotNull
             assertThat(nyUtbetaling!!.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
             verify(kafkaTemplate).send(any<String>(), any<String>(), any<UtbetalingMelding>())
         }
@@ -318,6 +324,8 @@ class UtbetalingServiceTest {
 
             val nyUtbetaling = utbetalingRepository.findActiveByBehandling(gjenapnetSak)!!
             assertThat(nyUtbetaling.transaksjonsId).isNotEqualTo(gammelUtbetaling.transaksjonsId)
+            assertThat(nyUtbetaling.utbetalingsUuid).isEqualTo(gammelUtbetaling.utbetalingsUuid)
+            assertThat(nyUtbetaling.utbetalingTidspunkt).isEqualTo(gammelUtbetaling.utbetalingTidspunkt)
             assertThat(nyUtbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.SENDT_TIL_UTBETALING)
             assertThat(nyUtbetaling.belop.value).isGreaterThan(0)
             verify(kafkaTemplate).send(any<String>(), eq(nyUtbetaling.transaksjonsId.toString()), argThat { melding ->
@@ -360,6 +368,8 @@ class UtbetalingServiceTest {
             assertThat(annullering).isNotNull
             assertThat(annullering!!.annulleres).isTrue()
             assertThat(annullering.utbetalingsUuid).isEqualTo(tidligereUtbetaling.utbetalingsUuid)
+            assertThat(annullering.transaksjonsId).isNotEqualTo(tidligereUtbetaling.transaksjonsId)
+            assertThat(annullering.utbetalingTidspunkt).isEqualTo(tidligereUtbetaling.utbetalingTidspunkt)
             verify(kafkaTemplate).send(
                 any<String>(),
                 eq(annullering.transaksjonsId.toString()),

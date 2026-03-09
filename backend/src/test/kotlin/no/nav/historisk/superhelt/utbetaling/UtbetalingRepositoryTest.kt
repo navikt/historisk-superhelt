@@ -29,11 +29,11 @@ class UtbetalingRepositoryTest {
         val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
 
         assertThat(utbetaling.behandlingsnummer).isEqualTo(sak.behandlingsnummer)
-        assertThat(utbetaling.belop).isEqualTo(sak.belop)
+        assertThat(utbetaling.belop).isEqualTo(sak.belop!!)
         assertThat(utbetaling.saksnummer).isEqualTo(sak.saksnummer)
         assertThat(utbetaling.utbetalingsUuid).isNotNull
         assertThat(utbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.UTKAST)
-        assertThat(utbetaling.utbetalingTidspunkt).isNull()
+        assertThat(utbetaling.utbetalingTidspunkt).isNotNull
     }
 
     @Test
