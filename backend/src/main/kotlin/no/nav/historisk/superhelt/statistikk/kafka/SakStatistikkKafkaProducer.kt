@@ -1,11 +1,11 @@
 package no.nav.historisk.superhelt.statistikk.kafka
 
-import SaksbehandlingsStatistikk
+import no.nav.sakstatistikk.SaksbehandlingsStatistikk
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.UUID
 
 @Service
 class SakStatistikkKafkaProducer(
