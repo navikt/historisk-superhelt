@@ -61,6 +61,12 @@
             <artifactId>oppgave</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>kabal</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 
 
         <!-- Spring boot dependencies -->

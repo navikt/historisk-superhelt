@@ -1,0 +1,11 @@
+{
+  "behandlingId": "behandling-2026-002",
+  "mottattDato": "2026-03-06T11:00:00",
+  "journalpostId": null,
+  "feilmeldinger": [
+    "Ugyldig hjemmel FVL_99",
+    "Manglende journalpost av type OPPRINNELIG_VEDTAK",
+    "Klager må være samme som saksbehandler eller ha fullmakt"
+  ]
+}
+

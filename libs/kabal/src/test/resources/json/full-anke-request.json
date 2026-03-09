@@ -1,0 +1,53 @@
+{
+  "type": "ANKE",
+  "sakenGjelder": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "87654321098"
+    }
+  },
+  "klager": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "87654321098"
+    }
+  },
+  "prosessfullmektig": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "11223344556"
+    },
+    "navn": "Advokat Johansen",
+    "adresse": {
+      "adresselinje1": "Universitetsgata 2",
+      "postnummer": "0162",
+      "poststed": "Oslo",
+      "land": "Norge"
+    }
+  },
+  "fagsak": {
+    "fagsakId": "654321",
+    "fagsystem": "K9"
+  },
+  "kildeReferanse": "superhelt-sak-2026-0002",
+  "hjemler": [
+    "FVL_35"
+  ],
+  "forrigeBehandlendeEnhet": "Klagenemda Oslo",
+  "tilknyttedeJournalposter": [
+    {
+      "type": "BRUKERS_ANKE",
+      "journalpostId": "jp-003"
+    },
+    {
+      "type": "KLAGE_VEDTAK",
+      "journalpostId": "jp-004"
+    }
+  ],
+  "frist": "2026-09-01",
+  "sakMottattKaTidspunkt": "2026-06-15T14:30",
+  "ytelse": "OMS_OMP",
+  "kommentar": "Anke av klagenemndas vedtak fra juni 2026",
+  "hindreAutomatiskSvarbrev": false
+}
+
