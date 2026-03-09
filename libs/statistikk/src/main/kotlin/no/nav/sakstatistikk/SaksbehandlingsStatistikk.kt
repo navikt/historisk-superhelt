@@ -112,7 +112,7 @@ data class SaksbehandlingsStatistikk(
     /**
      * Kode som angir hvilken type behandling det er snakk om.
      */
-    val behandlingType: BehandingType,
+    val behandlingType: BehandlingType,
 
     /**
      * Kode som angir hvilken status behandlingen har.
@@ -230,12 +230,8 @@ enum class BehandlingMetode {
     AUTOMATISK,
 }
 
-enum class BehandingType {
+enum class BehandlingType {
     SØKNAD,
     REVURDERING,
     KLAGE,
-}
-
-enum class BehandlingStatus {
-    REGISTERT,
 }
