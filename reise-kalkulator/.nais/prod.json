@@ -1,0 +1,4 @@
+{
+  "env": "prod",
+  "appIngress": "https://reise-kalkulator.intern.nav.no"
+}

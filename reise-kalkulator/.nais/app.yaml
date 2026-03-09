@@ -1,0 +1,41 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: reise-kalkulator
+  namespace: historisk
+  labels:
+    team: historisk
+spec:
+  image: "{{image}}"
+  port: 8080
+  azure:
+    sidecar:
+      enabled: true
+      autoLogin: true
+    application:
+      enabled: true
+      allowAllUsers: true
+  startup:
+    path: /health
+    initialDelay: 5
+  liveness:
+    path: /health
+  readiness:
+    path: /health
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  strategy:
+    type: RollingUpdate
+  replicas:
+    min: 1
+    max: 2
+  ingresses:
+    - {{appIngress}}
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: sdk

@@ -1,0 +1,84 @@
+.card {
+  background: #ffffff;
+  border: 1px solid #c6ccd6;
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #23262a;
+  margin-bottom: 16px;
+}
+
+.route {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e9ef;
+}
+
+.routeLabel {
+  font-size: 0.875rem;
+  color: #5c6674;
+  font-weight: 500;
+}
+
+.routeValue {
+  font-size: 1rem;
+  color: #23262a;
+  font-weight: 600;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detailRow dt {
+  font-size: 0.9375rem;
+  color: #5c6674;
+}
+
+.detailRow dd {
+  font-size: 0.9375rem;
+  color: #23262a;
+  font-weight: 500;
+}
+
+.totalRow {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid #e5e9ef;
+}
+
+.totalRow dt {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #23262a;
+}
+
+.totalAmount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #005b99;
+}
+
+.disclaimer {
+  margin-top: 16px;
+  font-size: 0.8125rem;
+  color: #5c6674;
+  font-style: italic;
+}
