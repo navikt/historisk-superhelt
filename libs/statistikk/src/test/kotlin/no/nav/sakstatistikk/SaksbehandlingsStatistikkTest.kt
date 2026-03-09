@@ -1,7 +1,5 @@
 package no.nav.sakstatistikk
 
-import BehandlingMetode
-import SaksbehandlingsStatistikk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,7 +9,6 @@ import java.time.LocalDate
 
 class SaksbehandlingsStatistikkTest {
 
-    private enum class BehandlingType { SOKNAD, REVURDERING, KLAGE }
     private enum class BehandlingStatus { UNDER_BEHANDLING, AVSLUTTET }
     private enum class BehandlingResultat { INNVILGET, AVSLATT }
     private enum class BehandlingAarsak { NYTT_BARN, ENDRET_INNTEKT }
@@ -39,7 +36,7 @@ class SaksbehandlingsStatistikkTest {
         endretTid = endretTid,
         tekniskTid = tekniskTid,
         sakYtelse = SakYtelse.ORTOSE,
-        behandlingType = BehandlingType.SOKNAD,
+        behandlingType = BehandingType.SØKNAD,
         behandlingStatus = BehandlingStatus.AVSLUTTET,
         behandlingMetode = BehandlingMetode.MANUELL,
         opprettetAv = "Z123456",

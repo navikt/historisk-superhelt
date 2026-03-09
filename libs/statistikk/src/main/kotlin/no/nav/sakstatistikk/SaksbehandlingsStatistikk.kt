@@ -1,3 +1,4 @@
+package no.nav.sakstatistikk
 import com.fasterxml.jackson.annotation.JsonInclude
 import tools.jackson.databind.PropertyNamingStrategies
 import tools.jackson.databind.annotation.JsonNaming
@@ -111,7 +112,7 @@ data class SaksbehandlingsStatistikk(
     /**
      * Kode som angir hvilken type behandling det er snakk om.
      */
-    val behandlingType: Enum<*>,
+    val behandlingType: BehandingType,
 
     /**
      * Kode som angir hvilken status behandlingen har.
@@ -139,7 +140,7 @@ data class SaksbehandlingsStatistikk(
      * Akkumulert verdi: hvis behandlingen noen gang har hatt en manuell hendelse,
      * skal fremtidige rader ha verdien [BehandlingMetode.MANUELL].
      */
-    val behandlingMetode: BehandlingMetode,
+    val behandlingMetode: BehandlingMetode = BehandlingMetode.MANUELL,
 
     /**
      * Kode som angir årsak til opprettelse av behandling.
@@ -153,7 +154,7 @@ data class SaksbehandlingsStatistikk(
      * Hvis det er en servicebruker eller systemet selv, sendes info om denne.
      * Geo-lokaliserende: oppgis som "-5" hvis noen tilknyttede personer er kode 6.
      */
-    val opprettetAv: String,
+    val opprettetAv: String?= null,
 
     /**
      * Nav-Ident til saksbehandler som jobber med behandlingen.
@@ -229,3 +230,12 @@ enum class BehandlingMetode {
     AUTOMATISK,
 }
 
+enum class BehandingType {
+    SØKNAD,
+    REVURDERING,
+    KLAGE,
+}
+
+enum class BehandlingStatus {
+    REGISTERT,
+}
