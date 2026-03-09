@@ -1,4 +1,5 @@
 package no.nav.sakstatistikk
+
 import com.fasterxml.jackson.annotation.JsonInclude
 import tools.jackson.databind.PropertyNamingStrategies
 import tools.jackson.databind.annotation.JsonNaming
@@ -66,7 +67,7 @@ data class SaksbehandlingsStatistikk(
      * Ved digitale søknader bør denne være tilnærmet lik [mottattTid].
      * Tidssone: UTC.
      */
-    val registrertTid: Instant ?= null,
+    val registrertTid: Instant? = null,
 
     /**
      * Tidspunkt når behandlingen ble avsluttet – enten avbrutt, henlagt, vedtak innvilget/avslått, osv.
@@ -154,7 +155,7 @@ data class SaksbehandlingsStatistikk(
      * Hvis det er en servicebruker eller systemet selv, sendes info om denne.
      * Geo-lokaliserende: oppgis som "-5" hvis noen tilknyttede personer er kode 6.
      */
-    val opprettetAv: String?= null,
+    val opprettetAv: String? = null,
 
     /**
      * Nav-Ident til saksbehandler som jobber med behandlingen.

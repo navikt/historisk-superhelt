@@ -16,7 +16,7 @@ import java.time.Instant
 class EndringsloggService(
     private val endringsloggJpaRepository: EndringsloggJpaRepository,
     private val sakRepository: SakRepository,
-    private val statisikkService: StatistikkService
+    private val statistikkService: StatistikkService
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -40,7 +40,7 @@ class EndringsloggService(
                 tidspunkt = tidspunkt
             )
         )
-        statisikkService.handleEvent(endringsType, tidspunkt, sakEntity.toDomain())
+        statistikkService.handleEvent(endringsType, tidspunkt, sakEntity.toDomain())
     }
 
 

@@ -40,7 +40,7 @@ class StatistikkService(
             behandlingStatus = endringsType,
             sakId = sak.saksnummer.value,
             aktorId = sak.fnr.value,
-            endretTid = Instant.now(),
+            endretTid = tidspunkt,
             sakYtelse = sak.type,
             behandlingType = BehandlingType.SØKNAD,
             saksbehandler = sak.saksbehandler.navIdent.value,
@@ -49,7 +49,7 @@ class StatistikkService(
             fagsystemVersjon = appVersion
         )
         return when (endringsType) {
-            EndringsloggType.DOKUMENT_MOTTATT -> statistikk.copy(mottattTid = tidspunkt)
+            EndringsloggType.DOKUMENT_MOTTATT -> statistikk.copy(mottattTid = tidspunkt, endretTid = Instant.now())
             EndringsloggType.OPPRETTET_SAK -> statistikk.copy(registrertTid = tidspunkt, opprettetAv = sak.saksbehandler.navIdent.value)
             EndringsloggType.TIL_ATTESTERING -> statistikk.copy(behandlingResultat = sak.vedtaksResultat)
             EndringsloggType.ATTESTERT_SAK -> statistikk.copy(
