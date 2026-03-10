@@ -270,7 +270,7 @@ class SakActionController(
         endringsloggService.logChange(
             saksnummer = saksnummer,
             endringsType = EndringsloggType.TILBAKESTILT_SAK,
-            endring = "Gjenåpning tilbakestilt",
+            endring = "Angret gjenåpning",
             beskrivelse = "Årsak: ${request.aarsak}"
         )
         return ResponseEntity.ok().build()

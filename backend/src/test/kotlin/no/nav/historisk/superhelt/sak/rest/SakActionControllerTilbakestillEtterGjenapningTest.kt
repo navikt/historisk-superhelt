@@ -21,13 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.Instant
 import kotlin.test.Test
 
-//TO DO sjekk antagelsen om at det bare er behandlingsnummer 1 som kan tilbakestilles
 /**
  * Tester at en sak som har blitt gjenåpnet ved en feil kan tilbakestilles til
  * tilstanden den hadde ved siste ferdigstilling (siste vedtak).
  *
  * Dette er en annen operasjon enn vanlig feilregistrering:
- * - Vanlig feilregistrering: brukes for nye saker (behandlingsnummer=1) uten vedtak,
+ * - Vanlig feilregistrering: brukes for nye saker (behandlingsnummer=1) uten vedtak
  *   setter status til FEILREGISTRERT.
  * - Tilbakestilling etter gjenåpning: brukes for saker med eksisterende vedtak der
  *   gjenåpningen var feil, gjenoppretter sak til tilstanden fra siste vedtak.
@@ -57,7 +56,6 @@ class SakActionControllerTilbakestillEtterGjenapningTest : AbstractSakActionTest
         val gjenapnetSak = sakRepository.getSak(originalSak.saksnummer)
         assertThat(gjenapnetSak.gjenapnet).isTrue()
         assertThat(gjenapnetSak.behandlingsnummer).isEqualTo(Behandlingsnummer(2))
-
         sakActionController.tilbakestillGjenapning(
             originalSak.saksnummer,
             TilbakestillGjenapningRequestDto("Gjenåpningen var feil")
