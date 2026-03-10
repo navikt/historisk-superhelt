@@ -251,4 +251,28 @@ class SakActionController(
         )
         return ResponseEntity.ok().build()
     }
+
+    @Operation(operationId = "tilbakestillGjenapning")
+    @PutMapping("status/tilbakestill")
+    fun tilbakestillGjenapning(
+        @PathVariable saksnummer: Saksnummer,
+        @Valid @RequestBody request: TilbakestillGjenapningRequestDto): ResponseEntity<Unit> {
+        val sak = sakRepository.getSak(saksnummer)
+        SakValidator(sak)
+            .checkRettighet(SakRettighet.TILBAKESTILL_GJENAPNING)
+            .validate()
+
+        logger.info("Tilbakestiller gjenåpnet sak $saksnummer")
+
+        sakService.tilbakestillGjenapning(sak)
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK)
+
+        endringsloggService.logChange(
+            saksnummer = saksnummer,
+            endringsType = EndringsloggType.TILBAKESTILT_SAK,
+            endring = "Gjenåpning tilbakestilt",
+            beskrivelse = "Årsak: ${request.aarsak}"
+        )
+        return ResponseEntity.ok().build()
+    }
 }

@@ -1,8 +1,10 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.brev.BrevRepository
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.vedtak.VedtakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -11,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class SakService(
     private val sakRepository: SakRepository,
+    private val vedtakRepository: VedtakRepository,
+    private val brevRepository: BrevRepository,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -63,8 +67,18 @@ class SakService(
         endreStatus(sak, SakStatus.UNDER_BEHANDLING)
         sakRepository.incrementBehandlingsNummer(sak.saksnummer)
         logger.info("Sak {} er gjenåpnet", sak.saksnummer)
+    }
 
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun tilbakestillGjenapning(sak: Sak) {
+        val sisteVedtak = vedtakRepository.findBySak(sak.saksnummer)
+            .maxByOrNull { it.behandlingsnummer.value }
+            ?: throw IllegalStateException("Ingen vedtak funnet for gjenåpnet sak ${sak.saksnummer}")
 
+        brevRepository.slettVedtaksbrevBrukerHvisIkkeFullfort(sak.vedtaksbrevBruker)
+        sakRepository.tilbakestillFraSistVedtak(sak.saksnummer, sisteVedtak)
+        logger.info("Sak {} er tilbakestilt etter feilaktig gjenåpning", sak.saksnummer)
     }
 
 }

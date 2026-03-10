@@ -15,7 +15,10 @@ enum class SakRettighet {
     GJENAPNE,
 
     FEILREGISTERE,
-    HENLEGGE
+    HENLEGGE,
+
+    /** Gir rettighet til å tilbakestille en feilaktig gjenåpnet sak til tilstanden fra siste vedtak */
+    TILBAKESTILL_GJENAPNING
 
 
 }
@@ -33,7 +36,9 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
 
-                    if (!gjenapnet) {
+                    if (gjenapnet) {
+                        rettigheter.add(SakRettighet.TILBAKESTILL_GJENAPNING)
+                    } else {
                         rettigheter.add(SakRettighet.HENLEGGE)
                         rettigheter.add(SakRettighet.FEILREGISTERE)
                     }
