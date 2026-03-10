@@ -4,6 +4,8 @@ import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.BrevRepository
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
+import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.vedtak.VedtakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
@@ -74,7 +76,10 @@ class SakService(
     fun tilbakestillGjenapning(sak: Sak) {
         val sisteVedtak = vedtakRepository.findBySak(sak.saksnummer)
             .maxByOrNull { it.behandlingsnummer.value }
-            ?: throw IllegalStateException("Ingen vedtak funnet for gjenåpnet sak ${sak.saksnummer}")
+            ?: throw ValideringException(
+                reason = "Ingen vedtak funnet for gjenåpnet sak ${sak.saksnummer}",
+                validationErrors = listOf(ValidationFieldError("vedtak", "Sak har ingen tidligere vedtak å tilbakestille til"))
+            )
 
         brevRepository.slettVedtaksbrevBrukerHvisIkkeFullfort(sak.vedtaksbrevBruker)
         sakRepository.tilbakestillFraSistVedtak(sak.saksnummer, sisteVedtak)
