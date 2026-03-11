@@ -95,12 +95,11 @@ class StatistikkServiceTest {
         @Test
         fun `Instant-felter skal serialiseres som ISO-8601 med tidssone`() {
             val tidspunkt = Instant.parse("2024-06-01T10:30:00.123Z")
-            val sak = SakTestData.sakUtenUtbetaling()
             service.handleEvent(EndringsloggType.FERDIGSTILT_SAK, tidspunkt, SakTestData.sakMedStatus(SakStatus.FERDIG))
 
             val json = fangetJson()
 
-            assertThat(json["ferdig_behandlet_tid"].asText()).isEqualTo("2024-06-01T10:30:00.123Z")
+            assertThat(json["ferdig_behandlet_tid"].asString()).isEqualTo("2024-06-01T10:30:00.123Z")
         }
 
         @Test
@@ -124,9 +123,9 @@ class StatistikkServiceTest {
 
             val json = fangetJson()
 
-            assertThat(json["behandling_status"].asText()).isEqualTo("TIL_ATTESTERING")
-            assertThat(json["behandling_type"].asText()).isEqualTo("SØKNAD")
-            assertThat(json["behandling_resultat"].asText()).isEqualTo(sak.vedtaksResultat!!.name)
+            assertThat(json["behandling_status"].asString()).isEqualTo("TIL_ATTESTERING")
+            assertThat(json["behandling_type"].asString()).isEqualTo("SØKNAD")
+            assertThat(json["behandling_resultat"].asString()).isEqualTo(sak.vedtaksResultat!!.name)
         }
     }
 

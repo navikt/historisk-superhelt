@@ -8,7 +8,6 @@ import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
-import no.nav.historisk.superhelt.statistikk.kafka.SakStatistikkKafkaProducer
 import no.nav.pdl.HentPdlResponse
 import no.nav.pdl.IdentGruppe
 import no.nav.pdl.IdentInformasjon
@@ -121,10 +120,10 @@ class ExternalMockTestConfig {
         }
     }
 
-    @Primary
-    @Bean
-    fun sakStatistikkKafkaProducerMock(): SakStatistikkKafkaProducer {
-        logger.warn("Bruker mock av SakStatistikkKafkaProducer mot kafka")
-        return mock()
-    }
+//    @Primary
+//    @Bean
+//    fun sakStatistikkKafkaProducerMock(): SakStatistikkKafkaProducer {
+//        logger.warn("Bruker mock av SakStatistikkKafkaProducer mot kafka")
+//        return mock()
+//    }
 }
