@@ -6,6 +6,7 @@ import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
+import no.nav.historisk.superhelt.vedtak.Vedtak
 import no.nav.historisk.superhelt.vedtak.VedtakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
@@ -15,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class SakService(
     private val sakRepository: SakRepository,
-    private val vedtakRepository: VedtakRepository,
-    private val brevRepository: BrevRepository,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -73,15 +72,7 @@ class SakService(
 
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
-    fun tilbakestillGjenapning(sak: Sak) {
-        val sisteVedtak = vedtakRepository.findBySak(sak.saksnummer)
-            .maxByOrNull { it.behandlingsnummer.value }
-            ?: throw ValideringException(
-                reason = "Ingen vedtak funnet for gjenåpnet sak ${sak.saksnummer}",
-                validationErrors = listOf(ValidationFieldError("vedtak", "Sak har ingen tidligere vedtak å tilbakestille til"))
-            )
-
-        brevRepository.slettVedtaksbrevBrukerHvisIkkeFullfort(sak.vedtaksbrevBruker)
+    fun tilbakestillGjenapning(sak: Sak,sisteVedtak: Vedtak) {
         sakRepository.tilbakestillFraSistVedtak(sak.saksnummer, sisteVedtak)
         logger.info("Sak {} er tilbakestilt etter feilaktig gjenåpning", sak.saksnummer)
     }

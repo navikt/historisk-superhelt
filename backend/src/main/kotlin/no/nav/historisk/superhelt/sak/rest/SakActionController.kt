@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.sak.rest
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.brev.BrevRepository
 import no.nav.historisk.superhelt.brev.BrevSendingService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
@@ -18,6 +19,7 @@ import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import no.nav.oppgave.OppgaveType
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -29,7 +31,8 @@ class SakActionController(
     private val utbetalingService: UtbetalingService,
     private val vedtakService: VedtakService,
     private val brevSendingService: BrevSendingService,
-    private val oppgaveService: OppgaveService
+    private val oppgaveService: OppgaveService,
+    private val brevRepository: BrevRepository
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -254,6 +257,7 @@ class SakActionController(
 
     @Operation(operationId = "tilbakestillGjenapning")
     @PutMapping("status/tilbakestill")
+    @Transactional
     fun tilbakestillGjenapning(
         @PathVariable saksnummer: Saksnummer,
         @Valid @RequestBody request: TilbakestillGjenapningRequestDto): ResponseEntity<Unit> {
@@ -264,7 +268,14 @@ class SakActionController(
 
         logger.info("Tilbakestiller gjenåpnet sak $saksnummer")
 
-        sakService.tilbakestillGjenapning(sak)
+        val sisteVedtak = vedtakService.hentSisteVedtakForSak(saksnummer)
+            ?: throw ValideringException(
+                reason = "Ingen vedtak funnet for gjenåpnet sak ${sak.saksnummer}",
+                validationErrors = listOf(ValidationFieldError("vedtak", "Sak har ingen tidligere vedtak å tilbakestille til"))
+            )
+
+        brevRepository.slettBrev(sak.vedtaksbrevBruker)
+        sakService.tilbakestillGjenapning(sak,sisteVedtak)
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK)
 
         endringsloggService.logChange(

@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.vedtak
 
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.SakExtensions.createVedtak
 import no.nav.historisk.superhelt.sak.SakRepository
 import org.springframework.security.access.prepost.PreAuthorize
@@ -17,6 +19,11 @@ class VedtakService(
         val vedtak = sak.createVedtak()
 
         vedtakRepository.save(vedtak)
+    }
+
+    fun hentSisteVedtakForSak(saksnummer: Saksnummer): Vedtak? {
+        return vedtakRepository.findBySak(saksnummer)
+            .maxByOrNull { it.behandlingsnummer.value }
     }
 
 

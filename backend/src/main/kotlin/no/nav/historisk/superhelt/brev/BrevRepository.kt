@@ -65,7 +65,7 @@ class BrevRepository(
     /** Kun for bruk ved tilbakestilling av feilaktig gjenåpnet sak */
     @Transactional
     @PreAuthorize("hasAuthority('WRITE')")
-    internal fun slettVedtaksbrevBrukerHvisIkkeFullfort(brev: Brev?) {
+    internal fun slettBrev(brev: Brev?) {
         if (brev == null || brev.status.isCompleted()) return
         jpaRepository.deleteByUuid(brev.uuid)
     }
