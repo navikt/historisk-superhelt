@@ -84,6 +84,11 @@ class StatistikkService(
                 behandlingResultat = SakStatus.FEILREGISTRERT,
                 ferdigBehandletTid = tidspunkt)
             EndringsloggType.HENLAGT_SAK -> statistikk.copy(ferdigBehandletTid = tidspunkt)
+            EndringsloggType.TILBAKESTILT_SAK -> statistikk.copy(
+                behandlingStatus = SakStatus.FERDIG,
+                behandlingResultat = EndringsloggType.TILBAKESTILT_SAK,
+                ferdigBehandletTid = tidspunkt
+            )
         }
     }
 }
