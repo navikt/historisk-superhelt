@@ -16,7 +16,7 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { dateTilIsoDato } from "~/common/dato.utils";
 import { NumericInput } from "~/common/NumericInput";
 import useDebounce from "~/common/useDebounce";
@@ -64,34 +64,37 @@ export default function SakEditor({ sak }: Props) {
         defaultSelected: sak.soknadsDato ? new Date(sak.soknadsDato) : new Date(),
     });
 
-    useEffect(() => {
-        // Lagrer etter siste endring
-        if (debouncedSak && hasChanged) {
-            lagreSak();
-        }
-    }, [debouncedSak]);
-
     const patchSak = (s: Partial<SakUpdateRequestDto>) => {
         setUpdateSakData((prev) => ({ ...prev, ...s }));
         setHasChanged(true);
     };
 
-    function lagreSak() {
-        if (!hasChanged) {
-            return Promise.resolve(sak);
+    const lagreSak = useCallback(
+        (sakData: SakUpdateRequestDto, changed: boolean) => {
+            if (!changed) {
+                return Promise.resolve(sak);
+            }
+            const response = oppdaterSak.mutateAsync({
+                path: {
+                    saksnummer: saksnummer,
+                },
+                body: sakData,
+            });
+            setHasChanged(false);
+            return response;
+        },
+        [oppdaterSak, sak, saksnummer],
+    );
+
+    useEffect(() => {
+        // Lagrer etter siste endring
+        if (debouncedSak && hasChanged) {
+            lagreSak(debouncedSak, hasChanged);
         }
-        const response = oppdaterSak.mutateAsync({
-            path: {
-                saksnummer: saksnummer,
-            },
-            body: updateSakData,
-        });
-        setHasChanged(false);
-        return response;
-    }
+    }, [debouncedSak, hasChanged, lagreSak]);
 
     async function completedSoknad() {
-        const lagretSak = await lagreSak();
+        const lagretSak = await lagreSak(updateSakData, hasChanged);
         setShowValidation(true);
         if (lagretSak.valideringsfeil.length === 0) {
             navigate({ to: "/sak/$saksnummer/vedtaksbrevbruker", params: { saksnummer } });

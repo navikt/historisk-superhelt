@@ -11,5 +11,5 @@ function SakIndex() {
 
     useEffect(() => {
         navigate({ to: "/sak/$saksnummer/opplysninger", params: { saksnummer }, replace: true });
-    }, [saksnummer]);
+    }, [saksnummer, navigate]);
 }
