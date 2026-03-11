@@ -10,6 +10,7 @@ import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import no.nav.historisk.superhelt.sak.db.SakJpaRepository
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
+import no.nav.historisk.superhelt.vedtak.Vedtak
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
@@ -72,6 +73,25 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     fun incrementBehandlingsNummer(saksnummer: Saksnummer): Sak {
         val sakEntity = getSakEntityOrThrow(saksnummer)
         sakEntity.behandlingsTeller += 1
+        return jpaRepository.save(sakEntity).toDomain()
+    }
+
+    /** Kun for bruk ved tilbakestilling av feilaktig gjenåpnet sak */
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    internal fun tilbakestillFraSistVedtak(saksnummer: Saksnummer, vedtak: Vedtak): Sak {
+        val sakEntity = getSakEntityOrThrow(saksnummer)
+        sakEntity.status = SakStatus.FERDIG
+        sakEntity.behandlingsTeller -= 1
+        sakEntity.saksbehandler = vedtak.saksbehandler
+        sakEntity.attestant = vedtak.attestant
+        sakEntity.beskrivelse = vedtak.beskrivelse
+        sakEntity.begrunnelse = vedtak.begrunnelse
+        sakEntity.soknadsDato = vedtak.soknadsDato
+        sakEntity.tildelingsAar = vedtak.tildelingsAar?.value
+        sakEntity.vedtaksResultat = vedtak.resultat
+        sakEntity.utbetalingsType = vedtak.utbetalingsType
+        sakEntity.belop = vedtak.belop?.value
         return jpaRepository.save(sakEntity).toDomain()
     }
 

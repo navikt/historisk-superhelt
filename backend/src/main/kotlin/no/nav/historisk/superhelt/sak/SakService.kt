@@ -1,8 +1,13 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.brev.BrevRepository
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
+import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
+import no.nav.historisk.superhelt.vedtak.Vedtak
+import no.nav.historisk.superhelt.vedtak.VedtakRepository
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -63,8 +68,13 @@ class SakService(
         endreStatus(sak, SakStatus.UNDER_BEHANDLING)
         sakRepository.incrementBehandlingsNummer(sak.saksnummer)
         logger.info("Sak {} er gjenåpnet", sak.saksnummer)
+    }
 
-
+    @PreAuthorize("hasAuthority('WRITE')")
+    @Transactional
+    fun tilbakestillGjenapning(sak: Sak,sisteVedtak: Vedtak) {
+        sakRepository.tilbakestillFraSistVedtak(sak.saksnummer, sisteVedtak)
+        logger.info("Sak {} er tilbakestilt etter feilaktig gjenåpning", sak.saksnummer)
     }
 
 }

@@ -64,7 +64,8 @@ class SakRettigheterTest {
             assertThat( sak.gjenapnet ).isTrue
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
-                SakRettighet.SAKSBEHANDLE
+                SakRettighet.SAKSBEHANDLE,
+                SakRettighet.TILBAKESTILL_GJENAPNING
             )
         }
 

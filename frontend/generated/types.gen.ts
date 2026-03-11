@@ -61,22 +61,26 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
+    readonly maskertPersonIdent: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE'>;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
     readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
     field: string;
     message: string;
+};
+
+export type TilbakestillGjenapningRequestDto = {
+    aarsak: string;
 };
 
 export type HenlagtSakRequestDto = {
@@ -158,8 +162,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
-    annulleres: boolean;
     loggId$superhelt_backend: string;
+    annulleres: boolean;
 };
 
 export type User = {
@@ -195,7 +199,7 @@ export type SakStatusDto = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK';
     endring: string;
     beskrivelse?: string;
     endretAv: string;
@@ -308,8 +312,8 @@ export type SakWritable = {
 export type SakTilstandWritable = {
     sak?: SakWritable;
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -399,6 +403,39 @@ export type OppdaterSakResponses = {
 };
 
 export type OppdaterSakResponse = OppdaterSakResponses[keyof OppdaterSakResponses];
+
+export type TilbakestillGjenapningData = {
+    body: TilbakestillGjenapningRequestDto;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/status/tilbakestill';
+};
+
+export type TilbakestillGjenapningErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type TilbakestillGjenapningError = TilbakestillGjenapningErrors[keyof TilbakestillGjenapningErrors];
+
+export type TilbakestillGjenapningResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
 
 export type SendTilAttesteringData = {
     body?: never;
@@ -1356,7 +1393,9 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: 'JANUARY' | 'FEBRUARY' | 'MARCH' | 'APRIL' | 'MAY' | 'JUNE' | 'JULY' | 'AUGUST' | 'SEPTEMBER' | 'OCTOBER' | 'NOVEMBER' | 'DECEMBER';
+        dokumentId: {
+            [key: string]: unknown;
+        };
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';

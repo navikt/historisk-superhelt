@@ -1,5 +1,12 @@
 import type { Sak } from "@generated";
-import { ChevronDownIcon, EnvelopeClosedIcon, GavelIcon, PadlockUnlockedIcon, TrashIcon } from "@navikt/aksel-icons";
+import {
+    ArrowUndoIcon,
+    ChevronDownIcon,
+    EnvelopeClosedIcon,
+    GavelIcon,
+    PadlockUnlockedIcon,
+    TrashIcon,
+} from "@navikt/aksel-icons";
 import { ActionMenu, Button } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 import type { RettighetType } from "~/routes/sak/$saksnummer/-types/sak.types";
@@ -23,14 +30,24 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
             </ActionMenu.Trigger>
             <ActionMenu.Content>
                 <ActionMenu.Group label={`Sak ${sak.saksnummer}`}>
-                    <ActionMenu.Item
-                        as={RouterLink}
-                        disabled={!hasRettighet("FEILREGISTERE")}
-                        to={`/sak/${sak.saksnummer}/feilregistrer`}
-                        icon={<TrashIcon aria-hidden />}
-                    >
-                        Feilregistrer sak
-                    </ActionMenu.Item>
+                    {hasRettighet("TILBAKESTILL_GJENAPNING") ? (
+                        <ActionMenu.Item
+                            as={RouterLink}
+                            to={`/sak/${sak.saksnummer}/tilbakestill`}
+                            icon={<ArrowUndoIcon aria-hidden />}
+                        >
+                            Angre gjenåpning
+                        </ActionMenu.Item>
+                    ) : (
+                        <ActionMenu.Item
+                            as={RouterLink}
+                            disabled={!hasRettighet("FEILREGISTERE")}
+                            to={`/sak/${sak.saksnummer}/feilregistrer`}
+                            icon={<TrashIcon aria-hidden />}
+                        >
+                            Feilregistrer sak
+                        </ActionMenu.Item>
+                    )}
                     <ActionMenu.Item
                         as={RouterLink}
                         to={`/sak/${sak.saksnummer}/henlegg`}

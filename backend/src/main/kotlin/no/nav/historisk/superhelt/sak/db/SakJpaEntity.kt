@@ -95,7 +95,6 @@ class SakJpaEntity(
     val behandlingsnummer: Behandlingsnummer
         get() = Behandlingsnummer(behandlingsTeller)
 
-
     private fun getVedtaksbrevBrev() = brev.map { it.toDomain() }
         .finnGjeldendeBrev(BrevType.VEDTAKSBREV, BrevMottaker.BRUKER)
 
