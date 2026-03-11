@@ -2,36 +2,36 @@ package no.nav.historisk.superhelt.statistikk.kafka
 
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.StringKafkaTestConsumer
 import no.nav.sakstatistikk.BehandlingMetode
 import no.nav.sakstatistikk.BehandlingType
 import no.nav.sakstatistikk.SaksbehandlingsStatistikk
 import org.assertj.core.api.Assertions.assertThat
-import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Import
-import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
 import tools.jackson.databind.JsonNode
-import tools.jackson.databind.ObjectMapper
 import java.time.Instant
 import java.time.LocalDate
-import java.util.concurrent.TimeUnit
 
 @MockedSpringBootTest
-@Import( StatistikkKafkaConsumerTestConfiguration::class)
 class SakStatistikkKafkaProducerIntegrationTest {
 
-    @Autowired
-    private lateinit var kafkaTemplate: KafkaTemplate<String, SaksbehandlingsStatistikk>
 
     @Autowired
     private lateinit var producer: SakStatistikkKafkaProducer
 
     @Autowired
-    private lateinit var consumer: StringKafkaConsumer
+    private lateinit var consumer: StringKafkaTestConsumer
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
+
+    @TestConfiguration(proxyBeanMethods = false)
+    class StatistikkKafkaConsumerTestConfiguration(private val statistikkProperties: StatistikkConfigProperties) {
+
+        @Bean
+        fun sakStatistikkKafkaConsumer() = StringKafkaTestConsumer(topic = statistikkProperties.saksBehandlingStatistikkTopic)
+    }
 
 
     private fun enStatistikk(
@@ -60,6 +60,12 @@ class SakStatistikkKafkaProducerIntegrationTest {
         fagsystemVersjon = "1.0.0",
     )
 
+    private fun sendOgMottaMelding(statistikk: SaksbehandlingsStatistikk): JsonNode {
+        producer.registrerStatistikk(statistikk)
+
+        return consumer.assertMessageReceived()
+    }
+
 
     @Test
     fun `feltnavn er snake_case`() {
@@ -73,14 +79,6 @@ class SakStatistikkKafkaProducerIntegrationTest {
         assertThat(json.has("endret_tid")).isTrue()
         assertThat(json.has("fagsystem_navn")).isTrue()
         assertThat(json.has("fagsystem_versjon")).isTrue()
-    }
-
-    private fun sendOgMottaMelding(statistikk: SaksbehandlingsStatistikk): JsonNode {
-        producer.registrerStatistikk(statistikk)
-
-        await().atMost(3, TimeUnit.SECONDS).until { consumer.hasMessages() }
-        val message = consumer.lastMessage?: throw AssertionError("Forventet å finne en melding")
-        return objectMapper.readTree(message)
     }
 
     @Test
