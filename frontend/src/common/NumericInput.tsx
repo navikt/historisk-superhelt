@@ -26,7 +26,7 @@ export function NumericInput(props: NumericInputProps) {
             return;
         }
         const numericValue = Number(trimmedInput);
-        if (!isNaN(numericValue)) {
+        if (!Number.isNaN(numericValue)) {
             setNumericError(undefined);
             onChange(numericValue);
         } else {

@@ -68,19 +68,17 @@ function JournalforPage() {
         <VStack gap={"space-24"}>
             <Heading size="xlarge">Journalfør oppgave {oppgave.oppgaveId}</Heading>
 
-            <>
-                {completed && <FerdigJournalfort saksnummer={oppgave.saksnummer} />}
-                {!completed && (
-                    <JournalforForm
-                        person={person}
-                        oppgaveMedSak={oppgave}
-                        journalPost={journalPost}
-                        readOnly={!harSkriveTilgang}
-                        defaultStonadstype={guessStonadsType(oppgave.oppgaveGjelder)}
-                        onBrukerUpdate={oppdaterBruker}
-                    />
-                )}
-            </>
+            {completed && <FerdigJournalfort saksnummer={oppgave.saksnummer} />}
+            {!completed && (
+                <JournalforForm
+                    person={person}
+                    oppgaveMedSak={oppgave}
+                    journalPost={journalPost}
+                    readOnly={!harSkriveTilgang}
+                    defaultStonadstype={guessStonadsType(oppgave.oppgaveGjelder)}
+                    onBrukerUpdate={oppdaterBruker}
+                />
+            )}
         </VStack>
     );
 }

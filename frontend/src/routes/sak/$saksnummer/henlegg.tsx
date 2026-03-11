@@ -31,7 +31,7 @@ function HenleggPage() {
 
     const henleggMutation = useMutation({
         ...henleggSakMutation(),
-        onSuccess: (data) => {
+        onSuccess: () => {
             invalidateSakQuery(saksnummer);
             navigateBack();
         },

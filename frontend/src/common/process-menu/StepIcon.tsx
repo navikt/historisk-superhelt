@@ -28,5 +28,4 @@ export const StepIcon = ({ type, usePartialStatus }: StepIconProps) => {
     if (isDanger) {
         return <XMarkOctagonFillIcon className={classes} />;
     }
-    return <></>;
 };

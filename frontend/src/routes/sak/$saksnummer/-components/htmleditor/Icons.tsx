@@ -1,5 +1,6 @@
 export const Bold = ({ size = 16, color = "currentColor" }) => (
     <svg
+        aria-label="Bold"
         xmlns="http://www.w3.org/2000/svg"
         width={size}
         height={size}
@@ -18,6 +19,7 @@ export const Bold = ({ size = 16, color = "currentColor" }) => (
 
 export const Italic = ({ size = 16, color = "currentColor" }) => (
     <svg
+        aria-label="Italic"
         xmlns="http://www.w3.org/2000/svg"
         width={size}
         height={size}
