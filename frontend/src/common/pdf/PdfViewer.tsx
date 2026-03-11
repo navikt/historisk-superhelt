@@ -27,7 +27,7 @@ function PdfViewer2({ journalpostId }: { journalpostId: string }) {
 
     useEffect(() => {
         setDokId(journalpost.dokumenter?.at(0)?.dokumentInfoId);
-    }, [journalpost.dokumenter]);
+    }, [journalpostId, journalpost.dokumenter]);
 
     if (!dokId) {
         return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>;
