@@ -87,9 +87,9 @@ data class OppgaveDto(
     enum class Prioritet {
         HOY,
         NORM,
-        LAV
+        LAV,
+        KRITISK
     }
-
 
 }
 
