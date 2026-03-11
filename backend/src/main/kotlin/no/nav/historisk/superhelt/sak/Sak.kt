@@ -47,7 +47,7 @@ data class Sak(
     val utbetalingsType: UtbetalingsType = UtbetalingsType.INGEN,
     val belop: Belop? = null,
 
-    val vedtaksbrevBruker: Brev? = null
+    val vedtaksbrevBruker: Brev? = null,
 ) {
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)

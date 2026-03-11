@@ -48,6 +48,11 @@ data class GjenapneSakRequestDto(
     val aarsak: String,
 )
 
+data class TilbakestillGjenapningRequestDto(
+    @field:Size(min = 5, max = 1000)
+    val aarsak: String,
+)
+
 enum class AggregertSakStatus {
     OK,
     FEILET,

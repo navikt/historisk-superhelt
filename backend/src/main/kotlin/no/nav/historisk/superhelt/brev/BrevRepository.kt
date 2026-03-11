@@ -62,6 +62,13 @@ class BrevRepository(
         return jpaRepository.save(entity).toDomain()
     }
 
+    /** Kun for bruk ved tilbakestilling av feilaktig gjenåpnet sak */
+    @Transactional
+    @PreAuthorize("hasAuthority('WRITE')")
+    internal fun slettBrev(brev: Brev?) {
+        if (brev == null || brev.status.isCompleted()) return
+        jpaRepository.deleteByUuid(brev.uuid)
+    }
 
 }
 
