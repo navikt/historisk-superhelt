@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.statistikk
 import no.nav.common.types.defaultEnhetsnummer
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.statistikk.kafka.SakStatistikkKafkaProducer
 import no.nav.sakstatistikk.BehandlingType
 import no.nav.sakstatistikk.SaksbehandlingsStatistikk
@@ -58,6 +59,7 @@ class StatistikkService(
             )
 
             EndringsloggType.FERDIGSTILT_SAK -> statistikk.copy(
+                behandlingStatus = SakStatus.FERDIG,
                 behandlingResultat = sak.vedtaksResultat,
                 ferdigBehandletTid = tidspunkt,
                 ansvarligBeslutter = sak.attestant?.navIdent?.value
@@ -77,7 +79,10 @@ class StatistikkService(
             EndringsloggType.SENDT_BREV -> null
             EndringsloggType.UTBETALING_OK -> null
             EndringsloggType.UTBETALING_FEILET -> null
-            EndringsloggType.FEILREGISTERT -> statistikk.copy(ferdigBehandletTid = tidspunkt)
+            EndringsloggType.FEILREGISTERT -> statistikk.copy(
+                behandlingStatus = SakStatus.FERDIG,
+                behandlingResultat = SakStatus.FEILREGISTRERT,
+                ferdigBehandletTid = tidspunkt)
             EndringsloggType.HENLAGT_SAK -> statistikk.copy(ferdigBehandletTid = tidspunkt)
         }
     }
