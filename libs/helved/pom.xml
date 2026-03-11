@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>helved</artifactId>
-    <description>Lib for utbetalign og helved</description>
+    <description>Lib for utbetaling med helved</description>
 
     <dependencies>
         <dependency>

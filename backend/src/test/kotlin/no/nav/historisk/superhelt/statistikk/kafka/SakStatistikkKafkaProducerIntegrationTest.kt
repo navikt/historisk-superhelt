@@ -70,7 +70,7 @@ class SakStatistikkKafkaProducerIntegrationTest {
 
     @BeforeEach
     fun setUp() {
-        consumer.messages.clear()
+        consumer.clearMessages()
     }
 
 

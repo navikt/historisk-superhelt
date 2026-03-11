@@ -119,11 +119,4 @@ class ExternalMockTestConfig {
 
         }
     }
-
-//    @Primary
-//    @Bean
-//    fun sakStatistikkKafkaProducerMock(): SakStatistikkKafkaProducer {
-//        logger.warn("Bruker mock av SakStatistikkKafkaProducer mot kafka")
-//        return mock()
-//    }
 }

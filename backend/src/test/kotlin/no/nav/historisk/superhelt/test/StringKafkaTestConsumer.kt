@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 class StringKafkaTestConsumer(val topic: String) {
 
     private val objectMapper = jacksonObjectMapper()
-    val messages = mutableListOf<String>()
+    private val messages = mutableListOf<String>()
 
     // Unik per instans slik at ulike Spring-kontekster ikke deler consumer group og forstyrrer hverandre
     val groupId = "test-${UUID.randomUUID()}"
@@ -29,6 +29,9 @@ class StringKafkaTestConsumer(val topic: String) {
         get() = messages.lastOrNull()
 
     fun hasMessages(): Boolean = messages.isNotEmpty()
+
+    @Synchronized
+    fun clearMessages() = messages.clear()
 
     fun assertMessageReceived(): JsonNode {
         await().atMost(3, TimeUnit.SECONDS).until { hasMessages() }

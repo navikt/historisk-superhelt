@@ -35,7 +35,7 @@ class UtbetalingKafkaProducerIntegrationTest {
 
     @BeforeEach
     fun setUp() {
-        consumer.messages.clear()
+        consumer.clearMessages()
     }
 
     private fun enUtbetaling(

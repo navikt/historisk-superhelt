@@ -16,7 +16,8 @@ class KafkaTestcontainersConfiguration(
 
     @Bean
     @ServiceConnection
-    fun kafkaContainer(): KafkaContainer = INSTANCE
+    fun kafkaContainer(): KafkaContainer = KafkaContainer(DockerImageName.parse("apache/kafka-native:4.2.0"))
+        .withReuse(true)
 
     /* Lager topics som brukes i testene */
     @Bean
@@ -28,10 +29,4 @@ class KafkaTestcontainersConfiguration(
     @Bean
     fun statistikkTopic() = NewTopic(statistikkProperties.saksBehandlingStatistikkTopic, 1, 1.toShort())
 
-    companion object {
-        val INSTANCE: KafkaContainer =
-            KafkaContainer(DockerImageName.parse("apache/kafka-native:4.2.0"))
-                .withReuse(true)
-                .also { it.start() }
-    }
 }
