@@ -7,6 +7,7 @@ import no.nav.sakstatistikk.BehandlingMetode
 import no.nav.sakstatistikk.BehandlingType
 import no.nav.sakstatistikk.SaksbehandlingsStatistikk
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
@@ -32,6 +33,7 @@ class SakStatistikkKafkaProducerIntegrationTest {
         @Bean
         fun sakStatistikkKafkaConsumer() = StringKafkaTestConsumer(topic = statistikkProperties.saksBehandlingStatistikkTopic)
     }
+
 
 
     private fun enStatistikk(
@@ -64,6 +66,11 @@ class SakStatistikkKafkaProducerIntegrationTest {
         producer.registrerStatistikk(statistikk)
 
         return consumer.assertMessageReceived()
+    }
+
+    @BeforeEach
+    fun setUp() {
+        consumer.messages.clear()
     }
 
 
