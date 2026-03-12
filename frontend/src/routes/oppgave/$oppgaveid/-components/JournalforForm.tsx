@@ -191,7 +191,7 @@ export function JournalforForm({
                 </Card>
                 <Card title="Dokumenter">
                     {journalPost?.dokumenter?.map((dok, index: number) => (
-                        <div key={dok.dokumentInfoId}>
+                        <VStack gap={"space-16"} key={dok.dokumentInfoId}>
                             <DokumentTittelFelt
                                 index={index}
                                 value={dok.tittel}
@@ -209,7 +209,7 @@ export function JournalforForm({
                                     readOnly={readOnly}
                                 />
                             )}
-                        </div>
+                        </VStack>
                     ))}
                 </Card>
 

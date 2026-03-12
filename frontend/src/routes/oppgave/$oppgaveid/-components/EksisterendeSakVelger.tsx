@@ -1,7 +1,7 @@
 import type {Sak} from "@generated";
 import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
 import {CheckmarkCircleIcon} from "@navikt/aksel-icons";
-import {Alert, BodyShort, Label, Table} from "@navikt/ds-react";
+import {Alert, BodyShort, Box, Label, Table} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
@@ -31,7 +31,7 @@ export function EksisterendeSakVelger({ maskertPersonIdent, valgtSaksnummer, err
     }
 
     return (
-        <div>
+        <Box background={"default"}>
             {error && (
                 <Alert variant="error" size="small" style={{ marginBottom: "0.5rem" }}>
                     {error}
@@ -69,6 +69,6 @@ export function EksisterendeSakVelger({ maskertPersonIdent, valgtSaksnummer, err
                     ))}
                 </Table.Body>
             </Table>
-        </div>
+        </Box>
     );
 }

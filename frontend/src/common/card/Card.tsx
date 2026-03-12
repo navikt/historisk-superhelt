@@ -1,21 +1,20 @@
-import {InfoCard, VStack} from "@navikt/ds-react";
+import {Box, Heading, VStack} from "@navikt/ds-react";
 
 interface CardProps {
-    title: string;
+    title?: string;
     children: React.ReactNode;
 }
 
-export function Card(props: CardProps) {
+export function Card({title, children}: CardProps) {
+
     return (
-        <InfoCard data-color="neutral" as="section">
-            <InfoCard.Header>
-                <InfoCard.Title>{props.title}</InfoCard.Title>
-            </InfoCard.Header>
-            <InfoCard.Content>
-                <VStack gap="space-24">
-                    {props.children}
-                </VStack>
-            </InfoCard.Content>
-        </InfoCard>
+        <Box padding={"space-16"} background={"neutral-soft"}>
+            <VStack gap="space-16">
+                {title && <Heading textColor="subtle" size="small">
+                    {title}
+                </Heading>}
+                {children}
+            </VStack>
+        </Box>
     );
 }
