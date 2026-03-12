@@ -1,9 +1,8 @@
 import type {Sak} from "@generated";
 import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
 import {CheckmarkCircleIcon} from "@navikt/aksel-icons";
-import {Alert, BodyShort, Table} from "@navikt/ds-react";
+import {Alert, BodyShort, Label, Table} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {isoTilLokal} from "~/common/dato.utils";
 import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
@@ -20,6 +19,10 @@ export function EksisterendeSakVelger({ maskertPersonIdent, valgtSaksnummer, err
         findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }),
     );
     const getStonadsTypeNavn = useStonadsTypeNavn();
+    const sakOppsummering = (sak: Sak) => {
+        const stonadsTypeNavn = getStonadsTypeNavn(sak.type);
+        return `${stonadsTypeNavn} - ${sak.beskrivelse??""}`;
+    }
 
     const valgbareSaker = data.filter((sak) => sak.status !== "FEILREGISTRERT" );
 
@@ -34,14 +37,14 @@ export function EksisterendeSakVelger({ maskertPersonIdent, valgtSaksnummer, err
                     {error}
                 </Alert>
             )}
+            <Label>Velg en sak:</Label>
             <Table>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell scope="col">Saksnummer</Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Type</Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Status</Table.HeaderCell>
-                        <Table.HeaderCell scope="col">Opprettet</Table.HeaderCell>
                         <Table.HeaderCell scope="col" />
+                        <Table.HeaderCell scope="col">Saksnummer</Table.HeaderCell>
+                        <Table.HeaderCell scope="col">Status</Table.HeaderCell>
+                        <Table.HeaderCell scope="col"></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -52,17 +55,16 @@ export function EksisterendeSakVelger({ maskertPersonIdent, valgtSaksnummer, err
                             onClick={readOnly ? undefined : () => onVelgSak(sak)}
                             style={{ cursor: readOnly ? "default" : "pointer" }}
                         >
-                            <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
-                            <Table.DataCell>{getStonadsTypeNavn(sak.type)}</Table.DataCell>
-                            <Table.DataCell>
-                                <SakStatus sak={sak} />
-                            </Table.DataCell>
-                            <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
                             <Table.DataCell>
                                 {sak.saksnummer === valgtSaksnummer && (
                                     <CheckmarkCircleIcon aria-label="Valgt" fontSize="1.5rem" />
                                 )}
                             </Table.DataCell>
+                            <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
+                            <Table.DataCell>
+                                <SakStatus sak={sak} />
+                            </Table.DataCell>
+                            <Table.DataCell>{sakOppsummering(sak)}</Table.DataCell>
                         </Table.Row>
                     ))}
                 </Table.Body>

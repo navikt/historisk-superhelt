@@ -15,7 +15,6 @@ data class JournalforRequest(
     val jfrOppgaveId: EksternOppgaveId,
     @field:NotNull
     val bruker: FolkeregisterIdent,
-    // TODO Avsender kan også være virksomhet
     @field:NotNull
     val avsender: FolkeregisterIdent,
     @field:NotEmpty

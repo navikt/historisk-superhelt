@@ -8,10 +8,11 @@ import type {
     Sak,
 } from "@generated";
 import {journalforMutation} from "@generated/@tanstack/react-query.gen";
-import {Button, Heading, Radio, RadioGroup, VStack} from "@navikt/ds-react";
+import {Button, Radio, RadioGroup, VStack} from "@navikt/ds-react";
 import {useMutation} from "@tanstack/react-query";
 import {useNavigate} from "@tanstack/react-router";
 import {useState} from "react";
+import {Card} from "~/common/card/Card";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
 import {hasSize, isValidFnr} from "~/common/validation.utils";
 import {AnnetInnholdCombobox} from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
@@ -46,13 +47,13 @@ interface Props {
 }
 
 export function JournalforForm({
-    person,
-    oppgaveMedSak,
-    journalPost,
-    defaultStonadstype,
-    onBrukerUpdate,
-    readOnly,
-}: Props) {
+                                   person,
+                                   oppgaveMedSak,
+                                   journalPost,
+                                   defaultStonadstype,
+                                   onBrukerUpdate,
+                                   readOnly,
+                               }: Props) {
     const navigate = useNavigate();
     const [backendError, setBackendError] = useState<ProblemDetail | undefined>();
     const journalfor = useMutation({
@@ -64,7 +65,7 @@ export function JournalforForm({
     const [sakModus, setSakModus] = useState<SakModus>(defaultStonadstype ? "ny" : "eksisterende");
     const [valgtSak, setValgtSak] = useState<Sak | undefined>();
     const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype);
-    const [bruker, setBruker] = useState<PersonValue>({ fnr: person.fnr, navn: person.navn });
+    const [bruker, setBruker] = useState<PersonValue>({fnr: person.fnr, navn: person.navn});
     const [avsender, setAvsender] = useState<PersonValue>({
         fnr:
             journalPost?.avsenderMottaker?.id ||
@@ -80,15 +81,15 @@ export function JournalforForm({
     const handleBrukerChange = (value: PersonValue) => {
         setBruker(value);
         if (value.fnr && value.navn) {
-            onBrukerUpdate({ fnr: value.fnr, navn: value.navn } as Person);
-            setValidationErrors((prev) => ({ ...prev, bruker: undefined }));
+            onBrukerUpdate({fnr: value.fnr, navn: value.navn} as Person);
+            setValidationErrors((prev) => ({...prev, bruker: undefined}));
         }
     };
 
     const handleAvsenderChange = (value: PersonValue) => {
         setAvsender(value);
         if (value.fnr && value.navn) {
-            setValidationErrors((prev) => ({ ...prev, avsender: undefined }));
+            setValidationErrors((prev) => ({...prev, avsender: undefined}));
         }
     };
 
@@ -134,7 +135,7 @@ export function JournalforForm({
 
         const dokumentErrors = dokumenter
             ?.filter((d) => !hasSize(d.tittel, 5))
-            .map((d) => ({ dokumentInfoId: d.dokumentInfoId, tittel: "Tittel må være minst 5 tegn" }));
+            .map((d) => ({dokumentInfoId: d.dokumentInfoId, tittel: "Tittel må være minst 5 tegn"}));
         if (dokumentErrors && dokumentErrors.length > 0) {
             errors.dokumenter = dokumentErrors;
         }
@@ -150,7 +151,7 @@ export function JournalforForm({
             stonadsType: (sakModus === "eksisterende" ? valgtSak!.type : stonadstype!) as StonadType,
             dokumenter: dokumenter,
             // TODO: backend må støtte fagsaksnummer i JournalforRequest
-            ...(sakModus === "eksisterende" && valgtSak ? { fagsaksnummer: valgtSak.saksnummer } : {}),
+            ...(sakModus === "eksisterende" && valgtSak ? {fagsaksnummer: valgtSak.saksnummer} : {}),
         };
         await sendToBackend(jfrRequest);
     }
@@ -162,104 +163,104 @@ export function JournalforForm({
             },
             body: jfrRequest,
         });
-        await navigate({ to: "/sak/$saksnummer", params: { saksnummer } });
+        await navigate({to: "/sak/$saksnummer", params: {saksnummer}});
     }
 
     return (
         <form onSubmit={validateAndSubmit}>
             <VStack gap="space-24">
-                <input type="hidden" name="journalpostId" value={journalPost.journalpostId} />
-                <input type="hidden" name="jfrOppgave" value={oppgaveMedSak.oppgaveId} />
-
-                <PersonVelger
-                    label="Bruker"
-                    name="bruker"
-                    value={bruker}
-                    readOnly={readOnly}
-                    error={validationErrors?.bruker}
-                    onChange={handleBrukerChange}
-                />
-                <PersonVelger
-                    label="Avsender"
-                    name="avsender"
-                    value={avsender}
-                    readOnly={readOnly}
-                    error={validationErrors?.avsender}
-                    onChange={handleAvsenderChange}
-                />
-
-                <Heading level="3" size={"medium"}>
-                    Dokumenter
-                </Heading>
-                {journalPost?.dokumenter?.map((dok, index: number) => (
-                    <div key={dok.dokumentInfoId}>
-                        <DokumentTittelFelt
-                            index={index}
-                            value={dok.tittel}
-                            readOnly={readOnly}
-                            name={`dokumenttittel_${dok.dokumentInfoId}`}
-                            error={
-                                validationErrors?.dokumenter?.find((d) => d.dokumentInfoId === dok.dokumentInfoId)
-                                    ?.tittel
-                            }
-                        />
-                        {index === 0 && (
-                            <AnnetInnholdCombobox
-                                name="annetInnhold"
-                                onChange={setLogiskeVedlegg}
+                <input type="hidden" name="journalpostId" value={journalPost.journalpostId}/>
+                <input type="hidden" name="jfrOppgave" value={oppgaveMedSak.oppgaveId}/>
+                <Card title={"Bruker og avsender"}>
+                    <PersonVelger
+                        label="Bruker"
+                        name="bruker"
+                        value={bruker}
+                        readOnly={readOnly}
+                        error={validationErrors?.bruker}
+                        onChange={handleBrukerChange}
+                    />
+                    <PersonVelger
+                        label="Avsender"
+                        name="avsender"
+                        value={avsender}
+                        readOnly={readOnly}
+                        error={validationErrors?.avsender}
+                        onChange={handleAvsenderChange}
+                    />
+                </Card>
+                <Card title="Dokumenter">
+                    {journalPost?.dokumenter?.map((dok, index: number) => (
+                        <div key={dok.dokumentInfoId}>
+                            <DokumentTittelFelt
+                                index={index}
+                                value={dok.tittel}
                                 readOnly={readOnly}
+                                name={`dokumenttittel_${dok.dokumentInfoId}`}
+                                error={
+                                    validationErrors?.dokumenter?.find((d) => d.dokumentInfoId === dok.dokumentInfoId)
+                                        ?.tittel
+                                }
                             />
-                        )}
-                    </div>
-                ))}
+                            {index === 0 && (
+                                <AnnetInnholdCombobox
+                                    name="annetInnhold"
+                                    onChange={setLogiskeVedlegg}
+                                    readOnly={readOnly}
+                                />
+                            )}
+                        </div>
+                    ))}
+                </Card>
 
-                <Heading level="3" size={"medium"}>
-                    Sak
-                </Heading>
-                <RadioGroup
-                    legend="Knytt journalpost til"
-                    value={sakModus}
-                    readOnly={readOnly}
-                    onChange={(value) => {
-                        setSakModus(value as SakModus);
-                        setValgtSak(undefined);
-                        setStonadstype(defaultStonadstype);
-                        setValidationErrors((prev) => ({
-                            ...prev,
-                            stonadstype: undefined,
-                            fagsaksnummer: undefined,
-                        }));
-                    }}
-                >
-                    <Radio value="ny">Opprett ny sak</Radio>
-                    <Radio value="eksisterende">Eksisterende sak</Radio>
-                </RadioGroup>
-                {sakModus === "ny" && (
-                    <StonadsTypeVelger
-                        name="stonadstype"
-                        value={stonadstype}
-                        error={validationErrors?.stonadstype}
-                        onChange={setStonadstype}
+                <Card title="Sak">
+                    <RadioGroup
+                        legend="Knytt journalpost til"
+                        value={sakModus}
                         readOnly={readOnly}
-                    />
-                )}
-                {sakModus === "eksisterende" && (
-                    <EksisterendeSakVelger
-                        maskertPersonIdent={oppgaveMedSak.maskertPersonIdent}
-                        valgtSaksnummer={valgtSak?.saksnummer}
-                        error={validationErrors?.fagsaksnummer}
-                        readOnly={readOnly}
-                        onVelgSak={(sak) => {
-                            setValgtSak(sak);
-                            setStonadstype(sak.type as StonadType);
-                            setValidationErrors((prev) => ({ ...prev, fagsaksnummer: undefined }));
+                        onChange={(value) => {
+                            setSakModus(value as SakModus);
+                            setValgtSak(undefined);
+                            setStonadstype(defaultStonadstype);
+                            setValidationErrors((prev) => ({
+                                ...prev,
+                                stonadstype: undefined,
+                                fagsaksnummer: undefined,
+                            }));
                         }}
-                    />
-                )}
+                    >
+                        <Radio value="ny">Ny sak</Radio>
+                        <Radio value="eksisterende">Eksisterende sak</Radio>
+                    </RadioGroup>
+                    {sakModus === "ny" && (
+                        <StonadsTypeVelger
+                            name="stonadstype"
+                            value={stonadstype}
+                            error={validationErrors?.stonadstype}
+                            onChange={setStonadstype}
+                            readOnly={readOnly}
+                        />
+                    )}
+                    {sakModus === "eksisterende" && (
+                        <EksisterendeSakVelger
+                            maskertPersonIdent={oppgaveMedSak.maskertPersonIdent}
+                            valgtSaksnummer={valgtSak?.saksnummer}
+                            error={validationErrors?.fagsaksnummer}
+                            readOnly={readOnly}
+                            onVelgSak={(sak) => {
+                                setValgtSak(sak);
+                                setStonadstype(sak.type as StonadType);
+                                setValidationErrors((prev) => ({...prev, fagsaksnummer: undefined}));
+                            }}
+                        />
+                    )}
+                </Card>
+                
                 <Button type="submit" disabled={readOnly}>
                     {sakModus === "eksisterende" ? "Journalfør på eksisterende sak" : "Journalfør og start behandling"}
                 </Button>
-                {backendError && <ErrorAlert error={backendError} />}
+
+                {backendError && <ErrorAlert error={backendError}/>}
             </VStack>
         </form>
     );
