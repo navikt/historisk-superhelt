@@ -23,7 +23,7 @@ function FeilregistrerPage() {
 
     const feilregister = useMutation({
         ...feilregisterSakMutation(),
-        onSuccess: (data) => {
+        onSuccess: () => {
             invalidateSakQuery(saksnummer);
             navigateBack();
         },

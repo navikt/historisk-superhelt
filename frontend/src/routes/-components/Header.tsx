@@ -32,7 +32,7 @@ export function Header() {
             setSearchError(errorMessage);
             return;
         }
-        await navigate({ to: "/person/$personid", params: { personid: data?.maskertPersonident! } });
+        await navigate({ to: "/person/$personid", params: { personid: data?.maskertPersonident } });
         setSearch("");
         setSearchError(undefined);
     }

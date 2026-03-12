@@ -3,7 +3,7 @@ import { Box, ErrorMessage } from "@navikt/ds-react";
 import type { Editor } from "@tiptap/react";
 import { EditorContent, EditorContext, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Bold, Italic } from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
 import styles from "./TiptapEditor.module.css";
 
@@ -45,6 +45,7 @@ function MenuBar({ editor }: { editor: Editor }) {
     return (
         <div className={styles.redigeringsMeny}>
             <button
+                type="button"
                 aria-label="Angre"
                 onClick={() => editor.chain().focus().undo().run()}
                 disabled={!editor.can().undo()}
@@ -52,6 +53,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 <ArrowUndoIcon title="Angre" />
             </button>
             <button
+                type="button"
                 aria-label="Gjør om igjen"
                 onClick={() => editor.chain().focus().redo().run()}
                 disabled={!editor.can().redo()}
@@ -60,6 +62,7 @@ function MenuBar({ editor }: { editor: Editor }) {
             </button>
 
             <button
+                type="button"
                 aria-label="Fet"
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={editorState.isBold ? activeStyle : ""}
@@ -69,6 +72,7 @@ function MenuBar({ editor }: { editor: Editor }) {
             </button>
 
             <button
+                type="button"
                 aria-label="Kursiv"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 className={editorState.isItalic ? activeStyle : ""}
@@ -77,6 +81,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 <Italic />
             </button>
             <button
+                type="button"
                 aria-label="Heading 1"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                 className={editorState.isHeading1 ? activeStyle : ""}
@@ -84,6 +89,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 H1
             </button>
             <button
+                type="button"
                 aria-label="Heading 2"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                 className={editorState.isHeading2 ? activeStyle : ""}
@@ -91,6 +97,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 H2
             </button>
             <button
+                type="button"
                 aria-label="Heading 3"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
                 className={editorState.isHeading3 ? activeStyle : ""}
@@ -98,6 +105,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 H3
             </button>
             <button
+                type="button"
                 aria-label="Heading 4"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
                 className={editorState.isHeading4 ? activeStyle : ""}
@@ -105,6 +113,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 H4
             </button>
             <button
+                type="button"
                 aria-label="Punktliste"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={editorState.isBulletList ? activeStyle : ""}
@@ -112,6 +121,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 <BulletListIcon title="Punkt liste" />
             </button>
             <button
+                type="button"
                 aria-label="Nummerert liste"
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
                 className={editorState.isOrderedList ? activeStyle : ""}
