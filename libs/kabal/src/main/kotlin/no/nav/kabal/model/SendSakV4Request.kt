@@ -12,7 +12,7 @@ data class SendSakV4Request(
     val fagsak: Fagsak,
     val kildeReferanse: String? = null,
     val dvhReferanse: String? = null,
-    val hjemler: List<String> = emptyList(),
+    val hjemler: List<Hjemmel> = emptyList(),
     val forrigeBehandlendeEnhet: String? = null,
     val tilknyttedeJournalposter: List<TilknyttetJournalpost> = emptyList(),
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
