@@ -4,6 +4,7 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.StringKafkaTestConsumer
 import no.nav.sakstatistikk.BehandlingMetode
+import no.nav.sakstatistikk.BehandlingStatus
 import no.nav.sakstatistikk.BehandlingType
 import no.nav.sakstatistikk.SaksbehandlingsStatistikk
 import org.assertj.core.api.Assertions.assertThat
@@ -45,11 +46,11 @@ class SakStatistikkKafkaProducerIntegrationTest {
         behandlingId = "behandling-123",
         sakId = "sak-456",
         saksnummer = "SAK-001",
-        aktorId = "1234567890123",
+        fnr = "1234567890123",
         endretTid = Instant.parse("2024-06-01T10:00:00Z"),
         sakYtelse = EndringsloggType.OPPRETTET_SAK,
         behandlingType = BehandlingType.SØKNAD,
-        behandlingStatus = EndringsloggType.OPPRETTET_SAK,
+        behandlingStatus = BehandlingStatus.OPPRETTET,
         behandlingMetode = BehandlingMetode.MANUELL,
         behandlingResultat = behandlingResultat,
         mottattTid = mottattTid,
@@ -126,7 +127,7 @@ class SakStatistikkKafkaProducerIntegrationTest {
         )
 
         assertThat(json["behandling_type"].asString()).isEqualTo("SØKNAD")
-        assertThat(json["behandling_status"].asString()).isEqualTo("OPPRETTET_SAK")
+        assertThat(json["behandling_status"].asString()).isEqualTo("OPPRETTET")
         assertThat(json["behandling_metode"].asString()).isEqualTo("MANUELL")
         assertThat(json["behandling_resultat"].asString()).isEqualTo("FERDIGSTILT_SAK")
     }
@@ -139,7 +140,7 @@ class SakStatistikkKafkaProducerIntegrationTest {
         assertThat(json["behandling_id"].asString()).isEqualTo(statistikk.behandlingId)
         assertThat(json["sak_id"].asString()).isEqualTo(statistikk.sakId)
         assertThat(json["saksnummer"].asString()).isEqualTo(statistikk.saksnummer)
-        assertThat(json["aktor_id"].asString()).isEqualTo(statistikk.aktorId)
+        assertThat(json["fnr"].asString()).isEqualTo(statistikk.fnr)
         assertThat(json["saksbehandler"].asString()).isEqualTo(statistikk.saksbehandler)
         assertThat(json["ansvarlig_enhet"].asString()).isEqualTo(statistikk.ansvarligEnhet)
         assertThat(json["fagsystem_navn"].asString()).isEqualTo(statistikk.fagsystemNavn)

@@ -69,7 +69,7 @@ class StatistikkServiceTest {
 
             val json = fangetJson()
 
-            assertThat(json.has("behandling_id")).isTrue()
+            assertThat(json["behandling_id"].asString()).isEqualTo("${sak.saksnummer}-${sak.behandlingsnummer}")
             assertThat(json.has("sak_ytelse")).isTrue()
             assertThat(json.has("behandling_status")).isTrue()
             assertThat(json.has("behandling_type")).isTrue()
@@ -119,11 +119,11 @@ class StatistikkServiceTest {
         @Test
         fun `enum-felter skal serialiseres som navn-streng`() {
             val sak = SakTestData.sakUtenUtbetaling()
-            service.handleEvent(EndringsloggType.TIL_ATTESTERING, Instant.now(), sak)
+            service.handleEvent(EndringsloggType.FERDIGSTILT_SAK, Instant.now(), sak)
 
             val json = fangetJson()
 
-            assertThat(json["behandling_status"].asString()).isEqualTo("TIL_ATTESTERING")
+            assertThat(json["behandling_status"].asString()).isEqualTo("FERDIG")
             assertThat(json["behandling_type"].asString()).isEqualTo("SØKNAD")
             assertThat(json["behandling_resultat"].asString()).isEqualTo(sak.vedtaksResultat!!.name)
         }

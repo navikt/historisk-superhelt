@@ -41,7 +41,7 @@ data class SaksbehandlingsStatistikk(
     /**
      * Saks-ID fra fagsystemet, jmf. Sak-begrepet i begrepskatalogen.
      */
-    val sakId: String,
+    val sakId: String? = null,
 
     /**
      * Saksnummer som brukes av saksbehandler for oppslag i vedtaksløsningen.
@@ -52,7 +52,7 @@ data class SaksbehandlingsStatistikk(
      * Aktør-ID tilknyttet søker eller hovedaktør for ytelsen.
      * Alternativt kan fødselsnummer benyttes..
      */
-    val aktorId: String,
+    val fnr: String,
 
     /**
      * Tidspunkt da behandlingen oppstod (f.eks. søknad mottas). Starten på beregning av saksbehandlingstid.
@@ -118,7 +118,7 @@ data class SaksbehandlingsStatistikk(
     /**
      * Kode som angir hvilken status behandlingen har.
      */
-    val behandlingStatus: Enum<*>,
+    val behandlingStatus: BehandlingStatus,
 
     /**
      * Kode som angir resultatet på behandlingen.
@@ -235,4 +235,15 @@ enum class BehandlingType {
     SØKNAD,
     REVURDERING,
     KLAGE,
+}
+
+enum class BehandlingStatus {
+    MOTTATT,
+    OPPRETTET,
+    UNDER_BEHANDLING,
+    OVERSENDT_KA,
+    TIL_ATTESTERING,
+    ATTESTERT,
+    FERDIG,
+    ANNULLERT
 }

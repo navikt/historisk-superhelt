@@ -5,12 +5,15 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.statistikk.kafka.SakStatistikkKafkaProducer
+import no.nav.historisk.superhelt.vedtak.VedtaksResultat
+import no.nav.sakstatistikk.BehandlingStatus
 import no.nav.sakstatistikk.BehandlingType
 import no.nav.sakstatistikk.SaksbehandlingsStatistikk
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.Instant
+
 
 @Service
 class StatistikkService(
@@ -27,7 +30,6 @@ class StatistikkService(
         } catch (t: Throwable) {
             logger.error("Feil ved håndtering av statistikk for sak ${sak.saksnummer.value} og endringstype $endringsType", t)
         }
-
     }
 
     private fun statistikkContent(
@@ -37,10 +39,9 @@ class StatistikkService(
 
         val statistikk = SaksbehandlingsStatistikk(
             saksnummer = sak.saksnummer.value,
-            behandlingId = sak.behandlingsnummer.value.toString(),
-            behandlingStatus = endringsType,
-            sakId = sak.saksnummer.value,
-            aktorId = sak.fnr.value,
+            behandlingId = "${sak.saksnummer}-${sak.behandlingsnummer}",
+            behandlingStatus = BehandlingStatus.UNDER_BEHANDLING,
+            fnr = sak.fnr.value,
             endretTid = tidspunkt,
             sakYtelse = sak.type,
             behandlingType = BehandlingType.SØKNAD,
@@ -50,45 +51,68 @@ class StatistikkService(
             fagsystemVersjon = appVersion
         )
         return when (endringsType) {
-            EndringsloggType.DOKUMENT_MOTTATT -> statistikk.copy(mottattTid = tidspunkt, endretTid = Instant.now())
-            EndringsloggType.OPPRETTET_SAK -> statistikk.copy(registrertTid = tidspunkt, opprettetAv = sak.saksbehandler.navIdent.value)
-            EndringsloggType.TIL_ATTESTERING -> statistikk.copy(behandlingResultat = sak.vedtaksResultat)
+            EndringsloggType.DOKUMENT_MOTTATT -> statistikk.copy(
+                behandlingStatus = BehandlingStatus.OPPRETTET,
+                mottattTid = tidspunkt,
+                registrertTid = Instant.now(),
+                endretTid = Instant.now()
+            )
+
+            EndringsloggType.OPPRETTET_SAK -> statistikk.copy(
+                behandlingStatus = BehandlingStatus.OPPRETTET,
+                registrertTid = tidspunkt,
+                opprettetAv = sak.saksbehandler.navIdent.value)
+
+            EndringsloggType.TIL_ATTESTERING -> statistikk.copy(
+                behandlingStatus = BehandlingStatus.TIL_ATTESTERING,
+            )
+
             EndringsloggType.ATTESTERT_SAK -> statistikk.copy(
-                behandlingResultat = sak.vedtaksResultat,
+                behandlingStatus = BehandlingStatus.ATTESTERT,
                 ansvarligBeslutter = sak.attestant?.navIdent?.value
             )
 
             EndringsloggType.FERDIGSTILT_SAK -> statistikk.copy(
-                behandlingStatus = SakStatus.FERDIG,
+                behandlingStatus = BehandlingStatus.FERDIG,
                 behandlingResultat = sak.vedtaksResultat,
                 ferdigBehandletTid = tidspunkt,
                 ansvarligBeslutter = sak.attestant?.navIdent?.value
             )
 
             EndringsloggType.ATTESTERING_UNDERKJENT -> statistikk.copy(
-                behandlingResultat = sak.vedtaksResultat,
+                behandlingStatus = BehandlingStatus.UNDER_BEHANDLING,
                 ansvarligBeslutter = sak.attestant?.navIdent?.value
             )
 
             EndringsloggType.GJENAPNET_SAK -> statistikk.copy(
+                behandlingStatus = BehandlingStatus.OPPRETTET,
                 registrertTid = tidspunkt,
+                mottattTid = tidspunkt,
                 opprettetAv = sak.saksbehandler.navIdent.value,
-                behandlingType = BehandlingType.REVURDERING
+                behandlingType = BehandlingType.REVURDERING,
             )
 
             EndringsloggType.SENDT_BREV -> null
             EndringsloggType.UTBETALING_OK -> null
             EndringsloggType.UTBETALING_FEILET -> null
             EndringsloggType.FEILREGISTERT -> statistikk.copy(
-                behandlingStatus = SakStatus.FERDIG,
+                behandlingStatus = BehandlingStatus.FERDIG,
                 behandlingResultat = SakStatus.FEILREGISTRERT,
-                ferdigBehandletTid = tidspunkt)
-            EndringsloggType.HENLAGT_SAK -> statistikk.copy(ferdigBehandletTid = tidspunkt)
+                ferdigBehandletTid = tidspunkt
+            )
+
+            EndringsloggType.HENLAGT_SAK -> statistikk.copy(
+                behandlingStatus = BehandlingStatus.FERDIG,
+                behandlingResultat = VedtaksResultat.HENLAGT,
+                ferdigBehandletTid = tidspunkt
+            )
+
             EndringsloggType.TILBAKESTILT_SAK -> statistikk.copy(
-                behandlingStatus = SakStatus.FERDIG,
+                behandlingStatus = BehandlingStatus.ANNULLERT,
                 behandlingResultat = EndringsloggType.TILBAKESTILT_SAK,
                 ferdigBehandletTid = tidspunkt
             )
         }
     }
 }
+

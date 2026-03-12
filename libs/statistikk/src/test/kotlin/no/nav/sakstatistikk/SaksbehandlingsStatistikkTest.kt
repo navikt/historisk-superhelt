@@ -9,7 +9,6 @@ import java.time.LocalDate
 
 class SaksbehandlingsStatistikkTest {
 
-    private enum class BehandlingStatus { UNDER_BEHANDLING, AVSLUTTET }
     private enum class BehandlingResultat { INNVILGET, AVSLATT }
     private enum class BehandlingAarsak { NYTT_BARN, ENDRET_INNTEKT }
     private enum class ResultatBegrunnelse { VILKAR_OPPFYLT, SAKSBEHANDLINGSFEIL }
@@ -32,12 +31,12 @@ class SaksbehandlingsStatistikkTest {
         behandlingId = "behandling-1",
         sakId = "sak-1",
         saksnummer = "SAK-001",
-        aktorId = "1234567890123",
+        fnr = "1234567890123",
         endretTid = endretTid,
         tekniskTid = tekniskTid,
         sakYtelse = SakYtelse.ORTOSE,
         behandlingType = BehandlingType.SØKNAD,
-        behandlingStatus = BehandlingStatus.AVSLUTTET,
+        behandlingStatus = BehandlingStatus.UNDER_BEHANDLING,
         behandlingMetode = BehandlingMetode.MANUELL,
         opprettetAv = "Z123456",
         ansvarligEnhet = "0300",
@@ -142,7 +141,7 @@ class SaksbehandlingsStatistikkTest {
         val json = mapper.readTree(mapper.writeValueAsString(statistikk))
 
         assertThat(json["behandling_type"].asString()).isEqualTo("SØKNAD")
-        assertThat(json["behandling_status"].asString()).isEqualTo("AVSLUTTET")
+        assertThat(json["behandling_status"].asString()).isEqualTo("UNDER_BEHANDLING")
         assertThat(json["behandling_resultat"].asString()).isEqualTo("INNVILGET")
         assertThat(json["resultat_begrunnelse"].asString()).isEqualTo("VILKAR_OPPFYLT")
         assertThat(json["behandling_aarsak"].asString()).isEqualTo("NYTT_BARN")
