@@ -1,6 +1,6 @@
-import { CheckmarkIcon, ExclamationmarkTriangleFillIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import {CheckmarkIcon, ExclamationmarkTriangleFillIcon, XMarkOctagonFillIcon} from "@navikt/aksel-icons";
 
-import { StepType } from "./StepType";
+import {StepType} from "./StepType";
 
 import styles from "./step.module.css";
 
@@ -28,4 +28,5 @@ export const StepIcon = ({ type, usePartialStatus }: StepIconProps) => {
     if (isDanger) {
         return <XMarkOctagonFillIcon className={classes} />;
     }
+    return null
 };
