@@ -17,3 +17,25 @@ spec:
     - team: helved
       application: peisschtappern
       access: read
+
+---
+
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  # todo rette opp navn når vi det er testet
+  name: superhelt.statistikk.saksbehandling.test
+  namespace: historisk
+  labels:
+    team: historisk
+spec:
+  pool: nav-{{env}}
+  config:
+    retentionHours: 720
+  acl:
+    - team: historisk
+      application: superhelt
+      access: readwrite
+    - team: ptsak
+      application: pt-sak-superhelt
+      access: read

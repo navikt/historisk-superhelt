@@ -2,9 +2,17 @@ app:
   pdl:
     behandlingsnummer: B986
   utbetaling:
-    #    TODO Sette rett navn på topic
     utbetaling-topic: historisk.utbetaling.v1
     status-topic: helved.status.v1
+  statistikk:
+    # todo rette opp navn når vi det er testet
+    saks-behandling-statistikk-topic: historisk.superhelt.statistikk.saksbehandling.test
+
+info:
+  nais:
+    app: ${NAIS_APP_NAME:superhelt}
+    image: ${NAIS_APP_IMAGE}
+    cluster: ${NAIS_CLUSTER_NAME}
 
 spring:
   application:
@@ -49,7 +57,7 @@ spring:
       key-store-location: file:${KAFKA_KEYSTORE_PATH}
       key-store-password: ${KAFKA_CREDSTORE_PASSWORD}
     producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       transaction-id-prefix: tx-
 
