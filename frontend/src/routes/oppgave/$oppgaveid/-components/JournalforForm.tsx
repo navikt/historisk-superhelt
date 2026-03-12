@@ -5,19 +5,23 @@ import type {
     OppgaveMedSak,
     Person,
     ProblemDetail,
+    Sak,
 } from "@generated";
-import { journalforMutation } from "@generated/@tanstack/react-query.gen";
-import { Button, Heading, VStack } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { hasSize, isValidFnr } from "~/common/validation.utils";
-import { AnnetInnholdCombobox } from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
-import type { StonadType } from "~/routes/sak/$saksnummer/-types/sak.types";
-import { DokumentTittelFelt } from "./DokumentTittelFelt";
-import { type PersonValue, PersonVelger } from "./PersonVelger";
-import { StonadsTypeVelger } from "./StonadsTypeVelger";
+import {journalforMutation} from "@generated/@tanstack/react-query.gen";
+import {Button, Heading, Radio, RadioGroup, VStack} from "@navikt/ds-react";
+import {useMutation} from "@tanstack/react-query";
+import {useNavigate} from "@tanstack/react-router";
+import {useState} from "react";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {hasSize, isValidFnr} from "~/common/validation.utils";
+import {AnnetInnholdCombobox} from "~/routes/oppgave/$oppgaveid/-components/AnnetInnholdCombobox";
+import {EksisterendeSakVelger} from "~/routes/oppgave/$oppgaveid/-components/EksisterendeSakVelger";
+import type {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import {DokumentTittelFelt} from "./DokumentTittelFelt";
+import {type PersonValue, PersonVelger} from "./PersonVelger";
+import {StonadsTypeVelger} from "./StonadsTypeVelger";
+
+type SakModus = "ny" | "eksisterende";
 
 interface DokumentError {
     dokumentInfoId: string;
@@ -57,6 +61,8 @@ export function JournalforForm({
             setBackendError(error);
         },
     });
+    const [sakModus, setSakModus] = useState<SakModus>(defaultStonadstype ? "ny" : "eksisterende");
+    const [valgtSak, setValgtSak] = useState<Sak | undefined>();
     const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype);
     const [bruker, setBruker] = useState<PersonValue>({ fnr: person.fnr, navn: person.navn });
     const [avsender, setAvsender] = useState<PersonValue>({
@@ -107,8 +113,11 @@ export function JournalforForm({
 
         const errors: FormErrors = {};
 
-        if (!stonadstype) {
+        if (sakModus === "ny" && !stonadstype) {
             errors.stonadstype = "Stønadstype er påkrevd";
+        }
+        if (sakModus === "eksisterende" && !valgtSak) {
+            errors.fagsaksnummer = "Du må velge en eksisterende sak";
         }
         if (!isValidFnr(bruker.fnr)) {
             errors.bruker = "Bruker må være et gyldig fødselsnummer";
@@ -138,8 +147,10 @@ export function JournalforForm({
             jfrOppgaveId: oppgaveMedSak.oppgaveId,
             bruker: bruker.fnr,
             avsender: avsender.fnr,
-            stonadsType: stonadstype!,
+            stonadsType: (sakModus === "eksisterende" ? valgtSak!.type : stonadstype!) as StonadType,
             dokumenter: dokumenter,
+            // TODO: backend må støtte fagsaksnummer i JournalforRequest
+            ...(sakModus === "eksisterende" && valgtSak ? { fagsaksnummer: valgtSak.saksnummer } : {}),
         };
         await sendToBackend(jfrRequest);
     }
@@ -205,15 +216,48 @@ export function JournalforForm({
                 <Heading level="3" size={"medium"}>
                     Sak
                 </Heading>
-                <StonadsTypeVelger
-                    name="stonadstype"
-                    value={stonadstype}
-                    error={validationErrors?.stonadstype}
-                    onChange={setStonadstype}
+                <RadioGroup
+                    legend="Knytt journalpost til"
+                    value={sakModus}
                     readOnly={readOnly}
-                />
+                    onChange={(value) => {
+                        setSakModus(value as SakModus);
+                        setValgtSak(undefined);
+                        setStonadstype(defaultStonadstype);
+                        setValidationErrors((prev) => ({
+                            ...prev,
+                            stonadstype: undefined,
+                            fagsaksnummer: undefined,
+                        }));
+                    }}
+                >
+                    <Radio value="ny">Opprett ny sak</Radio>
+                    <Radio value="eksisterende">Eksisterende sak</Radio>
+                </RadioGroup>
+                {sakModus === "ny" && (
+                    <StonadsTypeVelger
+                        name="stonadstype"
+                        value={stonadstype}
+                        error={validationErrors?.stonadstype}
+                        onChange={setStonadstype}
+                        readOnly={readOnly}
+                    />
+                )}
+                {sakModus === "eksisterende" && (
+                    <EksisterendeSakVelger
+                        maskertPersonIdent={oppgaveMedSak.maskertPersonIdent}
+                        valgtSaksnummer={valgtSak?.saksnummer}
+                        error={validationErrors?.fagsaksnummer}
+                        readOnly={readOnly}
+                        onVelgSak={(sak) => {
+                            setValgtSak(sak);
+                            setStonadstype(sak.type as StonadType);
+                            setValidationErrors((prev) => ({ ...prev, fagsaksnummer: undefined }));
+                        }}
+                    />
+                )}
                 <Button type="submit" disabled={readOnly}>
-                    Journalfør og start behandling
+                    {sakModus === "eksisterende" ? "Journalfør på eksisterende sak" : "Journalfør og start behandling"}
                 </Button>
                 {backendError && <ErrorAlert error={backendError} />}
             </VStack>
