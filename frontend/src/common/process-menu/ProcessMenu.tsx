@@ -1,4 +1,4 @@
-import { Link as AkselLink, BodyShort, HStack } from "@navikt/ds-react";
+import { Link as AkselLink, BodyShort, Box, HStack } from "@navikt/ds-react";
 import { createLink, type LinkProps } from "@tanstack/react-router";
 import { StepIcon } from "./StepIcon";
 import { StepType } from "./StepType";
@@ -16,7 +16,13 @@ interface ProcessButtonProps extends LinkProps {
     disabled?: boolean;
 }
 
-const ProcessMenu = ({ children }: ProcessMenuProps) => <HStack gap="space-16">{children}</HStack>;
+const ProcessMenu = ({ children }: ProcessMenuProps) => (
+    <Box borderWidth="0 0 1 0" borderColor="neutral-subtle" asChild>
+        <HStack gap="space-16" paddingBlock="space-16">
+            {children}
+        </HStack>
+    </Box>
+);
 
 const ProcessMenuItem = ({
     label,

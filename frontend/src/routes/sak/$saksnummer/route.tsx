@@ -1,5 +1,5 @@
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { Box, HGrid, Tabs, VStack } from "@navikt/ds-react";
+import { Box, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -17,6 +17,7 @@ import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
 import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
 import type { TilstandStatusType } from "~/routes/sak/$saksnummer/-types/sak.types";
 import { getSakOptions } from "./-api/sak.query";
+import DeltVisning from "~/common/delt-visning/DeltVisning";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
@@ -67,55 +68,54 @@ function SakLayout() {
     return (
         <>
             <PersonHeader maskertPersonId={sak.maskertPersonIdent} />
+            <ProcessMenu>
+                <ProcessMenu.Item
+                    label={"Opplysninger"}
+                    stepType={steptypeForOpplysninger()}
+                    to={"/sak/$saksnummer/opplysninger"}
+                />
+                <ProcessMenu.Item
+                    label={"Brev til bruker"}
+                    stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
+                    to={"/sak/$saksnummer/vedtaksbrevbruker"}
+                    disabled={calculateStepType(sak?.tilstand.opplysninger) !== StepType.success}
+                />
+                <ProcessMenu.Item
+                    label={"Oppsummering"}
+                    stepType={calculateStepType(sak?.tilstand.oppsummering)}
+                    to={"/sak/$saksnummer/oppsummering"}
+                    disabled={
+                        sak.status !== "TIL_ATTESTERING" &&
+                        calculateStepType(sak?.tilstand.vedtaksbrevBruker) !== StepType.success
+                    }
+                />
+            </ProcessMenu>
             <RfcErrorBoundary>
                 <SakAlert sak={sak} />
-                <HGrid gap="space-24" columns={{ lg: 1, xl: 2 }} marginBlock={"space-16"}>
-                    <VStack gap="space-16">
-                        <ProcessMenu>
-                            <ProcessMenu.Item
-                                label={"Opplysninger"}
-                                stepType={steptypeForOpplysninger()}
-                                to={"/sak/$saksnummer/opplysninger"}
-                            />
-                            <ProcessMenu.Item
-                                label={"Brev til bruker"}
-                                stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
-                                to={"/sak/$saksnummer/vedtaksbrevbruker"}
-                                disabled={calculateStepType(sak?.tilstand.opplysninger) !== StepType.success}
-                            />
-                            <ProcessMenu.Item
-                                label={"Oppsummering"}
-                                stepType={calculateStepType(sak?.tilstand.oppsummering)}
-                                to={"/sak/$saksnummer/oppsummering"}
-                                disabled={
-                                    sak.status !== "TIL_ATTESTERING" &&
-                                    calculateStepType(sak?.tilstand.vedtaksbrevBruker) !== StepType.success
-                                }
-                            />
-                        </ProcessMenu>
-
+                <DeltVisning>
+                    <DeltVisning.Kolonne>
                         <Outlet />
-                    </VStack>
-                    <VStack gap="space-16">
+                    </DeltVisning.Kolonne>
+                    <DeltVisning.Kolonne justerbar>
                         <SakHeading sak={sak} />
-                        <Tabs defaultValue="dokumenter">
+                        <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
                             <Tabs.List>
                                 <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />
                                 <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
                             </Tabs.List>
-                            <Tabs.Panel value="dokumenter">
-                                <Box width="100%" height="6rem" padding="space-16">
+                            <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
+                                <Box width="100%" height="100%" paddingBlock="space-16 space-0">
                                     <DokumentViewer saksnummer={saksnummer} />
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <Box width="100%" height="6rem" padding="space-16">
+                                <Box width="100%" height="6rem" paddingBlock="space-16 space-0">
                                     <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
                                 </Box>
                             </Tabs.Panel>
                         </Tabs>
-                    </VStack>
-                </HGrid>
+                    </DeltVisning.Kolonne>
+                </DeltVisning>
             </RfcErrorBoundary>
         </>
     );
