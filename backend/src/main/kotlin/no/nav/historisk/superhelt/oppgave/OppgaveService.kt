@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.oppgave
 
 import no.nav.common.types.*
+import no.nav.historisk.superhelt.enhet.NavEnhetService
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
@@ -24,7 +25,8 @@ private const val APP_NAVN = "SUPERHELT"
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val oppgaveRepository: OppgaveRepository,
-    private val personService: PersonService
+    private val personService: PersonService,
+    private val navEnhetService: NavEnhetService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -147,7 +149,7 @@ class OppgaveService(
             OpprettOppgaveRequest(
                 tema = TEMA_HEL,
                 oppgavetype = type.oppgavetype,
-                opprettetAvEnhetsnr = defaultEnhetsnummer.value,
+                opprettetAvEnhetsnr = navEnhetService.hentNavEnhet().value,
 //                journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,

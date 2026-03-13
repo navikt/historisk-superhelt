@@ -9,6 +9,7 @@ import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
+import no.nav.historisk.superhelt.enhet.NavEnhetService
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
 import org.slf4j.LoggerFactory
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Service
 class DokarkivService(
     private val dokarkivClient: DokarkivClient,
     private val dokdistClient: DokdistClient,
-    private val personService: PersonService
+    private val personService: PersonService,
+    private val navEnhetService: NavEnhetService
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -69,7 +71,7 @@ class DokarkivService(
                 fagsakId = sak.saksnummer,
                 fagsaksystem = "HELT",
             ),
-            journalfoerendeEnhet = defaultEnhetsnummer
+            journalfoerendeEnhet = navEnhetService.hentNavEnhet()
         )
         return dokarkivClient.opprett(req, forsokFerdigstill = true)
     }

@@ -52,3 +52,6 @@ app:
   oppgave:
     url: http://localhost:9080/oppgave-mock
     audience: api://mock.oppgave/.default
+  entra-proxy:
+    url: http://localhost:9080/entra-proxy-mock
+    audience: api://mock.entra-proxy/.default

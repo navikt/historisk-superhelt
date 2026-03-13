@@ -7,6 +7,7 @@ import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
+import no.nav.historisk.superhelt.enhet.NavEnhetService
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.person.PersonTestData
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -34,6 +35,9 @@ class DokarkivServiceTest {
     @Mock
     private lateinit var personService: PersonService
 
+    @Mock
+    private lateinit var navEnhetService: NavEnhetService
+
     @InjectMocks
     private lateinit var dokarkivService: DokarkivService
 
@@ -51,6 +55,7 @@ class DokarkivServiceTest {
         )
 
         whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
+        whenever(navEnhetService.hentNavEnhet()).thenReturn(Enhetsnummer("4488"))
 
         val result = dokarkivService.arkiver(sak, brev, pdf)
 
@@ -70,7 +75,7 @@ class DokarkivServiceTest {
         assertEquals(sak.saksnummer, capturedRequest.sak.fagsakId)
         assertEquals(Sakstype.FAGSAK, capturedRequest.sak.sakstype)
         assertEquals("HELT", capturedRequest.sak.fagsaksystem)
-        assertEquals(Enhetsnummer("4485"), capturedRequest.journalfoerendeEnhet)
+        assertEquals(Enhetsnummer("4488"), capturedRequest.journalfoerendeEnhet)
         assertEquals(1, capturedRequest.dokumenter.size)
         assertEquals(brev.tittel, capturedRequest.dokumenter[0].tittel)
         assertEquals(brev.type.name, capturedRequest.dokumenter[0].brevkode)
@@ -92,6 +97,7 @@ class DokarkivServiceTest {
         )
 
         whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
+        whenever(navEnhetService.hentNavEnhet()).thenReturn(Enhetsnummer("4488"))
         whenever(personService.hentVerge(bruker.fnr)).thenReturn(verge)
 
         dokarkivService.arkiver(sak, brev, pdf)
@@ -122,6 +128,7 @@ class DokarkivServiceTest {
         )
 
         whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
+        whenever(navEnhetService.hentNavEnhet()).thenReturn(Enhetsnummer("4488"))
         whenever(personService.hentVerge(sak.fnr)).thenReturn(null)
 
         dokarkivService.arkiver(sak, brev, pdf)
