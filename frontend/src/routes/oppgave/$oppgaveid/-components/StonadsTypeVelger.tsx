@@ -1,7 +1,7 @@
-import { Select } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getKodeverkStonadsTypeOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
-import type { StonadType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import {Select} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getKodeverkStonadsTypeOptions} from "~/routes/sak/$saksnummer/-api/sak.query";
+import type {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
 
 interface Props {
     value?: StonadType;
@@ -17,7 +17,7 @@ export function StonadsTypeVelger({ value, error, onChange, name, readOnly }: Pr
 
     return (
         <Select
-            label="Velg type søknad"
+            label="Velg type stønad"
             name={name}
             value={selectValue}
             error={error}
