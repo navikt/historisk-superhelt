@@ -2,7 +2,7 @@ import { Box, Button, HGrid, VStack } from "@navikt/ds-react";
 import { DragVerticalIcon } from "@navikt/aksel-icons";
 import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import styles from "./DeltVisning.module.css";
+import styles from "./deltVisning.module.css";
 
 const DELT_VISNING_BREDDE_KEY = "delt-visning-bredde";
 const MIN_BREDDE = 0.285;
