@@ -42,6 +42,7 @@ class DokarkivJournalforController(
 
         val jfrOppgave = oppgaveService.getOppgave(request.jfrOppgaveId)
 
+        // Henter opprettet sak eller lager en ny
         val saksnummer = jfrOppgave.saksnummer ?: journalforService.lagNySakOgKnyttDenTilOppgave(request, jfrOppgave)
 
         if (journalpost.journalstatus != JournalStatus.JOURNALFOERT) {
@@ -67,8 +68,53 @@ class DokarkivJournalforController(
         )
 
         return saksnummer
+    }
 
+    @Operation(
+        operationId = "journalforKnyttTilEksisterendeSak",
+        summary = "Journalfør og knytt til en eksisternde sak"
+    )
+    @PutMapping("{journalpostId}/journalfor/eksisterende")
+    fun journalforKnyttTilEksisterendeSak(
+        @PathVariable journalpostId: EksternJournalpostId,
+        @RequestBody @Valid request: JournalforEksisterendeSakRequest,
+    ): Saksnummer {
 
+        val journalpost =
+            journalpostService.hentJournalpost(journalpostId)
+                ?: throw IkkeFunnetException("Fant ikke journalpost med id $journalpostId")
+
+        val jfrOppgave = oppgaveService.getOppgave(request.jfrOppgaveId)
+        val saksnummer = request.saksnummer
+        oppgaveService.knyttOppgaveTilSak(
+            saksnummer = saksnummer,
+            oppgaveId = request.jfrOppgaveId,
+            oppgaveType = OppgaveType.JFR
+        )
+
+        if (journalpost.journalstatus != JournalStatus.JOURNALFOERT) {
+            dokArkivService.journalførIArkivet(
+                journalPostId = journalpost.journalpostId,
+                fagsaksnummer = saksnummer,
+                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: Enhetsnummer("9999"),
+                request = request,
+            )
+        } else {
+            logger.info("Journalpost {} er allerede journalført", journalpostId)
+        }
+
+        // Denne er allerede idempotent og vil ikke ferdigstille oppgaven hvis den er ferdigstilt fra før
+        oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
+
+        val sak = sakRepository.getSak(saksnummer)
+        oppgaveService.opprettOppgave(
+            type = OppgaveType.VUR,
+            sak = sak,
+            beskrivelse = "Dokument av  ${sak.type.navn} i Superhelt",
+            tilordneTil = sak.saksbehandler.navIdent
+        )
+
+        return saksnummer
     }
 
 
