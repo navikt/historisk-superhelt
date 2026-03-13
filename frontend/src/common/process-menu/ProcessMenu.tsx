@@ -1,4 +1,4 @@
-import { Link as AkselLink, BodyShort, Box, HStack } from "@navikt/ds-react";
+import { Link as AkselLink, BodyShort, HStack } from "@navikt/ds-react";
 import { createLink, type LinkProps } from "@tanstack/react-router";
 import { StepIcon } from "./StepIcon";
 import { StepType } from "./StepType";
