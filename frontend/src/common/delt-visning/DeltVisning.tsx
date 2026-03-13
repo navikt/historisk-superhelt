@@ -125,6 +125,7 @@ function JusterbarKolonne({ children }: React.PropsWithChildren) {
                 onPointerMove={håndterPekerFlytt}
                 onPointerUp={stoppDra}
                 onPointerCancel={stoppDra}
+                tabIndex={-1}
             >
                 <div className={styles.linjer} />
                 <DragVerticalIcon title="Dra for å endre bredde" fontSize="2.25rem" />
