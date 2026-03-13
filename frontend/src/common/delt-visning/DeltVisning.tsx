@@ -16,11 +16,11 @@ interface DeltVisningProps {
 
 export default function DeltVisning({ children }: DeltVisningProps) {
     return (
-        <Box borderWidth="1 0 0 0" borderColor="neutral-subtle" asChild>
-            <HGrid gap="space-32" columns={{ md: 1, lg: "1fr auto" }} paddingBlock={"space-8 space-0"}>
-                {children}
-            </HGrid>
-        </Box>
+        // <Box borderWidth="1 0 0 0" borderColor="neutral-subtle" asChild>
+        <HGrid gap="space-32" columns={{ md: 1, lg: "1fr auto" }} paddingBlock={"space-8 space-0"}>
+            {children}
+        </HGrid>
+        // </Box>
     );
 }
 
