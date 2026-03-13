@@ -27,7 +27,7 @@ function FritekstBrevPage() {
 
     const sendBrev = useMutation({
         ...sendBrevMutation(),
-        onSuccess: (data) => {
+        onSuccess: () => {
             invalidateSakQuery(saksnummer);
             navigateBack();
         },

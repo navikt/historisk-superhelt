@@ -38,7 +38,7 @@ const ProcessMenuItem = ({
                         align="center"
                         justify="center"
                         gap="space-4"
-                        className={`${styles.step} ${styles[stepType]} ${isActive && styles["active"]} ${disabled && styles["disabled"]}`}
+                        className={`${styles.step} ${styles[stepType]} ${isActive && styles.active} ${disabled && styles.disabled}`}
                     >
                         <StepIcon type={stepType} usePartialStatus={false} />
                         <BodyShort size="small" weight={isActive ? "semibold" : "regular"} align="center" truncate>

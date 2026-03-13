@@ -17,12 +17,12 @@ interface JournalpostDokument {
 const generateDokId = (dok?: JournalpostDokument): string | undefined => {
     if (!dok) return undefined;
     return `${dok.journalpostId}@${dok.dokumentInfoId}`;
-}
+};
 
 const getTitle = (d: JournalpostDokument, index: number) => {
     const { dokumentTittel, journalpostTittel } = d;
     if (!dokumentTittel) {
-        return "Dokument " + (index + 1);
+        return `Dokument ${index + 1}`;
     }
     if (dokumentTittel === journalpostTittel) {
         return `${dokumentTittel}`;
