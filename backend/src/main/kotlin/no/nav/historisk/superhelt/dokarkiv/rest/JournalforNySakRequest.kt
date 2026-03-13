@@ -10,7 +10,7 @@ import no.nav.historisk.superhelt.dokarkiv.JournalforData
 import no.nav.historisk.superhelt.dokarkiv.JournalforDokument
 import no.nav.historisk.superhelt.sak.StonadsType
 
-data class JournalforRequest(
+data class JournalforNySakRequest(
     @field:NotNull
     val stonadsType: StonadsType,
     @field:NotNull

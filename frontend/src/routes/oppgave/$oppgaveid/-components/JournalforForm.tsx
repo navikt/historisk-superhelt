@@ -1,13 +1,13 @@
 import type {
     JournalforDokument,
-    JournalforRequest,
+    JournalforNySakRequest,
     Journalpost,
     OppgaveMedSak,
     Person,
     ProblemDetail,
     Sak,
 } from "@generated";
-import {journalforMutation} from "@generated/@tanstack/react-query.gen";
+import {journalforNySakMutation} from "@generated/@tanstack/react-query.gen";
 import {Button, Radio, RadioGroup, VStack} from "@navikt/ds-react";
 import {useMutation} from "@tanstack/react-query";
 import {useNavigate} from "@tanstack/react-router";
@@ -47,17 +47,17 @@ interface Props {
 }
 
 export function JournalforForm({
-                                   person,
-                                   oppgaveMedSak,
-                                   journalPost,
-                                   defaultStonadstype,
-                                   onBrukerUpdate,
-                                   readOnly,
-                               }: Props) {
+    person,
+    oppgaveMedSak,
+    journalPost,
+    defaultStonadstype,
+    onBrukerUpdate,
+    readOnly,
+}: Props) {
     const navigate = useNavigate();
     const [backendError, setBackendError] = useState<ProblemDetail | undefined>();
     const journalfor = useMutation({
-        ...journalforMutation(),
+        ...journalforNySakMutation(),
         onError: (error) => {
             setBackendError(error);
         },
@@ -65,7 +65,7 @@ export function JournalforForm({
     const [sakModus, setSakModus] = useState<SakModus>(defaultStonadstype ? "ny" : "eksisterende");
     const [valgtSak, setValgtSak] = useState<Sak | undefined>();
     const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype);
-    const [bruker, setBruker] = useState<PersonValue>({fnr: person.fnr, navn: person.navn});
+    const [bruker, setBruker] = useState<PersonValue>({ fnr: person.fnr, navn: person.navn });
     const [avsender, setAvsender] = useState<PersonValue>({
         fnr:
             journalPost?.avsenderMottaker?.id ||
@@ -81,15 +81,15 @@ export function JournalforForm({
     const handleBrukerChange = (value: PersonValue) => {
         setBruker(value);
         if (value.fnr && value.navn) {
-            onBrukerUpdate({fnr: value.fnr, navn: value.navn} as Person);
-            setValidationErrors((prev) => ({...prev, bruker: undefined}));
+            onBrukerUpdate({ fnr: value.fnr, navn: value.navn } as Person);
+            setValidationErrors((prev) => ({ ...prev, bruker: undefined }));
         }
     };
 
     const handleAvsenderChange = (value: PersonValue) => {
         setAvsender(value);
         if (value.fnr && value.navn) {
-            setValidationErrors((prev) => ({...prev, avsender: undefined}));
+            setValidationErrors((prev) => ({ ...prev, avsender: undefined }));
         }
     };
 
@@ -135,7 +135,7 @@ export function JournalforForm({
 
         const dokumentErrors = dokumenter
             ?.filter((d) => !hasSize(d.tittel, 5))
-            .map((d) => ({dokumentInfoId: d.dokumentInfoId, tittel: "Tittel må være minst 5 tegn"}));
+            .map((d) => ({ dokumentInfoId: d.dokumentInfoId, tittel: "Tittel må være minst 5 tegn" }));
         if (dokumentErrors && dokumentErrors.length > 0) {
             errors.dokumenter = dokumentErrors;
         }
@@ -144,33 +144,33 @@ export function JournalforForm({
         if (Object.keys(errors).length > 0) {
             return;
         }
-        const jfrRequest: JournalforRequest = {
+        const jfrRequest: JournalforNySakRequest = {
             jfrOppgaveId: oppgaveMedSak.oppgaveId,
             bruker: bruker.fnr,
             avsender: avsender.fnr,
             stonadsType: (sakModus === "eksisterende" ? valgtSak!.type : stonadstype!) as StonadType,
             dokumenter: dokumenter,
             // TODO: backend må støtte fagsaksnummer i JournalforRequest
-            ...(sakModus === "eksisterende" && valgtSak ? {fagsaksnummer: valgtSak.saksnummer} : {}),
+            ...(sakModus === "eksisterende" && valgtSak ? { fagsaksnummer: valgtSak.saksnummer } : {}),
         };
         await sendToBackend(jfrRequest);
     }
 
-    async function sendToBackend(jfrRequest: JournalforRequest) {
+    async function sendToBackend(jfrRequest: JournalforNySakRequest) {
         const saksnummer = await journalfor.mutateAsync({
             path: {
                 journalpostId: journalPost.journalpostId,
             },
             body: jfrRequest,
         });
-        await navigate({to: "/sak/$saksnummer", params: {saksnummer}});
+        await navigate({ to: "/sak/$saksnummer", params: { saksnummer } });
     }
 
     return (
         <form onSubmit={validateAndSubmit}>
             <VStack gap="space-24">
-                <input type="hidden" name="journalpostId" value={journalPost.journalpostId}/>
-                <input type="hidden" name="jfrOppgave" value={oppgaveMedSak.oppgaveId}/>
+                <input type="hidden" name="journalpostId" value={journalPost.journalpostId} />
+                <input type="hidden" name="jfrOppgave" value={oppgaveMedSak.oppgaveId} />
                 <Card title={"Bruker og avsender"}>
                     <PersonVelger
                         label="Bruker"
@@ -250,17 +250,17 @@ export function JournalforForm({
                             onVelgSak={(sak) => {
                                 setValgtSak(sak);
                                 setStonadstype(sak.type as StonadType);
-                                setValidationErrors((prev) => ({...prev, fagsaksnummer: undefined}));
+                                setValidationErrors((prev) => ({ ...prev, fagsaksnummer: undefined }));
                             }}
                         />
                     )}
                 </Card>
-                
+
                 <Button type="submit" disabled={readOnly}>
                     {sakModus === "eksisterende" ? "Journalfør på eksisterende sak" : "Journalfør og start behandling"}
                 </Button>
 
-                {backendError && <ErrorAlert error={backendError}/>}
+                {backendError && <ErrorAlert error={backendError} />}
             </VStack>
         </form>
     );

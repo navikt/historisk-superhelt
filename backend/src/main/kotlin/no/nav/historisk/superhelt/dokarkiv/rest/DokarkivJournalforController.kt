@@ -36,7 +36,7 @@ class DokarkivJournalforController(
     @PutMapping("{journalpostId}/journalfor/ny")
     fun journalforNysak(
         @PathVariable journalpostId: EksternJournalpostId,
-        @RequestBody @Valid request: JournalforRequest,
+        @RequestBody @Valid request: JournalforNySakRequest,
     ): Saksnummer {
 
         val journalpost =

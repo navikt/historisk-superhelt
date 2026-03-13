@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.dokarkiv
 import no.nav.common.types.Aar
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
+import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
@@ -26,7 +26,7 @@ class JournalforService (
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#request.bruker)")
     @Transactional
      fun lagNySakOgKnyttDenTilOppgave(
-        request: JournalforRequest,
+        request: JournalforNySakRequest,
         jfrOppgave: OppgaveMedSak): Saksnummer {
         val soknadsDato = jfrOppgave.opprettetTidspunkt
         val nySak = sakRepository.opprettNySak(

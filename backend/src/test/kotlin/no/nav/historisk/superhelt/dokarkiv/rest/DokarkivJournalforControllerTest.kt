@@ -69,7 +69,7 @@ class DokarkivJournalforControllerTest {
         whenever(journalforService.lagNySakOgKnyttDenTilOppgave(any(), any())).thenReturn(saksnummer)
         whenever(sakRepository.getSak(any())).thenReturn(sak)
 
-        val request = JournalforRequest(
+        val request = JournalforNySakRequest(
             stonadsType = faker.options().option(StonadsType::class.java),
             jfrOppgaveId = jfrOppgaveId,
             bruker = FolkeregisterIdent(faker.numerify("###########")),
@@ -133,7 +133,7 @@ class DokarkivJournalforControllerTest {
 //        whenever(journalforService.lagNySakOgKnyttDenTilOppgave(any(), any())).thenReturn(saksnummer)
         whenever(sakRepository.getSak(any())).thenReturn(sak)
 
-        val request = JournalforRequest(
+        val request = JournalforNySakRequest(
             stonadsType = faker.options().option(StonadsType::class.java),
             jfrOppgaveId = jfrOppgaveId,
             bruker = FolkeregisterIdent(faker.numerify("###########")),

@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { attersterSak, feilregisterSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, finnJournalposterForSak, getKodeverkSakStatus, getKodeverkStonadType, getKodeverkVedtaksResultat, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getSakStatus, getUserInfo, gjenapneSak, henleggSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentFeileteUtbetalinger, hentJournalpostMetaData, hentOppgaverForPerson, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalfor, lastnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, type Options, rekjorFeileteUtbetalinger, retryFeiletUtbetaling, sendBrev, sendTilAttestering, tilbakestillGjenapning } from '../sdk.gen';
-import type { AttersterSakData, AttersterSakError, FeilregisterSakData, FeilregisterSakError, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, FinnJournalposterForSakData, FinnJournalposterForSakError, FinnJournalposterForSakResponse, GetKodeverkSakStatusData, GetKodeverkSakStatusError, GetKodeverkSakStatusResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetKodeverkVedtaksResultatData, GetKodeverkVedtaksResultatError, GetKodeverkVedtaksResultatResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetSakStatusData, GetSakStatusError, GetSakStatusResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HenleggSakData, HenleggSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentFeileteUtbetalingerData, HentFeileteUtbetalingerError, HentFeileteUtbetalingerResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForPersonData, HentOppgaverForPersonError, HentOppgaverForPersonResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforData, JournalforError, JournalforResponse, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerError, RekjorFeileteUtbetalingerResponse, RetryFeiletUtbetalingData, RetryFeiletUtbetalingError, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError, TilbakestillGjenapningData, TilbakestillGjenapningError } from '../types.gen';
+import { attersterSak, feilregisterSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, finnJournalposterForSak, getKodeverkSakStatus, getKodeverkStonadType, getKodeverkVedtaksResultat, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getSakStatus, getUserInfo, gjenapneSak, henleggSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentFeileteUtbetalinger, hentJournalpostMetaData, hentOppgaverForPerson, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalforKnyttTilEksisterendeSak, journalforNySak, lastnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, type Options, rekjorFeileteUtbetalinger, retryFeiletUtbetaling, sendBrev, sendTilAttestering, tilbakestillGjenapning } from '../sdk.gen';
+import type { AttersterSakData, AttersterSakError, FeilregisterSakData, FeilregisterSakError, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, FinnJournalposterForSakData, FinnJournalposterForSakError, FinnJournalposterForSakResponse, GetKodeverkSakStatusData, GetKodeverkSakStatusError, GetKodeverkSakStatusResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetKodeverkVedtaksResultatData, GetKodeverkVedtaksResultatError, GetKodeverkVedtaksResultatResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetSakStatusData, GetSakStatusError, GetSakStatusResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HenleggSakData, HenleggSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentFeileteUtbetalingerData, HentFeileteUtbetalingerError, HentFeileteUtbetalingerResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForPersonData, HentOppgaverForPersonError, HentOppgaverForPersonResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforKnyttTilEksisterendeSakData, JournalforKnyttTilEksisterendeSakError, JournalforKnyttTilEksisterendeSakResponse, JournalforNySakData, JournalforNySakError, JournalforNySakResponse, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerError, RekjorFeileteUtbetalingerResponse, RetryFeiletUtbetalingData, RetryFeiletUtbetalingError, SendBrevData, SendBrevError, SendTilAttesteringData, SendTilAttesteringError, TilbakestillGjenapningData, TilbakestillGjenapningError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -202,12 +202,29 @@ export const oppdaterBrevMutation = (options?: Partial<Options<OppdaterBrevData>
 };
 
 /**
- * Journalfør en journalpost i dokarkiv
+ * Journalfør en journalpost og knytter til ny sak
  */
-export const journalforMutation = (options?: Partial<Options<JournalforData>>): UseMutationOptions<JournalforResponse, JournalforError, Options<JournalforData>> => {
-    const mutationOptions: UseMutationOptions<JournalforResponse, JournalforError, Options<JournalforData>> = {
+export const journalforNySakMutation = (options?: Partial<Options<JournalforNySakData>>): UseMutationOptions<JournalforNySakResponse, JournalforNySakError, Options<JournalforNySakData>> => {
+    const mutationOptions: UseMutationOptions<JournalforNySakResponse, JournalforNySakError, Options<JournalforNySakData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await journalfor({
+            const { data } = await journalforNySak({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Journalfør og knytt til en eksisternde sak
+ */
+export const journalforKnyttTilEksisterendeSakMutation = (options?: Partial<Options<JournalforKnyttTilEksisterendeSakData>>): UseMutationOptions<JournalforKnyttTilEksisterendeSakResponse, JournalforKnyttTilEksisterendeSakError, Options<JournalforKnyttTilEksisterendeSakData>> => {
+    const mutationOptions: UseMutationOptions<JournalforKnyttTilEksisterendeSakResponse, JournalforKnyttTilEksisterendeSakError, Options<JournalforKnyttTilEksisterendeSakData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await journalforKnyttTilEksisterendeSak({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
