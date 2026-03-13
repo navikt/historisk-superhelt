@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import no.nav.common.types.EksternJournalpostId
-import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.Saksnummer
+import no.nav.common.types.defaultEnhetsnummer
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.JournalforService
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -25,13 +27,14 @@ class DokarkivJournalforController(
     private val dokArkivService: DokarkivService,
     private val oppgaveService: OppgaveService,
     private val journalforService: JournalforService,
-    private val sakRepository: SakRepository) {
+    private val sakRepository: SakRepository,
+    private val endringsloggService: EndringsloggService) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @Operation(operationId = "journalfor", summary = "Journalfør en journalpost i dokarkiv")
-    @PutMapping("{journalpostId}/journalfor")
-    fun journalfor(
+    @Operation(operationId = "journalforNySak", summary = "Journalfør en journalpost og knytter til ny sak")
+    @PutMapping("{journalpostId}/journalfor/ny")
+    fun journalforNysak(
         @PathVariable journalpostId: EksternJournalpostId,
         @RequestBody @Valid request: JournalforRequest,
     ): Saksnummer {
@@ -49,7 +52,7 @@ class DokarkivJournalforController(
             dokArkivService.journalførIArkivet(
                 journalPostId = journalpost.journalpostId,
                 fagsaksnummer = saksnummer,
-                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: Enhetsnummer("9999"),
+                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: defaultEnhetsnummer,
                 request = request,
             )
         } else {
@@ -65,7 +68,7 @@ class DokarkivJournalforController(
             sak = sak,
             beskrivelse = "Behandle sak av type ${sak.type.navn} i Superhelt",
             tilordneTil = sak.saksbehandler.navIdent,
-            journalpostId=journalpostId
+            journalpostId = journalpostId
         )
 
         return saksnummer
@@ -87,6 +90,8 @@ class DokarkivJournalforController(
 
         val jfrOppgave = oppgaveService.getOppgave(request.jfrOppgaveId)
         val saksnummer = request.saksnummer
+        val sak = sakRepository.getSak(saksnummer)
+
         oppgaveService.knyttOppgaveTilSak(
             saksnummer = saksnummer,
             oppgaveId = request.jfrOppgaveId,
@@ -97,8 +102,14 @@ class DokarkivJournalforController(
             dokArkivService.journalførIArkivet(
                 journalPostId = journalpost.journalpostId,
                 fagsaksnummer = saksnummer,
-                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: Enhetsnummer("9999"),
+                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: defaultEnhetsnummer,
                 request = request,
+            )
+            endringsloggService.logChange(
+                saksnummer = saksnummer,
+                endringsType = EndringsloggType.DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK,
+                endring = "Dokument journalført",
+                beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelder.stringValue}\" er journalført på saken"
             )
         } else {
             logger.info("Journalpost {} er allerede journalført", journalpostId)
@@ -106,14 +117,14 @@ class DokarkivJournalforController(
 
         // Denne er allerede idempotent og vil ikke ferdigstille oppgaven hvis den er ferdigstilt fra før
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
-
-        val sak = sakRepository.getSak(saksnummer)
+        // TODO sjekk om det finnes åpne oppgaver for denne saken. Trenger vi en til?
         oppgaveService.opprettOppgave(
             type = OppgaveType.VUR,
             sak = sak,
-            beskrivelse = "Dokument av  ${sak.type.navn} i Superhelt",
+            beskrivelse = "Dokument av  ${jfrOppgave.oppgaveGjelder.stringValue} er lagt til sak ${sak.saksnummer} i Superhelt. " +
+                    "Vurder videre behandling av saken. Lukk denne oppgaven om det ikke skal gjøres noe spesiell oppfølging.",
             tilordneTil = sak.saksbehandler.navIdent,
-            journalpostId=journalpostId
+            journalpostId = journalpostId
         )
 
         return saksnummer

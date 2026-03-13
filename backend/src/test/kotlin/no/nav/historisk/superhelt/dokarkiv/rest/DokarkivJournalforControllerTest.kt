@@ -84,7 +84,7 @@ class DokarkivJournalforControllerTest {
 
         assertThat(
             mockMvc.put()
-                .uri("/api/dokarkiv/{journalpostId}/journalfor", journalpostId)
+                .uri("/api/dokarkiv/{journalpostId}/journalfor/ny", journalpostId)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
@@ -148,7 +148,7 @@ class DokarkivJournalforControllerTest {
 
         assertThat(
             mockMvc.put()
-                .uri("/api/dokarkiv/{journalpostId}/journalfor", journalpostId)
+                .uri("/api/dokarkiv/{journalpostId}/journalfor/ny", journalpostId)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
