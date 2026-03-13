@@ -12,6 +12,7 @@ import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.*
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -95,7 +96,8 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
             any<Sak>(),
             any(),
             eq(sak.saksbehandler.navIdent),
-            any()
+            any(),
+            anyOrNull()
         )
 
 

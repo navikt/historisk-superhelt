@@ -189,7 +189,7 @@ class DokarkivServiceTest {
             bruker = bruker,
             avsender = avsender,
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     dokumentInfoId = EksternDokumentInfoId("DOK123"),
                     tittel = "Test dokument",
                     logiskeVedlegg = listOf("Vedlegg 1", "Vedlegg 2")
@@ -245,7 +245,7 @@ class DokarkivServiceTest {
             bruker = bruker,
             avsender = avsender,
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     dokumentInfoId = EksternDokumentInfoId("DOK123"),
                     tittel = "Test dokument",
                     logiskeVedlegg = null

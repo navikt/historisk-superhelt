@@ -11,6 +11,7 @@ import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,7 +49,8 @@ class SakActionControllerGjenapneTest : AbstractSakActionTest() {
             any<Sak>(),
             any(),
             eq(NavIdent("s12345")),
-            any()
+            any(),
+            anyOrNull()
         )
     }
 

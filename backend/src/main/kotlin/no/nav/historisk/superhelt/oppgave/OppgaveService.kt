@@ -141,6 +141,7 @@ class OppgaveService(
         beskrivelse: String? = null,
         tilordneTil: NavIdent? = null,
         behandlesAvApplikasjon: String? = APP_NAVN,
+        journalpostId: EksternJournalpostId? = null
     ): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
@@ -148,7 +149,7 @@ class OppgaveService(
                 tema = TEMA_HEL,
                 oppgavetype = type.oppgavetype,
                 opprettetAvEnhetsnr = defaultEnhetsnummer.value,
-//                journalpostId = journalpostId,
+                journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
                 saksreferanse = sak.saksnummer.value,

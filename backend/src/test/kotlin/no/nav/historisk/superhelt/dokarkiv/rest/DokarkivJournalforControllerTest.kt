@@ -4,10 +4,7 @@ import net.datafaker.Faker
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.historisk.superhelt.dokarkiv.DokarkivService
-import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
-import no.nav.historisk.superhelt.dokarkiv.JournalforService
-import no.nav.historisk.superhelt.dokarkiv.JournalpostService
+import no.nav.historisk.superhelt.dokarkiv.*
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -78,7 +75,7 @@ class DokarkivJournalforControllerTest {
             bruker = FolkeregisterIdent(faker.numerify("###########")),
             avsender = FolkeregisterIdent(faker.numerify("###########")),
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     tittel = faker.lorem().sentence(),
                     dokumentInfoId = EksternDokumentInfoId(faker.numerify("###########")),
                 )
@@ -111,7 +108,8 @@ class DokarkivJournalforControllerTest {
             eq(sak),
             any(),
             eq(sak.saksbehandler.navIdent),
-            eq("SUPERHELT")
+            eq("SUPERHELT"),
+            eq(journalpostId)
         )
     }
 
@@ -141,7 +139,7 @@ class DokarkivJournalforControllerTest {
             bruker = FolkeregisterIdent(faker.numerify("###########")),
             avsender = FolkeregisterIdent(faker.numerify("###########")),
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     tittel = faker.lorem().sentence(),
                     dokumentInfoId = EksternDokumentInfoId(faker.numerify("###########")),
                 )

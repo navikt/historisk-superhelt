@@ -51,7 +51,7 @@ class JournalforServiceTest {
             bruker = mockSak.fnr,
             avsender = mockSak.fnr,
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     tittel = "Reiseutgifter januar 2024",
                     dokumentInfoId = EksternDokumentInfoId("123"),
                 )

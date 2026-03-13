@@ -64,7 +64,8 @@ class DokarkivJournalforController(
             type = OppgaveType.BEH_SAK,
             sak = sak,
             beskrivelse = "Behandle sak av type ${sak.type.navn} i Superhelt",
-            tilordneTil = sak.saksbehandler.navIdent
+            tilordneTil = sak.saksbehandler.navIdent,
+            journalpostId=journalpostId
         )
 
         return saksnummer
@@ -111,7 +112,8 @@ class DokarkivJournalforController(
             type = OppgaveType.VUR,
             sak = sak,
             beskrivelse = "Dokument av  ${sak.type.navn} i Superhelt",
-            tilordneTil = sak.saksbehandler.navIdent
+            tilordneTil = sak.saksbehandler.navIdent,
+            journalpostId=journalpostId
         )
 
         return saksnummer
