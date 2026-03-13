@@ -93,12 +93,12 @@ function SakLayout() {
                                 <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
-                                <Box width="100%" height="100%" padding="space-16">
+                                <Box width="100%" height="100%" paddingBlock="space-16 space-0">
                                     <DokumentViewer saksnummer={saksnummer} />
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <Box width="100%" height="6rem" paddingBlock="space-16">
+                                <Box width="100%" height="6rem" paddingBlock="space-16 space-0">
                                     <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
                                 </Box>
                             </Tabs.Panel>

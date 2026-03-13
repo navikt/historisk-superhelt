@@ -1,6 +1,6 @@
 .draHåndtak {
   position: absolute;
-  left: -1.5rem;
+  left: -2rem;
   top: 0;
   bottom: 0;
   width: 1rem;
@@ -11,11 +11,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* overflow: hidden; */
   padding: 0;
   background: none;
-  /* border-radius: 0.25rem; */
-  /* border: 1px solid black; */
   & span {
     display: flex;
     flex-direction: column;

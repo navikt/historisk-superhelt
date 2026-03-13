@@ -16,11 +16,9 @@ interface DeltVisningProps {
 
 export default function DeltVisning({ children }: DeltVisningProps) {
     return (
-        // <Box borderWidth="1 0 0 0" borderColor="neutral-subtle" asChild>
-        <HGrid gap="space-32" columns={{ md: 1, lg: "1fr auto" }} paddingBlock={"space-8 space-0"}>
+        <HGrid gap="space-48" columns={{ md: 1, lg: "1fr auto" }} paddingBlock={"space-8 space-0"}>
             {children}
         </HGrid>
-        // </Box>
     );
 }
 
@@ -129,7 +127,7 @@ function JusterbarKolonne({ children }: React.PropsWithChildren) {
                 onPointerCancel={stoppDra}
             >
                 <div className={styles.linjer} />
-                <DragVerticalIcon title="Dra for å endre bredde" fontSize="2rem" />
+                <DragVerticalIcon title="Dra for å endre bredde" fontSize="2.25rem" />
                 <div className={styles.linjer} />
             </Button>
             <VStack gap="space-16">{children}</VStack>
