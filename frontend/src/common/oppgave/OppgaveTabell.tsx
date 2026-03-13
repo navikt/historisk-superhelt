@@ -1,9 +1,9 @@
-import type { OppgaveMedSak } from "@generated";
-import { BodyShort, Detail, Label, Link, List, Pagination, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
-import { Link as RouterLink } from "@tanstack/react-router";
-import { useState } from "react";
-import { isoTilLokal } from "~/common/dato.utils";
-import { OppgaveActionButton } from "./OppgaveActionButton";
+import type {OppgaveMedSak} from "@generated";
+import {BodyShort, Detail, Label, Link, List, Pagination, type SortState, Table, Tag, VStack} from "@navikt/ds-react";
+import {Link as RouterLink} from "@tanstack/react-router";
+import {useState} from "react";
+import {isoTilLokal} from "~/common/dato.utils";
+import {OppgaveActionButton} from "./OppgaveActionButton";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
@@ -106,7 +106,6 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
                                 {dineOppgaver && (
                                     <Table.DataCell>
-                                        {" "}
                                         {oppgave.fnr ? (
                                             <Link
                                                 as={RouterLink}
@@ -182,7 +181,7 @@ function Detaljer({ oppgave }: { oppgave: OppgaveMedSak }) {
     return (
         <VStack gap={"space-20"}>
             <div>
-                <Label textColor="subtle">Sak</Label>
+                <Label textColor="subtle">Sak </Label>
                 <Link as={RouterLink} to={`/sak/${oppgave.saksnummer}`}>
                     <BodyShort>{oppgave.saksnummer}</BodyShort>
                 </Link>

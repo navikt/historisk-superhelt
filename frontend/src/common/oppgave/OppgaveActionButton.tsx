@@ -1,6 +1,6 @@
-import type { OppgaveMedSak } from "@generated";
-import { Button, HStack } from "@navikt/ds-react";
-import { Link as RouterLink } from "@tanstack/react-router";
+import type {OppgaveMedSak} from "@generated";
+import {Button, HStack} from "@navikt/ds-react";
+import {Link as RouterLink} from "@tanstack/react-router";
 
 export function OppgaveActionButton(props: { oppgave: OppgaveMedSak }) {
     const oppgave = props.oppgave;
@@ -12,7 +12,7 @@ export function OppgaveActionButton(props: { oppgave: OppgaveMedSak }) {
 
     const actionButton = (to: string, title: string) => {
         return (
-            <Button as={RouterLink} to={to} variant="primary" size="xsmall">
+            <Button as={RouterLink} to={to} variant="secondary" size="xsmall">
                 {title}
             </Button>
         );
@@ -34,6 +34,8 @@ export function OppgaveActionButton(props: { oppgave: OppgaveMedSak }) {
                 return actionButtonOrDisabled(`/sak/${saksnummer}`, "Behandle");
             case "GOD_VED":
                 return actionButtonOrDisabled(`/sak/${saksnummer}/oppsummering`, "Attester");
+            case "VUR":
+                return actionButtonOrDisabled(`/sak/${saksnummer}/oppsummering`, "Vurder dokument");
         }
         return null;
     };

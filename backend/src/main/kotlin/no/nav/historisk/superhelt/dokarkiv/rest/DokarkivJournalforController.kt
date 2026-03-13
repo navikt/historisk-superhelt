@@ -121,7 +121,7 @@ class DokarkivJournalforController(
         oppgaveService.opprettOppgave(
             type = OppgaveType.VUR,
             sak = sak,
-            beskrivelse = "Dokument av  ${jfrOppgave.oppgaveGjelder.stringValue} er lagt til sak ${sak.saksnummer} i Superhelt. " +
+            beskrivelse = "Dokument \"${request.getTittel()}\" er lagt til sak ${sak.saksnummer} i Superhelt. " +
                     "Vurder videre behandling av saken. Lukk denne oppgaven om det ikke skal gjøres noe spesiell oppfølging.",
             tilordneTil = sak.saksbehandler.navIdent,
             journalpostId = journalpostId
