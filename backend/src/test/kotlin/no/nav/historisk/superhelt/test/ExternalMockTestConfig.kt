@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.test
 
 import no.nav.common.types.EksternJournalpostId
-import no.nav.common.types.Enhetsnummer
 import no.nav.dokarkiv.DokarkivClient
 import no.nav.dokarkiv.JournalpostResponse
 import no.nav.dokdist.DistribuerJournalpostResponse
