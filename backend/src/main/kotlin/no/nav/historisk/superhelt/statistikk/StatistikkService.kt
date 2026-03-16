@@ -55,7 +55,7 @@ class StatistikkService(
         )
         return when (endringsType) {
             EndringsloggType.DOKUMENT_MOTTATT -> statistikk.copy(
-                behandlingStatus = BehandlingStatus.OPPRETTET,
+                behandlingStatus = BehandlingStatus.MOTTATT,
                 mottattTid = tidspunkt,
                 endretTid = Instant.now()
             )
