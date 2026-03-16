@@ -117,7 +117,7 @@ export default function SakEditor({ sak }: Props) {
     }
 
     return (
-        <Box background={"neutral-soft"} padding="space-24" borderWidth="1" borderRadius="4">
+        <Box background="neutral-soft" padding="space-24" borderWidth="1" borderRadius="8" borderColor="neutral-subtle">
             <VStack gap="space-24">
                 <Select
                     label="Stønad"
