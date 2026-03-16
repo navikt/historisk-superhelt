@@ -3,6 +3,7 @@ import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { HGrid, Tabs, VStack } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import DeltVisning from "~/common/delt-visning/DeltVisning";
 import { PdfViewer } from "~/common/pdf/PdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
 import { SakshistorikkJournalTabell } from "~/routes/oppgave/$oppgaveid/-components/SakshistorikkJournalTabell";
@@ -19,9 +20,11 @@ function OppgaveLayout() {
     return (
         <>
             <PersonHeader maskertPersonId={oppgave.maskertPersonIdent} />
-            <HGrid gap="space-24" columns={{ lg: 1, xl: 2 }} marginBlock={"space-16"}>
-                <Outlet />
-                <VStack gap="space-16">
+            <DeltVisning>
+                <DeltVisning.Kolonne>
+                    <Outlet />
+                </DeltVisning.Kolonne>
+                <DeltVisning.Kolonne justerbar>
                     <Tabs defaultValue="dokumenter">
                         <Tabs.List>
                             <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />
@@ -34,8 +37,8 @@ function OppgaveLayout() {
                             <SakshistorikkJournalTabell maskertPersonIdent={oppgave.maskertPersonIdent} />
                         </Tabs.Panel>
                     </Tabs>
-                </VStack>
-            </HGrid>
+                </DeltVisning.Kolonne>
+            </DeltVisning>
         </>
     );
 }

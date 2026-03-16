@@ -1,5 +1,5 @@
 import type { ProblemDetail } from "@generated";
-import React, { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 
 interface Props {
