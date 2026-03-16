@@ -60,14 +60,14 @@ data class SaksbehandlingsStatistikk(
      * Tidligere meldinger må re-sendes ved oppdatering av dette feltet.
      * Tidssone: UTC.
      */
-    val mottattTid: Instant? = null,
+    val mottattTid: Instant,
 
     /**
      * Tidspunkt da behandlingen første gang ble registrert i fagsystemet.
      * Ved digitale søknader bør denne være tilnærmet lik [mottattTid].
      * Tidssone: UTC.
      */
-    val registrertTid: Instant? = null,
+    val registrertTid: Instant,
 
     /**
      * Tidspunkt når behandlingen ble avsluttet – enten avbrutt, henlagt, vedtak innvilget/avslått, osv.

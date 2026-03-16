@@ -42,6 +42,8 @@ class SaksbehandlingsStatistikkTest {
         ansvarligEnhet = "0300",
         fagsystemNavn = "historisk-superhelt",
         fagsystemVersjon = "1.0.0",
+        mottattTid = endretTid,
+        registrertTid = endretTid
     )
 
     @Test
@@ -121,8 +123,6 @@ class SaksbehandlingsStatistikkTest {
     fun `null-felter skal ikke inkluderes i JSON`() {
         val json = mapper.readTree(mapper.writeValueAsString(enStatistikk()))
 
-        assertThat(json.has("mottatt_tid")).isFalse()
-        assertThat(json.has("registrert_tid")).isFalse()
         assertThat(json.has("ferdig_behandlet_tid")).isFalse()
         assertThat(json.has("utbetalt_tid")).isFalse()
         assertThat(json.has("behandling_resultat")).isFalse()

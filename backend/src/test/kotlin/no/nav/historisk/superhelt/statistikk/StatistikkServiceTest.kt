@@ -26,6 +26,8 @@ import org.springframework.kafka.support.SendResult
 import tools.jackson.databind.JsonNode
 import tools.jackson.databind.json.JsonMapper
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.concurrent.CompletableFuture
 
 @ExtendWith(MockitoExtension::class)
@@ -77,6 +79,8 @@ class StatistikkServiceTest {
             assertThat(json.has("registrert_tid")).isTrue()
             assertThat(json.has("fagsystem_navn")).isTrue()
             assertThat(json.has("fagsystem_versjon")).isTrue()
+            assertThat(json.has("registrert_tid")).isTrue()
+            assertThat(json.has("mottatt_tid")).isTrue()
         }
 
         @Test
@@ -111,7 +115,6 @@ class StatistikkServiceTest {
 
             assertThat(json.has("behandling_resultat")).isFalse()
             assertThat(json.has("resultat_begrunnelse")).isFalse()
-            assertThat(json.has("mottatt_tid")).isFalse()
             assertThat(json.has("ferdig_behandlet_tid")).isFalse()
             assertThat(json.has("ansvarlig_beslutter")).isFalse()
         }
@@ -126,6 +129,41 @@ class StatistikkServiceTest {
             assertThat(json["behandling_status"].asString()).isEqualTo("FERDIG")
             assertThat(json["behandling_type"].asString()).isEqualTo("SØKNAD")
             assertThat(json["behandling_resultat"].asString()).isEqualTo(sak.vedtaksResultat!!.name)
+        }
+
+        @Test
+        fun `mottatt tid og registert tid skal hentes fra sak`() {
+            val sak = SakTestData.sakUtenUtbetaling().copy(
+                opprettetDato = Instant.now().minusSeconds(500),
+                soknadsDato = LocalDate.now().minusDays(5)
+            )
+            service.handleEvent(EndringsloggType.OPPRETTET_SAK, Instant.now(), sak)
+
+            val json = fangetJson()
+
+            val registertTid = json["registrert_tid"].asString()
+            val mottattTid = json["mottatt_tid"].asString()
+
+            assertThat(sak.opprettetDato).describedAs("registert tid").isEqualTo(registertTid)
+            assertThat(sak.soknadsDato?.atTime(8, 0)?.toInstant(ZoneOffset.UTC)).describedAs("Mottatt tid").isEqualTo(mottattTid)
+        }
+
+
+        @Test
+        fun `mottatt tid skal være lik registert om søknadsdato er nyere`() {
+            val sak = SakTestData.sakUtenUtbetaling().copy(
+                opprettetDato = Instant.now().minusSeconds(500),
+                soknadsDato = LocalDate.now().plusDays(1)
+            )
+            service.handleEvent(EndringsloggType.OPPRETTET_SAK, Instant.now(), sak)
+
+            val json = fangetJson()
+
+            val registertTid = json["registrert_tid"].asString()
+            val mottattTid = json["mottatt_tid"].asString()
+
+            assertThat(sak.opprettetDato).describedAs("registert tid").isEqualTo(registertTid)
+            assertThat(mottattTid).isEqualTo(registertTid)
         }
     }
 

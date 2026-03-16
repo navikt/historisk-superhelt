@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.Instant
+import java.time.ZoneOffset
 
 
 @Service
@@ -43,6 +44,8 @@ class StatistikkService(
             behandlingStatus = BehandlingStatus.UNDER_BEHANDLING,
             fnr = sak.fnr.value,
             endretTid = tidspunkt,
+            registrertTid = sak.opprettetDato,
+            mottattTid = finnMottattTid(sak),
             sakYtelse = sak.type,
             behandlingType = BehandlingType.SØKNAD,
             saksbehandler = sak.saksbehandler.navIdent.value,
@@ -54,14 +57,13 @@ class StatistikkService(
             EndringsloggType.DOKUMENT_MOTTATT -> statistikk.copy(
                 behandlingStatus = BehandlingStatus.OPPRETTET,
                 mottattTid = tidspunkt,
-                registrertTid = Instant.now(),
                 endretTid = Instant.now()
             )
 
             EndringsloggType.OPPRETTET_SAK -> statistikk.copy(
                 behandlingStatus = BehandlingStatus.OPPRETTET,
-                registrertTid = tidspunkt,
-                opprettetAv = sak.saksbehandler.navIdent.value)
+                opprettetAv = sak.saksbehandler.navIdent.value
+            )
 
             EndringsloggType.TIL_ATTESTERING -> statistikk.copy(
                 behandlingStatus = BehandlingStatus.TIL_ATTESTERING,
@@ -86,8 +88,6 @@ class StatistikkService(
 
             EndringsloggType.GJENAPNET_SAK -> statistikk.copy(
                 behandlingStatus = BehandlingStatus.OPPRETTET,
-                registrertTid = tidspunkt,
-                mottattTid = tidspunkt,
                 opprettetAv = sak.saksbehandler.navIdent.value,
                 behandlingType = BehandlingType.REVURDERING,
             )
@@ -113,6 +113,16 @@ class StatistikkService(
                 ferdigBehandletTid = tidspunkt
             )
         }
+    }
+
+    /** Mottatttid skal attid med. Den må være før registrert tid */
+    private fun finnMottattTid(sak: Sak): Instant {
+        val registertTid = sak.opprettetDato
+        val mottattTid = sak.soknadsDato?.atTime(8, 0)?.toInstant(ZoneOffset.UTC) ?: registertTid
+        if (mottattTid.isBefore(registertTid)) {
+            return mottattTid
+        }
+        return registertTid
     }
 }
 

@@ -39,7 +39,7 @@ class SakStatistikkKafkaProducerIntegrationTest {
 
     private fun enStatistikk(
         behandlingResultat: Enum<*>? = null,
-        mottattTid: Instant? = null,
+        mottattTid: Instant = Instant.now(),
         ferdigBehandletTid: Instant? = null,
         utbetaltTid: LocalDate? = null,
     ) = SaksbehandlingsStatistikk(
@@ -54,6 +54,7 @@ class SakStatistikkKafkaProducerIntegrationTest {
         behandlingMetode = BehandlingMetode.MANUELL,
         behandlingResultat = behandlingResultat,
         mottattTid = mottattTid,
+        registrertTid = mottattTid,
         ferdigBehandletTid = ferdigBehandletTid,
         utbetaltTid = utbetaltTid,
         opprettetAv = "Z123456",
@@ -115,7 +116,6 @@ class SakStatistikkKafkaProducerIntegrationTest {
         val json = sendOgMottaMelding(enStatistikk())
 
         assertThat(json.has("behandling_resultat")).isFalse()
-        assertThat(json.has("mottatt_tid")).isFalse()
         assertThat(json.has("ferdig_behandlet_tid")).isFalse()
         assertThat(json.has("utbetalt_tid")).isFalse()
     }
