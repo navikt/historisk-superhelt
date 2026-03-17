@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 ghcr.io/navikt/pdfgen:2.0.112
+FROM --platform=linux/amd64 ghcr.io/navikt/pdfgen:2.0.113
 COPY templates /app/templates
 COPY fonts /app/fonts
 COPY resources /app/resources

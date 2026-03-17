@@ -20,6 +20,7 @@
         <module>pdfgen</module>
         <module>dokarkiv</module>
         <module>entra-proxy</module>
+        <module>statistikk</module>
     </modules>
 
     <dependencies>

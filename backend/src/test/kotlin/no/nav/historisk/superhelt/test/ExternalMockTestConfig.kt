@@ -10,7 +10,14 @@ import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
-import no.nav.pdl.*
+import no.nav.pdl.HentPdlResponse
+import no.nav.pdl.IdentGruppe
+import no.nav.pdl.IdentInformasjon
+import no.nav.pdl.Identliste
+import no.nav.pdl.Navn
+import no.nav.pdl.PdlClient
+import no.nav.pdl.PdlData
+import no.nav.pdl.Person
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn

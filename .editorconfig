@@ -1,0 +1,13 @@
+root = true
+
+[*.kt]
+# Basic formatting
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+max_line_length = 140
+
+# IntelliJ regler for Kotlin (for å følge de samme reglene som i Ktlint)
+ij_kotlin_name_count_to_use_star_import = 99
+ij_kotlin_name_count_to_use_star_import_for_members = 99
+ij_kotlin_packages_to_use_import_on_demand = unset
