@@ -81,12 +81,55 @@ class EntraProxyClientTest {
     }
 
     @Test
-    fun `hentEnheter kaster exception ved 500 Internal Server Error`() {
-        mockServer.expect(requestTo("/api/v1/enhet"))
+    fun `hentTema returnerer sett med tema`() {
+        val json = """["HJE", "ORT", "AAP"]"""
+
+        mockServer.expect(requestTo("/api/v1/tema"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(
+                withStatus(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(json)
+            )
+
+        val result = client.hentTema()
+
+        assertThat(result).hasSize(3)
+        assertThat(result).containsExactlyInAnyOrder("HJE", "ORT", "AAP")
+    }
+
+    @Test
+    fun `hentTema returnerer tomt sett`() {
+        mockServer.expect(requestTo("/api/v1/tema"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(
+                withStatus(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("[]")
+            )
+
+        val result = client.hentTema()
+
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `hentTema kaster exception ved 401 Unauthorized`() {
+        mockServer.expect(requestTo("/api/v1/tema"))
+            .andExpect(method(HttpMethod.GET))
+            .andRespond(withStatus(HttpStatus.UNAUTHORIZED))
+
+        assertThatThrownBy { client.hentTema() }
+            .isInstanceOf(HttpClientErrorException::class.java)
+    }
+
+    @Test
+    fun `hentTema kaster exception ved 500 Internal Server Error`() {
+        mockServer.expect(requestTo("/api/v1/tema"))
             .andExpect(method(HttpMethod.GET))
             .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
 
-        assertThatThrownBy { client.hentEnheter() }
+        assertThatThrownBy { client.hentTema() }
             .isInstanceOf(HttpServerErrorException::class.java)
     }
 }

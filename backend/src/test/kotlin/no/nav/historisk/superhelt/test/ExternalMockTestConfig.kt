@@ -128,6 +128,7 @@ class ExternalMockTestConfig {
         logger.warn("Bruker mock av EntraProxyClient")
         return mock<EntraProxyClient>().stub {
             on { hentEnheter() } doReturn listOf(Enhet(enhetnummer = "4488", navn = "NAV Vest-Viken"))
+            on { hentTema() } doReturn setOf("HJE", "ORT")
         }
     }
 }

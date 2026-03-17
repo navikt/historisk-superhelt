@@ -61,8 +61,8 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
     readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
@@ -170,6 +170,8 @@ export type User = {
     name: string;
     ident: string;
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT' | 'DRIFT'>;
+    enhet: string;
+    tema: Array<string>;
 };
 
 export type Vedtak = {

@@ -11,4 +11,11 @@ class EntraProxyClient(private val restClient: RestClient) {
             .retrieve()
             .body<List<Enhet>>() ?: emptyList()
     }
+
+    fun hentTema(): Set<String> {
+        return restClient.get()
+            .uri("/api/v1/tema")
+            .retrieve()
+            .body<Set<String>>() ?: emptySet()
+    }
 }

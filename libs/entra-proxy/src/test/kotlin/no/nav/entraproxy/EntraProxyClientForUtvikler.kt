@@ -6,9 +6,7 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestClient
-import java.io.File.separator
-import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 @Disabled
 class EntraProxyClientForUtvikler {
@@ -27,14 +25,18 @@ class EntraProxyClientForUtvikler {
 //    private val baseUrl = "http://localhost:9080/entra-proxy-mock"
     val client = EntraProxyClient(getRestClient())
 
-    @Test // IntelliJ bryr seg ikke om @Disabled derfor må denne kommenteres inn før kjøring
+    @Test
     fun `test hent saksbehandlers enheter`() {
         val hentet = client.hentEnheter()
         println(hentet)
     }
 
-
-
+    @Test
+    fun `test hent saksbehandlers tema`() {
+        val hentet = client.hentTema()
+        println(hentet)
+    }
+    
     private fun getRestClient(): RestClient {
         return RestClient.builder()
             .baseUrl(baseUrl)

@@ -16,4 +16,9 @@ class EntraProxyMockController {
             EnhetResponse(enhetnummer = "4488", navn = "NAV Vest-Viken"),
         )
     }
+
+    @GetMapping("/api/v1/tema")
+    fun hentTema(): List<String> {
+        return listOf("HJE", "ORT")
+    }
 }
