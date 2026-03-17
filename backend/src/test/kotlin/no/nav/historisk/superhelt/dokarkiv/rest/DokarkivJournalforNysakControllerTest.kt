@@ -4,7 +4,11 @@ import net.datafaker.Faker
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.historisk.superhelt.dokarkiv.*
+import no.nav.historisk.superhelt.dokarkiv.DokarkivService
+import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
+import no.nav.historisk.superhelt.dokarkiv.JournalforDokument
+import no.nav.historisk.superhelt.dokarkiv.JournalforService
+import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -17,7 +21,11 @@ import no.nav.oppgave.OppgaveType
 import no.nav.saf.graphql.JournalStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
@@ -28,7 +36,7 @@ import tools.jackson.databind.ObjectMapper
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
-class DokarkivJournalforControllerTest {
+class DokarkivJournalforNysakControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvcTester
@@ -130,7 +138,6 @@ class DokarkivJournalforControllerTest {
 
         whenever(journalpostService.hentJournalpost(any())).thenReturn(journalPost)
         whenever(oppgaveService.getOppgave(any())).thenReturn(oppgave)
-//        whenever(journalforService.lagNySakOgKnyttDenTilOppgave(any(), any())).thenReturn(saksnummer)
         whenever(sakRepository.getSak(any())).thenReturn(sak)
 
         val request = JournalforNySakRequest(

@@ -17,7 +17,11 @@ import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.oppgave.OppgaveType
 import no.nav.saf.graphql.JournalStatus
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/dokarkiv")
@@ -117,15 +121,17 @@ class DokarkivJournalforController(
 
         // Denne er allerede idempotent og vil ikke ferdigstille oppgaven hvis den er ferdigstilt fra før
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
-        // TODO sjekk om det finnes åpne oppgaver for denne saken. Trenger vi en til?
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.VUR,
-            sak = sak,
-            beskrivelse = "Dokument \"${request.getTittel()}\" er lagt til sak ${sak.saksnummer} i Superhelt. " +
+        // TODO kanskje sjekke om det er åpne oppgaver på saken i stedet?
+        if (sak.status.isFinal()) {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.VUR,
+                sak = sak,
+                beskrivelse = "Dokument \"${request.getTittel()}\" er lagt til sak ${sak.saksnummer} i Superhelt. " +
                     "Vurder videre behandling av saken. Lukk denne oppgaven om det ikke skal gjøres noe spesiell oppfølging.",
-            tilordneTil = sak.saksbehandler.navIdent,
-            journalpostId = journalpostId
-        )
+                tilordneTil = sak.saksbehandler.navIdent,
+                journalpostId = journalpostId
+            )
+        }
 
         return saksnummer
     }
