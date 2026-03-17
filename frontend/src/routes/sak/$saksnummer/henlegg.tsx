@@ -1,30 +1,28 @@
 import { henleggSakMutation } from "@generated/@tanstack/react-query.gen";
-import { GavelIcon } from "@navikt/aksel-icons";
-import { Modal, Textarea, VStack } from "@navikt/ds-react";
+import { Dialog, Textarea, VStack } from "@navikt/ds-react";
+import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useParams } from "@tanstack/react-router";
+import { useState } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
 import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
 import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 import { BrevEditor } from "~/routes/sak/$saksnummer/-components/BrevEditor";
 
-export const Route = createFileRoute("/sak/$saksnummer/henlegg")({
-    component: HenleggPage,
-});
+interface HenleggProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}
 
-function HenleggPage() {
-    const { saksnummer } = Route.useParams();
+export function Henlegg({ open, onOpenChange }: HenleggProps) {
+    const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const hasPermission = sak.rettigheter.includes("HENLEGGE");
     const { data: brev } = useQuery({
         ...getOrCreateBrevOptions(saksnummer, "HENLEGGESEBREV", "BRUKER"),
         enabled: hasPermission,
     });
-
-    const ref = useRef<HTMLDialogElement>(null);
-    const navigate = useNavigate();
     const invalidateSakQuery = useInvalidateSakQuery();
     const [aarsak, setAarsak] = useState("");
     const [error, setError] = useState<string | undefined>();
@@ -33,13 +31,9 @@ function HenleggPage() {
         ...henleggSakMutation(),
         onSuccess: () => {
             invalidateSakQuery(saksnummer);
-            navigateBack();
+            onOpenChange(false);
         },
     });
-
-    const navigateBack = () => {
-        navigate({ to: "/sak/$saksnummer/oppsummering", params: { saksnummer } });
-    };
 
     const validate = () => {
         if (aarsak.length < 10) {
@@ -55,43 +49,31 @@ function HenleggPage() {
     };
 
     const onSubmit = async (brevId: string) => {
-        if (!validate()) {
-            return;
-        }
-
+        if (!validate()) return;
         await henleggMutation.mutateAsync({
-            path: {
-                saksnummer: saksnummer,
-            },
+            path: { saksnummer },
             body: {
                 henleggelseBrevId: brevId,
-                aarsak: aarsak,
+                aarsak,
             },
         });
     };
 
     return (
-        <VStack gap={"space-16"}>
-            <Modal
-                ref={ref}
-                open={true}
-                onClose={() => navigateBack()}
-                width={"80%"}
-                header={{
-                    icon: <GavelIcon aria-hidden />,
-                    heading: "Henlegg sak",
-                }}
-            >
-                <Modal.Body>
-                    <VStack gap={"space-16"}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg }}>
+                <Dialog.Header>
+                    <Dialog.Title>Henlegg sak</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
+                    <VStack gap="space-16">
                         <Textarea
-                            label={"Årsak til henleggelse"}
+                            label="Årsak til henleggelse"
                             readOnly={!hasPermission}
                             value={aarsak}
                             onChange={(e) => setAarsak(e.target.value)}
                             error={error}
                         />
-
                         <BrevEditor
                             sak={sak}
                             brevId={brev?.uuid}
@@ -99,11 +81,10 @@ function HenleggPage() {
                             onSuccess={onSubmit}
                             readOnly={!hasPermission}
                         />
-
                         <ErrorAlert error={henleggMutation.error} />
                     </VStack>
-                </Modal.Body>
-            </Modal>
-        </VStack>
+                </Dialog.Body>
+            </Dialog.Popup>
+        </Dialog>
     );
 }

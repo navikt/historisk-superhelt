@@ -61,17 +61,17 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
-    readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
+    readonly gjenapnet: boolean;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
@@ -162,8 +162,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
-    loggId$superhelt_backend: string;
     annulleres: boolean;
+    loggId$superhelt_backend: string;
 };
 
 export type User = {
@@ -311,9 +311,9 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -1393,9 +1393,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: {
-            [key: string]: unknown;
-        };
+        dokumentId: 'JANUARY' | 'FEBRUARY' | 'MARCH' | 'APRIL' | 'MAY' | 'JUNE' | 'JULY' | 'AUGUST' | 'SEPTEMBER' | 'OCTOBER' | 'NOVEMBER' | 'DECEMBER';
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';
