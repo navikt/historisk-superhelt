@@ -1,0 +1,71 @@
+name: Bygg og deploy pdfgen
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pdfgen/**'
+      - '.nais/app/pdfgen.yaml'
+      - '.github/workflows/pdfgen.yml'
+
+jobs:
+  build:
+    name: "Bygg pdfgen"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+      telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
+    steps:
+      - uses: actions/checkout@v6
+
+      # Verify: curl -s https://api.github.com/repos/nais/docker-build-push/git/refs/tags/v0 | jq -r '.object.sha'
+      - name: Bygg og push docker image til GAR
+        uses: nais/docker-build-push@078e460885ed0424b60d45ce9220b4be1748be9d #v0
+        id: docker-build-push
+        with:
+          team: historisk
+          docker_context: ./pdfgen
+
+  deploy_dev:
+    needs: [build]
+    name: "Deploy til dev"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
+      - name: Deploy pdfgen til dev-gcp
+        uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/app/pdfgen.yaml
+          VARS: .nais/dev.json
+          IMAGE: ${{ needs.build.outputs.image }}
+          TELEMETRY: ${{ needs.build.outputs.telemetry }}
+
+  deploy_prod:
+    needs: [build, deploy_dev]
+    name: "Deploy til prod"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
+      - name: Deploy pdfgen til prod-gcp
+        uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/app/pdfgen.yaml
+          VARS: .nais/prod.json
+          IMAGE: ${{ needs.build.outputs.image }}
+          TELEMETRY: ${{ needs.build.outputs.telemetry }}

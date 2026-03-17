@@ -12,7 +12,7 @@
         background: var(--status-color);
         border-radius: var(--ax-radius-4);
         bottom: 0;
-        content: '';
+        content: "";
         display: block;
         height: 6px;
         left: 0;
@@ -32,7 +32,7 @@
         --status-color: var(--ax-neutral-400);
         --status-color-hover: var(--ax-neutral-500);
         --status-color-active: var(--ax-neutral-600);
-}
+    }
 
     &.success {
         --status-color: var(--ax-success-400);
@@ -78,12 +78,12 @@
 .partial:not(.warning) {
     > .icon {
         background: linear-gradient(
-                -45deg,
-                var(--icon-color),
-                var(--icon-color) 50%,
-                var(--icon-color) 50%,
-                var(--icon-color) 50%,
-                white 50%
+            -45deg,
+            var(--icon-color),
+            var(--icon-color) 50%,
+            var(--icon-color) 50%,
+            var(--icon-color) 50%,
+            white 50%
         );
         border: 1px solid var(--icon-color);
         border-radius: 50%;
@@ -95,11 +95,11 @@
 
     &:after {
         background: repeating-linear-gradient(
-                -45deg,
-                var(--partial-color),
-                var(--partial-color) 10px,
-                white 10px,
-                white 20px
+            -45deg,
+            var(--partial-color),
+            var(--partial-color) 10px,
+            white 10px,
+            white 20px
         );
         border: 1px solid var(--partial-color);
     }

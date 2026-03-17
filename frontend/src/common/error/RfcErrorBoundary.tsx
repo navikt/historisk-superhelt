@@ -1,7 +1,6 @@
-import React, {Component, ErrorInfo, ReactNode} from 'react';
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {ProblemDetail} from "@generated";
-
+import type { ProblemDetail } from "@generated";
+import { Component, type ErrorInfo, type ReactNode } from "react";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
 
 interface Props {
     children: ReactNode;
@@ -16,11 +15,10 @@ interface State {
 export class RfcErrorBoundary extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = {hasError: false};
+        this.state = { hasError: false };
     }
 
     static getDerivedStateFromError(error: Error): State {
-
         return {
             hasError: true,
             error,
@@ -28,12 +26,12 @@ export class RfcErrorBoundary extends Component<Props, State> {
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-        console.error('RFC9457ErrorBoundary caught an error:', error, errorInfo);
+        console.error("RFC9457ErrorBoundary caught an error:", error, errorInfo);
     }
 
     private renderDefaultFallback() {
-        const {error,} = this.state;
-        return <ErrorAlert error={error}/>;
+        const { error } = this.state;
+        return <ErrorAlert error={error} />;
     }
 
     render() {

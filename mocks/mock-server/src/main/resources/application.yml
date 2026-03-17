@@ -2,6 +2,8 @@ app:
   helved:
     utbetaling-topic: historisk.utbetaling.v1
     status-topic: helved.status.v1
+  statistikk:
+    saks-behandling-statistikk-topic: historisk.superhelt.statistikk.saksbehandling.v1
 
 spring:
   application:

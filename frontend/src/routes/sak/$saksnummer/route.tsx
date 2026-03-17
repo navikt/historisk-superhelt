@@ -1,41 +1,51 @@
-import {FilePdfIcon, TasklistIcon} from "@navikt/aksel-icons";
-import {Box, HGrid, Tabs, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {createFileRoute, Outlet} from "@tanstack/react-router";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
-import {PersonHeader} from "~/common/person/PersonHeader";
-import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
-import {StepType} from "~/common/process-menu/StepType";
-import {isSakFerdig} from "~/common/sak/sak.utils";
+import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { Box, Tabs } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
+import { PersonHeader } from "~/common/person/PersonHeader";
+import { finnPersonQuery } from "~/common/person/person.query";
+import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
+import { StepType } from "~/common/process-menu/StepType";
+import { isSakFerdig } from "~/common/sak/sak.utils";
+import { kortNavn, kortSaksnummer } from "~/common/string.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
-import {SakshistorikkSakTabell} from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
-import type {TilstandStatusType} from "~/routes/sak/$saksnummer/-types/sak.types";
-import {getSakOptions} from "./-api/sak.query";
+import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
+import type { TilstandStatusType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import { getSakOptions } from "./-api/sak.query";
+import DeltVisning from "~/common/delt-visning/DeltVisning";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
-    loader: ({params: {saksnummer}, context}) => {
+    loader: ({ params: { saksnummer }, context }) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer));
     },
-    errorComponent: ({error}) => {
-        return <ErrorAlert error={error}/>;
+    errorComponent: ({ error }) => {
+        return <ErrorAlert error={error} />;
     },
 });
 
 function SakLayout() {
-    const {saksnummer} = Route.useParams();
-    const {data: sak} = useSuspenseQuery(getSakOptions(saksnummer));
+    const { saksnummer } = Route.useParams();
+    const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
+    const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
 
-    const isFerdig = isSakFerdig(sak)
+    useEffect(() => {
+        document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;
+        return () => {
+            document.title = "Superhelt";
+        };
+    }, [sak.saksnummer, person.navn]);
 
-    const calculateStepType = (
-        tilstandResultat: TilstandStatusType,
-    ): StepType => {
+    const isFerdig = isSakFerdig(sak);
+
+    const calculateStepType = (tilstandResultat: TilstandStatusType): StepType => {
         if (isFerdig) {
-            return StepType.success
+            return StepType.success;
         }
         switch (tilstandResultat) {
             case "IKKE_STARTET":
@@ -51,72 +61,61 @@ function SakLayout() {
 
     const steptypeForOpplysninger = () => {
         if (sak?.tilstand.vedtaksbrevBruker === "IKKE_STARTET") {
-            return StepType.success
+            return StepType.success;
         }
         return calculateStepType(sak?.tilstand.opplysninger);
-    }
+    };
     return (
         <>
-            <PersonHeader maskertPersonId={sak.maskertPersonIdent}/>
+            <PersonHeader maskertPersonId={sak.maskertPersonIdent} />
+            <ProcessMenu>
+                <ProcessMenu.Item
+                    label={"Opplysninger"}
+                    stepType={steptypeForOpplysninger()}
+                    to={"/sak/$saksnummer/opplysninger"}
+                />
+                <ProcessMenu.Item
+                    label={"Brev til bruker"}
+                    stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
+                    to={"/sak/$saksnummer/vedtaksbrevbruker"}
+                    disabled={calculateStepType(sak?.tilstand.opplysninger) !== StepType.success}
+                />
+                <ProcessMenu.Item
+                    label={"Oppsummering"}
+                    stepType={calculateStepType(sak?.tilstand.oppsummering)}
+                    to={"/sak/$saksnummer/oppsummering"}
+                    disabled={
+                        sak.status !== "TIL_ATTESTERING" &&
+                        calculateStepType(sak?.tilstand.vedtaksbrevBruker) !== StepType.success
+                    }
+                />
+            </ProcessMenu>
             <RfcErrorBoundary>
-                <SakAlert sak={sak}/>
-                <HGrid gap="space-24" columns={{lg: 1, xl: 2}} marginBlock={"space-16"}>
-                    <VStack gap="space-16">
-                        <ProcessMenu>
-                            <ProcessMenu.Item
-                                label={"Opplysninger"}
-                                stepType={steptypeForOpplysninger()}
-                                to={"/sak/$saksnummer/opplysninger"}
-                            />
-                            <ProcessMenu.Item
-                                label={"Brev til bruker"}
-                                stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
-                                to={"/sak/$saksnummer/vedtaksbrevbruker"}
-                                disabled={calculateStepType(sak?.tilstand.opplysninger) !== StepType.success}
-                            />
-                            <ProcessMenu.Item
-                                label={"Oppsummering"}
-                                stepType={calculateStepType(sak?.tilstand.oppsummering)}
-                                to={"/sak/$saksnummer/oppsummering"}
-                                disabled={
-                                    sak.status !== "TIL_ATTESTERING" &&
-                                    calculateStepType(sak?.tilstand.vedtaksbrevBruker) !== StepType.success
-                                }
-                            />
-                        </ProcessMenu>
-
-                        <Outlet/>
-                    </VStack>
-                    <VStack gap="space-16">
-                        <SakHeading sak={sak}/>
-                        <Tabs defaultValue="dokumenter">
+                <SakAlert sak={sak} />
+                <DeltVisning>
+                    <DeltVisning.Kolonne>
+                        <Outlet />
+                    </DeltVisning.Kolonne>
+                    <DeltVisning.Kolonne justerbar>
+                        <SakHeading sak={sak} />
+                        <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
                             <Tabs.List>
-                                <Tabs.Tab
-                                    value="dokumenter"
-                                    label="Dokumenter"
-                                    icon={<FilePdfIcon aria-hidden/>}
-                                />
-                                <Tabs.Tab
-                                    value="historikk"
-                                    label="Sakshistorikk"
-                                    icon={<TasklistIcon aria-hidden/>}
-                                />
+                                <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />
+                                <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
                             </Tabs.List>
-                            <Tabs.Panel value="dokumenter">
-                                <Box width="100%" height="6rem" padding="space-16">
-                                    <DokumentViewer saksnummer={saksnummer}/>
+                            <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
+                                <Box width="100%" height="100%" paddingBlock="space-16 space-0">
+                                    <DokumentViewer saksnummer={saksnummer} />
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <Box width="100%" height="6rem" padding="space-16">
-                                    <SakshistorikkSakTabell
-                                        maskertPersonIdent={sak.maskertPersonIdent}
-                                    />
+                                <Box width="100%" height="6rem" paddingBlock="space-16 space-0">
+                                    <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
                                 </Box>
                             </Tabs.Panel>
                         </Tabs>
-                    </VStack>
-                </HGrid>
+                    </DeltVisning.Kolonne>
+                </DeltVisning>
             </RfcErrorBoundary>
         </>
     );

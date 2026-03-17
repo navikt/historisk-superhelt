@@ -43,6 +43,7 @@ class UtbetalingRepository(
         belop: Belop,
         utbetalingUuid: UtbetalingUuid? = null,
         utbetalingStatus: UtbetalingStatus = UtbetalingStatus.UTKAST,
+        utbetalingTidspunkt: Instant,
     ): Utbetaling {
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
 
@@ -53,15 +54,19 @@ class UtbetalingRepository(
             utbetalingsUuid = utbetalingUuid ?: UtbetalingUuid.random(),
             utbetalingStatus = utbetalingStatus,
             transaksjonsId = UUID.randomUUID(),
+            utbetalingTidspunkt = utbetalingTidspunkt
         )
-        logger.info("Oppretter utbetaling med transaksjonsId ${entity.transaksjonsId} og utbetalingsUuid ${entity.utbetalingsUuid} for sak ${sakEntity.saksnummer} behandling ${entity.behandlingsnummer} med beløp $belop")
-        return utbetalingJpaRepository.save(entity).toDomain()
+        val utbetaling = utbetalingJpaRepository.save(entity).toDomain()
+        logger.info("Oppretter utbetaling med ${utbetaling.loggId} med beløp $belop")
+        return utbetaling
     }
+
     fun opprettAnnullering(sak: Sak, tidligereUtbetaling: Utbetaling? = null): Utbetaling {
         return lagreUtbetaling(
             saksnummer = sak.saksnummer,
             belop = Belop.ZeroBelop,
             utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
+            utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now()
         )
     }
 
@@ -71,6 +76,7 @@ class UtbetalingRepository(
             belop = sak.belop
                 ?: throw IllegalStateException("Sak ${sak.saksnummer} har ingen beløp, kan ikke opprette utbetaling"),
             utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
+            utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now()
         )
     }
 
@@ -80,15 +86,15 @@ class UtbetalingRepository(
     }
 
     internal fun setUtbetalingStatusSendt(transaksjonsId: UUID) {
-        updateUtbetalingStatus(transaksjonsId, UtbetalingStatus.SENDT_TIL_UTBETALING, Instant.now())
+        updateUtbetalingStatus(transaksjonsId, UtbetalingStatus.SENDT_TIL_UTBETALING)
     }
 
-    private fun updateUtbetalingStatus(transaksjonsId: UUID, status: UtbetalingStatus, tidspunkt: Instant? = null) {
+    private fun updateUtbetalingStatus(transaksjonsId: UUID, status: UtbetalingStatus) {
         utbetalingJpaRepository.findByTransaksjonsId(transaksjonsId)?.let {
-            it.utbetalingStatus = status
-            if (tidspunkt != null) {
-                it.utbetalingTidspunkt = tidspunkt
+            if (it.utbetalingTidspunkt == null) {
+                it.utbetalingTidspunkt = Instant.now()
             }
+            it.utbetalingStatus = status
             utbetalingJpaRepository.save(it)
         }
     }

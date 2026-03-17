@@ -24,13 +24,13 @@ class UtbetalingService(
     @Transactional
     fun sendTilUtbetaling(sak: Sak) {
         if (sak.status !in listOf(SakStatus.FERDIG_ATTESTERT, SakStatus.FERDIG)) {
-           throw IllegalArgumentException("Sak ${sak.saksnummer} er i status ${sak.status} og kan derfor ikke sendes til utbetaling")
+            throw IllegalArgumentException("Sak ${sak.saksnummer} er i status ${sak.status} og kan derfor ikke sendes til utbetaling")
         }
         val utbetaling = utbetalingRepository.findActiveByBehandling(sak)
         if (utbetaling != null) {
             logger.debug(
                 "Utbetaling {} finnes allerede for sak {}, sender denne på nytt til utbetaling",
-                utbetaling.transaksjonsId,
+                utbetaling.loggId,
                 sak.saksnummer
             )
             return utbetal(utbetaling, sak)
@@ -98,7 +98,7 @@ class UtbetalingService(
 
     private fun utbetal(utbetaling: Utbetaling, sak: Sak) {
         if (utbetaling.utbetalingStatus !in listOf(UtbetalingStatus.UTKAST, UtbetalingStatus.KLAR_TIL_UTBETALING)) {
-            logger.info("Utbetaling ${utbetaling.transaksjonsId} i sak ${sak.saksnummer} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
+            logger.info("Utbetaling ${utbetaling.loggId} er i status ${utbetaling.utbetalingStatus} og vil ikke sendes på nytt til utbetaling")
             return
         }
 
@@ -113,7 +113,7 @@ class UtbetalingService(
         if (currentStatus.isFinal()) {
             logger.info(
                 "Utbetaling {} er i final status {}. Ignoring update til {}",
-                utbetalingsId,
+                utbetaling.loggId,
                 currentStatus,
                 newStatus
             )
@@ -123,7 +123,7 @@ class UtbetalingService(
         if (!currentStatus.shouldBeUpdatedTo(newStatus)) {
             logger.debug(
                 "Utbetaling {} er allerede i samme eller nyere status {}, {}. Ignoring update",
-                utbetalingsId,
+                utbetaling.loggId,
                 currentStatus,
                 newStatus
             )
@@ -135,7 +135,7 @@ class UtbetalingService(
                 UtbetalingStatus.UTBETALT -> sakEndringsloggService.logChange(
                     saksnummer = utbetaling.saksnummer,
                     endringsType = EndringsloggType.UTBETALING_OK,
-                    endring = "Kr ${utbetaling.belop} er satt til utbetaling til bruker"
+                    endring = "Utbetaling på ${utbetaling.belop} kr er registrert i utbetalingsystemet"
                 )
 
                 UtbetalingStatus.FEILET -> sakEndringsloggService.logChange(

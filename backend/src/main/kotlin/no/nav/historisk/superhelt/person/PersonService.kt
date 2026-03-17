@@ -29,18 +29,17 @@ class PersonService(
                 cache.put(cacheKey, result)
             }
     }
-    fun hentVerge(vergetrengende: Persondata): Persondata? {
-        val cacheKey = "${getAuthenticatedUser().navIdent}:verge:${vergetrengende.fnr.value}"
-        val verge = vergetrengende.verge
+    fun hentVerge(vergetrengendeFnr: FolkeregisterIdent): Persondata? {
+        val cacheKey = "${getAuthenticatedUser().navIdent}:verge:${vergetrengendeFnr.value}"
+        val vergetrengende = hentPerson(vergetrengendeFnr)
+        val verge = vergetrengende?.verge
 
         if (verge == null) {
-            logger.trace("Person ${vergetrengende.fnr.toMaskertPersonIdent()} har ingen verge")
             return null
         }
 
         verge.tjenesteomraade?.let { tjenesteområder ->
             if (tjenesteområder.isEmpty()) {
-                logger.debug("Verge for person ${vergetrengende.fnr.toMaskertPersonIdent()} har tom tjenesteområdeliste. Henter ikke vergeinfo.")
                 return null
             }
 
@@ -50,7 +49,6 @@ class PersonService(
             }
 
             if (!harGyldigTjenesteområde) {
-                logger.debug("Verge for person ${vergetrengende.fnr.toMaskertPersonIdent()} har ikke tjenesteområde NAV/HJELPEMIDLER. Henter ikke vergeinfo.")
                 return null
             }
         }

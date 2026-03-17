@@ -27,7 +27,7 @@ class PersonController(
         val tilgang = tilgangsmaskinService.sjekkKomplettTilgang(request.fnr)
         val maskertPersonident = request.fnr.toMaskertPersonIdent()
 
-        val vergeData = personService.hentVerge(vergetrengende = persondata)
+        val vergeData = personService.hentVerge(vergetrengendeFnr = request.fnr)
 
         return ResponseEntity.ok(persondata.toDto(maskertPersonident, tilgang, vergeData))
     }

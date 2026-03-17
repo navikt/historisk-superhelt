@@ -6,8 +6,10 @@ import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.Brev
+import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
+import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
@@ -16,9 +18,16 @@ import org.springframework.stereotype.Service
 @Service
 class DokarkivService(
     private val dokarkivClient: DokarkivClient,
-    private val dokdistClient: DokdistClient
+    private val dokdistClient: DokdistClient,
+    private val personService: PersonService
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private fun settMottakerFnrSomVergeEllerBruker(fnr: FolkeregisterIdent): FolkeregisterIdent {
+        val verge = personService.hentVerge(vergetrengendeFnr = fnr)
+        if (verge != null) logger.debug("Fant verge for bruker, setter verge som mottaker.")
+        return verge?.fnr ?: fnr
+    }
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun arkiver(sak: Sak, brev: Brev, pdf: ByteArray): JournalpostResponse {
@@ -27,11 +36,15 @@ class DokarkivService(
             tittel = brev.tittel!!,
             journalpostType = JournalpostType.UTGAAENDE,
             tema = EksternFellesKodeverkTema.HEL,
-            avsenderMottaker = AvsenderMottaker(
-                // TODO verge eller samhandler
-                id = sak.fnr.value,
-                idType = AvsenderMottakerIdType.FNR,
-            ),
+            avsenderMottaker = when (brev.mottakerType) {
+                BrevMottaker.BRUKER ->
+                    AvsenderMottaker(
+                        id = settMottakerFnrSomVergeEllerBruker(sak.fnr).value,
+                        idType = AvsenderMottakerIdType.FNR,
+                    )
+
+                BrevMottaker.SAMHANDLER -> TODO("Send til samhandler")
+            },
             eksternReferanseId = brev.uuid.toString(),
             dokumenter = listOf(
                 Dokument(
@@ -80,6 +93,7 @@ class DokarkivService(
         )
 
     }
+
     @PreAuthorize("hasAuthority('WRITE')")
     fun journalførIArkivet(
         journalPostId: EksternJournalpostId,
@@ -112,6 +126,4 @@ class DokarkivService(
         dokarkivClient.ferdigstill(journalPostId, journalfoerendeEnhet = journalfoerendeEnhet.value)
         logger.info("Journalført og ferdigstilt journalpost $journalPostId på fagsak $fagsaksnummer")
     }
-
-
 }

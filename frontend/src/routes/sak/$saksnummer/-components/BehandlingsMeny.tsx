@@ -1,60 +1,89 @@
-import type {Sak} from "@generated";
-import {ChevronDownIcon, EnvelopeClosedIcon, GavelIcon, PadlockUnlockedIcon, TrashIcon} from "@navikt/aksel-icons";
-import {ActionMenu, Button} from "@navikt/ds-react";
-import {Link as RouterLink} from "@tanstack/react-router";
-import type {RettighetType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import type { Sak } from "@generated";
+import {
+    ArrowUndoIcon,
+    ChevronDownIcon,
+    EnvelopeClosedIcon,
+    GavelIcon,
+    PadlockUnlockedIcon,
+    TrashIcon,
+} from "@navikt/aksel-icons";
+import { ActionMenu, Button } from "@navikt/ds-react";
+import { Link as RouterLink } from "@tanstack/react-router";
+import type { RettighetType } from "~/routes/sak/$saksnummer/-types/sak.types";
 
 interface SakMenyProps {
-    sak: Sak
+    sak: Sak;
 }
 
-export default function BehandlingsMeny({sak}: SakMenyProps) {
-
+export default function BehandlingsMeny({ sak }: SakMenyProps) {
     const hasRettighet = (rettighet: RettighetType) => {
-        return sak.rettigheter.includes(rettighet)
-    }
-    const notSaksbehandler = !hasRettighet("SAKSBEHANDLE")
+        return sak.rettigheter.includes(rettighet);
+    };
+    const notSaksbehandler = !hasRettighet("SAKSBEHANDLE");
 
-    return <ActionMenu>
-        <ActionMenu.Trigger>
-            <Button
-                variant="secondary"
-                icon={<ChevronDownIcon aria-hidden/>}
-                iconPosition="right"
-                size={"small"}
-            >Behandlingsmeny</Button>
-
-        </ActionMenu.Trigger>
-        <ActionMenu.Content>
-            <ActionMenu.Group label={`Sak ${sak.saksnummer}`}>
-                <ActionMenu.Item
-                    as={RouterLink}
-                    disabled={!hasRettighet("FEILREGISTERE")}
-                    to={`/sak/${sak.saksnummer}/feilregistrer`}
-                    icon={<TrashIcon aria-hidden/>}>Feilregistrer sak</ActionMenu.Item>
-                <ActionMenu.Item
-                    as={RouterLink}
-                    to={`/sak/${sak.saksnummer}/henlegg`}
-                    disabled={!hasRettighet("HENLEGGE")}
-                    icon={<GavelIcon aria-hidden/>}>Henlegg sak</ActionMenu.Item>
-                <ActionMenu.Item
-                    as={RouterLink}
-                    to={`/sak/${sak.saksnummer}/gjenapne`}
-                    disabled={!hasRettighet("GJENAPNE")}
-                    icon={<PadlockUnlockedIcon aria-hidden/>}>Gjenåpne sak</ActionMenu.Item>
-            </ActionMenu.Group>
-            <ActionMenu.Group label={"Brev"}>
-                <ActionMenu.Item
-                    as={RouterLink}
-                    disabled={notSaksbehandler}
-                    to={`/sak/${sak.saksnummer}/fritekstbrev`}
-                    icon={<EnvelopeClosedIcon aria-hidden/>}>Fritekstbrev til bruker </ActionMenu.Item>
-                <ActionMenu.Item
-                    as={RouterLink}
-                    disabled={true}
-                    to={`/sak/${sak.saksnummer}`}
-                    icon={<EnvelopeClosedIcon aria-hidden/>}>Fritekstbrev til samhandler </ActionMenu.Item>
-            </ActionMenu.Group>
-        </ActionMenu.Content>
-    </ActionMenu>
+    return (
+        <ActionMenu>
+            <ActionMenu.Trigger>
+                <Button variant="secondary" icon={<ChevronDownIcon aria-hidden />} iconPosition="right" size={"small"}>
+                    Behandlingsmeny
+                </Button>
+            </ActionMenu.Trigger>
+            <ActionMenu.Content>
+                <ActionMenu.Group label={`Sak ${sak.saksnummer}`}>
+                    {hasRettighet("TILBAKESTILL_GJENAPNING") ? (
+                        <ActionMenu.Item
+                            as={RouterLink}
+                            to={`/sak/${sak.saksnummer}/tilbakestill`}
+                            icon={<ArrowUndoIcon aria-hidden />}
+                        >
+                            Angre gjenåpning
+                        </ActionMenu.Item>
+                    ) : (
+                        <ActionMenu.Item
+                            as={RouterLink}
+                            disabled={!hasRettighet("FEILREGISTERE")}
+                            to={`/sak/${sak.saksnummer}/feilregistrer`}
+                            icon={<TrashIcon aria-hidden />}
+                        >
+                            Feilregistrer sak
+                        </ActionMenu.Item>
+                    )}
+                    <ActionMenu.Item
+                        as={RouterLink}
+                        to={`/sak/${sak.saksnummer}/henlegg`}
+                        disabled={!hasRettighet("HENLEGGE")}
+                        icon={<GavelIcon aria-hidden />}
+                    >
+                        Henlegg sak
+                    </ActionMenu.Item>
+                    <ActionMenu.Item
+                        as={RouterLink}
+                        to={`/sak/${sak.saksnummer}/gjenapne`}
+                        disabled={!hasRettighet("GJENAPNE")}
+                        icon={<PadlockUnlockedIcon aria-hidden />}
+                    >
+                        Gjenåpne sak
+                    </ActionMenu.Item>
+                </ActionMenu.Group>
+                <ActionMenu.Group label={"Brev"}>
+                    <ActionMenu.Item
+                        as={RouterLink}
+                        disabled={notSaksbehandler}
+                        to={`/sak/${sak.saksnummer}/fritekstbrev`}
+                        icon={<EnvelopeClosedIcon aria-hidden />}
+                    >
+                        Fritekstbrev til bruker{" "}
+                    </ActionMenu.Item>
+                    <ActionMenu.Item
+                        as={RouterLink}
+                        disabled={true}
+                        to={`/sak/${sak.saksnummer}`}
+                        icon={<EnvelopeClosedIcon aria-hidden />}
+                    >
+                        Fritekstbrev til samhandler{" "}
+                    </ActionMenu.Item>
+                </ActionMenu.Group>
+            </ActionMenu.Content>
+        </ActionMenu>
+    );
 }
