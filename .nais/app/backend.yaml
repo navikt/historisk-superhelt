@@ -76,6 +76,8 @@ spec:
         - application: populasjonstilgangskontroll
           namespace: tilgangsmaskin
         - application: historisk-pdfgen
+        - application: entra-proxy
+          namespace: sikkerhetstjenesten
       external:
         - host: "pdl-api.{{env}}-fss-pub.nais.io"
         - host: "oppgave.{{env}}-fss-pub.nais.io"
@@ -120,6 +122,10 @@ spec:
       value: "https://oppgave.{{env}}-fss-pub.nais.io"
     - name: APP_OPPGAVE_AUDIENCE
       value: "api://{{env}}-fss.oppgavehandtering.oppgave/.default"
+    - name: APP_ENTRA_PROXY_URL
+      value: "http://entra-proxy.sikkerhetstjenesten"
+    - name: APP_ENTRA_PROXY_AUDIENCE
+      value: "api://{{env}}-gcp.sikkerhetstjenesten.entra-proxy/.default"
 
 
 

@@ -38,6 +38,9 @@ app:
   oppgave:
     url: http://oppgave-junit.mocked
     audience: api://mock.oppgave/.default
+  entra-proxy:
+    url: http://entra-proxy-junit.mocked
+    audience: api://mock.entra-proxy/.default
 
 spring:
   main:
