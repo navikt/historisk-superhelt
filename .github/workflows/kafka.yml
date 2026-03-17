@@ -2,11 +2,11 @@ name: Create or update Kafka topics
 
 on:
   push:
-    #    branches:
-    #      - main
+    branches:
+      - main
     paths:
-      - '.nais/app/topics.yaml'
-      - '.github/workflows/kafka.yml'
+      - ".nais/app/topics.yaml"
+      - ".github/workflows/kafka.yml"
 
 jobs:
   create-kafka-topics-dev:
@@ -22,3 +22,17 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: .nais/app/topics.yaml
           VARS: .nais/dev.json
+
+  create-kafka-topics-prod:
+    permissions:
+      contents: read
+      id-token: write
+    name: Create or update Kafka topics in prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/app/topics.yaml
+          VARS: .nais/prod.json

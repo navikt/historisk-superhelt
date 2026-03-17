@@ -1,6 +1,6 @@
 root = true
 
-[*]
+[*.kt]
 # Basic formatting
 indent_style = space
 indent_size = 4
