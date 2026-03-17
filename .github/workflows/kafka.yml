@@ -17,13 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: nais/deploy/actions/deploy@v2
+      - uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/app/topics.yaml
           VARS: .nais/dev.json
 
   create-kafka-topics-prod:
+    needs: create-kafka-topics-dev
     permissions:
       contents: read
       id-token: write
@@ -31,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: nais/deploy/actions/deploy@v2
+      - uses: nais/deploy/actions/deploy@33c53f5b87d0746093a7a7ab4b9fa853e0e53bdc #v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: .nais/app/topics.yaml
