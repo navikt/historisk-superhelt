@@ -11,8 +11,11 @@ import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.method
 import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import kotlin.jvm.java
 
 class EntraProxyClientTest {
 
@@ -74,7 +77,7 @@ class EntraProxyClientTest {
             .andRespond(withStatus(HttpStatus.UNAUTHORIZED))
 
         assertThatThrownBy { client.hentEnheter() }
-            .isInstanceOf(Exception::class.java)
+            .isInstanceOf(HttpClientErrorException::class.java)
     }
 
     @Test
@@ -84,6 +87,6 @@ class EntraProxyClientTest {
             .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR))
 
         assertThatThrownBy { client.hentEnheter() }
-            .isInstanceOf(Exception::class.java)
+            .isInstanceOf(HttpServerErrorException::class.java)
     }
 }
