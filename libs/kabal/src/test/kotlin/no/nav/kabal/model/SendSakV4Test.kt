@@ -38,7 +38,7 @@ class SendSakV4RequestTest {
         val journalposter = listOf(
             TilknyttetJournalpost(JournalpostType.BRUKERS_KLAGE, "jp-123")
         )
-        val hjemler = listOf("FVL_11", "FVL_12")
+        val hjemler = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12)
         val frist = LocalDate.of(2026, 6, 1)
 
         // Act
@@ -150,7 +150,7 @@ class SendSakV4RequestTest {
     @Test
     fun `SendSakV4Request should support multiple hjemler`() {
         // Arrange
-        val hjemler = listOf("FVL_11", "FVL_12", "FVL_14", "FTRL_2_1")
+        val hjemler = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12, Hjemmel.FVL_14, Hjemmel.FTRL_10_3)
 
         // Act
         val request = SendSakV4Request(

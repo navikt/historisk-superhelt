@@ -12,7 +12,7 @@ object KabalTestData {
         fagsakId: String = "123456",
         fagsystem: String = "K9",
         kommentar: String? = null,
-        hjemler: List<String> = emptyList()
+        hjemler: List<Hjemmel> = emptyList()
     ): SendSakV4Request {
         return SendSakV4Request(
             type = type,
@@ -63,7 +63,7 @@ object KabalTestData {
 
     fun createSendSakV4RequestWithAllFields(
         type: SakType = SakType.KLAGE,
-        hjemler: List<String> = listOf("FVL_11", "FVL_12"),
+        hjemler: List<Hjemmel> = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12),
         ytelse: String = "OMS_OMP"
     ): SendSakV4Request {
         return SendSakV4Request(
