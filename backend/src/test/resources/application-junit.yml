@@ -3,6 +3,9 @@ AZURE_APP_CLIENT_ID: mocked
 #Kafka opplegg med testcontainers
 KAFKA_BROKERS: mocked:9092
 
+NAIS_APP_IMAGE: latest
+NAIS_CLUSTER_NAME: junit-dev
+
 nais:
   token:
     endpoint: http://token-junit-mocked
