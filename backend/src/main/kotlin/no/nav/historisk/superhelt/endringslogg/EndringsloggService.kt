@@ -6,6 +6,7 @@ import no.nav.historisk.superhelt.endringslogg.db.EndringsloggJpaEntity
 import no.nav.historisk.superhelt.endringslogg.db.EndringsloggJpaRepository
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.statistikk.StatistikkService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +15,8 @@ import java.time.Instant
 @Service
 class EndringsloggService(
     private val endringsloggJpaRepository: EndringsloggJpaRepository,
-    private val sakRepository: SakRepository
+    private val sakRepository: SakRepository,
+    private val statistikkService: StatistikkService
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -38,6 +40,7 @@ class EndringsloggService(
                 tidspunkt = tidspunkt
             )
         )
+        statistikkService.handleEvent(endringsType, tidspunkt, sakEntity.toDomain())
     }
 
 

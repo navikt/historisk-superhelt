@@ -41,6 +41,11 @@
             <artifactId>pdl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.historisk</groupId>
+            <artifactId>statistikk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
