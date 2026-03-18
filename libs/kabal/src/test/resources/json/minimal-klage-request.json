@@ -1,0 +1,20 @@
+{
+  "type": "KLAGE",
+  "sakenGjelder": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "12345678901"
+    }
+  },
+  "klager": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "12345678901"
+    }
+  },
+  "fagsak": {
+    "fagsakId": "123456",
+    "fagsystem": "K9"
+  }
+}
+
