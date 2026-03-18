@@ -19,7 +19,7 @@ export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
     const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE");
     const { data: brev } = useQuery({
         ...getOrCreateBrevOptions(saksnummer, "FRITEKSTBREV", "BRUKER"),
-        enabled: hasSaksbehandleRettighet,
+        enabled: open && hasSaksbehandleRettighet,
     });
     const invalidateSakQuery = useInvalidateSakQuery();
 

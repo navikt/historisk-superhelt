@@ -21,7 +21,7 @@ export function Henlegg({ open, onOpenChange }: HenleggProps) {
     const hasPermission = sak.rettigheter.includes("HENLEGGE");
     const { data: brev } = useQuery({
         ...getOrCreateBrevOptions(saksnummer, "HENLEGGESEBREV", "BRUKER"),
-        enabled: hasPermission,
+        enabled: open && hasPermission,
     });
     const invalidateSakQuery = useInvalidateSakQuery();
     const [aarsak, setAarsak] = useState("");
