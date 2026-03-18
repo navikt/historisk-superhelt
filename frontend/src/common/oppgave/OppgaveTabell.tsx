@@ -5,6 +5,8 @@ import {useState} from "react";
 import {isoTilLokal} from "~/common/dato.utils";
 import {OppgaveDetaljer} from "~/common/oppgave/OppgaveDetaljer";
 import {OppgaveActionButton} from "./OppgaveActionButton";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
@@ -20,6 +22,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         orderBy: "fristFerdigstillelse",
         direction: "ascending",
     });
+    const { data: saksbehandler } = useSuspenseQuery(getUserInfoOptions());
     const [page, setPage] = useState(1);
     const rowsPerPage = 15;
 
@@ -57,20 +60,20 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         })
         .slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
-
     const renderSakLink = (saksnummer?: string) => {
         if (!saksnummer) {
-           return
+            return null;
         }
-        return <Link as={RouterLink} to={`/sak/${saksnummer}`}>{saksnummer}</Link>
-    }
+        return (
+            <Link as={RouterLink} to={`/sak/${saksnummer}`}>
+                {saksnummer}
+            </Link>
+        );
+    };
     return (
         <div>
             <VStack gap="space-16">
-                <Table
-                    sort={sort}
-                    onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}
-                >
+                <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}>
                     <Table.Header>
                         <Table.Row>
                             <Table.DataCell aria-label="Vis mer" />
@@ -78,12 +81,8 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                             <Table.ColumnHeader sortKey="type" sortable>
                                 Saksnummer
                             </Table.ColumnHeader>
-                            <Table.ColumnHeader >
-                                Type
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader>
-                                Sakstatus
-                            </Table.ColumnHeader>
+                            <Table.ColumnHeader>Type</Table.ColumnHeader>
+                            <Table.ColumnHeader>Sakstatus</Table.ColumnHeader>
                             <Table.ColumnHeader sortKey="fristFerdigstillelse" sortable>
                                 Frist
                             </Table.ColumnHeader>
@@ -105,11 +104,12 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                         {sortedData.map((oppgave) => (
                             <Table.ExpandableRow
                                 key={`${oppgave.oppgaveId}`}
-                                content={<OppgaveDetaljer oppgave={oppgave}/>}
+                                content={<OppgaveDetaljer oppgave={oppgave} />}
                             >
-
                                 <Table.DataCell>{renderSakLink(oppgave.saksnummer)}</Table.DataCell>
-                                <Table.DataCell>{oppgave.oppgavetype} / {oppgave.stonadsType ?? oppgave.oppgaveGjelder} </Table.DataCell>
+                                <Table.DataCell>
+                                    {oppgave.oppgavetype} / {oppgave.stonadsType ?? oppgave.oppgaveGjelder}{" "}
+                                </Table.DataCell>
                                 <Table.DataCell>{oppgave.sakStatus}</Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
                                 {dineOppgaver && (
@@ -118,7 +118,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                             <Link
                                                 as={RouterLink}
                                                 to={`/person/${oppgave.maskertPersonIdent}`}
-                                                style={{textDecoration: "none"}}
+                                                style={{ textDecoration: "none" }}
                                             >
                                                 {oppgave.fnr}
                                             </Link>
@@ -129,7 +129,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                 )}
                                 {!dineOppgaver && <Table.DataCell>{oppgave.tilordnetRessurs ?? ""}</Table.DataCell>}
                                 <Table.DataCell>
-                                    <OppgaveActionButton oppgave={oppgave}/>
+                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident} />
                                 </Table.DataCell>
                             </Table.ExpandableRow>
                         ))}

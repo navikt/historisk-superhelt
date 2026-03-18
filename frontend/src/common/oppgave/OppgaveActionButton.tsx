@@ -1,16 +1,17 @@
 import type {OppgaveMedSak} from "@generated";
-import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 import {Button, HStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {FerdigstillOppgaveDialogButton} from "~/common/oppgave/FerdigstillOppgaveDialogButton";
 
-export function OppgaveActionButton(props: { oppgave: OppgaveMedSak }) {
-    const { data: saksbehandler } = useSuspenseQuery(getUserInfoOptions());
+interface Props {
+    oppgave: OppgaveMedSak;
+    saksbehandlerIdent: string;
+}
 
-    const oppgave = props.oppgave;
+export function OppgaveActionButton({ oppgave, saksbehandlerIdent }: Props) {
+
     const saksnummer = oppgave.saksnummer;
-    const tildeltOppgave = oppgave.tilordnetRessurs === saksbehandler.ident;
+    const tildeltOppgave = !!saksbehandlerIdent && oppgave.tilordnetRessurs === saksbehandlerIdent;
 
     const ukjentOppgave = () => {
         return <div />;
@@ -41,7 +42,7 @@ export function OppgaveActionButton(props: { oppgave: OppgaveMedSak }) {
             case "GOD_VED":
                 return actionButtonOrDisabled(`/sak/${saksnummer}/oppsummering`, "Attester");
             case "VUR":
-                return <FerdigstillOppgaveDialogButton oppgave={oppgave} />;
+                return <FerdigstillOppgaveDialogButton />;
         }
         return null;
     };

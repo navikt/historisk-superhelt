@@ -10,10 +10,10 @@ interface JournalforData {
     val bruker: FolkeregisterIdent
     val avsender: FolkeregisterIdent
     val dokumenter: List<JournalforDokument>
+}
 
-    fun getTittel(): String {
-        return dokumenter.firstOrNull()?.tittel ?: "Ukjent tittel"
-    }
+fun JournalforData.getTittel(): String {
+    return dokumenter.firstOrNull()?.tittel ?: "Ukjent tittel"
 }
 
 data class JournalforDokument(

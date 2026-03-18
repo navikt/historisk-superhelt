@@ -9,6 +9,7 @@ import no.nav.common.types.defaultEnhetsnummer
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.JournalforService
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
+import no.nav.historisk.superhelt.dokarkiv.getTittel
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -67,6 +68,7 @@ class DokarkivJournalforController(
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
 
         val sak = sakRepository.getSak(saksnummer)
+        // TODO Sjekke om det er åpen oppgave
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK,
             sak = sak,
@@ -80,7 +82,7 @@ class DokarkivJournalforController(
 
     @Operation(
         operationId = "journalforKnyttTilEksisterendeSak",
-        summary = "Journalfør og knytt til en eksisternde sak"
+        summary = "Journalfør og knytt til en eksisterende sak"
     )
     @PutMapping("{journalpostId}/journalfor/eksisterende")
     fun journalforKnyttTilEksisterendeSak(

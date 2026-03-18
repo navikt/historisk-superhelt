@@ -1,11 +1,7 @@
-import type {OppgaveMedSak} from "@generated";
 import {Button, Dialog} from "@navikt/ds-react";
 
-interface Props {
-    oppgave: OppgaveMedSak;
-}
 
-export function FerdigstillOppgaveDialogButton(props: { oppgave: OppgaveMedSak }) {
+export function FerdigstillOppgaveDialogButton() {
     return <Dialog>
         <Dialog.Trigger>
             <Button variant="tertiary" size="xsmall">Ferdigstill oppgave</Button>
