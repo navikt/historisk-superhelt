@@ -94,11 +94,11 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                 </ActionMenu.Content>
             </ActionMenu>
 
-            <Feilregistrer open={openFeilregistrer} onOpenChange={setOpenFeilregistrer} />
-            <Henlegg open={openHenlegg} onOpenChange={setOpenHenlegg} />
-            <Gjenapne open={openGjenapne} onOpenChange={setOpenGjenapne} />
-            <Tilbakestill open={openTilbakestill} onOpenChange={setOpenTilbakestill} />
-            <FritekstBrev open={openFritekstbrev} onOpenChange={setOpenFritekstbrev} />
+            {openFeilregistrer && <Feilregistrer open={openFeilregistrer} onOpenChange={setOpenFeilregistrer} />}
+            {openHenlegg && <Henlegg open={openHenlegg} onOpenChange={setOpenHenlegg} />}
+            {openGjenapne && <Gjenapne open={openGjenapne} onOpenChange={setOpenGjenapne} />}
+            {openTilbakestill && <Tilbakestill open={openTilbakestill} onOpenChange={setOpenTilbakestill} />}
+            {openFritekstbrev && <FritekstBrev open={openFritekstbrev} onOpenChange={setOpenFritekstbrev} />}
         </>
     );
 }
