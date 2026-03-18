@@ -4,6 +4,7 @@ import no.nav.kabal.model.SendSakV4Request
 import no.nav.kabal.model.SendSakV4Response
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClientResponseException
 import org.springframework.web.client.body
 
 /**
@@ -19,12 +20,17 @@ class KabalClient(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun sendSakV4(request: SendSakV4Request): SendSakV4Response {
-        return restClient.post()
-            .uri("/api/oversendelse/v4/sak")
-            .body(request)
-            .retrieve()
-            .body<SendSakV4Response>()
-            ?: throw KabalClientException("Tom respons fra Kabal API ved sending av sak")
+        return try {
+            restClient.post()
+                .uri("/api/oversendelse/v4/sak")
+                .body(request)
+                .retrieve()
+                .body<SendSakV4Response>()
+                ?: throw KabalClientException("Tom respons fra Kabal API ved sending av sak")
+        } catch (e: RestClientResponseException) {
+            logger.error("Feil fra Kabal API: HTTP ${e.statusCode} – ${e.responseBodyAsString}")
+            throw KabalClientException("Feil fra Kabal API: HTTP ${e.statusCode}", e)
+        }
     }
 }
 

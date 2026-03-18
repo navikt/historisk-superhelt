@@ -21,15 +21,15 @@ enum class Hjemmel(
     FTRL_10_8("FTRL_10_8", LovKilde.FOLKETRYGDLOVEN, "§ 10-8 Bortfall av rettigheter"),
 
     // Folketrygdloven – kapittel 21
-    FTRL_21_3("108", LovKilde.FOLKETRYGDLOVEN, "§ 21-3"),
+    FTRL_21_3("FTRL_21_3", LovKilde.FOLKETRYGDLOVEN, "§ 21-3"),
     FTRL_21_7("FTRL_21_7", LovKilde.FOLKETRYGDLOVEN, "§ 21-7"),
     FTRL_21_8("FTRL_21_8", LovKilde.FOLKETRYGDLOVEN, "§ 21-8"),
     FTRL_21_10("FTRL_21_10", LovKilde.FOLKETRYGDLOVEN, "§ 21-10"),
     FTRL_21_12("FTRL_21_12", LovKilde.FOLKETRYGDLOVEN, "§ 21-12"),
 
     // Folketrygdloven – kapittel 22
-    FTRL_22_12("1000.022.012", LovKilde.FOLKETRYGDLOVEN, "§ 22-12"),
-    FTRL_22_13("1000.022.013", LovKilde.FOLKETRYGDLOVEN, "§ 22-13"),
+    FTRL_22_12("FTRL_22_12", LovKilde.FOLKETRYGDLOVEN, "§ 22-12"),
+    FTRL_22_13("FTRL_22_13", LovKilde.FOLKETRYGDLOVEN, "§ 22-13"),
     FTRL_22_14("FTRL_22_14", LovKilde.FOLKETRYGDLOVEN, "§ 22-14"),
     FTRL_22_17("FTRL_22_17", LovKilde.FOLKETRYGDLOVEN, "§ 22-17"),
 
@@ -59,7 +59,7 @@ enum class Hjemmel(
     EOES_883_2004_33("EOES_883_2004_33", LovKilde.EØS_FORORDNING_883_2004, "art. 33"),
     EOES_883_2004_81("EOES_883_2004_81", LovKilde.EØS_FORORDNING_883_2004, "art. 81"),
 
-    // Gjennomfringsforordning 987/2009
+    // Gjennomføringsforordning 987/2009
     GJ_F_FORD_987_2009_11("GJ_F_FORD_987_2009_11", LovKilde.GJENNOMFØRINGSFORORDNING_987_2009, "art. 11"),
 
     // Nordisk konvensjon

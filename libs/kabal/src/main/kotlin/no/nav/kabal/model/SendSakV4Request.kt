@@ -15,11 +15,11 @@ data class SendSakV4Request(
     val hjemler: List<Hjemmel> = emptyList(),
     val forrigeBehandlendeEnhet: String? = null,
     val tilknyttedeJournalposter: List<TilknyttetJournalpost> = emptyList(),
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val brukersKlageMottattVedtaksinstans: LocalDate? = null,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val frist: LocalDate? = null,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val sakMottattKaTidspunkt: LocalDateTime? = null,
     val ytelse: String? = null,
     val kommentar: String? = null,

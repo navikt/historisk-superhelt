@@ -1,6 +1,6 @@
 # Klientbibliotek mot Kabal API
 
-Klient for å oversende klagesaker til Kabal (Klage og Anke Behandling Av ALler saker).
+Klient for å oversende klagesaker til Kabal (Klage og Anke Behandling Av Alle saker).
 
 ## Om Kabal
 
