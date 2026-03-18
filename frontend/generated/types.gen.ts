@@ -180,6 +180,8 @@ export type User = {
     name: string;
     ident: string;
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT' | 'DRIFT'>;
+    enhet: string;
+    tema: Array<string>;
 };
 
 export type Vedtak = {

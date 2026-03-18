@@ -5,6 +5,7 @@ import { BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spac
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { temaBeskrivelse } from "~/common/tema.utils";
 
 export function Header() {
     const [search, setSearch] = useState<string>();
@@ -74,7 +75,9 @@ export function Header() {
                         <BodyShort as="dt" size="small">
                             {user?.name}
                         </BodyShort>
-                        <Detail as="dd">Roller: {user?.roles}</Detail>
+                        <Detail as="dd">Roller: {user?.roles.join(", ")}</Detail>
+                        <Detail as="dd">Enhet: {user?.enhet}</Detail>
+                        <Detail as="dd">Tema: {user?.tema.map(temaBeskrivelse).join(", ")}</Detail>
                     </dl>
                     <Dropdown.Menu.Divider />
                     <Dropdown.Menu.List>
