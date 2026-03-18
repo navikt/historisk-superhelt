@@ -2,7 +2,7 @@ package no.nav.kabal.model
 
 /**
  * Lovkilder brukt i Hjemmel-enum.
- * Sourced from:
+ * Hentet fra:
  * https://github.com/navikt/klage-kodeverk/blob/main/src/main/kotlin/no/nav/klage/kodeverk/hjemmel/LovKilde.kt
  */
 enum class LovKilde(val navn: String, val beskrivelse: String) {

@@ -35,11 +35,11 @@ class KabalClientTest {
         kabalClient = KabalClient(restClient)
     }
 
-    // ==================== sendSakV4 tests ====================
+    // ==================== sendSakV4-tester ====================
 
     @Test
     fun `sendSakV4 should send sak and return response`() {
-        // Arrange
+        // Forbered
         val request = createValidSendSakV4Request()
         val expectedResponse = SendSakV4Response(
             behandlingId = "behandling-123",
@@ -59,10 +59,10 @@ class KabalClientTest {
                     .body(objectMapper.writeValueAsString(expectedResponse))
             )
 
-        // Act
+        // Utfør
         val result = kabalClient.sendSakV4(request)
 
-        // Assert
+        // Verifiser
         mockServer.verify()
         assertThat(result.behandlingId).isEqualTo("behandling-123")
         assertThat(result.mottattDato).isEqualTo("2026-03-06T10:00:00")
@@ -72,7 +72,7 @@ class KabalClientTest {
 
     @Test
     fun `sendSakV4 should include all optional fields when provided`() {
-        // Arrange
+        // Forbered
         val request = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
@@ -121,10 +121,10 @@ class KabalClientTest {
                     .body(objectMapper.writeValueAsString(expectedResponse))
             )
 
-        // Act
+        // Utfør
         val result = kabalClient.sendSakV4(request)
 
-        // Assert
+        // Verifiser
         mockServer.verify()
         assertThat(result.behandlingId).isEqualTo("behandling-789")
     }
@@ -132,7 +132,7 @@ class KabalClientTest {
 
     @Test
     fun `sendSakV4 should handle VIRKSOMHET ident type`() {
-        // Arrange
+        // Forbered
         val request = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.VIRKSOMHET, "987654321")),
@@ -154,17 +154,17 @@ class KabalClientTest {
                     .body(objectMapper.writeValueAsString(expectedResponse))
             )
 
-        // Act
+        // Utfør
         val result = kabalClient.sendSakV4(request)
 
-        // Assert
+        // Verifiser
         mockServer.verify()
         assertThat(result.behandlingId).isEqualTo("virksomhet-behandling")
     }
 
     @Test
     fun `sendSakV4 should handle response with error messages`() {
-        // Arrange
+        // Forbered
         val request = createValidSendSakV4Request()
         val expectedResponse = SendSakV4Response(
             behandlingId = "behandling-error",
@@ -180,10 +180,10 @@ class KabalClientTest {
                     .body(objectMapper.writeValueAsString(expectedResponse))
             )
 
-        // Act
+        // Utfør
         val result = kabalClient.sendSakV4(request)
 
-        // Assert
+        // Verifiser
         mockServer.verify()
         assertThat(result.feilmeldinger).hasSize(2)
         assertThat(result.feilmeldinger).contains("Ugyldig hjemmel", "Manglende journalpost")
@@ -191,7 +191,7 @@ class KabalClientTest {
 
     @Test
     fun `sendSakV4 should throw exception when response is null`() {
-        // Arrange
+        // Forbered
         val request = createValidSendSakV4Request()
 
         mockServer.expect(requestTo("/api/oversendelse/v4/sak"))
@@ -202,7 +202,7 @@ class KabalClientTest {
                     .body("")
             )
 
-        // Act & Assert
+        // Utfør og verifiser
         assertThatThrownBy { kabalClient.sendSakV4(request) }
             .isInstanceOf(KabalClientException::class.java)
             .hasMessageContaining("Tom respons fra Kabal API")
@@ -210,7 +210,7 @@ class KabalClientTest {
 
     @Test
     fun `sendSakV4 should handle multiple journalposter`() {
-        // Arrange
+        // Forbered
         val journalposter = listOf(
             TilknyttetJournalpost(JournalpostType.BRUKERS_KLAGE, "jp-111"),
             TilknyttetJournalpost(JournalpostType.OPPRINNELIG_VEDTAK, "jp-222"),
@@ -240,15 +240,15 @@ class KabalClientTest {
                     .body(objectMapper.writeValueAsString(expectedResponse))
             )
 
-        // Act
+        // Utfør
         val result = kabalClient.sendSakV4(request)
 
-        // Assert
+        // Verifiser
         mockServer.verify()
         assertThat(result.behandlingId).isEqualTo("behandling-jp")
     }
 
-    // ==================== Helper methods ====================
+    // ==================== Hjelpemetoder ====================
 
     private fun createValidSendSakV4Request(): SendSakV4Request {
         return SendSakV4Request(
@@ -259,4 +259,3 @@ class KabalClientTest {
         )
     }
 }
-

@@ -9,7 +9,7 @@ class SendSakV4RequestTest {
 
     @Test
     fun `SendSakV4Request should have correct default values`() {
-        // Arrange & Act
+        // Forbered og utfør
         val request = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
@@ -17,7 +17,7 @@ class SendSakV4RequestTest {
             fagsak = Fagsak("123456", "K9")
         )
 
-        // Assert
+        // Verifiser
         assertThat(request.type).isEqualTo(SakType.KLAGE)
         assertThat(request.prosessfullmektig).isNull()
         assertThat(request.hjemler).isEmpty()
@@ -29,7 +29,7 @@ class SendSakV4RequestTest {
 
     @Test
     fun `SendSakV4Request should store all optional fields`() {
-        // Arrange
+        // Forbered
         val prosessfullmektig = Prosessfullmektig(
             id = Ident(IdentType.PERSON, "98765432101"),
             navn = "Advokat Hansen",
@@ -41,7 +41,7 @@ class SendSakV4RequestTest {
         val hjemler = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12)
         val frist = LocalDate.of(2026, 6, 1)
 
-        // Act
+        // Utfør
         val request = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
@@ -55,7 +55,7 @@ class SendSakV4RequestTest {
             hindreAutomatiskSvarbrev = true
         )
 
-        // Assert
+        // Verifiser
         assertThat(request.prosessfullmektig).isEqualTo(prosessfullmektig)
         assertThat(request.hjemler).isEqualTo(hjemler)
         assertThat(request.tilknyttedeJournalposter).isEqualTo(journalposter)
@@ -66,42 +66,42 @@ class SendSakV4RequestTest {
 
     @Test
     fun `Ident should support PERSON type`() {
-        // Arrange & Act
+        // Forbered og utfør
         val ident = Ident(IdentType.PERSON, "12345678901")
 
-        // Assert
+        // Verifiser
         assertThat(ident.type).isEqualTo(IdentType.PERSON)
         assertThat(ident.verdi).isEqualTo("12345678901")
     }
 
     @Test
     fun `Ident should support VIRKSOMHET type`() {
-        // Arrange & Act
+        // Forbered og utfør
         val ident = Ident(IdentType.VIRKSOMHET, "987654321")
 
-        // Assert
+        // Verifiser
         assertThat(ident.type).isEqualTo(IdentType.VIRKSOMHET)
         assertThat(ident.verdi).isEqualTo("987654321")
     }
 
     @Test
     fun `Prosessfullmektig should have optional adresse`() {
-        // Arrange & Act
+        // Forbered og utfør
         val prosessfullmektig = Prosessfullmektig(
             id = Ident(IdentType.PERSON, "98765432101"),
             navn = "Advokat Hansen"
         )
 
-        // Assert
+        // Verifiser
         assertThat(prosessfullmektig.adresse).isNull()
     }
 
     @Test
     fun `Adresse should have all fields optional except adresselinje1`() {
-        // Arrange & Act
+        // Forbered og utfør
         val adresse = Adresse(adresselinje1 = "Storgata 10")
 
-        // Assert
+        // Verifiser
         assertThat(adresse.adresselinje1).isEqualTo("Storgata 10")
         assertThat(adresse.adresselinje2).isNull()
         assertThat(adresse.adresselinje3).isNull()
@@ -112,7 +112,7 @@ class SendSakV4RequestTest {
 
     @Test
     fun `JournalpostType should have all valid types`() {
-        // Assert
+        // Verifiser
         assertThat(JournalpostType.values()).contains(
             JournalpostType.BRUKERS_SOEKNAD,
             JournalpostType.OPPRINNELIG_VEDTAK,
@@ -126,33 +126,33 @@ class SendSakV4RequestTest {
 
     @Test
     fun `TilknyttetJournalpost should store type and journalpostId`() {
-        // Arrange & Act
+        // Forbered og utfør
         val journalpost = TilknyttetJournalpost(
             type = JournalpostType.BRUKERS_KLAGE,
             journalpostId = "jp-123"
         )
 
-        // Assert
+        // Verifiser
         assertThat(journalpost.type).isEqualTo(JournalpostType.BRUKERS_KLAGE)
         assertThat(journalpost.journalpostId).isEqualTo("jp-123")
     }
 
     @Test
     fun `Fagsak should store fagsakId and fagsystem`() {
-        // Arrange & Act
+        // Forbered og utfør
         val fagsak = Fagsak(fagsakId = "123456", fagsystem = "K9")
 
-        // Assert
+        // Verifiser
         assertThat(fagsak.fagsakId).isEqualTo("123456")
         assertThat(fagsak.fagsystem).isEqualTo("K9")
     }
 
     @Test
     fun `SendSakV4Request should support multiple hjemler`() {
-        // Arrange
+        // Forbered
         val hjemler = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12, Hjemmel.FVL_14, Hjemmel.FTRL_10_3)
 
-        // Act
+        // Utfør
         val request = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
@@ -161,21 +161,21 @@ class SendSakV4RequestTest {
             hjemler = hjemler
         )
 
-        // Assert
+        // Verifiser
         assertThat(request.hjemler).hasSize(4)
         assertThat(request.hjemler).containsAll(hjemler)
     }
 
     @Test
     fun `SendSakV4Request should support multiple journalposter`() {
-        // Arrange
+        // Forbered
         val journalposter = listOf(
             TilknyttetJournalpost(JournalpostType.BRUKERS_KLAGE, "jp-111"),
             TilknyttetJournalpost(JournalpostType.OPPRINNELIG_VEDTAK, "jp-222"),
             TilknyttetJournalpost(JournalpostType.OVERSENDELSESBREV, "jp-333")
         )
 
-        // Act
+        // Utfør
         val request = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
@@ -184,19 +184,19 @@ class SendSakV4RequestTest {
             tilknyttedeJournalposter = journalposter
         )
 
-        // Assert
+        // Verifiser
         assertThat(request.tilknyttedeJournalposter).hasSize(3)
         assertThat(request.tilknyttedeJournalposter).containsAll(journalposter)
     }
 
     @Test
     fun `SendSakV4Request should support date and datetime fields`() {
-        // Arrange
+        // Forbered
         val mottattDato = LocalDate.of(2026, 3, 1)
         val frist = LocalDate.of(2026, 6, 1)
         val sakMottattTidspunkt = LocalDateTime.of(2026, 3, 5, 10, 30)
 
-        // Act
+        // Utfør
         val request = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
@@ -207,7 +207,7 @@ class SendSakV4RequestTest {
             sakMottattKaTidspunkt = sakMottattTidspunkt
         )
 
-        // Assert
+        // Verifiser
         assertThat(request.brukersKlageMottattVedtaksinstans).isEqualTo(mottattDato)
         assertThat(request.frist).isEqualTo(frist)
         assertThat(request.sakMottattKaTidspunkt).isEqualTo(sakMottattTidspunkt)
@@ -218,61 +218,61 @@ class SendSakV4ResponseTest {
 
     @Test
     fun `SendSakV4Response should store behandlingId and mottattDato`() {
-        // Arrange & Act
+        // Forbered og utfør
         val response = SendSakV4Response(
             behandlingId = "behandling-123",
             mottattDato = "2026-03-06T10:00:00"
         )
 
-        // Assert
+        // Verifiser
         assertThat(response.behandlingId).isEqualTo("behandling-123")
         assertThat(response.mottattDato).isEqualTo("2026-03-06T10:00:00")
     }
 
     @Test
     fun `SendSakV4Response should have optional journalpostId`() {
-        // Arrange & Act
+        // Forbered og utfør
         val response = SendSakV4Response(
             behandlingId = "behandling-123",
             mottattDato = "2026-03-06T10:00:00"
         )
 
-        // Assert
+        // Verifiser
         assertThat(response.journalpostId).isNull()
     }
 
     @Test
     fun `SendSakV4Response should have empty feilmeldinger by default`() {
-        // Arrange & Act
+        // Forbered og utfør
         val response = SendSakV4Response(
             behandlingId = "behandling-123",
             mottattDato = "2026-03-06T10:00:00"
         )
 
-        // Assert
+        // Verifiser
         assertThat(response.feilmeldinger).isEmpty()
     }
 
     @Test
     fun `SendSakV4Response should support feilmeldinger`() {
-        // Arrange
+        // Forbered
         val feilmeldinger = listOf("Ugyldig hjemmel", "Manglende journalpost")
 
-        // Act
+        // Utfør
         val response = SendSakV4Response(
             behandlingId = "behandling-error",
             mottattDato = "2026-03-06T10:00:00",
             feilmeldinger = feilmeldinger
         )
 
-        // Assert
+        // Verifiser
         assertThat(response.feilmeldinger).hasSize(2)
         assertThat(response.feilmeldinger).containsAll(feilmeldinger)
     }
 
     @Test
     fun `SendSakV4Response should support all fields`() {
-        // Arrange & Act
+        // Forbered og utfør
         val response = SendSakV4Response(
             behandlingId = "behandling-456",
             mottattDato = "2026-03-06T10:00:00",
@@ -280,11 +280,10 @@ class SendSakV4ResponseTest {
             feilmeldinger = listOf("Feil 1", "Feil 2")
         )
 
-        // Assert
+        // Verifiser
         assertThat(response.behandlingId).isEqualTo("behandling-456")
         assertThat(response.mottattDato).isEqualTo("2026-03-06T10:00:00")
         assertThat(response.journalpostId).isEqualTo("jp-789")
         assertThat(response.feilmeldinger).hasSize(2)
     }
 }
-

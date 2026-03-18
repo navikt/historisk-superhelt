@@ -3,8 +3,8 @@ package no.nav.kabal.model
 import com.fasterxml.jackson.annotation.JsonValue
 
 /**
- * Hjemler supported by Kabal for klage/anke-oversendelse.
- * IDs, lovKilde and spesifikasjon are sourced from:
+ * Hjemler støttet av Kabal for klage/anke-oversendelse.
+ * ID-er, lovKilde og spesifikasjon er hentet fra:
  * https://github.com/navikt/klage-kodeverk/blob/main/src/main/kotlin/no/nav/klage/kodeverk/hjemmel/Hjemmel.kt
  */
 enum class Hjemmel(
@@ -59,7 +59,7 @@ enum class Hjemmel(
     EOES_883_2004_33("EOES_883_2004_33", LovKilde.ES_FORORDNING_883_2004, "art. 33"),
     EOES_883_2004_81("EOES_883_2004_81", LovKilde.ES_FORORDNING_883_2004, "art. 81"),
 
-    // Gjennomføringsforordning 987/2009
+    // Gjennomfringsforordning 987/2009
     GJ_F_FORD_987_2009_11("GJ_F_FORD_987_2009_11", LovKilde.GJENNOMFRINGSFORORDNING_987_2009, "art. 11"),
 
     // Nordisk konvensjon
@@ -100,4 +100,3 @@ enum class Hjemmel(
                 ?: throw IllegalArgumentException("No Hjemmel with id '$id'")
     }
 }
-
