@@ -96,7 +96,8 @@ test.describe("Gjenåpne sak", () => {
 
 
         await test.step("Verifier at sak er gjenåpnet", async () => {
-            await expect(page.getByText("Gjenåpnet")).toBeVisible();
+            await expect(page.getByText("Sak er gjenåpnet")).toBeVisible();
+            await sak.selectMenuItem("Opplysninger");
             await sak.fyllInnOpplysninger({
                 beskrivelse: "Søknad om superkrefter v2",
                 belop: "11",

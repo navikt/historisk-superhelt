@@ -1,22 +1,20 @@
 import { tilbakestillGjenapningMutation } from "@generated/@tanstack/react-query.gen";
-import { ArrowUndoIcon } from "@navikt/aksel-icons";
-import { BodyLong, Button, Modal, Textarea, VStack } from "@navikt/ds-react";
+import { BodyLong, Button, Dialog, Textarea, VStack } from "@navikt/ds-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useParams } from "@tanstack/react-router";
+import { useState } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
 import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
-export const Route = createFileRoute("/sak/$saksnummer/tilbakestill")({
-    component: TilbakestillPage,
-});
+interface TilbakestillProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}
 
-function TilbakestillPage() {
-    const { saksnummer } = Route.useParams();
+export function Tilbakestill({ open, onOpenChange }: TilbakestillProps) {
+    const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
-    const ref = useRef<HTMLDialogElement>(null);
-    const navigate = useNavigate();
     const invalidateSakQuery = useInvalidateSakQuery();
     const [aarsak, setAarsak] = useState("");
     const [error, setError] = useState<string | undefined>();
@@ -25,15 +23,11 @@ function TilbakestillPage() {
         ...tilbakestillGjenapningMutation(),
         onSuccess: () => {
             invalidateSakQuery(saksnummer);
-            navigateBack();
+            onOpenChange(false);
         },
     });
 
     const hasPermission = sak.rettigheter.includes("TILBAKESTILL_GJENAPNING");
-
-    const navigateBack = () => {
-        navigate({ to: "/sak/$saksnummer/opplysninger", params: { saksnummer } });
-    };
 
     const validate = () => {
         if (aarsak.length < 5) {
@@ -49,39 +43,28 @@ function TilbakestillPage() {
     };
 
     const onTilbakestill = async () => {
-        if (!validate()) {
-            return;
-        }
+        if (!validate()) return;
         await tilbakestill.mutateAsync({
-            path: {
-                saksnummer: saksnummer,
-            },
-            body: {
-                aarsak: aarsak,
-            },
+            path: { saksnummer },
+            body: { aarsak },
         });
     };
 
     return (
-        <VStack gap={"space-32"}>
-            <Modal
-                ref={ref}
-                open={true}
-                onClose={navigateBack}
-                header={{
-                    icon: <ArrowUndoIcon aria-hidden />,
-                    heading: "Tilbakestill sak",
-                }}
-            >
-                <Modal.Body>
-                    <VStack gap={"space-32"}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <Dialog.Popup closeOnOutsideClick={false}>
+                <Dialog.Header>
+                    <Dialog.Title>Tilbakestill sak</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
+                    <VStack gap="space-32">
                         <BodyLong>
                             Saken ble gjenåpnet ved en feil. Ved å tilbakestille saken vil den bli gjenopprettet til
                             tilstanden den hadde ved siste ferdigstilling. Det er viktig at du oppgir en årsak til
                             hvorfor saken tilbakestilles, slik at det blir dokumentert i saken.
                         </BodyLong>
                         <Textarea
-                            label={"Årsak"}
+                            label="Årsak"
                             readOnly={!hasPermission}
                             value={aarsak}
                             onChange={(e) => setAarsak(e.target.value)}
@@ -89,16 +72,16 @@ function TilbakestillPage() {
                         />
                         <ErrorAlert error={tilbakestill.error} />
                     </VStack>
-                </Modal.Body>
-                <Modal.Footer>
+                </Dialog.Body>
+                <Dialog.Footer>
                     <Button type="button" variant="primary" disabled={!hasPermission} onClick={onTilbakestill}>
                         Tilbakestill
                     </Button>
-                    <Button type="button" variant="secondary" onClick={navigateBack}>
+                    <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
                         Angre
                     </Button>
-                </Modal.Footer>
-            </Modal>
-        </VStack>
+                </Dialog.Footer>
+            </Dialog.Popup>
+        </Dialog>
     );
 }
