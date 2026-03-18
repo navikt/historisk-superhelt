@@ -5,6 +5,8 @@ import no.nav.dokarkiv.DokarkivClient
 import no.nav.dokarkiv.JournalpostResponse
 import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
+import no.nav.entraproxy.Enhet
+import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
@@ -117,6 +119,16 @@ class ExternalMockTestConfig {
                 bestillingsId = "bestillingsId"
             )
 
+        }
+    }
+
+    @Primary
+    @Bean
+    fun entraProxyClientMock(): EntraProxyClient {
+        logger.warn("Bruker mock av EntraProxyClient")
+        return mock<EntraProxyClient>().stub {
+            on { hentEnheter() } doReturn listOf(Enhet(enhetnummer = "4488", navn = "NAV Vest-Viken"))
+            on { hentTema() } doReturn setOf("HJE", "ORT")
         }
     }
 }
