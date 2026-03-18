@@ -51,10 +51,7 @@ test.describe("Gjenåpne sak", () => {
         });
 
         await test.step("Velg sak til attestering", async () => {
-            const row = page.locator("tr", {
-                has: page.locator(`text=Til attestering`),
-            });
-            await row.getByRole("button", {name: "Åpne sak"}).click();
+            await page.getByRole("button", {name: "Attester"}).click();
         });
 
         await test.step("Velg oppsummering ", async () => {
