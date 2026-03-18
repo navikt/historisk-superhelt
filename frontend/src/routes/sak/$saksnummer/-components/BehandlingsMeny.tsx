@@ -8,82 +8,97 @@ import {
     TrashIcon,
 } from "@navikt/aksel-icons";
 import { ActionMenu, Button } from "@navikt/ds-react";
-import { Link as RouterLink } from "@tanstack/react-router";
+import { useState } from "react";
 import type { RettighetType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import { Feilregistrer } from "./Feilregistrer";
+import { FritekstBrev } from "./Fritekstbrev";
+import { Gjenapne } from "./Gjenapne";
+import { Henlegg } from "./Henlegg";
+import { Tilbakestill } from "./Tilbakestill";
 
 interface SakMenyProps {
     sak: Sak;
 }
 
 export default function BehandlingsMeny({ sak }: SakMenyProps) {
-    const hasRettighet = (rettighet: RettighetType) => {
-        return sak.rettigheter.includes(rettighet);
-    };
-    const notSaksbehandler = !hasRettighet("SAKSBEHANDLE");
+    const harRettighet = (rettighet: RettighetType) => sak.rettigheter.includes(rettighet);
+    const [openFeilregistrer, setOpenFeilregistrer] = useState(false);
+    const [openHenlegg, setOpenHenlegg] = useState(false);
+    const [openGjenapne, setOpenGjenapne] = useState(false);
+    const [openTilbakestill, setOpenTilbakestill] = useState(false);
+    const [openFritekstbrev, setOpenFritekstbrev] = useState(false);
 
     return (
-        <ActionMenu>
-            <ActionMenu.Trigger>
-                <Button variant="secondary" icon={<ChevronDownIcon aria-hidden />} iconPosition="right" size={"small"}>
-                    Behandlingsmeny
-                </Button>
-            </ActionMenu.Trigger>
-            <ActionMenu.Content>
-                <ActionMenu.Group label={`Sak ${sak.saksnummer}`}>
-                    {hasRettighet("TILBAKESTILL_GJENAPNING") ? (
+        <>
+            <ActionMenu>
+                <ActionMenu.Trigger>
+                    <Button
+                        variant="secondary"
+                        icon={<ChevronDownIcon aria-hidden />}
+                        iconPosition="right"
+                        size="medium"
+                    >
+                        Behandlingsmeny
+                    </Button>
+                </ActionMenu.Trigger>
+                <ActionMenu.Content>
+                    <ActionMenu.Group label={`Sak ${sak.saksnummer}`}>
+                        {harRettighet("TILBAKESTILL_GJENAPNING") ? (
+                            <ActionMenu.Item
+                                onSelect={() => setOpenTilbakestill(true)}
+                                icon={<ArrowUndoIcon aria-hidden />}
+                                aria-haspopup="dialog"
+                            >
+                                Angre gjenåpning
+                            </ActionMenu.Item>
+                        ) : (
+                            <ActionMenu.Item
+                                disabled={!harRettighet("FEILREGISTERE")}
+                                onSelect={() => setOpenFeilregistrer(true)}
+                                icon={<TrashIcon aria-hidden />}
+                                aria-haspopup="dialog"
+                            >
+                                Feilregistrer sak
+                            </ActionMenu.Item>
+                        )}
                         <ActionMenu.Item
-                            as={RouterLink}
-                            to={`/sak/${sak.saksnummer}/tilbakestill`}
-                            icon={<ArrowUndoIcon aria-hidden />}
+                            onSelect={() => setOpenHenlegg(true)}
+                            disabled={!harRettighet("HENLEGGE")}
+                            icon={<GavelIcon aria-hidden />}
+                            aria-haspopup="dialog"
                         >
-                            Angre gjenåpning
+                            Henlegg sak
                         </ActionMenu.Item>
-                    ) : (
                         <ActionMenu.Item
-                            as={RouterLink}
-                            disabled={!hasRettighet("FEILREGISTERE")}
-                            to={`/sak/${sak.saksnummer}/feilregistrer`}
-                            icon={<TrashIcon aria-hidden />}
+                            onSelect={() => setOpenGjenapne(true)}
+                            disabled={!harRettighet("GJENAPNE")}
+                            icon={<PadlockUnlockedIcon aria-hidden />}
+                            aria-haspopup="dialog"
                         >
-                            Feilregistrer sak
+                            Gjenåpne sak
                         </ActionMenu.Item>
-                    )}
-                    <ActionMenu.Item
-                        as={RouterLink}
-                        to={`/sak/${sak.saksnummer}/henlegg`}
-                        disabled={!hasRettighet("HENLEGGE")}
-                        icon={<GavelIcon aria-hidden />}
-                    >
-                        Henlegg sak
-                    </ActionMenu.Item>
-                    <ActionMenu.Item
-                        as={RouterLink}
-                        to={`/sak/${sak.saksnummer}/gjenapne`}
-                        disabled={!hasRettighet("GJENAPNE")}
-                        icon={<PadlockUnlockedIcon aria-hidden />}
-                    >
-                        Gjenåpne sak
-                    </ActionMenu.Item>
-                </ActionMenu.Group>
-                <ActionMenu.Group label={"Brev"}>
-                    <ActionMenu.Item
-                        as={RouterLink}
-                        disabled={notSaksbehandler}
-                        to={`/sak/${sak.saksnummer}/fritekstbrev`}
-                        icon={<EnvelopeClosedIcon aria-hidden />}
-                    >
-                        Fritekstbrev til bruker{" "}
-                    </ActionMenu.Item>
-                    <ActionMenu.Item
-                        as={RouterLink}
-                        disabled={true}
-                        to={`/sak/${sak.saksnummer}`}
-                        icon={<EnvelopeClosedIcon aria-hidden />}
-                    >
-                        Fritekstbrev til samhandler{" "}
-                    </ActionMenu.Item>
-                </ActionMenu.Group>
-            </ActionMenu.Content>
-        </ActionMenu>
+                    </ActionMenu.Group>
+                    <ActionMenu.Group label={"Brev"}>
+                        <ActionMenu.Item
+                            onSelect={() => setOpenFritekstbrev(true)}
+                            disabled={!harRettighet("SAKSBEHANDLE")}
+                            icon={<EnvelopeClosedIcon aria-hidden />}
+                            aria-haspopup="dialog"
+                        >
+                            Fritekstbrev til bruker{" "}
+                        </ActionMenu.Item>
+                        <ActionMenu.Item disabled={true} icon={<EnvelopeClosedIcon aria-hidden />}>
+                            Fritekstbrev til samhandler{" "}
+                        </ActionMenu.Item>
+                    </ActionMenu.Group>
+                </ActionMenu.Content>
+            </ActionMenu>
+
+            {openFeilregistrer && <Feilregistrer open={openFeilregistrer} onOpenChange={setOpenFeilregistrer} />}
+            {openHenlegg && <Henlegg open={openHenlegg} onOpenChange={setOpenHenlegg} />}
+            {openGjenapne && <Gjenapne open={openGjenapne} onOpenChange={setOpenGjenapne} />}
+            {openTilbakestill && <Tilbakestill open={openTilbakestill} onOpenChange={setOpenTilbakestill} />}
+            {openFritekstbrev && <FritekstBrev open={openFritekstbrev} onOpenChange={setOpenFritekstbrev} />}
+        </>
     );
 }

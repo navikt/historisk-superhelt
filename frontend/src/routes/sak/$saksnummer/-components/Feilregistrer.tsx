@@ -1,22 +1,20 @@
 import { feilregisterSakMutation } from "@generated/@tanstack/react-query.gen";
-import { TrashIcon } from "@navikt/aksel-icons";
-import { BodyLong, Button, Modal, Textarea, VStack } from "@navikt/ds-react";
+import { BodyLong, Button, Dialog, Textarea, VStack } from "@navikt/ds-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useParams } from "@tanstack/react-router";
+import { useState } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
 import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
-export const Route = createFileRoute("/sak/$saksnummer/feilregistrer")({
-    component: FeilregistrerPage,
-});
+interface FeilregistrerProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}
 
-function FeilregistrerPage() {
-    const { saksnummer } = Route.useParams();
+export function Feilregistrer({ open, onOpenChange }: FeilregistrerProps) {
+    const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
-    const ref = useRef<HTMLDialogElement>(null);
-    const navigate = useNavigate();
     const invalidateSakQuery = useInvalidateSakQuery();
     const [aarsak, setAarsak] = useState("");
     const [error, setError] = useState<string | undefined>();
@@ -25,15 +23,11 @@ function FeilregistrerPage() {
         ...feilregisterSakMutation(),
         onSuccess: () => {
             invalidateSakQuery(saksnummer);
-            navigateBack();
+            onOpenChange(false);
         },
     });
 
     const hasPermission = sak.rettigheter.includes("FEILREGISTERE");
-
-    const navigateBack = () => {
-        navigate({ to: "/sak/$saksnummer/oppsummering", params: { saksnummer } });
-    };
 
     const validate = () => {
         if (aarsak.length < 5) {
@@ -49,39 +43,27 @@ function FeilregistrerPage() {
     };
 
     const onFeilregistrer = async () => {
-        if (!validate()) {
-            return;
-        }
+        if (!validate()) return;
         await feilregister.mutateAsync({
-            path: {
-                saksnummer: saksnummer,
-            },
-            body: {
-                aarsak: aarsak,
-            },
+            path: { saksnummer },
+            body: { aarsak },
         });
     };
 
     return (
-        <VStack gap={"space-32"}>
-            <Modal
-                ref={ref}
-                open={true}
-                onClose={navigateBack}
-                header={{
-                    icon: <TrashIcon aria-hidden />,
-                    heading: "Feilregistrer sak",
-                }}
-            >
-                <Modal.Body>
-                    <VStack gap={"space-32"}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <Dialog.Popup closeOnOutsideClick={false}>
+                <Dialog.Header>
+                    <Dialog.Title>Feilregistrer sak</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
+                    <VStack gap="space-32">
                         <BodyLong>
                             Saken feilregisteres og lukkes. Det er ikke mulig å åpne saken igjen etterpå. Det blir laget
                             en oppgave i Gosys for saksbehandler om å rydde opp i saken.
                         </BodyLong>
-
                         <Textarea
-                            label={"Årsak"}
+                            label="Årsak"
                             readOnly={!hasPermission}
                             value={aarsak}
                             onChange={(e) => setAarsak(e.target.value)}
@@ -89,8 +71,8 @@ function FeilregistrerPage() {
                         />
                         <ErrorAlert error={feilregister.error} />
                     </VStack>
-                </Modal.Body>
-                <Modal.Footer>
+                </Dialog.Body>
+                <Dialog.Footer>
                     <Button
                         data-color="danger"
                         type="button"
@@ -100,11 +82,11 @@ function FeilregistrerPage() {
                     >
                         Feilregister
                     </Button>
-                    <Button type="button" variant="secondary" onClick={navigateBack}>
+                    <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
                         Angre
                     </Button>
-                </Modal.Footer>
-            </Modal>
-        </VStack>
+                </Dialog.Footer>
+            </Dialog.Popup>
+        </Dialog>
     );
 }

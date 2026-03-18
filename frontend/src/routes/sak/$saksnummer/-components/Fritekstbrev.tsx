@@ -1,65 +1,50 @@
 import { sendBrevMutation } from "@generated/@tanstack/react-query.gen";
-import { DocPencilIcon } from "@navikt/aksel-icons";
-import { ErrorSummary, Modal, VStack } from "@navikt/ds-react";
+import { Dialog, ErrorSummary } from "@navikt/ds-react";
+import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef } from "react";
+import { useParams } from "@tanstack/react-router";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
 import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
 import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 import { BrevEditor } from "~/routes/sak/$saksnummer/-components/BrevEditor";
 
-export const Route = createFileRoute("/sak/$saksnummer/fritekstbrev")({
-    component: FritekstBrevPage,
-});
+interface FritekstBrevProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}
 
-function FritekstBrevPage() {
-    const { saksnummer } = Route.useParams();
+export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
+    const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE");
     const { data: brev } = useQuery({
         ...getOrCreateBrevOptions(saksnummer, "FRITEKSTBREV", "BRUKER"),
-        enabled: hasSaksbehandleRettighet,
+        enabled: open && hasSaksbehandleRettighet,
     });
-    const ref = useRef<HTMLDialogElement>(null);
-    const navigate = useNavigate();
     const invalidateSakQuery = useInvalidateSakQuery();
 
     const sendBrev = useMutation({
         ...sendBrevMutation(),
         onSuccess: () => {
             invalidateSakQuery(saksnummer);
-            navigateBack();
+            onOpenChange(false);
         },
     });
 
-    const navigateBack = () => {
-        navigate({ to: "/sak/$saksnummer/oppsummering", params: { saksnummer } });
-    };
-
     const onBrevSend = async (brevId: string) => {
         await sendBrev.mutateAsync({
-            path: {
-                saksnummer: saksnummer,
-                brevId: brevId,
-            },
+            path: { saksnummer, brevId },
         });
     };
     const hasError = !!sendBrev.error;
 
     return (
-        <VStack gap={"space-32"}>
-            <Modal
-                ref={ref}
-                open={true}
-                onClose={() => navigateBack()}
-                width={"80%"}
-                header={{
-                    icon: <DocPencilIcon aria-hidden />,
-                    heading: "Skriv brev til bruker",
-                }}
-            >
-                <Modal.Body>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg }}>
+                <Dialog.Header>
+                    <Dialog.Title>Skriv brev til bruker</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
                     <BrevEditor
                         sak={sak}
                         brevId={brev?.uuid}
@@ -67,14 +52,13 @@ function FritekstBrevPage() {
                         onSuccess={onBrevSend}
                         readOnly={!hasSaksbehandleRettighet}
                     />
-
                     {hasError && (
                         <ErrorSummary>
                             {sendBrev.error && <ErrorSummary.Item>{sendBrev?.error?.detail}</ErrorSummary.Item>}
                         </ErrorSummary>
                     )}
-                </Modal.Body>
-            </Modal>
-        </VStack>
+                </Dialog.Body>
+            </Dialog.Popup>
+        </Dialog>
     );
 }

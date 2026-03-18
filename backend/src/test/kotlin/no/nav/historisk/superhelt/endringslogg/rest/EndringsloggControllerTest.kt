@@ -51,12 +51,12 @@ class EndringsloggControllerTest {
             .convertTo(Array<EndringsloggLinje>::class.java)
             .satisfies({
                 assertThat(it).hasSize(2)
-                assertThat(it[0].type).isEqualTo(OPPRETTET_SAK)
-                assertThat(it[0].endretAv.value).isEqualTo("s12345")
-                assertThat(it[0].endretTidspunkt).isNotNull
-                assertThat(it[0].endring).isNotNull
-                assertThat(it[1].type).isEqualTo(EndringsloggType.FERDIGSTILT_SAK)
-                assertThat(it[1].endretAv.value).isEqualTo("s12345")
+                assertThat(it.last().type).isEqualTo(OPPRETTET_SAK)
+                assertThat(it.last().endretAv.value).isEqualTo("s12345")
+                assertThat(it.last().endretTidspunkt).isNotNull
+                assertThat(it.last().endring).isNotNull
+                assertThat(it.first().type).isEqualTo(EndringsloggType.FERDIGSTILT_SAK)
+                assertThat(it.first().endretAv.value).isEqualTo("s12345")
             })
 
     }

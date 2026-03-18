@@ -1,0 +1,58 @@
+{
+  "type": "KLAGE",
+  "sakenGjelder": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "12345678901"
+    }
+  },
+  "klager": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "12345678901"
+    }
+  },
+  "prosessfullmektig": {
+    "id": {
+      "type": "PERSON",
+      "verdi": "98765432101"
+    },
+    "navn": "Advokat Hansen",
+    "adresse": {
+      "adresselinje1": "Storgata 10",
+      "adresselinje2": "Leilighet 5",
+      "postnummer": "0157",
+      "poststed": "Oslo",
+      "land": "Norge"
+    }
+  },
+  "fagsak": {
+    "fagsakId": "123456",
+    "fagsystem": "K9"
+  },
+  "kildeReferanse": "superhelt-sak-2026-0001",
+  "dvhReferanse": "dvh-ref-2026-0001",
+  "hjemler": [
+    "FVL_11",
+    "FVL_12"
+  ],
+  "forrigeBehandlendeEnhet": "NAV Oslo",
+  "tilknyttedeJournalposter": [
+    {
+      "type": "BRUKERS_KLAGE",
+      "journalpostId": "jp-001"
+    },
+    {
+      "type": "OPPRINNELIG_VEDTAK",
+      "journalpostId": "jp-002"
+    }
+  ],
+  "brukersKlageMottattVedtaksinstans": "2026-03-01",
+  "frist": "2026-06-01",
+  "sakMottattKaTidspunkt": "2026-03-05T10:00",
+  "ytelse": "OMS_OMP",
+  "kommentar": "Klager er uenig i vedtakets beregning av ytelsen",
+  "hindreAutomatiskSvarbrev": false,
+  "saksbehandlerIdentForTildeling": "Z123456"
+}
+

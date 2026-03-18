@@ -1,0 +1,44 @@
+{
+  "type": "KLAGE",
+  "sakenGjelder": {
+    "id": {
+      "type": "VIRKSOMHET",
+      "verdi": "987654321"
+    }
+  },
+  "klager": {
+    "id": {
+      "type": "VIRKSOMHET",
+      "verdi": "987654321"
+    }
+  },
+  "fagsak": {
+    "fagsakId": "789012",
+    "fagsystem": "K9"
+  },
+  "hjemler": [
+    "FVL_14",
+    "FVL_28"
+  ],
+  "tilknyttedeJournalposter": [
+    {
+      "type": "BRUKERS_KLAGE",
+      "journalpostId": "jp-org-001"
+    },
+    {
+      "type": "OVERSENDELSESBREV",
+      "journalpostId": "jp-org-002"
+    },
+    {
+      "type": "ANNEN_DOKUMENTASJON",
+      "journalpostId": "jp-org-003"
+    }
+  ],
+  "brukersKlageMottattVedtaksinstans": "2026-02-20",
+  "frist": "2026-05-20",
+  "sakMottattKaTidspunkt": "2026-03-01T09:00",
+  "ytelse": "BAR_BAR",
+  "kommentar": "Arbeidsgiver klager på barnetrygdvedtak",
+  "hindreAutomatiskSvarbrev": true
+}
+

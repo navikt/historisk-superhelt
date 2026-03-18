@@ -16,13 +16,8 @@ import { Route as SakSaksnummerIndexRouteImport } from './routes/sak/$saksnummer
 import { Route as PersonPersonidIndexRouteImport } from './routes/person/$personid/index'
 import { Route as OppgaveOppgaveidIndexRouteImport } from './routes/oppgave/$oppgaveid/index'
 import { Route as SakSaksnummerVedtaksbrevbrukerRouteImport } from './routes/sak/$saksnummer/vedtaksbrevbruker'
-import { Route as SakSaksnummerTilbakestillRouteImport } from './routes/sak/$saksnummer/tilbakestill'
 import { Route as SakSaksnummerOppsummeringRouteImport } from './routes/sak/$saksnummer/oppsummering'
 import { Route as SakSaksnummerOpplysningerRouteImport } from './routes/sak/$saksnummer/opplysninger'
-import { Route as SakSaksnummerHenleggRouteImport } from './routes/sak/$saksnummer/henlegg'
-import { Route as SakSaksnummerGjenapneRouteImport } from './routes/sak/$saksnummer/gjenapne'
-import { Route as SakSaksnummerFritekstbrevRouteImport } from './routes/sak/$saksnummer/fritekstbrev'
-import { Route as SakSaksnummerFeilregistrerRouteImport } from './routes/sak/$saksnummer/feilregistrer'
 import { Route as OppgaveOppgaveidJournalforRouteImport } from './routes/oppgave/$oppgaveid/journalfor'
 
 const IndexRoute = IndexRouteImport.update({
@@ -61,12 +56,6 @@ const SakSaksnummerVedtaksbrevbrukerRoute =
     path: '/vedtaksbrevbruker',
     getParentRoute: () => SakSaksnummerRouteRoute,
   } as any)
-const SakSaksnummerTilbakestillRoute =
-  SakSaksnummerTilbakestillRouteImport.update({
-    id: '/tilbakestill',
-    path: '/tilbakestill',
-    getParentRoute: () => SakSaksnummerRouteRoute,
-  } as any)
 const SakSaksnummerOppsummeringRoute =
   SakSaksnummerOppsummeringRouteImport.update({
     id: '/oppsummering',
@@ -77,28 +66,6 @@ const SakSaksnummerOpplysningerRoute =
   SakSaksnummerOpplysningerRouteImport.update({
     id: '/opplysninger',
     path: '/opplysninger',
-    getParentRoute: () => SakSaksnummerRouteRoute,
-  } as any)
-const SakSaksnummerHenleggRoute = SakSaksnummerHenleggRouteImport.update({
-  id: '/henlegg',
-  path: '/henlegg',
-  getParentRoute: () => SakSaksnummerRouteRoute,
-} as any)
-const SakSaksnummerGjenapneRoute = SakSaksnummerGjenapneRouteImport.update({
-  id: '/gjenapne',
-  path: '/gjenapne',
-  getParentRoute: () => SakSaksnummerRouteRoute,
-} as any)
-const SakSaksnummerFritekstbrevRoute =
-  SakSaksnummerFritekstbrevRouteImport.update({
-    id: '/fritekstbrev',
-    path: '/fritekstbrev',
-    getParentRoute: () => SakSaksnummerRouteRoute,
-  } as any)
-const SakSaksnummerFeilregistrerRoute =
-  SakSaksnummerFeilregistrerRouteImport.update({
-    id: '/feilregistrer',
-    path: '/feilregistrer',
     getParentRoute: () => SakSaksnummerRouteRoute,
   } as any)
 const OppgaveOppgaveidJournalforRoute =
@@ -113,13 +80,8 @@ export interface FileRoutesByFullPath {
   '/oppgave/$oppgaveid': typeof OppgaveOppgaveidRouteRouteWithChildren
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
-  '/sak/$saksnummer/feilregistrer': typeof SakSaksnummerFeilregistrerRoute
-  '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
-  '/sak/$saksnummer/gjenapne': typeof SakSaksnummerGjenapneRoute
-  '/sak/$saksnummer/henlegg': typeof SakSaksnummerHenleggRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
-  '/sak/$saksnummer/tilbakestill': typeof SakSaksnummerTilbakestillRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
   '/oppgave/$oppgaveid/': typeof OppgaveOppgaveidIndexRoute
   '/person/$personid/': typeof PersonPersonidIndexRoute
@@ -128,13 +90,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
-  '/sak/$saksnummer/feilregistrer': typeof SakSaksnummerFeilregistrerRoute
-  '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
-  '/sak/$saksnummer/gjenapne': typeof SakSaksnummerGjenapneRoute
-  '/sak/$saksnummer/henlegg': typeof SakSaksnummerHenleggRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
-  '/sak/$saksnummer/tilbakestill': typeof SakSaksnummerTilbakestillRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
   '/oppgave/$oppgaveid': typeof OppgaveOppgaveidIndexRoute
   '/person/$personid': typeof PersonPersonidIndexRoute
@@ -146,13 +103,8 @@ export interface FileRoutesById {
   '/oppgave/$oppgaveid': typeof OppgaveOppgaveidRouteRouteWithChildren
   '/sak/$saksnummer': typeof SakSaksnummerRouteRouteWithChildren
   '/oppgave/$oppgaveid/journalfor': typeof OppgaveOppgaveidJournalforRoute
-  '/sak/$saksnummer/feilregistrer': typeof SakSaksnummerFeilregistrerRoute
-  '/sak/$saksnummer/fritekstbrev': typeof SakSaksnummerFritekstbrevRoute
-  '/sak/$saksnummer/gjenapne': typeof SakSaksnummerGjenapneRoute
-  '/sak/$saksnummer/henlegg': typeof SakSaksnummerHenleggRoute
   '/sak/$saksnummer/opplysninger': typeof SakSaksnummerOpplysningerRoute
   '/sak/$saksnummer/oppsummering': typeof SakSaksnummerOppsummeringRoute
-  '/sak/$saksnummer/tilbakestill': typeof SakSaksnummerTilbakestillRoute
   '/sak/$saksnummer/vedtaksbrevbruker': typeof SakSaksnummerVedtaksbrevbrukerRoute
   '/oppgave/$oppgaveid/': typeof OppgaveOppgaveidIndexRoute
   '/person/$personid/': typeof PersonPersonidIndexRoute
@@ -165,13 +117,8 @@ export interface FileRouteTypes {
     | '/oppgave/$oppgaveid'
     | '/sak/$saksnummer'
     | '/oppgave/$oppgaveid/journalfor'
-    | '/sak/$saksnummer/feilregistrer'
-    | '/sak/$saksnummer/fritekstbrev'
-    | '/sak/$saksnummer/gjenapne'
-    | '/sak/$saksnummer/henlegg'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
-    | '/sak/$saksnummer/tilbakestill'
     | '/sak/$saksnummer/vedtaksbrevbruker'
     | '/oppgave/$oppgaveid/'
     | '/person/$personid/'
@@ -180,13 +127,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/oppgave/$oppgaveid/journalfor'
-    | '/sak/$saksnummer/feilregistrer'
-    | '/sak/$saksnummer/fritekstbrev'
-    | '/sak/$saksnummer/gjenapne'
-    | '/sak/$saksnummer/henlegg'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
-    | '/sak/$saksnummer/tilbakestill'
     | '/sak/$saksnummer/vedtaksbrevbruker'
     | '/oppgave/$oppgaveid'
     | '/person/$personid'
@@ -197,13 +139,8 @@ export interface FileRouteTypes {
     | '/oppgave/$oppgaveid'
     | '/sak/$saksnummer'
     | '/oppgave/$oppgaveid/journalfor'
-    | '/sak/$saksnummer/feilregistrer'
-    | '/sak/$saksnummer/fritekstbrev'
-    | '/sak/$saksnummer/gjenapne'
-    | '/sak/$saksnummer/henlegg'
     | '/sak/$saksnummer/opplysninger'
     | '/sak/$saksnummer/oppsummering'
-    | '/sak/$saksnummer/tilbakestill'
     | '/sak/$saksnummer/vedtaksbrevbruker'
     | '/oppgave/$oppgaveid/'
     | '/person/$personid/'
@@ -268,13 +205,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SakSaksnummerVedtaksbrevbrukerRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
-    '/sak/$saksnummer/tilbakestill': {
-      id: '/sak/$saksnummer/tilbakestill'
-      path: '/tilbakestill'
-      fullPath: '/sak/$saksnummer/tilbakestill'
-      preLoaderRoute: typeof SakSaksnummerTilbakestillRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
-    }
     '/sak/$saksnummer/oppsummering': {
       id: '/sak/$saksnummer/oppsummering'
       path: '/oppsummering'
@@ -287,34 +217,6 @@ declare module '@tanstack/react-router' {
       path: '/opplysninger'
       fullPath: '/sak/$saksnummer/opplysninger'
       preLoaderRoute: typeof SakSaksnummerOpplysningerRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
-    }
-    '/sak/$saksnummer/henlegg': {
-      id: '/sak/$saksnummer/henlegg'
-      path: '/henlegg'
-      fullPath: '/sak/$saksnummer/henlegg'
-      preLoaderRoute: typeof SakSaksnummerHenleggRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
-    }
-    '/sak/$saksnummer/gjenapne': {
-      id: '/sak/$saksnummer/gjenapne'
-      path: '/gjenapne'
-      fullPath: '/sak/$saksnummer/gjenapne'
-      preLoaderRoute: typeof SakSaksnummerGjenapneRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
-    }
-    '/sak/$saksnummer/fritekstbrev': {
-      id: '/sak/$saksnummer/fritekstbrev'
-      path: '/fritekstbrev'
-      fullPath: '/sak/$saksnummer/fritekstbrev'
-      preLoaderRoute: typeof SakSaksnummerFritekstbrevRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
-    }
-    '/sak/$saksnummer/feilregistrer': {
-      id: '/sak/$saksnummer/feilregistrer'
-      path: '/feilregistrer'
-      fullPath: '/sak/$saksnummer/feilregistrer'
-      preLoaderRoute: typeof SakSaksnummerFeilregistrerRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
     '/oppgave/$oppgaveid/journalfor': {
@@ -343,25 +245,15 @@ const OppgaveOppgaveidRouteRouteWithChildren =
   )
 
 interface SakSaksnummerRouteRouteChildren {
-  SakSaksnummerFeilregistrerRoute: typeof SakSaksnummerFeilregistrerRoute
-  SakSaksnummerFritekstbrevRoute: typeof SakSaksnummerFritekstbrevRoute
-  SakSaksnummerGjenapneRoute: typeof SakSaksnummerGjenapneRoute
-  SakSaksnummerHenleggRoute: typeof SakSaksnummerHenleggRoute
   SakSaksnummerOpplysningerRoute: typeof SakSaksnummerOpplysningerRoute
   SakSaksnummerOppsummeringRoute: typeof SakSaksnummerOppsummeringRoute
-  SakSaksnummerTilbakestillRoute: typeof SakSaksnummerTilbakestillRoute
   SakSaksnummerVedtaksbrevbrukerRoute: typeof SakSaksnummerVedtaksbrevbrukerRoute
   SakSaksnummerIndexRoute: typeof SakSaksnummerIndexRoute
 }
 
 const SakSaksnummerRouteRouteChildren: SakSaksnummerRouteRouteChildren = {
-  SakSaksnummerFeilregistrerRoute: SakSaksnummerFeilregistrerRoute,
-  SakSaksnummerFritekstbrevRoute: SakSaksnummerFritekstbrevRoute,
-  SakSaksnummerGjenapneRoute: SakSaksnummerGjenapneRoute,
-  SakSaksnummerHenleggRoute: SakSaksnummerHenleggRoute,
   SakSaksnummerOpplysningerRoute: SakSaksnummerOpplysningerRoute,
   SakSaksnummerOppsummeringRoute: SakSaksnummerOppsummeringRoute,
-  SakSaksnummerTilbakestillRoute: SakSaksnummerTilbakestillRoute,
   SakSaksnummerVedtaksbrevbrukerRoute: SakSaksnummerVedtaksbrevbrukerRoute,
   SakSaksnummerIndexRoute: SakSaksnummerIndexRoute,
 }
