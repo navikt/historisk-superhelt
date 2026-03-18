@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help all build test up down
+.PHONY: help all build test up down build-mocks rebuild dev-frontend dev-backend stop start rerun
 
 MVN ?= $(shell command -v mvnd >/dev/null 2>&1 && echo mvnd || echo mvn) # Bruk mvnd hvis tilgjengelig, ellers fallback til mvn
 
@@ -21,8 +21,14 @@ build: ## Bygger applikasjonen og Docker images
 test: ## Kjører tester
 	$(MVN) test -T 1C
 
+
 up: ## Starter alle avhengigheter
-	docker compose -f compose.yml up --wait -d
+	docker compose up --wait -d
 
 down: ## Stopper og fjerner alle avhengigheter
 	docker compose -f compose.yml down
+
+
+# build up
+rebuild: build  up  ## Rebuild applikasjonen og start alle avhengigheter
+	@echo "Rebuild fullført."
