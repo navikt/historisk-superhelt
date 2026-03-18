@@ -75,7 +75,7 @@ spec:
       rules:
         - application: populasjonstilgangskontroll
           namespace: tilgangsmaskin
-        - application: historisk-pdfgen
+        - application: superhelt-pdfgen
         - application: entra-proxy
           namespace: sikkerhetstjenesten
       external:
@@ -105,7 +105,7 @@ spec:
     - name: APP_TILGANGSMASKIN_AUDIENCE
       value: "api://{{env}}-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"
     - name: APP_PDFGEN_URL
-      value: "http://historisk-pdfgen"
+      value: "http://superhelt-pdfgen"
     - name: APP_DOKARKIV_URL
       value: "https://dokarkiv{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
     - name: APP_DOKARKIV_AUDIENCE
