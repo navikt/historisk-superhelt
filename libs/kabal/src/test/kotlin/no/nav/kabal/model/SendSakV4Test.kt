@@ -117,9 +117,11 @@ class SendSakV4RequestTest {
             JournalpostType.BRUKERS_SOEKNAD,
             JournalpostType.OPPRINNELIG_VEDTAK,
             JournalpostType.BRUKERS_KLAGE,
+            JournalpostType.BRUKERS_ANKE,
             JournalpostType.BRUKERS_OMGJOERINGSKRAV,
             JournalpostType.BRUKERS_BEGJAERING_OM_GJENOPPTAK,
             JournalpostType.OVERSENDELSESBREV,
+            JournalpostType.KLAGE_VEDTAK,
             JournalpostType.ANNET
         )
     }

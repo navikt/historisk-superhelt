@@ -31,11 +31,11 @@
       "journalpostId": "jp-complex-002"
     },
     {
-      "type": "BRUKERS_DOKUMENTASJON",
+      "type": "OVERSENDELSESBREV",
       "journalpostId": "jp-complex-003"
     },
     {
-      "type": "ANNEN_DOKUMENTASJON",
+      "type": "ANNET",
       "journalpostId": "jp-complex-004"
     }
   ],

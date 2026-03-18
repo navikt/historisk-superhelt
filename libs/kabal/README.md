@@ -40,25 +40,25 @@ fun kabalClient(
 ```kotlin
 val request = SendSakV4Request(
     type = SakType.KLAGE,
-    sakenGjelder = Part(
-        id = PartId(
-            type = PartIdType.PERSON,
+    sakenGjelder = SakenGjelder(
+        id = Ident(
+            type = IdentType.PERSON,
             verdi = "12345678910"
         )
     ),
-    klager = Part(
-        id = PartId(
-            type = PartIdType.PERSON,
+    klager = Klager(
+        id = Ident(
+            type = IdentType.PERSON,
             verdi = "12345678910"
         )
     ),
     fagsak = Fagsak(
         fagsakId = "SAK123",
-        fagsystem = Fagsystem.K9
+        fagsystem = "K9"
     ),
-    ytelse = Ytelse.OMS_OMP,
+    ytelse = "OMS_OMP",
     tilknyttedeJournalposter = listOf(
-        JournalpostReferanse(
+        TilknyttetJournalpost(
             type = JournalpostType.BRUKERS_KLAGE,
             journalpostId = "830498203"
         )
@@ -74,24 +74,28 @@ println("Sak opprettet i Kabal med ID: ${response.behandlingId}")
 ## Modeller
 
 ### SendSakV4Request
-Hovedmodellen for oversendelse av klagesaker til Kabal.
+Hovedmodellen for oversendelse av klage- og ankesaker til Kabal.
 
 **Obligatoriske felter:**
-- `type`: `KLAGE` (anke støttes ikke foreløpig)
-- `sakenGjelder`: Person eller virksomhet saken gjelder
-- `klager`: Person eller virksomhet som klager (kan være samme som sakenGjelder)
-- `fagsak`: Referanse til fagsaken
-- `ytelse`: Type ytelse (f.eks. OMS_OMP, OMS_OLP)
-- `tilknyttedeJournalposter`: Liste med relevante journalposter
-- `brukersKlageMottattVedtaksinstans`: Dato for når klagen ble mottatt
+- `type`: `KLAGE` eller `ANKE`
+- `sakenGjelder`: Person eller virksomhet saken gjelder (`SakenGjelder` med `Ident`)
+- `klager`: Person eller virksomhet som klager (`Klager` med `Ident`) – kan være samme som `sakenGjelder`
+- `fagsak`: Referanse til fagsaken (`Fagsak` med `fagsakId` og `fagsystem`)
 
 **Valgfrie felter:**
-- `prosessfullmektig`: Prosessfullmektig i saken
-- `hjemler`: Hjemler knyttet til klagen
+- `prosessfullmektig`: Prosessfullmektig i saken (`Prosessfullmektig` med valgfri `adresse`)
+- `hjemler`: Hjemler knyttet til saken (liste av `Hjemmel`-enum)
 - `kildeReferanse`: Teknisk id fra avsendersystem
-- `frist`: Overstyring av frist (standard: 12 uker fra sakMottattKaTidspunkt)
+- `dvhReferanse`: DVH-referanse for statistikk
+- `forrigeBehandlendeEnhet`: NAV-enhet som behandlet saken tidligere
+- `tilknyttedeJournalposter`: Liste med relevante journalposter (`TilknyttetJournalpost`)
+- `brukersKlageMottattVedtaksinstans`: Dato for når klagen ble mottatt (format: `yyyy-MM-dd`)
+- `frist`: Overstyring av frist (standard: 12 uker fra `sakMottattKaTidspunkt`)
+- `sakMottattKaTidspunkt`: Tidspunkt saken ble mottatt i KA (format: `yyyy-MM-dd'T'HH:mm`)
+- `ytelse`: Type ytelse (f.eks. `OMS_OMP`, `OMS_OLP`)
 - `kommentar`: Interne kommentarer
-- `hindreAutomatiskSvarbrev`: Hindre automatisk utsending av svarbrev
+- `hindreAutomatiskSvarbrev`: Hindre automatisk utsending av svarbrev (standard: `false`)
+- `saksbehandlerIdentForTildeling`: NAV-ident for direkte tildeling
 
 ### SendSakV4Response
 Respons fra Kabal etter vellykket oversendelse.
@@ -116,4 +120,3 @@ Se `KabalClientTest.kt` for eksempler på hvordan klienten testes med mock-data.
 
 Test-data ligger i `src/test/resources/json/`:
 - `klage-request.json`: Eksempel på gyldig klagesak-request
-

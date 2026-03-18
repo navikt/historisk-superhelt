@@ -28,7 +28,8 @@ data class SendSakV4Request(
 )
 
 enum class SakType {
-    KLAGE
+    KLAGE,
+    ANKE
 }
 
 data class Ident(
@@ -49,6 +50,9 @@ data class Klager(
     val id: Ident
 )
 
+/**
+ * Prosessfullmektig i saken. Brukes bl.a. til automatisk svarbrev.
+ */
 data class Prosessfullmektig(
     val id: Ident,
     val navn: String? = null,
@@ -61,6 +65,7 @@ data class Adresse(
     val adresselinje3: String? = null,
     val postnummer: String? = null,
     val poststed: String? = null,
+    /** ISO 3166-1 alpha-2 kode. F.eks. NO for Norge. */
     val land: String? = null
 )
 
@@ -78,9 +83,11 @@ enum class JournalpostType {
     BRUKERS_SOEKNAD,
     OPPRINNELIG_VEDTAK,
     BRUKERS_KLAGE,
+    BRUKERS_ANKE,
     BRUKERS_OMGJOERINGSKRAV,
     BRUKERS_BEGJAERING_OM_GJENOPPTAK,
     OVERSENDELSESBREV,
+    KLAGE_VEDTAK,
     ANNET
 }
 
