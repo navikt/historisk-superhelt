@@ -1,8 +1,14 @@
 package no.nav.historisk.superhelt.oppgave
 
 import net.datafaker.Faker
-import no.nav.common.types.*
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.Enhetsnummer
+import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
+import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.sak.SakStatus
+import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.oppgave.OppgaveGjelder
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.OppgaveDto
@@ -25,15 +31,15 @@ object OppgaveTestdata {
             versjon = 1,
             prioritet = OppgaveDto.Prioritet.NORM,
             aktivDato = LocalDate.now(),
-            bruker = OppgaveDto.Bruker(bruker, OppgaveDto.Bruker.BrukerType.PERSON),
-
-            )
+            bruker = OppgaveDto.Bruker(bruker, OppgaveDto.Bruker.BrukerType.PERSON)
+        )
 
     fun oppgaveMedSak() = oppgaveUtenSak().copy(
         saksnummer = Saksnummer(faker.number().positive().toLong()),
-        sakStatus = SakStatus.entries.random()
+        sakStatus = SakStatus.entries.random(),
+        stonadsType = StonadsType.entries.random(),
+        sakBeskrivelse = faker.ghostbusters().quote()
     )
-
 
     fun oppgaveUtenSak() = OppgaveMedSak(
         oppgaveId = EksternOppgaveId(faker.number().positive().toLong()),
@@ -50,6 +56,8 @@ object OppgaveTestdata {
         behandlesAvApplikasjon = null,
         opprettetAv = faker.bothify("?#####"),
         saksnummer = null,
-        sakStatus = null
+        sakStatus = null,
+        stonadsType = null,
+        sakBeskrivelse = null
     )
 }

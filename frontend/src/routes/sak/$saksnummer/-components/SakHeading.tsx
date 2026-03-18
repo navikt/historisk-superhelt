@@ -1,7 +1,7 @@
-import type { Sak } from "@generated";
-import { Detail, Heading, HStack, Tag, VStack } from "@navikt/ds-react";
-import { isSakFerdig } from "~/common/sak/sak.utils";
-import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import type {Sak} from "@generated";
+import {Detail, Heading, HStack, Tag, VStack} from "@navikt/ds-react";
+import {isSakFerdig} from "~/common/sak/sak.utils";
+import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 import BehandlingsMeny from "~/routes/sak/$saksnummer/-components/BehandlingsMeny";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
