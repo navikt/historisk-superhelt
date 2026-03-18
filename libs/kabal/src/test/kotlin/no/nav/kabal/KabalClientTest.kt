@@ -204,7 +204,7 @@ class KabalClientTest {
 
         // Utfør og verifiser
         assertThatThrownBy { kabalClient.sendSakV4(request) }
-            .isInstanceOf(KabalClientException::class.java)
+            .isInstanceOf(IllegalStateException::class.java)
             .hasMessageContaining("Tom respons fra Kabal API")
     }
 

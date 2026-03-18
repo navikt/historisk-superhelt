@@ -26,13 +26,11 @@ class KabalClient(
                 .body(request)
                 .retrieve()
                 .body<SendSakV4Response>()
-                ?: throw KabalClientException("Tom respons fra Kabal API ved sending av sak")
+                ?: throw IllegalStateException("Tom respons fra Kabal API ved sending av sak")
         } catch (e: RestClientResponseException) {
             logger.error("Feil fra Kabal API: HTTP ${e.statusCode} – ${e.responseBodyAsString}")
-            throw KabalClientException("Feil fra Kabal API: HTTP ${e.statusCode}", e)
+            throw IllegalStateException("Feil fra Kabal API: HTTP ${e.statusCode}", e)
         }
     }
 }
-
-class KabalClientException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
