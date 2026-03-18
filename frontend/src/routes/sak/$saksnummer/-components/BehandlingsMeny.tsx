@@ -10,11 +10,11 @@ import {
 import { ActionMenu, Button } from "@navikt/ds-react";
 import { useState } from "react";
 import type { RettighetType } from "~/routes/sak/$saksnummer/-types/sak.types";
-import { Feilregistrer } from "../Feilregistrer";
-import { FritekstBrev } from "../Fritekstbrev";
-import { Gjenapne } from "../Gjenapne";
-import { Henlegg } from "../Henlegg";
-import { Tilbakestill } from "../Tilbakestill";
+import { Feilregistrer } from "./Feilregistrer";
+import { FritekstBrev } from "./Fritekstbrev";
+import { Gjenapne } from "./Gjenapne";
+import { Henlegg } from "./Henlegg";
+import { Tilbakestill } from "./Tilbakestill";
 
 interface SakMenyProps {
     sak: Sak;
