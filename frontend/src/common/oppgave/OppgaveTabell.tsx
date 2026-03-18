@@ -1,12 +1,12 @@
 import type {OppgaveMedSak} from "@generated";
+import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 import {Link, Pagination, type SortState, Table, VStack} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useState} from "react";
 import {isoTilLokal} from "~/common/dato.utils";
 import {OppgaveDetaljer} from "~/common/oppgave/OppgaveDetaljer";
 import {OppgaveActionButton} from "./OppgaveActionButton";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
@@ -78,7 +78,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                         <Table.Row>
                             <Table.DataCell aria-label="Vis mer" />
 
-                            <Table.ColumnHeader sortKey="type" sortable>
+                            <Table.ColumnHeader sortKey="saksnummer" sortable>
                                 Saksnummer
                             </Table.ColumnHeader>
                             <Table.ColumnHeader>Type</Table.ColumnHeader>
@@ -97,7 +97,6 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                 </Table.ColumnHeader>
                             )}
                             <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
-                            <Table.DataCell aria-label="Journalpost" />
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
