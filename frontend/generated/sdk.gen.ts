@@ -132,7 +132,7 @@ export const journalforNySak = <ThrowOnError extends boolean = false>(options: O
 });
 
 /**
- * Journalfør og knytt til en eksisternde sak
+ * Journalfør og knytt til en eksisterende sak
  */
 export const journalforKnyttTilEksisterendeSak = <ThrowOnError extends boolean = false>(options: Options<JournalforKnyttTilEksisterendeSakData, ThrowOnError>) => (options.client ?? client).put<JournalforKnyttTilEksisterendeSakResponses, JournalforKnyttTilEksisterendeSakErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],

@@ -219,7 +219,7 @@ export const journalforNySakMutation = (options?: Partial<Options<JournalforNySa
 };
 
 /**
- * Journalfør og knytt til en eksisternde sak
+ * Journalfør og knytt til en eksisterende sak
  */
 export const journalforKnyttTilEksisterendeSakMutation = (options?: Partial<Options<JournalforKnyttTilEksisterendeSakData>>): UseMutationOptions<JournalforKnyttTilEksisterendeSakResponse, JournalforKnyttTilEksisterendeSakError, Options<JournalforKnyttTilEksisterendeSakData>> => {
     const mutationOptions: UseMutationOptions<JournalforKnyttTilEksisterendeSakResponse, JournalforKnyttTilEksisterendeSakError, Options<JournalforKnyttTilEksisterendeSakData>> = {
