@@ -19,6 +19,7 @@
         <module>common-types</module>
         <module>pdfgen</module>
         <module>dokarkiv</module>
+        <module>kabal</module>
         <module>entra-proxy</module>
         <module>statistikk</module>
     </modules>
