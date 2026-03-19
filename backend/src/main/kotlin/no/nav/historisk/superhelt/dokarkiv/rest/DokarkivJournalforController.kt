@@ -115,7 +115,7 @@ class DokarkivJournalforController(
                 saksnummer = saksnummer,
                 endringsType = EndringsloggType.DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK,
                 endring = "Dokument journalført",
-                beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelder.stringValue}\" er journalført på saken"
+                beskrivelse = "Dokument \"${request.getTittel()}\"  er journalført på saken"
             )
         } else {
             logger.info("Journalpost {} er allerede journalført", journalpostId)
