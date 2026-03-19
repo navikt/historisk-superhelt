@@ -1,6 +1,7 @@
-import {test} from "./test.fixtures";
-import {faker} from "@faker-js/faker";
-import {expect} from "@playwright/test";
+import { test } from "./test.fixtures";
+import { faker } from "@faker-js/faker";
+import { expect } from "@playwright/test";
+import { behandleSakTilAttestring } from "./sak.utils";
 
 test.describe("Saksbehandling og attestering ikke godkjent", () => {
     test.describe.configure({mode: "serial"});
@@ -17,35 +18,8 @@ test.describe("Saksbehandling og attestering ikke godkjent", () => {
         await page.goto("/");
     });
 
-    test("Behandle sak som Sara Saksbehandler", async ({
-                                                           page,
-                                                           auth,
-                                                           sak,
-                                                           journalforing,
-                                                       }) => {
-        await test.step("Logg in Sara", async () => {
-            await auth.loginSara();
-        });
-
-        await test.step("Journalfør", async () => {
-            await journalforing.journalfor(brukerFnr, "SARAH", "REISEUTGIFTER");
-        });
-
-        await test.step("Fyll inn opplysninger", async () => {
-            await sak.fyllInnOpplysninger({
-                beskrivelse: "Søknad om superkrefter",
-                belop: "2345",
-                begrunnelse: "Bruker har dokumentert behov for superkrefter.",
-            });
-        });
-
-        await test.step("Skriv brev", async () => {
-            await sak.skrivBrev();
-        });
-
-        await test.step("Send til attestering", async () => {
-            await sak.sendTilAttering();
-        });
+    test("Behandle sak som Sara Saksbehandler", async ({auth, sak, journalforing}) => {
+        await behandleSakTilAttestring({auth, sak, journalforing}, brukerFnr);
     });
 
     test("Avvis attestering som Atle Attestant", async ({page, auth, sok, sak}) => {
