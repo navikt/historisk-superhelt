@@ -17,9 +17,6 @@
             <h4>Saksbehandlere</h4>
 
             <div class="card mb-2">
-                <div class="card-header">
-                    Featured
-                </div>
                 <div class="card-body">
                     <h5 class="card-title">Sarah Saksbehandler</h5>
                     <p class="card-text">Saksbehandler med vanlige saksbehandlerroller</p>
@@ -32,9 +29,6 @@
             </div>
 
             <div class="card mb-2">
-                <div class="card-header">
-                    Featured
-                </div>
                 <div class="card-body">
                     <h5 class="card-title">Atle Attestant</h5>
                     <p class="card-text">Saksbehandler med vanlige saksbehandlerroller</p>
@@ -47,9 +41,6 @@
             </div>
 
             <div class="card mb-2">
-                <div class="card-header">
-                    Featured
-                </div>
                 <div class="card-body">
                     <h5 class="card-title">Sonja Sommervikar</h5>
                     <p class="card-text">Saksbehandler som ikke kan attestere</p>
@@ -67,9 +58,6 @@
             <h4>Spesialbrukere</h4>
 
             <div class="card mb-2">
-                <div class="card-header">
-                    Featured
-                </div>
                 <div class="card-body">
                     <h5 class="card-title">Lisa Les</h5>
                     <p class="card-text">Person med leserolle på teamet</p>
@@ -80,10 +68,8 @@
                     </form>
                 </div>
             </div>
+
             <div class="card mb-2">
-                <div class="card-header">
-                    Featured
-                </div>
                 <div class="card-body">
                     <h5 class="card-title">David Driftsmann</h5>
                     <p class="card-text">Drifter som har driftsrolle, men ikke saksbehandler</p>
@@ -96,25 +82,26 @@
             </div>
 
         </div>
+    </div>
 
-        <div class="col-md-5">
-            <h4 class="mt-5">Skreddersydd token</h4>
+    <div class="row justify-content-md-center">
+        <div class="col-md-10">
+            <h4 class="mt-4">Skreddersydd token</h4>
             <p>
                 Hvis ingen av brukerne over passer til det du skal teste så kan du her lage token med skreddersydde claims.
             </p>
             <form method="post">
-                <div></div>
                 <hr class="divisor">
                 <div class="form-group">
                     <input type="text" class="form-control" name="username" autofocus="on"
                            placeholder="Enter any user/subject">
                 </div>
                 <div class="form-group">
-                            <textarea class="form-control" name="claims" rows="15" placeholder="Optional claims JSON value, example:
+                    <textarea class="form-control" name="claims" rows="8" placeholder="Optional claims JSON value, example:
     {
       &quot;acr&quot;: &quot;reference&quot;
     }"
-                            ></textarea>
+                    ></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary topBtn"><i class="fa fa-sign-in"></i>Sign-in</button>
             </form>
