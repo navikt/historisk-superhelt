@@ -1,22 +1,22 @@
-import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { Box, Tabs } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
-import { PersonHeader } from "~/common/person/PersonHeader";
-import { finnPersonQuery } from "~/common/person/person.query";
-import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
-import { StepType } from "~/common/process-menu/StepType";
-import { isSakFerdig } from "~/common/sak/sak.utils";
-import { kortNavn, kortSaksnummer } from "~/common/string.utils";
+import {FilePdfIcon, TasklistIcon} from "@navikt/aksel-icons";
+import {Box, Tabs} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {createFileRoute, Outlet} from "@tanstack/react-router";
+import {useEffect} from "react";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
+import {PersonHeader} from "~/common/person/PersonHeader";
+import {finnPersonQuery} from "~/common/person/person.query";
+import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
+import {StepType} from "~/common/process-menu/StepType";
+import {isSakFerdig} from "~/common/sak/sak.utils";
+import {kortNavn, kortSaksnummer} from "~/common/string.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
-import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
-import type { TilstandStatusType } from "~/routes/sak/$saksnummer/-types/sak.types";
-import { getSakOptions } from "./-api/sak.query";
+import {SakshistorikkSakTabell} from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
+import type {TilstandStatusType} from "~/common/sak/sak.types";
+import {getSakOptions} from "./-api/sak.query";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
 
 export const Route = createFileRoute("/sak/$saksnummer")({

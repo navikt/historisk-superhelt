@@ -61,17 +61,17 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly tilstand: SakTilstand;
+    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
     readonly gjenapnet: boolean;
-    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
@@ -252,6 +252,16 @@ export type OppgaveMedSak = {
     readonly maskertPersonIdent: string;
 };
 
+export type OppgaveTypeKodeDto = {
+    type: 'BEH_SED' | 'VURD_NOTAT' | 'VURD_BREV' | 'BEH_SAK' | 'BEH_SAK_MK' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_HENV' | 'BEH_AVV_ADR' | 'FDR' | 'GOD_VED' | 'BEH_UND_VED' | 'UKJENT';
+    navn: string;
+};
+
+export type OppgaveGjelderKodeDto = {
+    type: 'ORTOPEDISKE_HJELPEMIDLER_SOKNAD' | 'ANKE' | 'KLAGE' | 'ORTOPEDISKE_HJELPEMIDLER_UTLAND' | 'TIDLIGERE_HJEMSENDT_SAK' | 'HJEMSENDT_TIL_NY_BEHANDLING' | 'ORTOPEDISKE_HJELPEMIDLER' | 'REISEUTGIFTER' | 'BIDRAG_EKSKL_FARSKAP' | 'ANSIKTSDEFEKTSPROTESE' | 'BRYSTPROTESE_PROTESEBH' | 'FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER' | 'OYEPROTESE' | 'PARYKK_HODEPLAGG' | 'REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER' | 'PARTSINNSYN' | 'MEDLEMSKAP' | 'UKJENT';
+    navn: string;
+};
+
 export type Journalpost = {
     journalpostId: string;
     journalstatus: 'MOTTATT' | 'JOURNALFOERT' | 'FERDIGSTILT' | 'EKSPEDERT' | 'UNDER_ARBEID' | 'FEILREGISTRERT' | 'UTGAAR' | 'AVBRUTT' | 'UKJENT_BRUKER' | 'RESERVERT' | 'OPPLASTING_DOKUMENT' | 'UKJENT';
@@ -323,9 +333,9 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -1437,6 +1447,72 @@ export type HentOppgaverForPersonResponses = {
 };
 
 export type HentOppgaverForPersonResponse = HentOppgaverForPersonResponses[keyof HentOppgaverForPersonResponses];
+
+export type GetKodeverkOppgaveTypeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/oppgave/kodeverk/oppgavetype';
+};
+
+export type GetKodeverkOppgaveTypeErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkOppgaveTypeError = GetKodeverkOppgaveTypeErrors[keyof GetKodeverkOppgaveTypeErrors];
+
+export type GetKodeverkOppgaveTypeResponses = {
+    /**
+     * OK
+     */
+    200: Array<OppgaveTypeKodeDto>;
+};
+
+export type GetKodeverkOppgaveTypeResponse = GetKodeverkOppgaveTypeResponses[keyof GetKodeverkOppgaveTypeResponses];
+
+export type GetKodeverkOppgaveGjelderData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/oppgave/kodeverk/oppgavegjelder';
+};
+
+export type GetKodeverkOppgaveGjelderErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkOppgaveGjelderError = GetKodeverkOppgaveGjelderErrors[keyof GetKodeverkOppgaveGjelderErrors];
+
+export type GetKodeverkOppgaveGjelderResponses = {
+    /**
+     * OK
+     */
+    200: Array<OppgaveGjelderKodeDto>;
+};
+
+export type GetKodeverkOppgaveGjelderResponse = GetKodeverkOppgaveGjelderResponses[keyof GetKodeverkOppgaveGjelderResponses];
 
 export type LastnedDokumentFraJournalpostData = {
     body?: never;

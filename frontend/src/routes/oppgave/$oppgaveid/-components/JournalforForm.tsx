@@ -3,7 +3,7 @@ import {Radio, RadioGroup, VStack} from "@navikt/ds-react";
 import {useRef, useState} from "react";
 import {Card} from "~/common/card/Card";
 import {hasSize, isValidFnr} from "~/common/validation.utils";
-import type {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import type {StonadType} from "~/common/sak/sak.types";
 import {AnnetInnholdCombobox} from "./AnnetInnholdCombobox";
 import {DokumentTittelFelt} from "./DokumentTittelFelt";
 import {EksisterendeSakAction} from "./EksisterendeSakAction";

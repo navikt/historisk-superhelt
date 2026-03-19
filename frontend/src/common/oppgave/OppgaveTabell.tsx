@@ -6,6 +6,10 @@ import {Link as RouterLink} from "@tanstack/react-router";
 import {useState} from "react";
 import {isoTilLokal} from "~/common/dato.utils";
 import {OppgaveDetaljer} from "~/common/oppgave/OppgaveDetaljer";
+import {useOppgaveGjelderNavn} from "~/common/oppgave/useOppgaveGjelderNavn";
+import {useOppgaveTypeNavn} from "~/common/oppgave/useOppgaveTypeNavn";
+import {useSakStatusNavn} from "~/common/sak/useSakStatusNavn";
+import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 import {OppgaveActionButton} from "./OppgaveActionButton";
 
 type Props = {
@@ -23,6 +27,11 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         direction: "ascending",
     });
     const { data: saksbehandler } = useSuspenseQuery(getUserInfoOptions());
+    const oppgaveGjelderNavn = useOppgaveGjelderNavn();
+    const oppgaveTypeNavn = useOppgaveTypeNavn();
+    const sakStatusNavn = useSakStatusNavn();
+    const stonadsTypeNavn = useStonadsTypeNavn();
+
     const [page, setPage] = useState(1);
     const rowsPerPage = 15;
 
@@ -107,9 +116,13 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                             >
                                 <Table.DataCell>{renderSakLink(oppgave.saksnummer)}</Table.DataCell>
                                 <Table.DataCell>
-                                    {oppgave.oppgavetype} / {oppgave.stonadsType ?? oppgave.oppgaveGjelder}{" "}
+                                    {oppgaveTypeNavn(oppgave.oppgavetype)}
+                                    {" / "}
+                                    {oppgave.stonadsType
+                                        ? stonadsTypeNavn(oppgave.stonadsType)
+                                        : oppgaveGjelderNavn(oppgave.oppgaveGjelder)}
                                 </Table.DataCell>
-                                <Table.DataCell>{oppgave.sakStatus}</Table.DataCell>
+                                <Table.DataCell>{sakStatusNavn(oppgave.sakStatus)}</Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
                                 {dineOppgaver && (
                                     <Table.DataCell>
