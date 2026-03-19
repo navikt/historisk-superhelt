@@ -3,21 +3,21 @@ import {Box, Tabs} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {createFileRoute, Outlet} from "@tanstack/react-router";
 import {useEffect} from "react";
+import DeltVisning from "~/common/delt-visning/DeltVisning";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
 import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
 import {PersonHeader} from "~/common/person/PersonHeader";
 import {finnPersonQuery} from "~/common/person/person.query";
 import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
 import {StepType} from "~/common/process-menu/StepType";
+import type {TilstandStatusType} from "~/common/sak/sak.types";
 import {isSakFerdig} from "~/common/sak/sak.utils";
 import {kortNavn, kortSaksnummer} from "~/common/string.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
-import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
+import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
 import {SakshistorikkSakTabell} from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
-import type {TilstandStatusType} from "~/common/sak/sak.types";
 import {getSakOptions} from "./-api/sak.query";
-import DeltVisning from "~/common/delt-visning/DeltVisning";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
@@ -97,7 +97,7 @@ function SakLayout() {
                         <Outlet />
                     </DeltVisning.Kolonne>
                     <DeltVisning.Kolonne justerbar>
-                        <SakHeading sak={sak} />
+                        <SakOppsummering sak={sak} />
                         <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
                             <Tabs.List>
                                 <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />
