@@ -61,17 +61,17 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
     readonly tilstand: SakTilstand;
-    readonly gjenapnet: boolean;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
+    readonly gjenapnet: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
@@ -112,8 +112,16 @@ export type JournalforDokument = {
     logiskeVedlegg?: Array<string>;
 };
 
-export type JournalforRequest = {
+export type JournalforNySakRequest = {
     stonadsType: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+    jfrOppgaveId: number;
+    bruker: string;
+    avsender: string;
+    dokumenter: Array<JournalforDokument>;
+};
+
+export type JournalforEksisterendeSakRequest = {
+    saksnummer: string;
     jfrOppgaveId: number;
     bruker: string;
     avsender: string;
@@ -201,7 +209,7 @@ export type SakStatusDto = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK';
     endring: string;
     beskrivelse?: string;
     endretAv: string;
@@ -239,6 +247,8 @@ export type OppgaveMedSak = {
     opprettetAv?: string;
     saksnummer?: string;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
+    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+    sakBeskrivelse?: string;
     readonly maskertPersonIdent: string;
 };
 
@@ -313,9 +323,9 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -334,6 +344,8 @@ export type OppgaveMedSakWritable = {
     opprettetAv?: string;
     saksnummer?: string;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
+    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+    sakBeskrivelse?: string;
 };
 
 export type GetSakBySaksnummerData = {
@@ -709,16 +721,16 @@ export type OppdaterBrevResponses = {
 
 export type OppdaterBrevResponse = OppdaterBrevResponses[keyof OppdaterBrevResponses];
 
-export type JournalforData = {
-    body: JournalforRequest;
+export type JournalforNySakData = {
+    body: JournalforNySakRequest;
     path: {
         journalpostId: string;
     };
     query?: never;
-    url: '/api/dokarkiv/{journalpostId}/journalfor';
+    url: '/api/dokarkiv/{journalpostId}/journalfor/ny';
 };
 
-export type JournalforErrors = {
+export type JournalforNySakErrors = {
     /**
      * Bad Request
      */
@@ -733,16 +745,51 @@ export type JournalforErrors = {
     500: ProblemDetail;
 };
 
-export type JournalforError = JournalforErrors[keyof JournalforErrors];
+export type JournalforNySakError = JournalforNySakErrors[keyof JournalforNySakErrors];
 
-export type JournalforResponses = {
+export type JournalforNySakResponses = {
     /**
      * OK
      */
     200: string;
 };
 
-export type JournalforResponse = JournalforResponses[keyof JournalforResponses];
+export type JournalforNySakResponse = JournalforNySakResponses[keyof JournalforNySakResponses];
+
+export type JournalforKnyttTilEksisterendeSakData = {
+    body: JournalforEksisterendeSakRequest;
+    path: {
+        journalpostId: string;
+    };
+    query?: never;
+    url: '/api/dokarkiv/{journalpostId}/journalfor/eksisterende';
+};
+
+export type JournalforKnyttTilEksisterendeSakErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type JournalforKnyttTilEksisterendeSakError = JournalforKnyttTilEksisterendeSakErrors[keyof JournalforKnyttTilEksisterendeSakErrors];
+
+export type JournalforKnyttTilEksisterendeSakResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type JournalforKnyttTilEksisterendeSakResponse = JournalforKnyttTilEksisterendeSakResponses[keyof JournalforKnyttTilEksisterendeSakResponses];
 
 export type RetryFeiletUtbetalingData = {
     body?: never;

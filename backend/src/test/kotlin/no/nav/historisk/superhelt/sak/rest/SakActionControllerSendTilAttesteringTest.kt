@@ -10,10 +10,7 @@ import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.isNull
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.Test
 
@@ -53,7 +50,8 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
             any<Sak>(),
             any(),
             isNull(),
-            any()
+            any(),
+            anyOrNull()
         )
     }
 

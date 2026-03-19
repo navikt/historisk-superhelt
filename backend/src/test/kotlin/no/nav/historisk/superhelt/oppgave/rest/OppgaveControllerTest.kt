@@ -78,10 +78,10 @@ class OppgaveControllerTest {
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
             antallTreffTotalt = 4,
             oppgaver = listOf(
-                OppgaveTestdata.opprettOppgave(fnr.value),
-                OppgaveTestdata.opprettOppgave(fnr.value),
-                OppgaveTestdata.opprettOppgave(fnr.value),
-                OppgaveTestdata.opprettOppgave(fnr.value)
+                OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "JFR"),
+                OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "SUPERHELT"),
+                OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "VUR", behandlesAvApplikasjon = "SUPERHELT"),
+                OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "other")
             )
         )
 
@@ -90,7 +90,7 @@ class OppgaveControllerTest {
             .bodyJson()
             .convertTo(List::class.java)
             .satisfies({
-                assertThat(it).hasSize(4)
+                assertThat(it).hasSize(3)
             })
     }
 

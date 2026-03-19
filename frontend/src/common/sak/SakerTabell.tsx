@@ -1,11 +1,11 @@
-import type { ProblemDetail, Sak } from "@generated";
-import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Button, Heading, Skeleton, type SortState, Table, VStack } from "@navikt/ds-react";
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { isoTilLokal } from "~/common/dato.utils";
-import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import type {ProblemDetail, Sak} from "@generated";
+import {ArrowRightIcon} from "@navikt/aksel-icons";
+import {Button, Heading, Skeleton, type SortState, Table, VStack} from "@navikt/ds-react";
+import {Link} from "@tanstack/react-router";
+import {useState} from "react";
+import {isoTilLokal} from "~/common/dato.utils";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
 interface SakerTableProps {

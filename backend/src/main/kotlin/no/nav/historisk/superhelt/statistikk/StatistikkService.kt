@@ -92,9 +92,6 @@ class StatistikkService(
                 behandlingType = BehandlingType.REVURDERING,
             )
 
-            EndringsloggType.SENDT_BREV -> null
-            EndringsloggType.UTBETALING_OK -> null
-            EndringsloggType.UTBETALING_FEILET -> null
             EndringsloggType.FEILREGISTERT -> statistikk.copy(
                 behandlingStatus = BehandlingStatus.FERDIG,
                 behandlingResultat = SakStatus.FEILREGISTRERT,
@@ -112,6 +109,8 @@ class StatistikkService(
                 behandlingResultat = EndringsloggType.TILBAKESTILT_SAK,
                 ferdigBehandletTid = tidspunkt
             )
+
+            else -> null
         }
     }
 

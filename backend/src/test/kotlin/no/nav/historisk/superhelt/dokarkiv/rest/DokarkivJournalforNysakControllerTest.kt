@@ -6,6 +6,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
+import no.nav.historisk.superhelt.dokarkiv.JournalforDokument
 import no.nav.historisk.superhelt.dokarkiv.JournalforService
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.oppgave.OppgaveService
@@ -20,7 +21,11 @@ import no.nav.oppgave.OppgaveType
 import no.nav.saf.graphql.JournalStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.MediaType
@@ -31,7 +36,7 @@ import tools.jackson.databind.ObjectMapper
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
-class DokarkivJournalforControllerTest {
+class DokarkivJournalforNysakControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvcTester
@@ -72,13 +77,13 @@ class DokarkivJournalforControllerTest {
         whenever(journalforService.lagNySakOgKnyttDenTilOppgave(any(), any())).thenReturn(saksnummer)
         whenever(sakRepository.getSak(any())).thenReturn(sak)
 
-        val request = JournalforRequest(
+        val request = JournalforNySakRequest(
             stonadsType = faker.options().option(StonadsType::class.java),
             jfrOppgaveId = jfrOppgaveId,
             bruker = FolkeregisterIdent(faker.numerify("###########")),
             avsender = FolkeregisterIdent(faker.numerify("###########")),
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     tittel = faker.lorem().sentence(),
                     dokumentInfoId = EksternDokumentInfoId(faker.numerify("###########")),
                 )
@@ -87,7 +92,7 @@ class DokarkivJournalforControllerTest {
 
         assertThat(
             mockMvc.put()
-                .uri("/api/dokarkiv/{journalpostId}/journalfor", journalpostId)
+                .uri("/api/dokarkiv/{journalpostId}/journalfor/ny", journalpostId)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
@@ -111,7 +116,8 @@ class DokarkivJournalforControllerTest {
             eq(sak),
             any(),
             eq(sak.saksbehandler.navIdent),
-            eq("SUPERHELT")
+            eq("SUPERHELT"),
+            eq(journalpostId)
         )
     }
 
@@ -132,16 +138,15 @@ class DokarkivJournalforControllerTest {
 
         whenever(journalpostService.hentJournalpost(any())).thenReturn(journalPost)
         whenever(oppgaveService.getOppgave(any())).thenReturn(oppgave)
-//        whenever(journalforService.lagNySakOgKnyttDenTilOppgave(any(), any())).thenReturn(saksnummer)
         whenever(sakRepository.getSak(any())).thenReturn(sak)
 
-        val request = JournalforRequest(
+        val request = JournalforNySakRequest(
             stonadsType = faker.options().option(StonadsType::class.java),
             jfrOppgaveId = jfrOppgaveId,
             bruker = FolkeregisterIdent(faker.numerify("###########")),
             avsender = FolkeregisterIdent(faker.numerify("###########")),
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     tittel = faker.lorem().sentence(),
                     dokumentInfoId = EksternDokumentInfoId(faker.numerify("###########")),
                 )
@@ -150,7 +155,7 @@ class DokarkivJournalforControllerTest {
 
         assertThat(
             mockMvc.put()
-                .uri("/api/dokarkiv/{journalpostId}/journalfor", journalpostId)
+                .uri("/api/dokarkiv/{journalpostId}/journalfor/ny", journalpostId)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))

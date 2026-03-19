@@ -41,5 +41,7 @@ fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
         opprettetAv = this.opprettetAv,
         saksnummer = sak?.saksnummer,
         sakStatus = sak?.status,
+        stonadsType = sak?.type,
+        sakBeskrivelse = sak?.beskrivelse,
     )
 }

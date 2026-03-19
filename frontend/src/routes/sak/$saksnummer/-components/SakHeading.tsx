@@ -1,7 +1,7 @@
-import type { Sak } from "@generated";
-import { Detail, Heading, HStack, Tag, VStack } from "@navikt/ds-react";
-import { isSakFerdig } from "~/common/sak/sak.utils";
-import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import type {Sak} from "@generated";
+import {Detail, Heading, HStack, Tag, VStack} from "@navikt/ds-react";
+import {isSakFerdig} from "~/common/sak/sak.utils";
+import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 import BehandlingsMeny from "~/routes/sak/$saksnummer/-components/BehandlingsMeny";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
@@ -9,7 +9,7 @@ interface Props {
     sak: Sak;
 }
 
-export default function SakHeading({ sak }: Props) {
+export default function SakHeading({sak}: Props) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
     return (
         <HStack justify={"space-between"}>
@@ -20,7 +20,7 @@ export default function SakHeading({ sak }: Props) {
                 <HStack gap="space-8" align={"center"}>
                     <Detail>{getStonadsTypeNavn(sak.type)}</Detail>
                     <Detail textColor={"subtle"}>{sak.saksnummer}</Detail>
-                    <SakStatus sak={sak} />
+                    <SakStatus sak={sak}/>
                     {!isSakFerdig(sak) && sak.gjenapnet && (
                         <Tag variant="moderate" size="small" data-color="success">
                             Gjenåpnet
@@ -29,7 +29,7 @@ export default function SakHeading({ sak }: Props) {
                 </HStack>
             </VStack>
             <HStack gap={"space-8"} height={"1.5rem"}>
-                <BehandlingsMeny sak={sak} />
+                <BehandlingsMeny sak={sak}/>
             </HStack>
         </HStack>
     );

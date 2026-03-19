@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt.dokarkiv
 
 import no.nav.common.types.NavIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
+import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
@@ -31,7 +31,7 @@ class JournalforServiceTest {
 
     private lateinit var journalforService: JournalforService
 
-    private lateinit var request: JournalforRequest
+    private lateinit var request: JournalforNySakRequest
     private lateinit var jfrOppgave: OppgaveMedSak
     private lateinit var mockSak: Sak
 
@@ -45,13 +45,13 @@ class JournalforServiceTest {
 
         mockSak = SakTestData.sakUtenUtbetaling()
         jfrOppgave = OppgaveTestdata.oppgaveUtenSak().copy(fnr = mockSak.fnr)
-        request = JournalforRequest(
+        request = JournalforNySakRequest(
             stonadsType = StonadsType.REISEUTGIFTER,
             jfrOppgaveId = jfrOppgave.oppgaveId,
             bruker = mockSak.fnr,
             avsender = mockSak.fnr,
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     tittel = "Reiseutgifter januar 2024",
                     dokumentInfoId = EksternDokumentInfoId("123"),
                 )

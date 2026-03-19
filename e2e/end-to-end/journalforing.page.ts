@@ -25,7 +25,7 @@ export class JournalforingPage {
   }
 
   private async journalforOgStartBehandling(soknadType: string) {
-    await this.page.getByLabel("Velg type søknad").selectOption(soknadType);
+    await this.page.getByLabel("Velg type stønad").selectOption(soknadType);
     await this.page
       .getByRole("button", { name: "Journalfør og start behandling" })
       .click();

@@ -6,7 +6,7 @@ import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.BrevTestdata
-import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
+import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.person.PersonTestData
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -185,11 +185,11 @@ class DokarkivServiceTest {
         val bruker = FolkeregisterIdent("12345678901")
         val avsender = FolkeregisterIdent("10987654321")
 
-        val request = JournalforRequest(
+        val request = JournalforNySakRequest(
             bruker = bruker,
             avsender = avsender,
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     dokumentInfoId = EksternDokumentInfoId("DOK123"),
                     tittel = "Test dokument",
                     logiskeVedlegg = listOf("Vedlegg 1", "Vedlegg 2")
@@ -241,11 +241,11 @@ class DokarkivServiceTest {
         val bruker = FolkeregisterIdent("12345678901")
         val avsender = FolkeregisterIdent("10987654321")
 
-        val request = JournalforRequest(
+        val request = JournalforNySakRequest(
             bruker = bruker,
             avsender = avsender,
             dokumenter = listOf(
-                JournalforRequest.JournalforDokument(
+                JournalforDokument(
                     dokumentInfoId = EksternDokumentInfoId("DOK123"),
                     tittel = "Test dokument",
                     logiskeVedlegg = null

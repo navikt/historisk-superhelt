@@ -8,7 +8,6 @@ import no.nav.dokdist.DokdistClient
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
-import no.nav.historisk.superhelt.dokarkiv.rest.JournalforRequest
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
 import org.slf4j.LoggerFactory
@@ -99,7 +98,7 @@ class DokarkivService(
         journalPostId: EksternJournalpostId,
         fagsaksnummer: Saksnummer,
         journalfoerendeEnhet: Enhetsnummer,
-        request: JournalforRequest,
+        request: JournalforData,
     ) {
         dokarkivClient.oppdaterJournalpost(
             journalPostId = journalPostId,

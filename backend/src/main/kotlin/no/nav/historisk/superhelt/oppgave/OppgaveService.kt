@@ -1,6 +1,11 @@
 package no.nav.historisk.superhelt.oppgave
 
-import no.nav.common.types.*
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
+import no.nav.common.types.Saksnummer
+import no.nav.common.types.defaultEnhetsnummer
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
@@ -29,6 +34,10 @@ class OppgaveService(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    /** Finnner oppgaver som er relevant */
+    private val relevanteOppgaverPredicate: (OppgaveDto) -> Boolean =
+        { OppgaveType.JFR.name == it.oppgavetype || APP_NAVN == it.behandlesAvApplikasjon }
+
     /** Hent åpne oppgaver tilordnet en saksbehandler som kan saksbehandles i denne appen */
     @PreAuthorize("hasAuthority('READ')")
     fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
@@ -42,8 +51,9 @@ class OppgaveService(
             )
         ).oppgaver ?: emptyList()
 
+
         return oppgaver
-            .filter { OppgaveType.JFR.name == it.oppgavetype || APP_NAVN == it.behandlesAvApplikasjon }
+            .filter(relevanteOppgaverPredicate)
             .map {
                 it.toOppgaveMedSak(
                     sak = oppgaveRepository.finnSakForOppgave(it.id)
@@ -66,6 +76,7 @@ class OppgaveService(
         ).oppgaver ?: emptyList()
 
         return oppgaver
+            .filter(relevanteOppgaverPredicate)
             .map {
                 it.toOppgaveMedSak(
                     sak = oppgaveRepository.finnSakForOppgave(it.id)
@@ -141,6 +152,7 @@ class OppgaveService(
         beskrivelse: String? = null,
         tilordneTil: NavIdent? = null,
         behandlesAvApplikasjon: String? = APP_NAVN,
+        journalpostId: EksternJournalpostId? = null
     ): OppgaveMedSak {
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
@@ -148,7 +160,7 @@ class OppgaveService(
                 tema = TEMA_HEL,
                 oppgavetype = type.oppgavetype,
                 opprettetAvEnhetsnr = defaultEnhetsnummer.value,
-//                journalpostId = journalpostId,
+                journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
                 saksreferanse = sak.saksnummer.value,

@@ -1,9 +1,12 @@
-import type { OppgaveMedSak } from "@generated";
-import { BodyShort, Detail, Label, Link, List, Pagination, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
-import { Link as RouterLink } from "@tanstack/react-router";
-import { useState } from "react";
-import { isoTilLokal } from "~/common/dato.utils";
-import { OppgaveActionButton } from "./OppgaveActionButton";
+import type {OppgaveMedSak} from "@generated";
+import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
+import {Link, Pagination, type SortState, Table, VStack} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {Link as RouterLink} from "@tanstack/react-router";
+import {useState} from "react";
+import {isoTilLokal} from "~/common/dato.utils";
+import {OppgaveDetaljer} from "~/common/oppgave/OppgaveDetaljer";
+import {OppgaveActionButton} from "./OppgaveActionButton";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
@@ -19,6 +22,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         orderBy: "fristFerdigstillelse",
         direction: "ascending",
     });
+    const { data: saksbehandler } = useSuspenseQuery(getUserInfoOptions());
     const [page, setPage] = useState(1);
     const rowsPerPage = 15;
 
@@ -56,28 +60,29 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         })
         .slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
+    const renderSakLink = (saksnummer?: string) => {
+        if (!saksnummer) {
+            return null;
+        }
+        return (
+            <Link as={RouterLink} to={`/sak/${saksnummer}`}>
+                {saksnummer}
+            </Link>
+        );
+    };
     return (
         <div>
-            <Detail>{`${oppgaver.length} oppgave${oppgaver.length === 1 ? "" : "r"}`}</Detail>
             <VStack gap="space-16">
-                <Table
-                    zebraStripes
-                    sort={sort}
-                    onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}
-                >
+                <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}>
                     <Table.Header>
                         <Table.Row>
                             <Table.DataCell aria-label="Vis mer" />
-                            <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
-                            <Table.ColumnHeader sortKey="type" sortable>
-                                Type
+
+                            <Table.ColumnHeader sortKey="saksnummer" sortable>
+                                Saksnummer
                             </Table.ColumnHeader>
-                            <Table.ColumnHeader sortKey="behandlingstema" sortable>
-                                Behandlingstema
-                            </Table.ColumnHeader>
-                            <Table.ColumnHeader sortKey="oppgavestatus" sortable>
-                                Status
-                            </Table.ColumnHeader>
+                            <Table.ColumnHeader>Type</Table.ColumnHeader>
+                            <Table.ColumnHeader>Sakstatus</Table.ColumnHeader>
                             <Table.ColumnHeader sortKey="fristFerdigstillelse" sortable>
                                 Frist
                             </Table.ColumnHeader>
@@ -91,22 +96,23 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                     Tildelt
                                 </Table.ColumnHeader>
                             )}
-                            <Table.DataCell aria-label="Journalpost" />
+                            <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
                         {sortedData.map((oppgave) => (
-                            <Table.ExpandableRow key={`${oppgave.oppgaveId}`} content={<Detaljer oppgave={oppgave} />}>
+                            <Table.ExpandableRow
+                                key={`${oppgave.oppgaveId}`}
+                                content={<OppgaveDetaljer oppgave={oppgave} />}
+                            >
+                                <Table.DataCell>{renderSakLink(oppgave.saksnummer)}</Table.DataCell>
                                 <Table.DataCell>
-                                    <OppgaveActionButton oppgave={oppgave} />
+                                    {oppgave.oppgavetype} / {oppgave.stonadsType ?? oppgave.oppgaveGjelder}{" "}
                                 </Table.DataCell>
-                                <Table.DataCell>{oppgave.oppgavetype}</Table.DataCell>
-                                <Table.DataCell>{oppgave.oppgaveGjelder}</Table.DataCell>
-                                <Table.DataCell>{oppgave.oppgavestatus || oppgave.sakStatus}</Table.DataCell>
+                                <Table.DataCell>{oppgave.sakStatus}</Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
                                 {dineOppgaver && (
                                     <Table.DataCell>
-                                        {" "}
                                         {oppgave.fnr ? (
                                             <Link
                                                 as={RouterLink}
@@ -121,6 +127,9 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                     </Table.DataCell>
                                 )}
                                 {!dineOppgaver && <Table.DataCell>{oppgave.tilordnetRessurs ?? ""}</Table.DataCell>}
+                                <Table.DataCell>
+                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident} />
+                                </Table.DataCell>
                             </Table.ExpandableRow>
                         ))}
                     </Table.Body>
@@ -135,79 +144,5 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                 )}
             </VStack>
         </div>
-    );
-}
-
-function Detaljer({ oppgave }: { oppgave: OppgaveMedSak }) {
-    function BehandlendeSystem({ oppgave }: { oppgave: OppgaveMedSak }) {
-        if (oppgave.saksnummer) {
-            return (
-                <Tag data-color="success" variant="outline">
-                    SuperHelt
-                </Tag>
-            );
-        }
-        if (oppgave.behandlesAvApplikasjon) {
-            return (
-                <Tag data-color="warning" variant="strong">
-                    {oppgave.behandlesAvApplikasjon}
-                </Tag>
-            );
-        }
-        if (oppgave.opprettetAv?.startsWith("jfr-infotrygd")) {
-            return (
-                <Tag data-color="warning" variant="strong">
-                    Infotrygd
-                </Tag>
-            );
-        }
-        return (
-            <Tag data-color="neutral" variant="outline">
-                Ukjent
-            </Tag>
-        );
-    }
-
-    function Kommentar(props: { line: string }) {
-        const split = props.line.split("---\\n");
-        const head = split[0];
-        const body = split[1]?.replaceAll("\\n", " ");
-        return (
-            <List.Item>
-                <i>{head}</i> -- {body}
-            </List.Item>
-        );
-    }
-
-    return (
-        <VStack gap={"space-20"}>
-            <div>
-                <Label textColor="subtle">Sak</Label>
-                <Link as={RouterLink} to={`/sak/${oppgave.saksnummer}`}>
-                    <BodyShort>{oppgave.saksnummer}</BodyShort>
-                </Link>
-            </div>
-            <div>
-                <Label textColor="subtle">Oppgave id i gosys</Label>
-                <BodyShort>{oppgave.oppgaveId}</BodyShort>
-            </div>
-            <div>
-                <Label textColor="subtle">Behandlende system</Label>
-                <BodyShort>
-                    <BehandlendeSystem oppgave={oppgave} />
-                </BodyShort>
-            </div>
-            <div>
-                <Label textColor="subtle">Kommentarer</Label>
-                <List>
-                    {oppgave?.beskrivelse
-                        ?.split("--- ")
-                        .filter((line: string) => line.trim() !== "")
-                        .map((line: string) => (
-                            <Kommentar key={line} line={line} />
-                        ))}
-                </List>
-            </div>
-        </VStack>
     );
 }
