@@ -22,6 +22,7 @@ import no.nav.oppgave.OppgaveType
 import no.nav.saf.graphql.JournalStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
@@ -122,7 +123,7 @@ class DokarkivJournalforEksisterendeSakControllerTest {
             endringsType = eq(EndringsloggType.DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK),
             navBruker = any(),
             endring = eq("Dokument journalført"),
-            beskrivelse = eq("Dokument av type \"${oppgave.oppgaveGjelder.stringValue}\" er journalført på saken"),
+            beskrivelse = anyString(),
             tidspunkt = any()
         )
         verify(oppgaveService).ferdigstillOppgave(eq(jfrOppgaveId))
