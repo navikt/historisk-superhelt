@@ -1,10 +1,10 @@
-import { expect } from "@playwright/test";
-import { test } from "./test.fixtures";
-import type { AuthUtils } from "./auth.utils";
-import type { SakPage } from "./sak.page";
-import type { SokPage } from "./sok.page";
-import type { JournalforingPage } from "./journalforing.page";
-import type { Page } from "@playwright/test";
+import type {Page} from "@playwright/test";
+import {expect} from "@playwright/test";
+import {test} from "./test.fixtures";
+import type {AuthUtils} from "./auth.utils";
+import type {SakPage} from "./sak.page";
+import type {SokPage} from "./sok.page";
+import type {JournalforingPage} from "./journalforing.page";
 
 interface SaraFixtures {
     auth: AuthUtils;
@@ -27,8 +27,8 @@ export async function behandleSakTilAttestring(
         await auth.loginSara();
     });
 
-    await test.step("Journalfør", async () => {
-        await journalforing.journalfor(brukerFnr, "SARAH", "REISEUTGIFTER");
+    await test.step("Journalfør ny sak", async () => {
+        await journalforing.journalforNySak(brukerFnr, "SARAH", "REISEUTGIFTER");
     });
 
     await test.step("Fyll inn opplysninger", async () => {
