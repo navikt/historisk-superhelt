@@ -17,7 +17,7 @@ class KafkaTestcontainersConfiguration(
     @Bean
     @ServiceConnection
     fun kafkaContainer(): ConfluentKafkaContainer {
-        return ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.8.6"))
+        return ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:8.2.0"))
             .withReuse(System.getenv("CI") == null)
     }
 
