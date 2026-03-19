@@ -2,7 +2,7 @@ import {faker} from "@faker-js/faker";
 import {expect} from "@playwright/test";
 import {test} from "./test.fixtures";
 
-test.describe("Journalfør på eksisternde åpen sak", () => {
+test.describe("Journalfør på eksisterende åpen sak", () => {
     test.describe.configure({mode: "serial"});
 
     const brukerFnr = `5${faker.string.numeric({length: 10})}`;

@@ -1,10 +1,10 @@
-import { expect, type Page } from "@playwright/test";
-import { opprettJFR, tildelOppgave } from "./oppgave.utils";
+import {expect, type Page} from "@playwright/test";
+import {opprettJFR, tildelOppgave} from "./oppgave.utils";
 
 export class JournalforingPage {
     constructor(public readonly page: Page) {}
 
-    async journalforNySak(fnr: string, saksbehandler: string, soknadType = "REISEUTGIFTER", dokumentTittel: string| undefined= undefined ) {
+    async journalforNySak(fnr: string, saksbehandler: string, soknadType = "REISEUTGIFTER", dokumentTittel?: string ) {
         const jfrId = await opprettJFR(fnr);
         await tildelOppgave(jfrId, saksbehandler);
         await this.velgOppgave(fnr);
@@ -15,13 +15,13 @@ export class JournalforingPage {
         fnr: string,
         saksbehandler: string,
         sakBeskrivelse = "PARYKK",
-        dokumentTittel: string| undefined = undefined,
+        dokumentTittel?: string,
     ) {
         const jfrId = await opprettJFR(fnr);
         await tildelOppgave(jfrId, saksbehandler);
         await this.velgOppgave(fnr);
         await this.settTittel(dokumentTittel);
-        await this.journalforEksistendeSak(sakBeskrivelse);
+        await this.journalforEksisterende(sakBeskrivelse);
     }
 
     private async velgOppgave(fnr: string) {
@@ -47,7 +47,7 @@ export class JournalforingPage {
         await this.page.getByRole("button", { name: "Journalfør og start behandling" }).click();
     }
 
-    private async journalforEksistendeSak(sakbeskrivelse: string) {
+    private async journalforEksisterende(sakbeskrivelse: string) {
         const eksisterendeSakRadio = this.page.getByLabel("Eksisterende sak", { exact: true });
 
         await this.page.getByText("Eksisterende sak", { exact: true }).click();
