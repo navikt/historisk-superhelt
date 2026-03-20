@@ -17,8 +17,10 @@ interface SakerTableProps {
     openInNewTab?: boolean;
 }
 
+type SortKey = keyof Sak
+
 type ScopedSortState = {
-    orderBy: keyof Sak;
+    orderBy: SortKey;
 } & SortState;
 
 export function SakerTabell({
@@ -30,25 +32,23 @@ export function SakerTabell({
     openInNewTab,
 }: SakerTableProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
-    const defaultDescendingColumns: Array<ScopedSortState["orderBy"]> = ["opprettetDato", "tildelingsAar"];
+    const defaultDescendingColumns: Array<SortKey> = ["soknadsDato", "tildelingsAar"];
 
     const [sort, setSort] = useState<ScopedSortState>({
-        orderBy: "opprettetDato",
+        orderBy: "soknadsDato",
         direction: "descending",
     });
 
-    const handleSort = (sortKey: ScopedSortState["orderBy"]) => {
-        setSort({
-            orderBy: sortKey,
-            direction:
-                sortKey === sort.orderBy
-                    ? sort.direction === "ascending"
-                        ? "descending"
-                        : "ascending"
-                    : defaultDescendingColumns.includes(sortKey)
-                      ? "descending"
-                      : "ascending",
-        });
+    const handleSort = (sortKey: SortKey) => {
+        let direction: SortState["direction"];
+
+        if (sortKey === sort.orderBy) {
+            direction = sort.direction === "ascending" ? "descending" : "ascending";
+        } else {
+            direction = defaultDescendingColumns.includes(sortKey) ? "descending" : "ascending";
+        }
+
+        setSort({ orderBy: sortKey, direction });
     };
 
     function comparator<T>(a: T, b: T, orderBy: keyof T): number {
@@ -83,31 +83,35 @@ export function SakerTabell({
         );
     }
 
+    function SortableColumHeader(props:{children?: React.ReactNode, sortKey: SortKey}) {
+        return <Table.ColumnHeader sortKey={props.sortKey} sortable scope="col">
+            {props.children}
+        </Table.ColumnHeader>;
+    }
+
     return (
-        <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}>
+        <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as SortKey)}>
             <Table.Header>
                 <Table.Row>
-                    <Table.ColumnHeader sortKey="saksnummer" sortable>
-                        Saksnummer
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="type" sortable>
+                    <SortableColumHeader sortKey={"saksnummer"}>Saksnummer</SortableColumHeader>
+                    <SortableColumHeader sortKey="type">
                         Type
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="beskrivelse" sortable>
+                    </SortableColumHeader>
+                    <SortableColumHeader sortKey="beskrivelse" >
                         Beskrivelse
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="status" sortable>
+                    </SortableColumHeader>
+                    <SortableColumHeader sortKey="vedtaksResultat" >
                         Status
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="tildelingsAar" sortable>
+                    </SortableColumHeader>
+                    <SortableColumHeader sortKey="tildelingsAar" >
                         Tildelingsår
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="belop" sortable>
+                    </SortableColumHeader>
+                    <SortableColumHeader sortKey="belop">
                         Beløp
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="opprettetDato" sortable>
-                        Opprettet
-                    </Table.ColumnHeader>
+                    </SortableColumHeader>
+                    <SortableColumHeader sortKey="soknadsDato" >
+                        Søknadsdato
+                    </SortableColumHeader>
                     {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
                     {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
                 </Table.Row>
@@ -116,17 +120,17 @@ export function SakerTabell({
                 {sortedData.map((sak) => (
                     <Table.Row
                         key={sak.saksnummer}
-                        style={{ textDecorationLine: sak.status === "FEILREGISTRERT" ? "line-through" : "none" }}
+                        style={{textDecorationLine: sak.status === "FEILREGISTRERT" ? "line-through" : "none"}}
                     >
                         <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
                         <Table.DataCell>{getStonadsTypeNavn(sak.type)}</Table.DataCell>
                         <Table.DataCell>{sak.beskrivelse}</Table.DataCell>
                         <Table.DataCell>
-                            <SakStatus sak={sak} />
+                            <SakStatus sak={sak}/>
                         </Table.DataCell>
                         <Table.DataCell>{sak.tildelingsAar ?? "–"}</Table.DataCell>
                         <Table.DataCell>{sak.belop != null ? `${sak.belop} kr` : "–"}</Table.DataCell>
-                        <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
+                        <Table.DataCell>{isoTilLokal(sak.soknadsDato)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>}
                         {!hideActions && (
                             <Table.DataCell>
@@ -138,7 +142,7 @@ export function SakerTabell({
                                         href={`/sak/${sak.saksnummer}`}
                                         target={`sak-${sak.saksnummer}`}
                                         rel="noopener noreferrer"
-                                        icon={<ArrowRightIcon aria-hidden />}
+                                        icon={<ArrowRightIcon aria-hidden/>}
                                         aria-label="Åpne sak"
                                     />
                                 ) : (
@@ -154,3 +158,5 @@ export function SakerTabell({
         </Table>
     );
 }
+
+
