@@ -100,11 +100,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                     Bruker
                                 </Table.ColumnHeader>
                             )}
-                            {!dineOppgaver && (
-                                <Table.ColumnHeader sortKey="tilordnetRessurs" sortable>
-                                    Tildelt
-                                </Table.ColumnHeader>
-                            )}
+                            {!dineOppgaver && <Table.ColumnHeader>Tildelt</Table.ColumnHeader>}
                             <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>

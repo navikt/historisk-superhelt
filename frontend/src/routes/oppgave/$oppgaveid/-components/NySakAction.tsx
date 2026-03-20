@@ -57,7 +57,7 @@ export function NySakAction({ oppgaveMedSak, journalPost, defaultStonadstype, re
                     setError(undefined);
                 }}
             />
-            <Button type="submit" disabled={readOnly} onClick={handleSubmit}>
+            <Button type="submit" disabled={readOnly} onClick={handleSubmit} loading={journalfor.status==="pending"}>
                 Journalfør og start behandling
             </Button>
             {backendError && <ErrorAlert error={backendError} />}

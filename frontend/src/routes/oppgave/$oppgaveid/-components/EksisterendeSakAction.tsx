@@ -55,7 +55,7 @@ export function EksisterendeSakAction({ oppgaveMedSak, journalPost, readOnly, ge
                     setError(undefined);
                 }}
             />
-            <Button type="submit" disabled={readOnly} onClick={handleSubmit}>
+            <Button type="submit" disabled={readOnly} onClick={handleSubmit} loading={journalfor.status==="pending"}>
                 Journalfør på eksisterende sak
             </Button>
             {backendError && <ErrorAlert error={backendError} />}
