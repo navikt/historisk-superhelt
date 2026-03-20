@@ -1,16 +1,16 @@
-import type {OppgaveMedSak} from "@generated";
-import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
-import {BodyShort, HStack, Link, Pagination, type SortState, Table, Tag, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {Link as RouterLink} from "@tanstack/react-router";
-import {useState} from "react";
-import {isoTilLokal} from "~/common/dato.utils";
-import {OppgaveDetaljer} from "~/common/oppgave/OppgaveDetaljer";
-import {useOppgaveGjelderNavn} from "~/common/oppgave/useOppgaveGjelderNavn";
-import {useOppgaveTypeNavn} from "~/common/oppgave/useOppgaveTypeNavn";
-import {useSakStatusNavn} from "~/common/sak/useSakStatusNavn";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
-import {OppgaveActionButton} from "./OppgaveActionButton";
+import type { OppgaveMedSak } from "@generated";
+import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
+import { BodyShort, HStack, Link, Pagination, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link as RouterLink } from "@tanstack/react-router";
+import { useState } from "react";
+import { isoTilLokal } from "~/common/dato.utils";
+import { OppgaveDetaljer } from "~/common/oppgave/OppgaveDetaljer";
+import { useOppgaveGjelderNavn } from "~/common/oppgave/useOppgaveGjelderNavn";
+import { useOppgaveTypeNavn } from "~/common/oppgave/useOppgaveTypeNavn";
+import { useSakStatusNavn } from "~/common/sak/useSakStatusNavn";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import { OppgaveActionButton } from "./OppgaveActionButton";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
@@ -80,16 +80,22 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         );
     };
     const renderOppgaveText = (oppgave: OppgaveMedSak) => {
-
-        return <HStack gap={"space-8"}>
-            <Tag variant="moderate" data-color="neutral" size="small">{oppgaveTypeNavn(oppgave.oppgavetype)}</Tag>
-            <Tag variant="outline" data-color={"info"} size="small" >{oppgave.stonadsType
-                ? stonadsTypeNavn(oppgave.stonadsType)
-                : oppgaveGjelderNavn(oppgave.oppgaveGjelder)}
-            </Tag>
-            <BodyShort truncate style={{maxWidth: "20rem"}}>{oppgave.sakBeskrivelse}</BodyShort>
-        </HStack>;
-    }
+        return (
+            <HStack gap={"space-8"}>
+                <Tag variant="moderate" data-color="neutral" size="small">
+                    {oppgaveTypeNavn(oppgave.oppgavetype)}
+                </Tag>
+                <Tag variant="outline" data-color={"info"} size="small">
+                    {oppgave.stonadsType
+                        ? stonadsTypeNavn(oppgave.stonadsType)
+                        : oppgaveGjelderNavn(oppgave.oppgaveGjelder)}
+                </Tag>
+                <BodyShort truncate style={{ maxWidth: "20rem" }}>
+                    {oppgave.sakBeskrivelse}
+                </BodyShort>
+            </HStack>
+        );
+    };
     return (
         <div>
             <VStack gap="space-16">
@@ -119,12 +125,10 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                         {sortedData.map((oppgave) => (
                             <Table.ExpandableRow
                                 key={`${oppgave.oppgaveId}`}
-                                content={<OppgaveDetaljer oppgave={oppgave}/>}
+                                content={<OppgaveDetaljer oppgave={oppgave} />}
                             >
                                 <Table.DataCell>{renderSakLink(oppgave.saksnummer)}</Table.DataCell>
-                                <Table.DataCell>
-                                    {renderOppgaveText(oppgave)}
-                                </Table.DataCell>
+                                <Table.DataCell>{renderOppgaveText(oppgave)}</Table.DataCell>
                                 <Table.DataCell>{sakStatusNavn(oppgave.sakStatus)}</Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
                                 {dineOppgaver && (
@@ -133,7 +137,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                             <Link
                                                 as={RouterLink}
                                                 to={`/person/${oppgave.maskertPersonIdent}`}
-                                                style={{textDecoration: "none"}}
+                                                style={{ textDecoration: "none" }}
                                             >
                                                 {oppgave.fnr}
                                             </Link>
@@ -144,7 +148,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                 )}
                                 {!dineOppgaver && <Table.DataCell>{oppgave.tilordnetRessurs ?? ""}</Table.DataCell>}
                                 <Table.DataCell>
-                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident}/>
+                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident} />
                                 </Table.DataCell>
                             </Table.ExpandableRow>
                         ))}

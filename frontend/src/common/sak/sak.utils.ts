@@ -15,5 +15,6 @@ export function utbetalingText(utbetalingsType: UtbetalingsType) {
             return "Forhåndstilsagn";
         case "INGEN":
             return "Ingen utbetaling er valgt";
+        default: return utbetalingsType;
     }
 }

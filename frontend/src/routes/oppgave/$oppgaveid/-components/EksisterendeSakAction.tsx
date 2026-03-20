@@ -1,12 +1,12 @@
-import type {Journalpost, OppgaveMedSak, ProblemDetail, Sak} from "@generated";
-import {journalforKnyttTilEksisterendeSakMutation} from "@generated/@tanstack/react-query.gen";
-import {Button, VStack} from "@navikt/ds-react";
-import {useMutation} from "@tanstack/react-query";
-import {useNavigate} from "@tanstack/react-router";
-import {useState} from "react";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {EksisterendeSakVelger} from "./EksisterendeSakVelger";
-import type {FellesData} from "./JournalforForm";
+import type { Journalpost, OppgaveMedSak, ProblemDetail, Sak } from "@generated";
+import { journalforKnyttTilEksisterendeSakMutation } from "@generated/@tanstack/react-query.gen";
+import { Button, VStack } from "@navikt/ds-react";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { EksisterendeSakVelger } from "./EksisterendeSakVelger";
+import type { FellesData } from "./JournalforForm";
 
 interface Props {
     oppgaveMedSak: OppgaveMedSak;
@@ -55,7 +55,7 @@ export function EksisterendeSakAction({ oppgaveMedSak, journalPost, readOnly, ge
                     setError(undefined);
                 }}
             />
-            <Button type="submit" disabled={readOnly} onClick={handleSubmit} loading={journalfor.status==="pending"}>
+            <Button type="submit" disabled={readOnly} onClick={handleSubmit} loading={journalfor.isPending}>
                 Journalfør på eksisterende sak
             </Button>
             {backendError && <ErrorAlert error={backendError} />}

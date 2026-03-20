@@ -6,7 +6,7 @@ enum class VedtaksResultat(val navn: String) {
     AVSLATT("Avslått"),
 
     /** Saken er henlagt fordi bruker f.eks. trekker søknad. */
-    HENLAGT("Henlagt") ;
+    HENLAGT("Henlagt");
 
     fun isInnvilget(): Boolean {
         return this == INNVILGET || this == DELVIS_INNVILGET

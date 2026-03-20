@@ -1,11 +1,11 @@
-import type {ProblemDetail, Sak} from "@generated";
-import {ArrowRightIcon} from "@navikt/aksel-icons";
-import {Button, Heading, Skeleton, type SortState, Table, VStack} from "@navikt/ds-react";
-import {Link} from "@tanstack/react-router";
-import {useState} from "react";
-import {isoTilLokal} from "~/common/dato.utils";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import type { ProblemDetail, Sak } from "@generated";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { Button, Heading, Skeleton, type SortState, Table, VStack } from "@navikt/ds-react";
+import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { isoTilLokal } from "~/common/dato.utils";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
 interface SakerTableProps {
@@ -17,7 +17,7 @@ interface SakerTableProps {
     openInNewTab?: boolean;
 }
 
-type SortKey = keyof Sak
+type SortKey = keyof Sak;
 
 type ScopedSortState = {
     orderBy: SortKey;
@@ -83,35 +83,25 @@ export function SakerTabell({
         );
     }
 
-    function SortableColumHeader(props:{children?: React.ReactNode, sortKey: SortKey}) {
-        return <Table.ColumnHeader sortKey={props.sortKey} sortable scope="col">
-            {props.children}
-        </Table.ColumnHeader>;
+    function SortableColumnHeader(props: { children?: React.ReactNode; sortKey: SortKey }) {
+        return (
+            <Table.ColumnHeader sortKey={props.sortKey} sortable scope="col">
+                {props.children}
+            </Table.ColumnHeader>
+        );
     }
 
     return (
         <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as SortKey)}>
             <Table.Header>
                 <Table.Row>
-                    <SortableColumHeader sortKey={"saksnummer"}>Saksnummer</SortableColumHeader>
-                    <SortableColumHeader sortKey="type">
-                        Type
-                    </SortableColumHeader>
-                    <SortableColumHeader sortKey="beskrivelse" >
-                        Beskrivelse
-                    </SortableColumHeader>
-                    <SortableColumHeader sortKey="vedtaksResultat" >
-                        Status
-                    </SortableColumHeader>
-                    <SortableColumHeader sortKey="tildelingsAar" >
-                        Tildelingsår
-                    </SortableColumHeader>
-                    <SortableColumHeader sortKey="belop">
-                        Beløp
-                    </SortableColumHeader>
-                    <SortableColumHeader sortKey="soknadsDato" >
-                        Søknadsdato
-                    </SortableColumHeader>
+                    <SortableColumnHeader sortKey={"saksnummer"}>Saksnummer</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="type">Type</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="beskrivelse">Beskrivelse</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="vedtaksResultat">Status</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="tildelingsAar">Tildelingsår</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="belop">Beløp</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="soknadsDato">Søknadsdato</SortableColumnHeader>
                     {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
                     {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
                 </Table.Row>
@@ -120,13 +110,13 @@ export function SakerTabell({
                 {sortedData.map((sak) => (
                     <Table.Row
                         key={sak.saksnummer}
-                        style={{textDecorationLine: sak.status === "FEILREGISTRERT" ? "line-through" : "none"}}
+                        style={{ textDecorationLine: sak.status === "FEILREGISTRERT" ? "line-through" : "none" }}
                     >
                         <Table.HeaderCell scope="row">{sak.saksnummer}</Table.HeaderCell>
                         <Table.DataCell>{getStonadsTypeNavn(sak.type)}</Table.DataCell>
                         <Table.DataCell>{sak.beskrivelse}</Table.DataCell>
                         <Table.DataCell>
-                            <SakStatus sak={sak}/>
+                            <SakStatus sak={sak} />
                         </Table.DataCell>
                         <Table.DataCell>{sak.tildelingsAar ?? "–"}</Table.DataCell>
                         <Table.DataCell>{sak.belop != null ? `${sak.belop} kr` : "–"}</Table.DataCell>
@@ -142,7 +132,7 @@ export function SakerTabell({
                                         href={`/sak/${sak.saksnummer}`}
                                         target={`sak-${sak.saksnummer}`}
                                         rel="noopener noreferrer"
-                                        icon={<ArrowRightIcon aria-hidden/>}
+                                        icon={<ArrowRightIcon aria-hidden />}
                                         aria-label="Åpne sak"
                                     />
                                 ) : (
@@ -158,5 +148,3 @@ export function SakerTabell({
         </Table>
     );
 }
-
-
