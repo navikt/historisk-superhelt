@@ -1,6 +1,6 @@
 import type {OppgaveMedSak} from "@generated";
 import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
-import {Link, Pagination, type SortState, Table, VStack} from "@navikt/ds-react";
+import {BodyShort, HStack, Link, Pagination, type SortState, Table, Tag, VStack} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {Link as RouterLink} from "@tanstack/react-router";
 import {useState} from "react";
@@ -79,6 +79,17 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
             </Link>
         );
     };
+    const renderOppgaveText = (oppgave: OppgaveMedSak) => {
+
+        return <HStack gap={"space-8"}>
+            <Tag variant="moderate" data-color="neutral" size="small">{oppgaveTypeNavn(oppgave.oppgavetype)}</Tag>
+            <Tag variant="outline" data-color={"info"} size="small" >{oppgave.stonadsType
+                ? stonadsTypeNavn(oppgave.stonadsType)
+                : oppgaveGjelderNavn(oppgave.oppgaveGjelder)}
+            </Tag>
+            <BodyShort truncate style={{maxWidth: "20rem"}}>{oppgave.sakBeskrivelse}</BodyShort>
+        </HStack>;
+    }
     return (
         <div>
             <VStack gap="space-16">
@@ -90,7 +101,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                             <Table.ColumnHeader sortKey="saksnummer" sortable>
                                 Saksnummer
                             </Table.ColumnHeader>
-                            <Table.ColumnHeader>Type</Table.ColumnHeader>
+                            <Table.ColumnHeader>Hva</Table.ColumnHeader>
                             <Table.ColumnHeader>Sakstatus</Table.ColumnHeader>
                             <Table.ColumnHeader sortKey="fristFerdigstillelse" sortable>
                                 Frist
@@ -108,15 +119,11 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                         {sortedData.map((oppgave) => (
                             <Table.ExpandableRow
                                 key={`${oppgave.oppgaveId}`}
-                                content={<OppgaveDetaljer oppgave={oppgave} />}
+                                content={<OppgaveDetaljer oppgave={oppgave}/>}
                             >
                                 <Table.DataCell>{renderSakLink(oppgave.saksnummer)}</Table.DataCell>
                                 <Table.DataCell>
-                                    {oppgaveTypeNavn(oppgave.oppgavetype)}
-                                    {" / "}
-                                    {oppgave.stonadsType
-                                        ? stonadsTypeNavn(oppgave.stonadsType)
-                                        : oppgaveGjelderNavn(oppgave.oppgaveGjelder)}
+                                    {renderOppgaveText(oppgave)}
                                 </Table.DataCell>
                                 <Table.DataCell>{sakStatusNavn(oppgave.sakStatus)}</Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
@@ -126,7 +133,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                             <Link
                                                 as={RouterLink}
                                                 to={`/person/${oppgave.maskertPersonIdent}`}
-                                                style={{ textDecoration: "none" }}
+                                                style={{textDecoration: "none"}}
                                             >
                                                 {oppgave.fnr}
                                             </Link>
@@ -137,7 +144,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                 )}
                                 {!dineOppgaver && <Table.DataCell>{oppgave.tilordnetRessurs ?? ""}</Table.DataCell>}
                                 <Table.DataCell>
-                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident} />
+                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident}/>
                                 </Table.DataCell>
                             </Table.ExpandableRow>
                         ))}
