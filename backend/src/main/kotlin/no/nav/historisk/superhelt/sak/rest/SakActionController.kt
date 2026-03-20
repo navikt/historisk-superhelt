@@ -11,8 +11,14 @@ import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedU
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
-import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakExtensions.utbetalingInfo
+import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakRettighet
+import no.nav.historisk.superhelt.sak.SakService
+import no.nav.historisk.superhelt.sak.SakStatus
+import no.nav.historisk.superhelt.sak.SakValidator
+import no.nav.historisk.superhelt.sak.UpdateSakDto
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakService
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
@@ -20,7 +26,11 @@ import no.nav.oppgave.OppgaveType
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/sak/{saksnummer}")
@@ -236,8 +246,8 @@ class SakActionController(
             .validate()
 
         sakService.gjenapneSak(sak)
-        // brevService nyttbrev
-//        sak.utbetaling.let { utbetalingService.updateUtbetalingsStatus() }
+
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.VUR)
 
         oppgaveService.opprettOppgave(
             type = OppgaveType.BEH_SAK,
