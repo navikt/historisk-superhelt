@@ -1,7 +1,7 @@
 import type {Sak} from "@generated";
 import {FormSummary} from "@navikt/ds-react";
 import {isoTilLokal} from "~/common/dato.utils";
-import type {UtbetalingsType} from "~/common/sak/sak.types";
+import {utbetalingText} from "~/common/sak/sak.utils";
 import {useSakStatusNavn} from "~/common/sak/useSakStatusNavn";
 import {useSakVedtakNavn} from "~/common/sak/useSakVedtakNavn";
 import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
@@ -15,16 +15,6 @@ export default function SakOpplysningerSummary({ sak }: SakSummaryProps) {
     const getSakStatusNavn = useSakStatusNavn();
     const getSakVedtakNavn = useSakVedtakNavn();
 
-    const utbetalingsTypeText = (utbetalingsType: UtbetalingsType) => {
-        switch (utbetalingsType) {
-            case "BRUKER":
-                return "Utbetaling direkte til bruker";
-            case "FORHANDSTILSAGN":
-                return "Forhåndstilsagn";
-            case "INGEN":
-                return "Ingen utbetaling er valgt";
-        }
-    };
     return (
         <FormSummary>
             <FormSummary.Header>
@@ -61,12 +51,14 @@ export default function SakOpplysningerSummary({ sak }: SakSummaryProps) {
                         {sak.saksbehandler.navn} <small>({sak.saksbehandler.navIdent})</small>
                     </FormSummary.Value>
                 </FormSummary.Answer>
-                {sak.attestant &&<FormSummary.Answer>
-                    <FormSummary.Label>Attestant</FormSummary.Label>
-                    <FormSummary.Value>
-                        {sak.attestant.navn} <small>({sak.attestant.navIdent})</small>
-                    </FormSummary.Value>
-                </FormSummary.Answer>}
+                {sak.attestant && (
+                    <FormSummary.Answer>
+                        <FormSummary.Label>Attestant</FormSummary.Label>
+                        <FormSummary.Value>
+                            {sak.attestant.navn} <small>({sak.attestant.navIdent})</small>
+                        </FormSummary.Value>
+                    </FormSummary.Answer>
+                )}
 
                 <FormSummary.Answer>
                     <FormSummary.Label>Resultat</FormSummary.Label>
@@ -78,7 +70,7 @@ export default function SakOpplysningerSummary({ sak }: SakSummaryProps) {
                             </FormSummary.Answer>
                             <FormSummary.Answer>
                                 <FormSummary.Label>Type utbetaling</FormSummary.Label>
-                                <FormSummary.Value>{utbetalingsTypeText(sak.utbetalingsType)}</FormSummary.Value>
+                                <FormSummary.Value>{utbetalingText(sak.utbetalingsType)}</FormSummary.Value>
                             </FormSummary.Answer>
 
                             {sak.utbetalingsType === "BRUKER" && (
