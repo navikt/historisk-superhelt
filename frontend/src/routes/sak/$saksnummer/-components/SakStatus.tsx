@@ -1,9 +1,9 @@
-import type { Sak } from "@generated";
-import { getSakStatusOptions } from "@generated/@tanstack/react-query.gen";
-import { ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
-import { Tag } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import type { SakStatusType, SakVedtakType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import type {Sak} from "@generated";
+import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
+import {ExclamationmarkTriangleIcon} from "@navikt/aksel-icons";
+import {Tag} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import type {SakStatusType, SakVedtakType} from "~/common/sak/sak.types";
 
 interface Props {
     sak: Sak;

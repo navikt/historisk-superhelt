@@ -1,5 +1,5 @@
 import type {Sak} from "@generated";
-import {Detail, Heading, HStack, Tag, VStack} from "@navikt/ds-react";
+import {BodyShort, Detail, Heading, HStack, Tag, VStack} from "@navikt/ds-react";
 import {isSakFerdig} from "~/common/sak/sak.utils";
 import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
 import BehandlingsMeny from "~/routes/sak/$saksnummer/-components/BehandlingsMeny";
@@ -9,7 +9,7 @@ interface Props {
     sak: Sak;
 }
 
-export default function SakHeading({sak}: Props) {
+export default function SakOppsummering({sak}: Props) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
     return (
         <HStack justify={"space-between"}>
@@ -27,6 +27,7 @@ export default function SakHeading({sak}: Props) {
                         </Tag>
                     )}
                 </HStack>
+                <BodyShort>Utbetales</BodyShort>
             </VStack>
             <HStack gap={"space-8"} height={"1.5rem"}>
                 <BehandlingsMeny sak={sak}/>

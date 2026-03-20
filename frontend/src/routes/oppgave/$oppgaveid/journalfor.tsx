@@ -1,13 +1,13 @@
-import { getOppgaveOptions, getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
-import { Heading, VStack } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { finnPersonQuery } from "~/common/person/person.query";
-import { hentJournalpostMetadataQuery } from "~/routes/oppgave/$oppgaveid/-api/journalpost.query";
-import { FerdigJournalfort } from "~/routes/oppgave/$oppgaveid/-components/FerdigJournalfort";
-import { JournalforForm } from "~/routes/oppgave/$oppgaveid/-components/JournalforForm";
-import type { OppgaveGjelder } from "~/routes/oppgave/$oppgaveid/-types/oppgave.types";
-import type { StonadType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import {getOppgaveOptions, getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
+import {Heading, VStack} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {createFileRoute} from "@tanstack/react-router";
+import {finnPersonQuery} from "~/common/person/person.query";
+import {hentJournalpostMetadataQuery} from "~/routes/oppgave/$oppgaveid/-api/journalpost.query";
+import {FerdigJournalfort} from "~/routes/oppgave/$oppgaveid/-components/FerdigJournalfort";
+import {JournalforForm} from "~/routes/oppgave/$oppgaveid/-components/JournalforForm";
+import type {OppgaveGjelder} from "~/common/oppgave/oppgave.types";
+import type {StonadType} from "~/common/sak/sak.types";
 
 export const Route = createFileRoute("/oppgave/$oppgaveid/journalfor")({
     component: JournalforPage,
