@@ -1,4 +1,4 @@
-import type { Sak } from "@generated";
+import type {Sak} from "@generated";
 import {
     ArrowUndoIcon,
     ChevronDownIcon,
@@ -7,14 +7,14 @@ import {
     PadlockUnlockedIcon,
     TrashIcon,
 } from "@navikt/aksel-icons";
-import { ActionMenu, Button } from "@navikt/ds-react";
-import { useState } from "react";
-import type { RettighetType } from "~/routes/sak/$saksnummer/-types/sak.types";
-import { Feilregistrer } from "./Feilregistrer";
-import { FritekstBrev } from "./Fritekstbrev";
-import { Gjenapne } from "./Gjenapne";
-import { Henlegg } from "./Henlegg";
-import { Tilbakestill } from "./Tilbakestill";
+import {ActionMenu, Button} from "@navikt/ds-react";
+import {useState} from "react";
+import type {RettighetType} from "~/common/sak/sak.types";
+import {Feilregistrer} from "./Feilregistrer";
+import {FritekstBrev} from "./Fritekstbrev";
+import {Gjenapne} from "./Gjenapne";
+import {Henlegg} from "./Henlegg";
+import {Tilbakestill} from "./Tilbakestill";
 
 interface SakMenyProps {
     sak: Sak;

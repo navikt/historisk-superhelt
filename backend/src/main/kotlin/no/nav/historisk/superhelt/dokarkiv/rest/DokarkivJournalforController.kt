@@ -12,6 +12,7 @@ import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.dokarkiv.getTittel
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -73,7 +74,7 @@ class DokarkivJournalforController(
             type = OppgaveType.BEH_SAK,
             sak = sak,
             beskrivelse = "Behandle sak av type ${sak.type.navn} i Superhelt",
-            tilordneTil = sak.saksbehandler.navIdent,
+            tilordneTil = getAuthenticatedUser().navIdent,
             journalpostId = journalpostId
         )
 
@@ -130,7 +131,7 @@ class DokarkivJournalforController(
                 sak = sak,
                 beskrivelse = "Dokument \"${request.getTittel()}\" er lagt til sak ${sak.saksnummer} i Superhelt. " +
                     "Vurder videre behandling av saken. Lukk denne oppgaven om det ikke skal gjøres noe spesiell oppfølging.",
-                tilordneTil = sak.saksbehandler.navIdent,
+                tilordneTil = getAuthenticatedUser().navIdent,
                 journalpostId = journalpostId
             )
         }
