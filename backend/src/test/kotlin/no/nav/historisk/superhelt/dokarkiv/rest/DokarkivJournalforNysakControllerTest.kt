@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 import net.datafaker.Faker
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
@@ -61,7 +62,7 @@ class DokarkivJournalforNysakControllerTest {
 
     private val faker = Faker()
 
-    @WithSaksbehandler
+    @WithSaksbehandler("Z123123")
     @Test
     fun `skal journalføre dokument og opprett ny sak`() {
         val journalPost = DokarkivTestdata.journalPost().copy(journalstatus = JournalStatus.UNDER_ARBEID)
@@ -115,7 +116,7 @@ class DokarkivJournalforNysakControllerTest {
             eq(OppgaveType.BEH_SAK),
             eq(sak),
             any(),
-            eq(sak.saksbehandler.navIdent),
+            eq(NavIdent("Z123123")),
             eq("SUPERHELT"),
             eq(journalpostId)
         )

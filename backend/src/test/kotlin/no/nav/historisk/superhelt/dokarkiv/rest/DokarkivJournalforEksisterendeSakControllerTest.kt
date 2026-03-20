@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 import net.datafaker.Faker
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
@@ -137,7 +138,7 @@ class DokarkivJournalforEksisterendeSakControllerTest {
         )
     }
 
-    @WithSaksbehandler
+    @WithSaksbehandler("Z123123")
     @Test
     fun `skal opprette vurderingsoppgave når dokument journalføres pa ferdig sak`() {
         val journalPost = DokarkivTestdata.journalPost().copy(journalstatus = JournalStatus.UNDER_ARBEID)
@@ -182,7 +183,7 @@ class DokarkivJournalforEksisterendeSakControllerTest {
             eq(OppgaveType.VUR),
             eq(sak),
             any(),
-            eq(sak.saksbehandler.navIdent),
+            eq(NavIdent("Z123123")),
             eq("SUPERHELT"),
             eq(journalpostId)
         )
