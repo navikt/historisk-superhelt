@@ -1,5 +1,5 @@
 import { Box, Button, HGrid, VStack } from "@navikt/ds-react";
-import { DragVerticalIcon, MenuElipsisVerticalIcon } from "@navikt/aksel-icons";
+import { MenuElipsisVerticalIcon } from "@navikt/aksel-icons";
 import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "./deltVisning.module.css";

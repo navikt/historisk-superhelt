@@ -3,7 +3,7 @@ import { Box, Detail, Heading, HGrid, HStack, Tag, VStack } from "@navikt/ds-rea
 import { isoTilLokal } from "~/common/dato.utils";
 import { isSakFerdig, utbetalingText, vedtakResultatText } from "~/common/sak/sak.utils";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
-import { enumkodeTilTekst, formatertValuta } from "~/common/string.utils";
+import { formatertValuta } from "~/common/string.utils";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 import styles from "~/routes/sak/$saksnummer/-components/SakOppsummering.module.css";
 
