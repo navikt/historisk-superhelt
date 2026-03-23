@@ -37,7 +37,7 @@ export default function SakOppsummering({ sak }: Props) {
                 <Detail>{getStonadsTypeNavn(sak.type)}</Detail>
 
                 <Detail textColor="subtle">Utbetaling:</Detail>
-                <Detail>{sak.belop !== undefined ? formatertValuta(sak.belop) : "Ikke sendt"}</Detail>
+                <Detail>{sak.belop != null ? formatertValuta(sak.belop) : "Ikke sendt"}</Detail>
 
                 <Detail textColor="subtle">Søknadsdato:</Detail>
                 <Detail>{isoTilLokal(sak.soknadsDato)}</Detail>
