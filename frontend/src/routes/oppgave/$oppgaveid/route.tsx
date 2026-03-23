@@ -1,6 +1,6 @@
 import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { HGrid, Tabs, VStack } from "@navikt/ds-react";
+import { Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
