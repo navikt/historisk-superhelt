@@ -17,11 +17,9 @@ interface ProcessButtonProps extends LinkProps {
 }
 
 const ProcessMenu = ({ children }: ProcessMenuProps) => (
-    <Box borderWidth="0 0 1 0" borderColor="neutral-subtle" asChild>
-        <HStack gap="space-16" paddingBlock="space-16">
-            {children}
-        </HStack>
-    </Box>
+    <HStack gap="space-16" paddingBlock="space-16">
+        {children}
+    </HStack>
 );
 
 const ProcessMenuItem = ({
