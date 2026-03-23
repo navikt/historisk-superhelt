@@ -99,7 +99,11 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
     return (
         <div>
             <VStack gap="space-16">
-                <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}>
+                <Table
+                    sort={sort}
+                    onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}
+                    zebraStripes
+                >
                     <Table.Header>
                         <Table.Row>
                             <Table.DataCell aria-label="Vis mer" />

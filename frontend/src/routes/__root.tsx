@@ -8,6 +8,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
 import type { RouterContext } from "~/main";
 import { Header } from "./-components/Header";
+import { Breakpoint3xl } from "~/common/delt-visning/DeltVisning";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     component: RootComponent,
@@ -18,7 +19,7 @@ function RootComponent() {
         <Theme theme={"light"}>
             <Page footer={<Footer />}>
                 <Header />
-                <Page.Block as="main" gutters>
+                <Page.Block as="main" gutters style={{ maxWidth: Breakpoint3xl }}>
                     <RfcErrorBoundary>
                         <MainContent />
                     </RfcErrorBoundary>

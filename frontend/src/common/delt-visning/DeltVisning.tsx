@@ -10,6 +10,8 @@ const MAX_BREDDE = 0.725;
 const DEFAULT_BREDDE = 0.5;
 const AKSEL_BREAKPOINT_LG = parseInt(BreakpointLg);
 
+export const Breakpoint3xl = "2048px"; // Brukes for å sette maksbredde på sider som har delt visning
+
 interface DeltVisningProps {
     children: React.ReactNode[];
 }

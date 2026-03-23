@@ -1,13 +1,14 @@
-import {BodyShort, Box, Heading, Tabs, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {createFileRoute} from "@tanstack/react-router";
-import {useEffect} from "react";
-import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
-import {PersonHeader} from "~/common/person/PersonHeader";
-import {finnPersonQuery} from "~/common/person/person.query";
-import {kortNavn} from "~/common/string.utils";
-import {OppgaverForPersonTabell} from "~/routes/person/$personid/-components/OppgaverForPersonTabell";
-import {SakshistorikkPersonTabell} from "~/routes/person/$personid/-components/SakshistorikkPersonTabell";
+import { BodyShort, Heading, Page, VStack } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { Card } from "~/common/card/Card";
+import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
+import { PersonHeader } from "~/common/person/PersonHeader";
+import { finnPersonQuery } from "~/common/person/person.query";
+import { kortNavn } from "~/common/string.utils";
+import { OppgaverForPersonTabell } from "~/routes/person/$personid/-components/OppgaverForPersonTabell";
+import { SakshistorikkPersonTabell } from "~/routes/person/$personid/-components/SakshistorikkPersonTabell";
 
 export const Route = createFileRoute("/person/$personid/")({
     component: PersonPage,
@@ -25,34 +26,24 @@ function PersonPage() {
     }, [person.navn]);
 
     return (
-        <VStack gap="space-24">
+        <>
             <PersonHeader maskertPersonId={personid} />
-            <RfcErrorBoundary key={personid}>
-                <Heading size="large">Personside</Heading>
-                <VStack gap="space-48">
-                    <Box background={"accent-soft"} padding="space-24" borderWidth="1" borderRadius="4">
-                        <Heading size="medium">Under behandling</Heading>
-                        <OppgaverForPersonTabell maskertPersonIdent={personid} />
-                    </Box>
-                    <Box background={"default"} borderRadius="4">
-                        <Tabs defaultValue="saker">
-                            <Tabs.List>
-                                <Tabs.Tab value="saker" label="Sakshistorikk" />
-                            </Tabs.List>
-
-                            <Tabs.Panel value="saker">
-                                <Box padding="space-16" borderWidth="1" borderRadius="2">
-                                    <VStack gap="space-16">
-                                        <Heading size="small">Sakshistorikk</Heading>
-                                        <BodyShort>Saker som er ferdig behandlet</BodyShort>
-                                        <SakshistorikkPersonTabell maskertPersonIdent={personid} />
-                                    </VStack>
-                                </Box>
-                            </Tabs.Panel>
-                        </Tabs>
-                    </Box>
+            <Page.Block width="2xl">
+                <VStack paddingBlock="space-24" gap="space-32">
+                    <RfcErrorBoundary key={personid}>
+                        <Heading size="large">Personside</Heading>
+                        <Card>
+                            <Heading size="medium">Under behandling</Heading>
+                            <OppgaverForPersonTabell maskertPersonIdent={personid} />
+                        </Card>
+                        <Card>
+                            <Heading size="medium">Sakshistorikk</Heading>
+                            <BodyShort>Saker som er ferdig behandlet</BodyShort>
+                            <SakshistorikkPersonTabell maskertPersonIdent={personid} />
+                        </Card>
+                    </RfcErrorBoundary>
                 </VStack>
-            </RfcErrorBoundary>
-        </VStack>
+            </Page.Block>
+        </>
     );
 }
