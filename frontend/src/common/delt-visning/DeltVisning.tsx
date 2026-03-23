@@ -1,5 +1,5 @@
 import { Box, Button, HGrid, VStack } from "@navikt/ds-react";
-import { DragVerticalIcon } from "@navikt/aksel-icons";
+import { DragVerticalIcon, MenuElipsisVerticalIcon } from "@navikt/aksel-icons";
 import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "./deltVisning.module.css";
@@ -128,7 +128,7 @@ function JusterbarKolonne({ children }: React.PropsWithChildren) {
                 tabIndex={-1}
             >
                 <div className={styles.linjer} />
-                <DragVerticalIcon title="Dra for å endre bredde" fontSize="2.25rem" />
+                <MenuElipsisVerticalIcon title="Dra for å endre bredde" fontSize="2rem" />
                 <div className={styles.linjer} />
             </Button>
             <VStack gap="space-16">{children}</VStack>
