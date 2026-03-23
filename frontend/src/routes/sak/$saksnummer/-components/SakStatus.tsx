@@ -37,7 +37,7 @@ export default function SakStatus({ sak }: Props) {
     const renderFerdigStatusTag = () => {
         if (sak.vedtaksResultat === "HENLAGT") {
             return (
-                <Tag variant="warning" size="small">
+                <Tag data-color="meta-purple" variant="outline" size="small">
                     Henlagt
                 </Tag>
             );
@@ -60,7 +60,7 @@ export default function SakStatus({ sak }: Props) {
             );
         case "UNDER_BEHANDLING":
             return (
-                <Tag data-color="meta-lime" variant="outline" size="small">
+                <Tag data-color="warning" variant="outline" size="small">
                     Under behandling
                 </Tag>
             );
