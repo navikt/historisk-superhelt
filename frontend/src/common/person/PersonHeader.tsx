@@ -1,4 +1,4 @@
-import { PersonIcon } from "@navikt/aksel-icons";
+import { FigureCombinationIcon } from "@navikt/aksel-icons";
 import { Alert, Bleed, BodyShort, Box, CopyButton, HStack, Link, Tag, Tooltip } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
@@ -28,11 +28,17 @@ export function PersonHeader({ maskertPersonId }: Props) {
 
     return (
         <Bleed marginInline="full" reflectivePadding asChild>
-            <Box background="neutral-moderate" paddingInline="space-24 space-0" height="3.5rem" asChild>
+            <Box
+                background="neutral-moderate"
+                borderColor="neutral-subtle"
+                borderWidth="0 0 1 0"
+                height="3.25rem"
+                asChild
+            >
                 <HStack gap="space-8" align="center" justify="start">
                     <HStack gap="space-12" align="center" justify="space-between">
                         <HStack gap="space-4" align="center" justify="start">
-                            <PersonIcon fontSize="1.5rem" />
+                            <FigureCombinationIcon fontSize="1.75rem" />
                             <BodyShort weight="semibold">
                                 {person?.navn}
                                 {!person.doed && ` (${person.alder ?? "-"} år)`}
