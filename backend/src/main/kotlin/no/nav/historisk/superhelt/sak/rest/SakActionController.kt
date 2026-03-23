@@ -117,12 +117,16 @@ class SakActionController(
             beskrivelse = request.kommentar
         )
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.BEH_UND_VED,
-            sak = sak,
-            beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er underkjent i attestering med kommentar: ${request.kommentar}",
-            tilordneTil = sak.saksbehandler.navIdent
-        )
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.BEH_UND_VED,
+                sak = sak,
+                beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er underkjent i attestering med kommentar: ${request.kommentar}",
+                tilordneTil = sak.saksbehandler.navIdent
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave BEH_UND_VED for sak ${sak.saksnummer}", e)
+        }
     }
 
     private fun attester(sak: Sak) {
@@ -152,12 +156,16 @@ class SakActionController(
         logger.info("Sak $saksnummer sent til attestering")
         sakService.endreStatus(sak, SakStatus.TIL_ATTESTERING)
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.GOD_VED,
-            sak = sak,
-            beskrivelse = "Attestering av sak ${sak.type.navn} i Superhelt(${sak.saksnummer}) saksbehandlet av ${sak.saksbehandler.navIdent}",
-            tilordneTil = null
-        )
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.GOD_VED,
+                sak = sak,
+                beskrivelse = "Attestering av sak ${sak.type.navn} i Superhelt(${sak.saksnummer}) saksbehandlet av ${sak.saksbehandler.navIdent}",
+                tilordneTil = null
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave GOD_VED for sak ${sak.saksnummer}", e)
+        }
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK, OppgaveType.BEH_UND_VED)
 
         endringsloggService.logChange(
@@ -183,17 +191,21 @@ class SakActionController(
 
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK)
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.BEH_SAK_MK,
-            sak = sak,
-            beskrivelse = """Sak i Superhelt(${sak.saksnummer}) er feilregistrert med årsak: ${request.aarsak}
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.BEH_SAK_MK,
+                sak = sak,
+                beskrivelse = """Sak i Superhelt(${sak.saksnummer}) er feilregistrert med årsak: ${request.aarsak}
                 
                  Det må ryddes opp i journalposter knyttet til denne saken
             """.trimIndent(),
-            tilordneTil = getAuthenticatedUser().navIdent,
-            // Setter applikasjon til null så denne behandles i helhet i gosys
-            behandlesAvApplikasjon = null
-        )
+                tilordneTil = getAuthenticatedUser().navIdent,
+                // Setter applikasjon til null så denne behandles i helhet i gosys
+                behandlesAvApplikasjon = null
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave BEH_SAK_MK for sak ${sak.saksnummer}", e)
+        }
 
         endringsloggService.logChange(
             saksnummer = saksnummer,
@@ -249,12 +261,16 @@ class SakActionController(
 
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.VUR)
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.BEH_SAK,
-            sak = sak,
-            beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er gjenåpnet med årsak: ${request.aarsak}",
-            tilordneTil = getAuthenticatedUser().navIdent
-        )
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.BEH_SAK,
+                sak = sak,
+                beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er gjenåpnet med årsak: ${request.aarsak}",
+                tilordneTil = getAuthenticatedUser().navIdent
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave BEH_SAK for sak ${sak.saksnummer}", e)
+        }
 
         endringsloggService.logChange(
             saksnummer = saksnummer,

@@ -114,14 +114,20 @@ class OppgaveService(
             return
         }
 
-        oppgaveClient.patchOppgave(
-            oppgaveId = oppgaveId,
-            request = PatchOppgaveRequest(
-                versjon = oppgave.versjon,
-                status = OppgaveDto.Status.FERDIGSTILT
+        runCatching {
+            oppgaveClient.patchOppgave(
+                oppgaveId = oppgaveId,
+                request = PatchOppgaveRequest(
+                    versjon = oppgave.versjon,
+                    status = OppgaveDto.Status.FERDIGSTILT
+                )
             )
-        )
-        logger.info("Ferdigstiller oppgave {}: {}", oppgave.type, oppgave.id)
+        }.onFailure { e ->
+            logger.error("Feil ved ferdigstilling av oppgave med id {}. Ignoreres", oppgave.id, e)
+        }.onSuccess {
+            logger.info("Ferdigstiller oppgave {}: {}", oppgave.type, oppgave.id)
+        }
+
     }
 
     /** Ferdigstiller oppgaver av gitt type for en sak. Hvis ingen type er oppgitt, ferdigstilles alle oppgaver for saken. */
