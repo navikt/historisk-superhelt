@@ -102,26 +102,30 @@ class OppgaveService(
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun ferdigstillOppgave(oppgaveId: EksternOppgaveId) {
-        val oppgave = oppgaveClient.hentOppgave(oppgaveId)
+        runCatching {
+            val oppgave = oppgaveClient.hentOppgave(oppgaveId)
 
-        if (oppgave == null) {
-            logger.warn("Fant ikke oppgave med id {}, kan ikke ferdigstille", oppgaveId)
-            return
-        }
+            if (oppgave == null) {
+                logger.warn("Fant ikke oppgave med id {}, kan ikke ferdigstille", oppgaveId)
+                return
+            }
 
-        if (oppgave.status == OppgaveDto.Status.FERDIGSTILT) {
-            logger.debug("Oppgave {} er allerede ferdigstilt, ingen mulighet å oppdatere", oppgave.id)
-            return
-        }
+            if (oppgave.status == OppgaveDto.Status.FERDIGSTILT) {
+                logger.debug("Oppgave {} er allerede ferdigstilt, ingen mulighet å oppdatere", oppgave.id)
+                return
+            }
 
-        oppgaveClient.patchOppgave(
-            oppgaveId = oppgaveId,
-            request = PatchOppgaveRequest(
-                versjon = oppgave.versjon,
-                status = OppgaveDto.Status.FERDIGSTILT
+            oppgaveClient.patchOppgave(
+                oppgaveId = oppgaveId,
+                request = PatchOppgaveRequest(
+                    versjon = oppgave.versjon,
+                    status = OppgaveDto.Status.FERDIGSTILT
+                )
             )
-        )
-        logger.info("Ferdigstiller oppgave {}: {}", oppgave.type, oppgave.id)
+            logger.info("Ferdigstiller oppgave {}: {}", oppgave.type, oppgaveId)
+        }.onFailure { e ->
+            logger.error("Feil ved ferdigstilling av oppgave med id {}. Ignoreres", oppgaveId, e)
+        }
     }
 
     /** Ferdigstiller oppgaver av gitt type for en sak. Hvis ingen type er oppgitt, ferdigstilles alle oppgaver for saken. */
