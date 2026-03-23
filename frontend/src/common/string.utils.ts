@@ -19,3 +19,7 @@ export function enumkodeTilTekst(enumKode: string | undefined, storBokstav = tru
         })
         .join(" ");
 }
+
+export function formatertValuta(belop: number, valuta: string = "NOK"): string {
+    return belop.toLocaleString("no-NO", { style: "currency", currency: valuta });
+}

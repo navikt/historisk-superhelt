@@ -1,5 +1,5 @@
-import type {Sak} from "@generated";
-import type {SakStatusType, UtbetalingsType} from "~/common/sak/sak.types";
+import type { Sak } from "@generated";
+import type { SakStatusType, UtbetalingsType } from "~/common/sak/sak.types";
 
 const ferdigStatus: Array<SakStatusType> = ["FERDIG", "FEILREGISTRERT"];
 
@@ -15,6 +15,22 @@ export function utbetalingText(utbetalingsType: UtbetalingsType) {
             return "Forhåndstilsagn";
         case "INGEN":
             return "Ingen utbetaling er valgt";
-        default: return utbetalingsType;
+        default:
+            return utbetalingsType;
+    }
+}
+
+export function vedtakResultatText(vedtaksResultat: Sak["vedtaksResultat"]) {
+    switch (vedtaksResultat) {
+        case "INNVILGET":
+            return "Innvilget";
+        case "DELVIS_INNVILGET":
+            return "Delvis innvilget";
+        case "AVSLATT":
+            return "Avslått";
+        case "HENLAGT":
+            return "Henlagt";
+        default:
+            return vedtaksResultat;
     }
 }
