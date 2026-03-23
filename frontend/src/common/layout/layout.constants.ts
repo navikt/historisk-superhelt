@@ -1,0 +1,1 @@
+export const Breakpoint3xl = "2048px";

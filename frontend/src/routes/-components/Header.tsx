@@ -16,7 +16,7 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Breakpoint3xl } from "~/common/delt-visning/DeltVisning";
+import { Breakpoint3xl } from "~/common/layout/layout.constants";
 import { temaBeskrivelse } from "~/common/tema.utils";
 
 export function Header() {
