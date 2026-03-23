@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.brev
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
 
 class BrevTekstGenerator(private val sak: Sak) {
 
@@ -33,7 +33,7 @@ class BrevTekstGenerator(private val sak: Sak) {
 
                 return """
                     <h1>Vedtak om ${sak.type.navn.lowercase()}</h1>
-                    <p>Søknaden din av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}.</p>
+                    <p>Søknaden din av ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn?.lowercase()}.</p>
                     <p></p>
                     ${if (showUtbetaling) "<p>Vi har utbetalt ${sak.belop} kr til konto som er registrert hos Nav. Pengene vil være på din konto innen 1-4 virkedager</p>" else ""}
                            
@@ -43,7 +43,7 @@ class BrevTekstGenerator(private val sak: Sak) {
             BrevMottaker.SAMHANDLER -> {
                 return """
                     <h1>Informasjon til samhandler</h1>
-                    <p>Søknaden av  ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn}</p>
+                    <p>Søknaden av  ${sak.soknadsDato?.format(navDateFormatter)} om ${sak.type.navn.lowercase()} er ${sak.vedtaksResultat?.navn?.lowercase()}</p>
          
                     <p>For ${sak.tildelingsAar} får du</p>
                     <ul>
