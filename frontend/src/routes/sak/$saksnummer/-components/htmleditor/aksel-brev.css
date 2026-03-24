@@ -50,6 +50,10 @@
         margin-bottom: 16px;
     }
 
+    p {
+        min-height:  1rem;
+    }
+
     ul p {
         margin: 0;
     }
