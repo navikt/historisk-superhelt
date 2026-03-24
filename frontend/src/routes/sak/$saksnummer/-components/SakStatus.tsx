@@ -1,10 +1,10 @@
-import type { Sak } from "@generated";
-import { getSakStatusOptions } from "@generated/@tanstack/react-query.gen";
-import { ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
-import { Tag } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import type { SakStatusType } from "~/common/sak/sak.types";
-import { vedtakResultatText } from "~/common/sak/sak.utils";
+import type {Sak} from "@generated";
+import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
+import {ExclamationmarkTriangleIcon} from "@navikt/aksel-icons";
+import {Tag} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import type {SakStatusType} from "~/common/sak/sak.types";
+import {useSakVedtakNavn} from "~/common/sak/useSakVedtakNavn";
 
 interface Props {
     sak: Sak;
@@ -12,6 +12,7 @@ interface Props {
 
 export default function SakStatus({ sak }: Props) {
     const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
+    const getSakVedtakNavn = useSakVedtakNavn();
     const hasError = sakStatus.aggregertStatus === "FEILET";
 
     function getAlertIcon() {
@@ -35,7 +36,7 @@ export default function SakStatus({ sak }: Props) {
 
         return (
             <Tag variant={variant} size="small" icon={icon}>
-                {vedtakResultatText(sak.vedtaksResultat)}
+                {getSakVedtakNavn(sak.vedtaksResultat)}
             </Tag>
         );
     };
