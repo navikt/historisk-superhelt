@@ -1,13 +1,14 @@
-import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon } from "@navikt/aksel-icons";
-import { Box, ErrorMessage } from "@navikt/ds-react";
-import type { Editor } from "@tiptap/react";
-import { EditorContent, EditorContext, useEditor, useEditorState } from "@tiptap/react";
+import OfficePaste from "@intevation/tiptap-extension-office-paste";
+import {ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon} from "@navikt/aksel-icons";
+import {Box, ErrorMessage} from "@navikt/ds-react";
+import type {Editor} from "@tiptap/react";
+import {EditorContent, EditorContext, useEditor, useEditorState} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useMemo } from "react";
-import { Bold, Italic } from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
+import {useEffect, useMemo} from "react";
+import {Bold, Italic} from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
 import styles from "./TiptapEditor.module.css";
 
-const extensions = [StarterKit];
+const extensions = [StarterKit, OfficePaste];
 
 function MenuBar({ editor }: { editor: Editor }) {
     // Read the current editor's state, and re-render the component when it changes

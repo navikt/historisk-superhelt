@@ -17,6 +17,7 @@
         "node": ">=24"
     },
     "dependencies": {
+        "@intevation/tiptap-extension-office-paste": "^0.1.2",
         "@navikt/ds-css": "^8.5.2",
         "@navikt/ds-react": "^8.5.2",
         "@tanstack/react-query": "^5.90.21",
