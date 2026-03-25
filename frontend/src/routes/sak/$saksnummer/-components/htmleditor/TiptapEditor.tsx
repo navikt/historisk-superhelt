@@ -1,13 +1,14 @@
-import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon } from "@navikt/aksel-icons";
-import { Box, ErrorMessage } from "@navikt/ds-react";
-import type { Editor } from "@tiptap/react";
-import { EditorContent, EditorContext, useEditor, useEditorState } from "@tiptap/react";
+import {ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilWritingIcon} from "@navikt/aksel-icons";
+import {Box, ErrorMessage} from "@navikt/ds-react";
+import Highlight from "@tiptap/extension-highlight";
+import type {Editor} from "@tiptap/react";
+import {EditorContent, EditorContext, useEditor, useEditorState} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useMemo } from "react";
-import { Bold, Italic } from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
+import {useEffect, useMemo} from "react";
+import {Bold, Italic} from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
 import styles from "./TiptapEditor.module.css";
 
-const extensions = [StarterKit];
+const extensions = [StarterKit, Highlight];
 
 function MenuBar({ editor }: { editor: Editor }) {
     // Read the current editor's state, and re-render the component when it changes
@@ -35,6 +36,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 isOrderedList: ctx.editor.isActive("orderedList") ?? false,
                 isCodeBlock: ctx.editor.isActive("codeBlock") ?? false,
                 isBlockquote: ctx.editor.isActive("blockquote") ?? false,
+                isHighlight: ctx.editor.isActive("highlight") ?? false,
                 canUndo: ctx.editor.can().chain().undo().run() ?? false,
                 canRedo: ctx.editor.can().chain().redo().run() ?? false,
             };
@@ -127,6 +129,14 @@ function MenuBar({ editor }: { editor: Editor }) {
                 className={editorState.isOrderedList ? activeStyle : ""}
             >
                 <NumberListIcon title="Ordnet liste" />
+            </button>
+            <button
+                type="button"
+                aria-label="highlight"
+                onClick={() => editor.chain().focus().toggleHighlight().run()}
+                className={editorState.isHighlight ? activeStyle : ""}
+            >
+                <PencilWritingIcon title={"Marker tekst"}  />
             </button>
         </div>
     );

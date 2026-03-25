@@ -23,6 +23,7 @@
         "@tanstack/react-query-devtools": "^5.91.3",
         "@tanstack/react-router": "^1.166.7",
         "@tanstack/react-router-devtools": "^1.166.7",
+        "@tiptap/extension-highlight": "^3.20.5",
         "@tiptap/pm": "^3.20.1",
         "@tiptap/react": "^3.20.1",
         "@tiptap/starter-kit": "^3.20.1",
