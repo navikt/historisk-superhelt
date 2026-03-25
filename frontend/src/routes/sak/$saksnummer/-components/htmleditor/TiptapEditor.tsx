@@ -132,7 +132,7 @@ function MenuBar({ editor }: { editor: Editor }) {
             </button>
             <button
                 type="button"
-                aria-label="highlight"
+                aria-label="Marker tekst"
                 onClick={() => editor.chain().focus().toggleHighlight().run()}
                 className={editorState.isHighlight ? activeStyle : ""}
             >
