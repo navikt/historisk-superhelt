@@ -6,9 +6,10 @@ import { EditorContent, EditorContext, useEditor, useEditorState } from "@tiptap
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo } from "react";
 import { Bold, Italic } from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
+import { WordHighlight } from "./WordHighlight";
 import styles from "./TiptapEditor.module.css";
 
-const extensions = [StarterKit, Highlight];
+const extensions = [StarterKit, Highlight, WordHighlight];
 
 function MenuBar({ editor }: { editor: Editor }) {
     // Read the current editor's state, and re-render the component when it changes
@@ -159,24 +160,6 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly }:
             onChange(editorState.editor.getHTML());
         },
         onBlur: onBlur,
-        editorProps: {
-            /* 
-            markerte elementer i Word har ofte inline-styles for bakgrunnsfarge, 
-            som vi ønsker å konvertere til <mark> for å beholde markeringen når det limes inn i editoren
-            */
-            transformPastedHTML(html: string) {
-                const doc = new DOMParser().parseFromString(html, "text/html");
-                doc.querySelectorAll<HTMLElement>("span[style]").forEach((span) => {
-                    const harBakgrunnsfarge = span.style.backgroundColor !== "";
-                    if (harBakgrunnsfarge) {
-                        const mark = doc.createElement("mark");
-                        mark.append(...Array.from(span.childNodes));
-                        span.replaceWith(mark);
-                    }
-                });
-                return doc.body.innerHTML;
-            },
-        },
     });
 
     // Oppdater editor-innhold når initialContentHtml endres
