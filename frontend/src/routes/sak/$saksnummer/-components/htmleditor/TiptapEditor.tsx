@@ -1,11 +1,11 @@
-import {ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilWritingIcon} from "@navikt/aksel-icons";
-import {Box, ErrorMessage} from "@navikt/ds-react";
+import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilWritingIcon } from "@navikt/aksel-icons";
+import { Box, ErrorMessage } from "@navikt/ds-react";
 import Highlight from "@tiptap/extension-highlight";
-import type {Editor} from "@tiptap/react";
-import {EditorContent, EditorContext, useEditor, useEditorState} from "@tiptap/react";
+import type { Editor } from "@tiptap/react";
+import { EditorContent, EditorContext, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import {useEffect, useMemo} from "react";
-import {Bold, Italic} from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
+import { useEffect, useMemo } from "react";
+import { Bold, Italic } from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
 import styles from "./TiptapEditor.module.css";
 
 const extensions = [StarterKit, Highlight];
@@ -136,7 +136,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 onClick={() => editor.chain().focus().toggleHighlight().run()}
                 className={editorState.isHighlight ? activeStyle : ""}
             >
-                <PencilWritingIcon title={"Marker tekst"}  />
+                <PencilWritingIcon title={"Marker tekst"} />
             </button>
         </div>
     );
@@ -159,6 +159,24 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly }:
             onChange(editorState.editor.getHTML());
         },
         onBlur: onBlur,
+        editorProps: {
+            /* 
+            markerte elementer i Word har ofte inline-styles for bakgrunnsfarge, 
+            som vi ønsker å konvertere til <mark> for å beholde markeringen når det limes inn i editoren
+            */
+            transformPastedHTML(html: string) {
+                const doc = new DOMParser().parseFromString(html, "text/html");
+                doc.querySelectorAll<HTMLElement>("span[style]").forEach((span) => {
+                    const harBakgrunnsfarge = span.style.backgroundColor !== "";
+                    if (harBakgrunnsfarge) {
+                        const mark = doc.createElement("mark");
+                        mark.append(...Array.from(span.childNodes));
+                        span.replaceWith(mark);
+                    }
+                });
+                return doc.body.innerHTML;
+            },
+        },
     });
 
     // Oppdater editor-innhold når initialContentHtml endres
