@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
+import { Breakpoint3xl } from "~/common/layout/layout.constants";
 import type { RouterContext } from "~/main";
 import { Header } from "./-components/Header";
 
@@ -18,7 +19,7 @@ function RootComponent() {
         <Theme theme={"light"}>
             <Page footer={<Footer />}>
                 <Header />
-                <Page.Block as="main" gutters>
+                <Page.Block as="main" gutters style={{ maxWidth: Breakpoint3xl }}>
                     <RfcErrorBoundary>
                         <MainContent />
                     </RfcErrorBoundary>
