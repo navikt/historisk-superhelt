@@ -1,0 +1,17 @@
+.container {
+  container-type: inline-size;
+}
+
+.grid {
+  grid-template-columns: repeat(5, auto) 1fr;
+  align-items: start;
+  column-gap: var(--ax-space-12);
+  row-gap: var(--ax-space-2);
+  width: 100%;
+}
+
+@container (max-width: 42rem) {
+  .grid {
+    grid-template-columns: repeat(3, auto) 1fr;
+  }
+}

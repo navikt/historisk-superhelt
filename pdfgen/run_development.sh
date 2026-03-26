@@ -2,7 +2,7 @@
 
 CURRENT_PATH="$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
 
-CONTAINER_NAME="ghcr.io/navikt/pdfgen:2.0.98"
+CONTAINER_NAME="ghcr.io/navikt/pdfgen:2.0.113"
 
 docker pull $CONTAINER_NAME
 docker run \

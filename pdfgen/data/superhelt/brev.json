@@ -6,11 +6,11 @@
     "etternavn": "Planetus"
   },
   "datoForUtsending": "3. august 2023",
-  "saksbehandlerNavn": "Kåre Kropp",
-  "beslutterNavn": "Pelle Parafin",
+  "saksbehandlerNavn": "Sigurd Saksbehandler",
+  "beslutterNavn": "Bjørn Beslutter",
   "kontor": "Nav Hjelpemidler Øst Viken",
   "mottaker": "BRUKER",
   "brevtype": "VEDTAKSBREV",
 
-  "html": "<h1>h1 heading</h1>\n<h2>h2 heading</h2>\n<h3>h3 heading</h3>\n<h4>h4 heading</h4>\n\n\n<b>bold</b>\n<i>italic</i>\n\n<p>lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget consectetur sagittis, nisl nunc\n    egestas nunc, vitae facilisis enim nisi nec nisi. Sed euismod, nisl eget consectetur sagittis, nisl nunc egestas\n    nunc, vitae facilisis enim nisi nec nisi.</p>\n\n<ul>\n    <li>List item 1</li>\n    <li>List item 2</li>\n    <li>List item 3</li>\n</ul>\n\n<ol>\n    <li>List item 1</li>\n    <li>List item 2</li>\n    <li>List item 3</li>\n    <li>List item 4</li>\n</ol>\n\n<table>\n    <caption>\n        Council budget (in £) 2018\n    </caption>\n    <thead>\n    <tr>\n        <th>Items</th>\n        <th>Expenditure</th>\n    </tr>\n    </thead>\n    <tbody>\n    <tr>\n        <th>Donuts</th>\n&nbsp;&nbsp;&nbsp;     <td>3,000</td>\n    </tr>\n    <tr>\n        <th >Stationery</th>\n        <td>18,000</td>\n    </tr>\n    </tbody>\n    <tfoot>\n    <tr>\n        <th >Totals</th>\n        <td>21,000</td>\n    </tr>\n    </tfoot>\n</table>"
+  "html": "<h1>Vedtak om reiseutgifter</h1><p><mark>Søknaden din av 09. januar 2026 om reiseutgifter</mark> er innvilget.</p><p></p><p>Vi har utbetalt 707 kr til konto som er registrert hos Nav. Pengene vil være på din konto innen 1-4 virkedager<br/><br/>Reiser til ortopedisk verksted den 15.07.25, 29.09.25 og 20.10.25 med ledsager.<br/></p><p>REISERUTE:</p><p>Fra: Håtuftvegen 250, 5919 FREKHAUG</p><p>Til: Drevelin Ortopedi AS - Møllendalsbakken 11, 5009 Bergen</p><p>Avstand: 33.2 km per vei</p><p><br/>GODTGJØRELSER:</p><p>• Bruk av egen bil</p><p>  Sats: 3.1 kr/km</p><p>  Kjørelengde: 66.4 km (tur-retur)</p><p>  Beløp: 205.84 kr x 3 reiser</p><p><br/>• Tillegg ledsager/passasjer</p><p>  Sats: 0.45 kr/km</p><p>  Kjørelengde: 66.4 km</p><p>  Antall: 1</p><p>  Beløp: 29.88 kr x 3 reiser</p><p><br/>NAV satser 2025</p><p>Kilde: nav.no/reiseutgifter</p><p>Kilde: Kartverket Matrikkel API + SSR Stedsnavn API</p><p><br/>Vedtaket er gjort etter folketrygdloven §10-7 med tilhørende forskrift.<br/><br/></p><p></p>"
 }

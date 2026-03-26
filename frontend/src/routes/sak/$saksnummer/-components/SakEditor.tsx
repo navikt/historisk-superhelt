@@ -198,7 +198,7 @@ export default function SakEditor({ sak }: Props) {
                 </Box>
 
                 <HStack gap="space-32" align="start">
-                    <Button type="submit" variant="secondary" onClick={completedSoknad}>
+                    <Button type="submit" variant="primary" onClick={completedSoknad}>
                         Lagre og gå videre
                     </Button>
                 </HStack>
