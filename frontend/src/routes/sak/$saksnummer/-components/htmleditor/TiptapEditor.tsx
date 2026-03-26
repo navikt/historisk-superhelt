@@ -1,14 +1,15 @@
-import {ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilWritingIcon} from "@navikt/aksel-icons";
-import {Box, ErrorMessage} from "@navikt/ds-react";
+import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilWritingIcon } from "@navikt/aksel-icons";
+import { Box, ErrorMessage } from "@navikt/ds-react";
 import Highlight from "@tiptap/extension-highlight";
-import type {Editor} from "@tiptap/react";
-import {EditorContent, EditorContext, useEditor, useEditorState} from "@tiptap/react";
+import type { Editor } from "@tiptap/react";
+import { EditorContent, EditorContext, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import {useEffect, useMemo} from "react";
-import {Bold, Italic} from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
+import { useEffect, useMemo } from "react";
+import { Bold, Italic } from "~/routes/sak/$saksnummer/-components/htmleditor/Icons";
+import { WordHighlight } from "./WordHighlight";
 import styles from "./TiptapEditor.module.css";
 
-const extensions = [StarterKit, Highlight];
+const extensions = [StarterKit, Highlight, WordHighlight];
 
 function MenuBar({ editor }: { editor: Editor }) {
     // Read the current editor's state, and re-render the component when it changes
@@ -136,7 +137,7 @@ function MenuBar({ editor }: { editor: Editor }) {
                 onClick={() => editor.chain().focus().toggleHighlight().run()}
                 className={editorState.isHighlight ? activeStyle : ""}
             >
-                <PencilWritingIcon title={"Marker tekst"}  />
+                <PencilWritingIcon title={"Marker tekst"} />
             </button>
         </div>
     );
