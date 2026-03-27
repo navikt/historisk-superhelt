@@ -1,5 +1,5 @@
-import type { Sak, SakUpdateRequestDto } from "@generated";
-import { oppdaterSakMutation } from "@generated/@tanstack/react-query.gen";
+import type {Sak, SakUpdateRequestDto} from "@generated";
+import {oppdaterSakMutation} from "@generated/@tanstack/react-query.gen";
 import {
     Box,
     Button,
@@ -14,14 +14,15 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { dateTilIsoDato } from "~/common/dato.utils";
-import { NumericInput } from "~/common/NumericInput";
+import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
+import {useNavigate} from "@tanstack/react-router";
+import {useEffect, useState} from "react";
+import {dateTilIsoDato} from "~/common/dato.utils";
+import {NumericInput} from "~/common/NumericInput";
 import useDebounce from "~/common/useDebounce";
-import type { SakVedtakType, StonadType, UtbetalingsType } from "~/routes/sak/$saksnummer/-types/sak.types";
-import { getKodeverkStonadsTypeOptions, sakQueryKey } from "../-api/sak.query";
+import type {SakVedtakType, StonadType, UtbetalingsType} from "~/common/sak/sak.types";
+import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
+import { Card } from "~/common/card/Card";
 
 interface Props {
     sak: Sak;
@@ -117,7 +118,7 @@ export default function SakEditor({ sak }: Props) {
     }
 
     return (
-        <Box background="neutral-soft" padding="space-24" borderWidth="1" borderRadius="8" borderColor="neutral-subtle">
+        <Card>
             <VStack gap="space-24">
                 <Select
                     label="Stønad"
@@ -197,7 +198,7 @@ export default function SakEditor({ sak }: Props) {
                 </Box>
 
                 <HStack gap="space-32" align="start">
-                    <Button type="submit" variant="secondary" onClick={completedSoknad}>
+                    <Button type="submit" variant="primary" onClick={completedSoknad}>
                         Lagre og gå videre
                     </Button>
                 </HStack>
@@ -210,6 +211,6 @@ export default function SakEditor({ sak }: Props) {
                     </ErrorSummary>
                 )}
             </VStack>
-        </Box>
+        </Card>
     );
 }

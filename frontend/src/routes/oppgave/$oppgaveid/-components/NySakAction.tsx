@@ -5,7 +5,7 @@ import {useMutation} from "@tanstack/react-query";
 import {useNavigate} from "@tanstack/react-router";
 import {useState} from "react";
 import {ErrorAlert} from "~/common/error/ErrorAlert";
-import type {StonadType} from "~/routes/sak/$saksnummer/-types/sak.types";
+import type {StonadType} from "~/common/sak/sak.types";
 import type {FellesData} from "./JournalforForm";
 import {StonadsTypeVelger} from "./StonadsTypeVelger";
 
@@ -57,7 +57,7 @@ export function NySakAction({ oppgaveMedSak, journalPost, defaultStonadstype, re
                     setError(undefined);
                 }}
             />
-            <Button type="submit" disabled={readOnly} onClick={handleSubmit}>
+            <Button type="submit" disabled={readOnly} onClick={handleSubmit} loading={journalfor.isPending}>
                 Journalfør og start behandling
             </Button>
             {backendError && <ErrorAlert error={backendError} />}

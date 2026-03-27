@@ -1,9 +1,10 @@
-import type { Sak } from "@generated";
-import { getSakStatusOptions } from "@generated/@tanstack/react-query.gen";
-import { ExclamationmarkTriangleIcon } from "@navikt/aksel-icons";
-import { Tag } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import type { SakStatusType, SakVedtakType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import type {Sak} from "@generated";
+import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
+import {ExclamationmarkTriangleIcon} from "@navikt/aksel-icons";
+import {Tag} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import type {SakStatusType} from "~/common/sak/sak.types";
+import {useSakVedtakNavn} from "~/common/sak/useSakVedtakNavn";
 
 interface Props {
     sak: Sak;
@@ -11,19 +12,7 @@ interface Props {
 
 export default function SakStatus({ sak }: Props) {
     const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
-    function ferdigText(vedtak: SakVedtakType | undefined) {
-        switch (vedtak) {
-            case "AVSLATT":
-                return "Avslått";
-            case "INNVILGET":
-                return "Innvilget";
-            case "DELVIS_INNVILGET":
-                return "Delvis innvilget";
-            case "HENLAGT":
-                return "Henlagt";
-        }
-        return undefined;
-    }
+    const getSakVedtakNavn = useSakVedtakNavn();
     const hasError = sakStatus.aggregertStatus === "FEILET";
 
     function getAlertIcon() {
@@ -37,7 +26,7 @@ export default function SakStatus({ sak }: Props) {
     const renderFerdigStatusTag = () => {
         if (sak.vedtaksResultat === "HENLAGT") {
             return (
-                <Tag variant="warning" size="small">
+                <Tag data-color="meta-purple" variant="outline" size="small">
                     Henlagt
                 </Tag>
             );
@@ -47,7 +36,7 @@ export default function SakStatus({ sak }: Props) {
 
         return (
             <Tag variant={variant} size="small" icon={icon}>
-                {ferdigText(sak.vedtaksResultat)}
+                {getSakVedtakNavn(sak.vedtaksResultat)}
             </Tag>
         );
     };
@@ -60,7 +49,7 @@ export default function SakStatus({ sak }: Props) {
             );
         case "UNDER_BEHANDLING":
             return (
-                <Tag data-color="meta-lime" variant="outline" size="small">
+                <Tag data-color="warning" variant="outline" size="small">
                     Under behandling
                 </Tag>
             );

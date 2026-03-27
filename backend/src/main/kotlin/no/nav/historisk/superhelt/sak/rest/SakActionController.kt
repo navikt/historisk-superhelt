@@ -11,8 +11,14 @@ import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedU
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
-import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakExtensions.utbetalingInfo
+import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakRettighet
+import no.nav.historisk.superhelt.sak.SakService
+import no.nav.historisk.superhelt.sak.SakStatus
+import no.nav.historisk.superhelt.sak.SakValidator
+import no.nav.historisk.superhelt.sak.UpdateSakDto
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import no.nav.historisk.superhelt.vedtak.VedtakService
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
@@ -20,7 +26,11 @@ import no.nav.oppgave.OppgaveType
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/sak/{saksnummer}")
@@ -107,12 +117,16 @@ class SakActionController(
             beskrivelse = request.kommentar
         )
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.BEH_UND_VED,
-            sak = sak,
-            beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er underkjent i attestering med kommentar: ${request.kommentar}",
-            tilordneTil = sak.saksbehandler.navIdent
-        )
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.BEH_UND_VED,
+                sak = sak,
+                beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er underkjent i attestering med kommentar: ${request.kommentar}",
+                tilordneTil = sak.saksbehandler.navIdent
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave BEH_UND_VED for sak ${sak.saksnummer}", e)
+        }
     }
 
     private fun attester(sak: Sak) {
@@ -142,12 +156,16 @@ class SakActionController(
         logger.info("Sak $saksnummer sent til attestering")
         sakService.endreStatus(sak, SakStatus.TIL_ATTESTERING)
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.GOD_VED,
-            sak = sak,
-            beskrivelse = "Attestering av sak ${sak.type.navn} i Superhelt(${sak.saksnummer}) saksbehandlet av ${sak.saksbehandler.navIdent}",
-            tilordneTil = null
-        )
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.GOD_VED,
+                sak = sak,
+                beskrivelse = "Attestering av sak ${sak.type.navn} i Superhelt(${sak.saksnummer}) saksbehandlet av ${sak.saksbehandler.navIdent}",
+                tilordneTil = null
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave GOD_VED for sak ${sak.saksnummer}", e)
+        }
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK, OppgaveType.BEH_UND_VED)
 
         endringsloggService.logChange(
@@ -173,17 +191,21 @@ class SakActionController(
 
         oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.BEH_SAK)
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.BEH_SAK_MK,
-            sak = sak,
-            beskrivelse = """Sak i Superhelt(${sak.saksnummer}) er feilregistrert med årsak: ${request.aarsak}
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.BEH_SAK_MK,
+                sak = sak,
+                beskrivelse = """Sak i Superhelt(${sak.saksnummer}) er feilregistrert med årsak: ${request.aarsak}
                 
                  Det må ryddes opp i journalposter knyttet til denne saken
             """.trimIndent(),
-            tilordneTil = getAuthenticatedUser().navIdent,
-            // Setter applikasjon til null så denne behandles i helhet i gosys
-            behandlesAvApplikasjon = null
-        )
+                tilordneTil = getAuthenticatedUser().navIdent,
+                // Setter applikasjon til null så denne behandles i helhet i gosys
+                behandlesAvApplikasjon = null
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave BEH_SAK_MK for sak ${sak.saksnummer}", e)
+        }
 
         endringsloggService.logChange(
             saksnummer = saksnummer,
@@ -236,15 +258,19 @@ class SakActionController(
             .validate()
 
         sakService.gjenapneSak(sak)
-        // brevService nyttbrev
-//        sak.utbetaling.let { utbetalingService.updateUtbetalingsStatus() }
 
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.BEH_SAK,
-            sak = sak,
-            beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er gjenåpnet med årsak: ${request.aarsak}",
-            tilordneTil = getAuthenticatedUser().navIdent
-        )
+        oppgaveService.ferdigstillOppgaver(saksnummer, OppgaveType.VUR)
+
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.BEH_SAK,
+                sak = sak,
+                beskrivelse = "Sak i Superhelt(${sak.saksnummer}) er gjenåpnet med årsak: ${request.aarsak}",
+                tilordneTil = getAuthenticatedUser().navIdent
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave BEH_SAK for sak ${sak.saksnummer}", e)
+        }
 
         endringsloggService.logChange(
             saksnummer = saksnummer,

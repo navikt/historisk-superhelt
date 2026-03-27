@@ -12,6 +12,7 @@ import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.dokarkiv.getTittel
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -69,13 +70,17 @@ class DokarkivJournalforController(
 
         val sak = sakRepository.getSak(saksnummer)
         // TODO Sjekke om det er åpen oppgave
-        oppgaveService.opprettOppgave(
-            type = OppgaveType.BEH_SAK,
-            sak = sak,
-            beskrivelse = "Behandle sak av type ${sak.type.navn} i Superhelt",
-            tilordneTil = sak.saksbehandler.navIdent,
-            journalpostId = journalpostId
-        )
+        runCatching {
+            oppgaveService.opprettOppgave(
+                type = OppgaveType.BEH_SAK,
+                sak = sak,
+                beskrivelse = "Behandle sak av type ${sak.type.navn} i Superhelt",
+                tilordneTil = getAuthenticatedUser().navIdent,
+                journalpostId = journalpostId
+            )
+        }.onFailure { e ->
+            logger.error("Feil ved opprettelse av oppgave BEH_SAK for sak ${sak.saksnummer}", e)
+        }
 
         return saksnummer
     }
@@ -125,14 +130,18 @@ class DokarkivJournalforController(
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
         // TODO kanskje sjekke om det er åpne oppgaver på saken i stedet?
         if (sak.status.isFinal()) {
-            oppgaveService.opprettOppgave(
-                type = OppgaveType.VUR,
-                sak = sak,
-                beskrivelse = "Dokument \"${request.getTittel()}\" er lagt til sak ${sak.saksnummer} i Superhelt. " +
-                    "Vurder videre behandling av saken. Lukk denne oppgaven om det ikke skal gjøres noe spesiell oppfølging.",
-                tilordneTil = sak.saksbehandler.navIdent,
-                journalpostId = journalpostId
-            )
+            runCatching {
+                oppgaveService.opprettOppgave(
+                    type = OppgaveType.VUR,
+                    sak = sak,
+                    beskrivelse = "Dokument \"${request.getTittel()}\" er lagt til sak ${sak.saksnummer} i Superhelt. " +
+                        "Vurder videre behandling av saken. Lukk denne oppgaven om det ikke skal gjøres noe spesiell oppfølging.",
+                    tilordneTil = getAuthenticatedUser().navIdent,
+                    journalpostId = journalpostId
+                )
+            }.onFailure { e ->
+                logger.error("Feil ved opprettelse av oppgave VUR for sak ${sak.saksnummer}", e)
+            }
         }
 
         return saksnummer

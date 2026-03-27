@@ -1,11 +1,11 @@
-import type {ProblemDetail, Sak} from "@generated";
-import {ArrowRightIcon} from "@navikt/aksel-icons";
-import {Button, Heading, Skeleton, type SortState, Table, VStack} from "@navikt/ds-react";
-import {Link} from "@tanstack/react-router";
-import {useState} from "react";
-import {isoTilLokal} from "~/common/dato.utils";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import type { ProblemDetail, Sak } from "@generated";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { Button, Heading, Skeleton, type SortState, Table, VStack } from "@navikt/ds-react";
+import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { isoTilLokal } from "~/common/dato.utils";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
 interface SakerTableProps {
@@ -17,8 +17,10 @@ interface SakerTableProps {
     openInNewTab?: boolean;
 }
 
+type SortKey = keyof Sak;
+
 type ScopedSortState = {
-    orderBy: keyof Sak;
+    orderBy: SortKey;
 } & SortState;
 
 export function SakerTabell({
@@ -30,25 +32,23 @@ export function SakerTabell({
     openInNewTab,
 }: SakerTableProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
-    const defaultDescendingColumns: Array<ScopedSortState["orderBy"]> = ["opprettetDato", "tildelingsAar"];
+    const defaultDescendingColumns: Array<SortKey> = ["soknadsDato", "tildelingsAar"];
 
     const [sort, setSort] = useState<ScopedSortState>({
-        orderBy: "opprettetDato",
+        orderBy: "soknadsDato",
         direction: "descending",
     });
 
-    const handleSort = (sortKey: ScopedSortState["orderBy"]) => {
-        setSort({
-            orderBy: sortKey,
-            direction:
-                sortKey === sort.orderBy
-                    ? sort.direction === "ascending"
-                        ? "descending"
-                        : "ascending"
-                    : defaultDescendingColumns.includes(sortKey)
-                      ? "descending"
-                      : "ascending",
-        });
+    const handleSort = (sortKey: SortKey) => {
+        let direction: SortState["direction"];
+
+        if (sortKey === sort.orderBy) {
+            direction = sort.direction === "ascending" ? "descending" : "ascending";
+        } else {
+            direction = defaultDescendingColumns.includes(sortKey) ? "descending" : "ascending";
+        }
+
+        setSort({ orderBy: sortKey, direction });
     };
 
     function comparator<T>(a: T, b: T, orderBy: keyof T): number {
@@ -83,31 +83,25 @@ export function SakerTabell({
         );
     }
 
+    function SortableColumnHeader(props: { children?: React.ReactNode; sortKey: SortKey }) {
+        return (
+            <Table.ColumnHeader sortKey={props.sortKey} sortable scope="col">
+                {props.children}
+            </Table.ColumnHeader>
+        );
+    }
+
     return (
-        <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as ScopedSortState["orderBy"])}>
+        <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as SortKey)} zebraStripes>
             <Table.Header>
                 <Table.Row>
-                    <Table.ColumnHeader sortKey="saksnummer" sortable>
-                        Saksnummer
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="type" sortable>
-                        Type
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="beskrivelse" sortable>
-                        Beskrivelse
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="status" sortable>
-                        Status
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="tildelingsAar" sortable>
-                        Tildelingsår
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="belop" sortable>
-                        Beløp
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader sortKey="opprettetDato" sortable>
-                        Opprettet
-                    </Table.ColumnHeader>
+                    <SortableColumnHeader sortKey={"saksnummer"}>Saksnummer</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="type">Type</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="beskrivelse">Beskrivelse</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="vedtaksResultat">Status</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="tildelingsAar">Tildelingsår</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="belop">Beløp</SortableColumnHeader>
+                    <SortableColumnHeader sortKey="soknadsDato">Søknadsdato</SortableColumnHeader>
                     {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
                     {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
                 </Table.Row>
@@ -126,7 +120,7 @@ export function SakerTabell({
                         </Table.DataCell>
                         <Table.DataCell>{sak.tildelingsAar ?? "–"}</Table.DataCell>
                         <Table.DataCell>{sak.belop != null ? `${sak.belop} kr` : "–"}</Table.DataCell>
-                        <Table.DataCell>{isoTilLokal(sak.opprettetDato)}</Table.DataCell>
+                        <Table.DataCell>{isoTilLokal(sak.soknadsDato)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{sak.saksbehandler.navn}</Table.DataCell>}
                         {!hideActions && (
                             <Table.DataCell>

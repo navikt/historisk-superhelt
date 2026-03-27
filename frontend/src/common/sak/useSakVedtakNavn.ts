@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getKodeverkVedtaksResultatOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
-import type { SakVedtakType } from "~/routes/sak/$saksnummer/-types/sak.types";
+import type { SakVedtakType } from "~/common/sak/sak.types";
 
 export function useSakVedtakNavn() {
     const { data: vedtaksResultater } = useSuspenseQuery(getKodeverkVedtaksResultatOptions());

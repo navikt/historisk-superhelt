@@ -1,23 +1,24 @@
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { Box, Tabs } from "@navikt/ds-react";
+import { Box, HStack, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
+import DeltVisning from "~/common/delt-visning/DeltVisning";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
 import { PersonHeader } from "~/common/person/PersonHeader";
 import { finnPersonQuery } from "~/common/person/person.query";
 import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
 import { StepType } from "~/common/process-menu/StepType";
+import type { TilstandStatusType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn, kortSaksnummer } from "~/common/string.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
-import SakHeading from "~/routes/sak/$saksnummer/-components/SakHeading";
+import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
 import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
-import type { TilstandStatusType } from "~/routes/sak/$saksnummer/-types/sak.types";
 import { getSakOptions } from "./-api/sak.query";
-import DeltVisning from "~/common/delt-visning/DeltVisning";
+import BehandlingsMeny from "./-components/BehandlingsMeny";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
@@ -68,28 +69,34 @@ function SakLayout() {
     return (
         <>
             <PersonHeader maskertPersonId={sak.maskertPersonIdent} />
-            <ProcessMenu>
-                <ProcessMenu.Item
-                    label={"Opplysninger"}
-                    stepType={steptypeForOpplysninger()}
-                    to={"/sak/$saksnummer/opplysninger"}
-                />
-                <ProcessMenu.Item
-                    label={"Brev til bruker"}
-                    stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
-                    to={"/sak/$saksnummer/vedtaksbrevbruker"}
-                    disabled={calculateStepType(sak?.tilstand.opplysninger) !== StepType.success}
-                />
-                <ProcessMenu.Item
-                    label={"Oppsummering"}
-                    stepType={calculateStepType(sak?.tilstand.oppsummering)}
-                    to={"/sak/$saksnummer/oppsummering"}
-                    disabled={
-                        sak.status !== "TIL_ATTESTERING" &&
-                        calculateStepType(sak?.tilstand.vedtaksbrevBruker) !== StepType.success
-                    }
-                />
-            </ProcessMenu>
+            <Box borderWidth="0 0 1 0" borderColor="neutral-subtle" asChild>
+                <HStack justify="space-between" align="center">
+                    <ProcessMenu>
+                        <ProcessMenu.Item
+                            label={"Opplysninger"}
+                            stepType={steptypeForOpplysninger()}
+                            to={"/sak/$saksnummer/opplysninger"}
+                        />
+                        <ProcessMenu.Item
+                            label={"Brev til bruker"}
+                            stepType={calculateStepType(sak?.tilstand.vedtaksbrevBruker)}
+                            to={"/sak/$saksnummer/vedtaksbrevbruker"}
+                            disabled={calculateStepType(sak?.tilstand.opplysninger) !== StepType.success}
+                        />
+                        <ProcessMenu.Item
+                            label={"Oppsummering"}
+                            stepType={calculateStepType(sak?.tilstand.oppsummering)}
+                            to={"/sak/$saksnummer/oppsummering"}
+                            disabled={
+                                sak.status !== "TIL_ATTESTERING" &&
+                                calculateStepType(sak?.tilstand.vedtaksbrevBruker) !== StepType.success
+                            }
+                        />
+                    </ProcessMenu>
+                    <BehandlingsMeny sak={sak} />
+                </HStack>
+            </Box>
+
             <RfcErrorBoundary>
                 <SakAlert sak={sak} />
                 <DeltVisning>
@@ -97,7 +104,7 @@ function SakLayout() {
                         <Outlet />
                     </DeltVisning.Kolonne>
                     <DeltVisning.Kolonne justerbar>
-                        <SakHeading sak={sak} />
+                        <SakOppsummering sak={sak} />
                         <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
                             <Tabs.List>
                                 <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />

@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 import net.datafaker.Faker
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
@@ -24,6 +25,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -137,7 +139,7 @@ class DokarkivJournalforEksisterendeSakControllerTest {
         )
     }
 
-    @WithSaksbehandler
+    @WithSaksbehandler("Z123123")
     @Test
     fun `skal opprette vurderingsoppgave når dokument journalføres pa ferdig sak`() {
         val journalPost = DokarkivTestdata.journalPost().copy(journalstatus = JournalStatus.UNDER_ARBEID)
@@ -182,9 +184,48 @@ class DokarkivJournalforEksisterendeSakControllerTest {
             eq(OppgaveType.VUR),
             eq(sak),
             any(),
-            eq(sak.saksbehandler.navIdent),
+            eq(NavIdent("Z123123")),
             eq("SUPERHELT"),
             eq(journalpostId)
         )
+    }
+
+    @WithSaksbehandler("Z123123")
+    @Test
+    fun `skal returnere OK selv om oppgave-API feiler ved journalføring på ferdig sak`() {
+        val journalPost = DokarkivTestdata.journalPost().copy(journalstatus = JournalStatus.UNDER_ARBEID)
+        val journalpostId = journalPost.journalpostId
+        val jfrOppgaveId = EksternOppgaveId(faker.number().positive().toLong())
+        val sak = SakTestData.sakUtenUtbetaling().copy(status = SakStatus.FERDIG)
+        val saksnummer = sak.saksnummer
+        val oppgave =
+            OppgaveTestdata.oppgaveUtenSak().copy(oppgavetype = OppgaveType.JFR, journalpostId = journalpostId)
+
+        whenever(journalpostService.hentJournalpost(any())).thenReturn(journalPost)
+        whenever(oppgaveService.getOppgave(any())).thenReturn(oppgave)
+        whenever(sakRepository.getSak(any())).thenReturn(sak)
+        whenever(oppgaveService.opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+            .thenThrow(RuntimeException("Oppgave-API er nede"))
+
+        val request = JournalforEksisterendeSakRequest(
+            saksnummer = saksnummer,
+            jfrOppgaveId = jfrOppgaveId,
+            bruker = FolkeregisterIdent(faker.numerify("###########")),
+            avsender = FolkeregisterIdent(faker.numerify("###########")),
+            dokumenter = listOf(
+                JournalforDokument(
+                    tittel = faker.lorem().sentence(),
+                    dokumentInfoId = EksternDokumentInfoId(faker.numerify("###########")),
+                )
+            )
+        )
+
+        assertThat(
+            mockMvc.put()
+                .uri("/api/dokarkiv/{journalpostId}/journalfor/eksisterende", journalpostId)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+        ).hasStatusOk()
     }
 }

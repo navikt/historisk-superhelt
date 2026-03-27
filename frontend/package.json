@@ -21,26 +21,27 @@
         "@navikt/ds-react": "^8.5.2",
         "@tanstack/react-query": "^5.90.21",
         "@tanstack/react-query-devtools": "^5.91.3",
-        "@tanstack/react-router": "^1.166.2",
-        "@tanstack/react-router-devtools": "^1.166.2",
-        "@tiptap/pm": "^3.20.0",
-        "@tiptap/react": "^3.20.0",
-        "@tiptap/starter-kit": "^3.20.0",
+        "@tanstack/react-router": "^1.166.7",
+        "@tanstack/react-router-devtools": "^1.166.7",
+        "@tiptap/extension-highlight": "^3.20.5",
+        "@tiptap/pm": "^3.20.5",
+        "@tiptap/react": "^3.20.5",
+        "@tiptap/starter-kit": "^3.20.5",
         "dompurify": "^3.3.1",
         "react": "^19.2.4",
         "react-dom": "^19.2.4"
     },
     "devDependencies": {
         "@biomejs/biome": "2.4.6",
-        "@hey-api/openapi-ts": "0.94.0",
-        "@tanstack/router-plugin": "^1.166.2",
+        "@hey-api/openapi-ts": "0.94.1",
+        "@tanstack/router-plugin": "^1.166.7",
         "@types/css-modules": "^1.0.5",
         "@types/node": "^24.12.0",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "@vitejs/plugin-react": "^5.1.4",
+        "@vitejs/plugin-react": "^5.2.0",
         "typescript": "^5.9.3",
         "vite": "^7.3.1",
-        "vitest": "^4.0.18"
+        "vitest": "^4.1.0"
     }
 }
