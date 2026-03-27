@@ -1,4 +1,4 @@
-import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilWritingIcon } from "@navikt/aksel-icons";
+import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilIcon } from "@navikt/aksel-icons";
 import { ActionMenu, Box, Button, HStack, Tooltip } from "@navikt/ds-react";
 import { type Editor, useEditorState } from "@tiptap/react";
 import styles from "./MenuBar.module.css";
@@ -153,16 +153,34 @@ export function MenuBar({ editor }: { editor: Editor }) {
                     className={editorState.isOrderedList ? activeStyle : ""}
                     icon={<NumberListIcon title="Nummerert liste" fontSize="1.25rem" />}
                 />
-                <Button
-                    type="button"
-                    variant="tertiary"
-                    data-color="neutral"
-                    size="small"
-                    aria-label="Marker tekst"
-                    onClick={() => editor.chain().focus().toggleHighlight().run()}
-                    className={editorState.isHighlight ? activeStyle : ""}
-                    icon={<PencilWritingIcon title="Marker tekst" fontSize="1.25rem" />}
-                />
+                <Tooltip content="Marker tekst" placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Marker tekst"
+                        onClick={() => editor.chain().focus().toggleHighlight().run()}
+                        className={editorState.isHighlight ? activeStyle : ""}
+                        icon={
+                            <span style={{ position: "relative", display: "inline-flex" }}>
+                                <PencilIcon fontSize="1.25rem" />
+                                <span
+                                    style={{
+                                        position: "absolute",
+                                        bottom: 0,
+                                        right: 0,
+                                        width: "6px",
+                                        height: "6px",
+                                        backgroundColor: "yellow",
+                                        border: "1px solid #cccc00",
+                                        borderRadius: "100%",
+                                    }}
+                                />
+                            </span>
+                        }
+                    />
+                </Tooltip>
             </HStack>
         </Box>
     );
