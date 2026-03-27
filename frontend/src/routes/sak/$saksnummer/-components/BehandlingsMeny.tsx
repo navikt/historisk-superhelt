@@ -1,20 +1,22 @@
-import type {Sak} from "@generated";
+import type { Sak } from "@generated";
 import {
     ArrowUndoIcon,
     ChevronDownIcon,
     EnvelopeClosedIcon,
     GavelIcon,
     PadlockUnlockedIcon,
+    PaperplaneIcon,
     TrashIcon,
 } from "@navikt/aksel-icons";
-import {ActionMenu, Button} from "@navikt/ds-react";
-import {useState} from "react";
-import type {RettighetType} from "~/common/sak/sak.types";
-import {Feilregistrer} from "./Feilregistrer";
-import {FritekstBrev} from "./Fritekstbrev";
-import {Gjenapne} from "./Gjenapne";
-import {Henlegg} from "./Henlegg";
-import {Tilbakestill} from "./Tilbakestill";
+import { ActionMenu, Button } from "@navikt/ds-react";
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import type { RettighetType } from "~/common/sak/sak.types";
+import { Feilregistrer } from "./Feilregistrer";
+import { FritekstBrev } from "./Fritekstbrev";
+import { Gjenapne } from "./Gjenapne";
+import { Henlegg } from "./Henlegg";
+import { Tilbakestill } from "./Tilbakestill";
 
 interface SakMenyProps {
     sak: Sak;
@@ -27,6 +29,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
     const [openGjenapne, setOpenGjenapne] = useState(false);
     const [openTilbakestill, setOpenTilbakestill] = useState(false);
     const [openFritekstbrev, setOpenFritekstbrev] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <>
@@ -76,6 +79,18 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                             aria-haspopup="dialog"
                         >
                             Gjenåpne sak
+                        </ActionMenu.Item>
+                        <ActionMenu.Item
+                            onSelect={() =>
+                                navigate({
+                                    to: "/sak/$saksnummer/sendklage",
+                                    params: { saksnummer: sak.saksnummer },
+                                })
+                            }
+                            disabled={!harRettighet("SEND_KLAGE")}
+                            icon={<PaperplaneIcon aria-hidden />}
+                        >
+                            Send klage til Kabal
                         </ActionMenu.Item>
                     </ActionMenu.Group>
                     <ActionMenu.Group label={"Brev"}>

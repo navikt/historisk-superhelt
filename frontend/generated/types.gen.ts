@@ -63,7 +63,7 @@ export type Sak = {
     vedtaksbrevBruker?: Brev;
     readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE'>;
     readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
 };
@@ -90,6 +90,20 @@ export type HenlagtSakRequestDto = {
 
 export type GjenapneSakRequestDto = {
     aarsak: string;
+};
+
+export type SendKlageRequestDto = {
+    hjemmelId: string;
+    datoKlageMottatt: string;
+    kommentar?: string;
+};
+
+export type HjemmelDto = {
+    id: string;
+    lovKildeNavn: string;
+    lovKildeBeskrivelse: string;
+    spesifikasjon: string;
+    visningsnavn: string;
 };
 
 export type FeilregisterRequestDto = {
@@ -209,7 +223,7 @@ export type SakStatusDto = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK' | 'KLAGE_SENDT_KABAL';
     endring: string;
     beskrivelse?: string;
     endretAv: string;
@@ -1619,3 +1633,62 @@ export type FinnJournalposterForSakResponses = {
 };
 
 export type FinnJournalposterForSakResponse = FinnJournalposterForSakResponses[keyof FinnJournalposterForSakResponses];
+
+export type SendKlageTilKabalData = {
+    body: SendKlageRequestDto;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/klage';
+};
+
+export type SendKlageTilKabalErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type SendKlageTilKabalError = SendKlageTilKabalErrors[keyof SendKlageTilKabalErrors];
+
+export type SendKlageTilKabalResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type GetKodeverkHjemlerData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/sak/kodeverk/hjemler';
+};
+
+export type GetKodeverkHjemlerErrors = {
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkHjemlerError = GetKodeverkHjemlerErrors[keyof GetKodeverkHjemlerErrors];
+
+export type GetKodeverkHjemlerResponses = {
+    /**
+     * OK
+     */
+    200: Array<HjemmelDto>;
+};
+
+export type GetKodeverkHjemlerResponse = GetKodeverkHjemlerResponses[keyof GetKodeverkHjemlerResponses];
+
