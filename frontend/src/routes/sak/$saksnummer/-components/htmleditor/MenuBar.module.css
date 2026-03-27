@@ -1,0 +1,13 @@
+.redigeringsMeny {
+  /* padding: 2px; */
+
+  /* button {
+        vertical-align: top;
+        height: 32px;
+        margin-left: 2px;
+    } */
+
+  button:global(.is-active) {
+    background-color: var(--ax-bg-neutral-moderate-pressedA);
+  }
+}

@@ -1,0 +1,169 @@
+import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilWritingIcon } from "@navikt/aksel-icons";
+import { ActionMenu, Box, Button, HStack, Tooltip } from "@navikt/ds-react";
+import { type Editor, useEditorState } from "@tiptap/react";
+import styles from "./MenuBar.module.css";
+import { Bold, Italic } from "./Icons";
+
+export function MenuBar({ editor }: { editor: Editor }) {
+    // Read the current editor's state, and re-render the component when it changes
+    const editorState = useEditorState({
+        editor,
+        selector: (ctx) => {
+            return {
+                isBold: ctx.editor.isActive("bold") ?? false,
+                canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
+                isItalic: ctx.editor.isActive("italic") ?? false,
+                canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
+                isStrike: ctx.editor.isActive("strike") ?? false,
+                canStrike: ctx.editor.can().chain().toggleStrike().run() ?? false,
+                isCode: ctx.editor.isActive("code") ?? false,
+                canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
+                canClearMarks: ctx.editor.can().chain().unsetAllMarks().run() ?? false,
+                isParagraph: ctx.editor.isActive("paragraph") ?? false,
+                activeHeading:
+                    ([1, 2, 3, 4, 5, 6] as const).find((level) => ctx.editor.isActive("heading", { level })) ?? null,
+                isBulletList: ctx.editor.isActive("bulletList") ?? false,
+                isOrderedList: ctx.editor.isActive("orderedList") ?? false,
+                isCodeBlock: ctx.editor.isActive("codeBlock") ?? false,
+                isBlockquote: ctx.editor.isActive("blockquote") ?? false,
+                isHighlight: ctx.editor.isActive("highlight") ?? false,
+                canUndo: ctx.editor.can().chain().undo().run() ?? false,
+                canRedo: ctx.editor.can().chain().redo().run() ?? false,
+            };
+        },
+    });
+
+    function headingLevelToSize(level: number) {
+        switch (level) {
+            case 1:
+                return "16pt";
+            case 2:
+                return "13pt";
+            case 3:
+                return "12pt";
+            case 4:
+            case 5:
+                return "11pt";
+            case 6:
+                return "10pt";
+        }
+    }
+
+    const activeStyle = "is-active";
+    return (
+        <Box background="sunken" padding="space-4" borderRadius="8" borderWidth="1" borderColor="neutral-subtle">
+            <HStack className={styles.redigeringsMeny} gap="space-4" align="center" justify="start">
+                <Tooltip content="Angre" keys={["Ctrl", "Z"]} placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Angre"
+                        onClick={() => editor.chain().focus().undo().run()}
+                        disabled={!editor.can().undo()}
+                        icon={<ArrowUndoIcon fontSize="1.25rem" />}
+                    />
+                </Tooltip>
+                <Tooltip content="Gjør om igjen" keys={["Ctrl", "Shift", "Z"]} placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Gjør om igjen"
+                        onClick={() => editor.chain().focus().redo().run()}
+                        disabled={!editor.can().redo()}
+                        icon={<ArrowRedoIcon fontSize="1.25rem" />}
+                    />
+                </Tooltip>
+                <Tooltip content="Fet" keys={["Ctrl", "B"]} placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Fet"
+                        onClick={() => editor.chain().focus().toggleBold().run()}
+                        className={`${editorState.isBold && activeStyle}`}
+                        disabled={!editorState.canBold}
+                        icon={<Bold />}
+                    />
+                </Tooltip>
+                <Tooltip content="Kursiv" keys={["Ctrl", "I"]} placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Kursiv"
+                        onClick={() => editor.chain().focus().toggleItalic().run()}
+                        className={`${editorState.isItalic && activeStyle}`}
+                        disabled={!editorState.canItalic}
+                        icon={<Italic />}
+                    />
+                </Tooltip>
+                <ActionMenu>
+                    <ActionMenu.Trigger>
+                        {/* <Tooltip content="Overskrift" placement="top"> */}
+                        <Button
+                            type="button"
+                            variant="tertiary"
+                            data-color="neutral"
+                            size="small"
+                            aria-label="Overskrift"
+                            style={{ width: "2rem" }}
+                            className={`${editorState.activeHeading && activeStyle}`}
+                        >
+                            {editorState.activeHeading ? `H${editorState.activeHeading}` : "H"}
+                        </Button>
+                        {/* </Tooltip> */}
+                    </ActionMenu.Trigger>
+                    <ActionMenu.Content>
+                        {([1, 2, 3, 4, 5, 6] as const).map((level) => (
+                            <ActionMenu.Item
+                                key={level}
+                                onSelect={() => editor.chain().focus().toggleHeading({ level }).run()}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span style={{ fontSize: headingLevelToSize(level), fontWeight: 500 }}>
+                                    Overskrift {level}
+                                </span>
+                            </ActionMenu.Item>
+                        ))}
+                    </ActionMenu.Content>
+                </ActionMenu>
+                <Button
+                    type="button"
+                    variant="tertiary"
+                    data-color="neutral"
+                    size="small"
+                    aria-label="Punktliste"
+                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    className={editorState.isBulletList ? activeStyle : ""}
+                    icon={<BulletListIcon title="Punktliste" fontSize="1.25rem" />}
+                />
+                <Button
+                    type="button"
+                    variant="tertiary"
+                    data-color="neutral"
+                    size="small"
+                    aria-label="Nummerert liste"
+                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                    className={editorState.isOrderedList ? activeStyle : ""}
+                    icon={<NumberListIcon title="Nummerert liste" fontSize="1.25rem" />}
+                />
+                <Button
+                    type="button"
+                    variant="tertiary"
+                    data-color="neutral"
+                    size="small"
+                    aria-label="Marker tekst"
+                    onClick={() => editor.chain().focus().toggleHighlight().run()}
+                    className={editorState.isHighlight ? activeStyle : ""}
+                    icon={<PencilWritingIcon title="Marker tekst" fontSize="1.25rem" />}
+                />
+            </HStack>
+        </Box>
+    );
+}
