@@ -1,10 +1,22 @@
 import { findPersonByFnr as findPerson } from "@generated";
 import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
 import { LeaveIcon } from "@navikt/aksel-icons";
-import { BodyShort, Detail, Dropdown, HStack, InternalHeader, Link, Search, Spacer } from "@navikt/ds-react";
+import {
+    Bleed,
+    BodyShort,
+    Detail,
+    Dropdown,
+    HStack,
+    InternalHeader,
+    Link,
+    Page,
+    Search,
+    Spacer,
+} from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { Breakpoint3xl } from "~/common/layout/layout.constants";
 import { temaBeskrivelse } from "~/common/tema.utils";
 
 export function Header() {
@@ -39,54 +51,58 @@ export function Header() {
     }
 
     return (
-        <InternalHeader>
-            <InternalHeader.Title as="h1">
-                <Link data-color="neutral" as={RouterLink} to={"/"} underline={false}>
-                    <img src="/logo.svg" height="35rem" alt={""} />
-                    Superhelt
-                </Link>
-            </InternalHeader.Title>
-            <HStack
-                as="form"
-                paddingInline="space-20"
-                align="center"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    doSearch();
-                }}
-            >
-                <Search
-                    label="Søk"
-                    size="small"
-                    disabled={!hasAccess}
-                    variant="simple"
-                    placeholder="Finn person"
-                    value={search}
-                    onChange={setSearch}
-                    error={searchError}
-                />
-            </HStack>
-            <Spacer />
+        <Page.Block style={{ maxWidth: Breakpoint3xl }}>
+            <Bleed marginInline="full" reflectivePadding asChild>
+                <InternalHeader>
+                    <InternalHeader.Title as="h1">
+                        <Link data-color="neutral" as={RouterLink} to={"/"} underline={false}>
+                            <img src="/logo.svg" height="35rem" alt={""} />
+                            Superhelt
+                        </Link>
+                    </InternalHeader.Title>
+                    <HStack
+                        as="form"
+                        paddingInline="space-20"
+                        align="center"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            doSearch();
+                        }}
+                    >
+                        <Search
+                            label="Søk"
+                            size="small"
+                            disabled={!hasAccess}
+                            variant="simple"
+                            placeholder="Finn person"
+                            value={search}
+                            onChange={setSearch}
+                            error={searchError}
+                        />
+                    </HStack>
+                    <Spacer />
 
-            <Dropdown>
-                <InternalHeader.UserButton as={Dropdown.Toggle} name={user?.name ?? "--"} />
-                <Dropdown.Menu>
-                    <dl>
-                        <BodyShort as="dt" size="small">
-                            {user?.name}
-                        </BodyShort>
-                        <Detail as="dd">Roller: {user?.roles.join(", ")}</Detail>
-                        <Detail as="dd">Enhet: {user?.enhet}</Detail>
-                        <Detail as="dd">Tema: {user?.tema.map(temaBeskrivelse).join(", ")}</Detail>
-                    </dl>
-                    <Dropdown.Menu.Divider />
-                    <Dropdown.Menu.List>
-                        <Dropdown.Menu.List.Item as="a" href="/oauth2/logout">
-                            Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
-                        </Dropdown.Menu.List.Item>
-                    </Dropdown.Menu.List>
-                </Dropdown.Menu>
-            </Dropdown>
-        </InternalHeader>
+                    <Dropdown>
+                        <InternalHeader.UserButton as={Dropdown.Toggle} name={user?.name ?? "--"} />
+                        <Dropdown.Menu>
+                            <dl>
+                                <BodyShort as="dt" size="small">
+                                    {user?.name}
+                                </BodyShort>
+                                <Detail as="dd">Roller: {user?.roles.join(", ")}</Detail>
+                                <Detail as="dd">Enhet: {user?.enhet}</Detail>
+                                <Detail as="dd">Tema: {user?.tema.map(temaBeskrivelse).join(", ")}</Detail>
+                            </dl>
+                            <Dropdown.Menu.Divider />
+                            <Dropdown.Menu.List>
+                                <Dropdown.Menu.List.Item as="a" href="/oauth2/logout">
+                                    Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
+                                </Dropdown.Menu.List.Item>
+                            </Dropdown.Menu.List>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </InternalHeader>
+            </Bleed>
+        </Page.Block>
     );
 }

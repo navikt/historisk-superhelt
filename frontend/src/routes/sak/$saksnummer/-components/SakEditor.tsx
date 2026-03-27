@@ -22,6 +22,7 @@ import {NumericInput} from "~/common/NumericInput";
 import useDebounce from "~/common/useDebounce";
 import type {SakVedtakType, StonadType, UtbetalingsType} from "~/common/sak/sak.types";
 import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
+import { Card } from "~/common/card/Card";
 
 interface Props {
     sak: Sak;
@@ -117,7 +118,7 @@ export default function SakEditor({ sak }: Props) {
     }
 
     return (
-        <Box background="neutral-soft" padding="space-24" borderWidth="1" borderRadius="8" borderColor="neutral-subtle">
+        <Card>
             <VStack gap="space-24">
                 <Select
                     label="Stønad"
@@ -210,6 +211,6 @@ export default function SakEditor({ sak }: Props) {
                     </ErrorSummary>
                 )}
             </VStack>
-        </Box>
+        </Card>
     );
 }

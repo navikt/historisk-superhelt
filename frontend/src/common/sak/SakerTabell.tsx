@@ -92,7 +92,7 @@ export function SakerTabell({
     }
 
     return (
-        <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as SortKey)}>
+        <Table sort={sort} onSortChange={(sortKey) => handleSort(sortKey as SortKey)} zebraStripes>
             <Table.Header>
                 <Table.Row>
                     <SortableColumnHeader sortKey={"saksnummer"}>Saksnummer</SortableColumnHeader>
