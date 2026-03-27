@@ -7,6 +7,7 @@ data class InfotrygdHistorikk(
     val fom: LocalDate?,
     val tom: LocalDate?,
     val tekst: String?,
-    val kontonummer: String? = null,
+    val kontonummer: String,
+    val kontonavn: String,
     val belop: String? = null,
 )

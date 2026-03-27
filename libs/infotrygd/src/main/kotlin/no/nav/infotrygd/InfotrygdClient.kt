@@ -4,6 +4,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.infotrygd.InfotrygdHistorikk
 import no.nav.infotrygd.InfotrygdHistorikkRequest
 import no.nav.infotrygd.InfotrygdHistorikkResponse
+import no.nav.infotrygd.InfotrygdKontonummer
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 
@@ -25,7 +26,8 @@ class InfotrygdClient(private val restClient: RestClient) {
                 fom = it.fom,
                 tom = it.tom,
                 tekst = it.tekst,
-                kontonummer = it.kontonummer,
+                kontonummer = it.kontonummer?:"-1",
+                kontonavn =  InfotrygdKontonummer.fraKode(it.kontonummer).navn ,
                 belop = it.bevilgetBelop ?: it.betaltBelop,
             )
         }
