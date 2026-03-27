@@ -96,7 +96,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                     <ActionMenu.Group label={"Brev"}>
                         <ActionMenu.Item
                             onSelect={() => setOpenFritekstbrev(true)}
-                            disabled={!harRettighet("SAKSBEHANDLE")}
+                            disabled={!harRettighet("SAKSBEHANDLE") && !harRettighet("SEND_KLAGE")}
                             icon={<EnvelopeClosedIcon aria-hidden />}
                             aria-haspopup="dialog"
                         >

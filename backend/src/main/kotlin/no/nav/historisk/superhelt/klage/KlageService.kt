@@ -37,7 +37,8 @@ class KlageService(
         )
 
         logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}")
-        kabalClient.sendSakV4(kabalRequest)
+        val response = kabalClient.sendSakV4(kabalRequest)
+        logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}, behandlingId: ${response.behandlingId}")
     }
 }
 

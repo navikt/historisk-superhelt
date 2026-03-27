@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 import java.util.UUID
 
 @RestController
@@ -16,8 +17,13 @@ class KabalMockController {
 
     @PostMapping("/api/oversendelse/v4/sak")
     fun sendSak(@RequestBody body: Map<String, Any?>): ResponseEntity<Map<String, String>> {
-        logger.info("Kabal mock: mottatt klagebsending: $body")
-        return ResponseEntity.ok(mapOf("mottakId" to UUID.randomUUID().toString()))
+        logger.info("Kabal mock: mottatt klagesending: $body")
+        return ResponseEntity.ok(
+            mapOf(
+                "behandlingId" to UUID.randomUUID().toString(),
+                "mottattDato" to LocalDate.now().toString(),
+            )
+        )
     }
 }
 

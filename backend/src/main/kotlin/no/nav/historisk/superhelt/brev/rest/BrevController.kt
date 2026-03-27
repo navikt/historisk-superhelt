@@ -37,7 +37,10 @@ class BrevController(
         val brevListe = brevRepository.findBySak(saksnummer)
         val brev = brevListe.finnGjeldendeBrev(request.type, request.mottaker)
 
-        if ((brev == null || brev.status.isCompleted()) && sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)) {
+        val kanBehandleBrev = sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE) ||
+                sak.rettigheter.contains(SakRettighet.SEND_KLAGE)
+
+        if ((brev == null || brev.status.isCompleted()) && kanBehandleBrev) {
             return brevService.genererNyttBrev(sak, request.type, request.mottaker)
         }
 

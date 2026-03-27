@@ -9,10 +9,8 @@ import no.nav.historisk.superhelt.klage.KlageService
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakRettighet
 import no.nav.historisk.superhelt.sak.SakValidator
-import no.nav.kabal.model.Hjemmel
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -55,19 +53,4 @@ class KlageController(
 
         return ResponseEntity.ok().build()
     }
-
-    @Operation(operationId = "getKodeverkHjemler")
-    @GetMapping("/api/sak/kodeverk/hjemler")
-    fun hjemlerKodeverk(): List<HjemmelDto> {
-        return Hjemmel.entries.map { hjemmel ->
-            HjemmelDto(
-                id = hjemmel.id,
-                lovKildeNavn = hjemmel.lovKilde.navn,
-                lovKildeBeskrivelse = hjemmel.lovKilde.beskrivelse,
-                spesifikasjon = hjemmel.spesifikasjon,
-                visningsnavn = "${hjemmel.lovKilde.beskrivelse} ${hjemmel.spesifikasjon}",
-            )
-        }
-    }
 }
-
