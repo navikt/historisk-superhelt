@@ -58,3 +58,6 @@ app:
   entra-proxy:
     url: http://localhost:9080/entra-proxy-mock
     audience: api://mock.entra-proxy/.default
+  ereg:
+    url: http://localhost:9080/ereg-mock
+    audience: api://mock.ereg-services/.default
