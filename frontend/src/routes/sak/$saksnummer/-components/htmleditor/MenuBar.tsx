@@ -65,6 +65,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         icon={<ArrowUndoIcon fontSize="1.25rem" />}
                     />
                 </Tooltip>
+
                 <Tooltip content="Gjør om igjen" keys={["Ctrl", "Shift", "Z"]} placement="top">
                     <Button
                         type="button"
@@ -77,6 +78,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         icon={<ArrowRedoIcon fontSize="1.25rem" />}
                     />
                 </Tooltip>
+
                 <Tooltip content="Fet" keys={["Ctrl", "B"]} placement="top">
                     <Button
                         type="button"
@@ -90,6 +92,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         icon={<Bold />}
                     />
                 </Tooltip>
+
                 <Tooltip content="Kursiv" keys={["Ctrl", "I"]} placement="top">
                     <Button
                         type="button"
@@ -103,6 +106,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         icon={<Italic />}
                     />
                 </Tooltip>
+
                 <ActionMenu>
                     <ActionMenu.Trigger>
                         {/* <Tooltip content="Overskrift" placement="top"> */}
@@ -123,6 +127,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         {([1, 2, 3, 4, 5, 6] as const).map((level) => (
                             <ActionMenu.Item
                                 key={level}
+                                shortcut={`Ctrl + Alt + ${level}`}
                                 onSelect={() => editor.chain().focus().toggleHeading({ level }).run()}
                                 style={{ cursor: "pointer" }}
                             >
@@ -133,26 +138,33 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         ))}
                     </ActionMenu.Content>
                 </ActionMenu>
-                <Button
-                    type="button"
-                    variant="tertiary"
-                    data-color="neutral"
-                    size="small"
-                    aria-label="Punktliste"
-                    onClick={() => editor.chain().focus().toggleBulletList().run()}
-                    className={editorState.isBulletList ? activeStyle : ""}
-                    icon={<BulletListIcon title="Punktliste" fontSize="1.25rem" />}
-                />
-                <Button
-                    type="button"
-                    variant="tertiary"
-                    data-color="neutral"
-                    size="small"
-                    aria-label="Nummerert liste"
-                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                    className={editorState.isOrderedList ? activeStyle : ""}
-                    icon={<NumberListIcon title="Nummerert liste" fontSize="1.25rem" />}
-                />
+
+                <Tooltip content="Nummerert liste" keys={["Ctrl", "Shift", "7"]} placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Nummerert liste"
+                        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                        className={editorState.isOrderedList ? activeStyle : ""}
+                        icon={<NumberListIcon fontSize="1.25rem" />}
+                    />
+                </Tooltip>
+
+                <Tooltip content="Punktliste" keys={["Ctrl", "Shift", "8"]} placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Punktliste"
+                        onClick={() => editor.chain().focus().toggleBulletList().run()}
+                        className={editorState.isBulletList ? activeStyle : ""}
+                        icon={<BulletListIcon fontSize="1.25rem" />}
+                    />
+                </Tooltip>
+
                 <Tooltip content="Marker tekst" placement="top">
                     <Button
                         type="button"
@@ -170,10 +182,10 @@ export function MenuBar({ editor }: { editor: Editor }) {
                                         position: "absolute",
                                         bottom: 0,
                                         right: 0,
-                                        width: "6px",
-                                        height: "6px",
-                                        backgroundColor: "yellow",
-                                        border: "1px solid #cccc00",
+                                        width: "7px",
+                                        height: "7px",
+                                        backgroundColor: "var(--ax-bg-warning-moderate-hoverA)",
+                                        border: "1px solid var(--ax-bg-warning-strong)",
                                         borderRadius: "100%",
                                     }}
                                 />

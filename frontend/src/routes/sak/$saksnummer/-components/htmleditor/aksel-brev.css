@@ -25,6 +25,17 @@
         font-size: 11pt;
     }
 
+    li {
+        margin-top: -0.5rem;
+    }
+
+    mark {
+        background-color: var(--ax-bg-warning-moderate-hoverA);
+        color: var(--ax-bg-warning-strong);
+        padding: 0 .25rem;
+        border-radius: var(--ax-radius-4);
+    }
+
     .navLogo {
         height: 1.25rem;
         margin-bottom: 2.5rem;
