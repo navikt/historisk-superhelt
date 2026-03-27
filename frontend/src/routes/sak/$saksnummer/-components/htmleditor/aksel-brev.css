@@ -1,5 +1,6 @@
 .htmleditor {
     font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
+    font-size: 12pt;
     margin-left: 0;
     margin-right: 0;
 
@@ -9,66 +10,25 @@
     */
 
     h1 {
-        margin-top: 40px;
-        margin-bottom: 26px;
-        font-size: 16px;
-        line-height: 20px;
-        font-weight: bold;
+        font-size: 16pt;
     }
 
     h2 {
-        font-size: 13px;
+        font-size: 13pt;
     }
 
     h3 {
-        font-size: 12px;
+        font-size: 12pt;
     }
 
     h4 {
-        font-size: 11px;
-    }
-
-    h2,
-    h3,
-    h4 {
-        margin-top: 26px;
-        line-height: 16px;
-        margin-bottom: 6px;
-        font-weight: bold;
-    }
-
-    p,
-    ul {
-        font-size: 12px;
-        line-height: 16px;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-    ul {
-        padding-left: 16px;
-        margin-bottom: 16px;
-    }
-
-    p {
-        min-height: 1rem;
-    }
-
-    ul p {
-        margin: 0;
-    }
-
-    header {
-        height: 48px;
-        position: relative;
+        font-size: 11pt;
     }
 
     .navLogo {
-        height: 16px;
-        margin-bottom: 48px;
+        height: 1.25rem;
+        margin-bottom: 2.5rem;
     }
-
-    /* End aksel sine anbefalinger */
 
     #pagenumber:before {
         content: counter(page);
