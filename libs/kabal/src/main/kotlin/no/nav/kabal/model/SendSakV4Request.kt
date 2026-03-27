@@ -4,27 +4,47 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+/**
+ * Mandatory fields (marked * in Kabal API):
+ * type, sakenGjelder, fagsak, kildeReferanse, hjemler,
+ * forrigeBehandlendeEnhet, tilknyttedeJournalposter, ytelse
+ */
 data class SendSakV4Request(
+    /** KLAGE eller ANKE */
     val type: SakType,
+    /** * Person saken gjelder */
     val sakenGjelder: SakenGjelder,
+    /** Klager – som regel samme som sakenGjelder */
     val klager: Klager,
     val prosessfullmektig: Prosessfullmektig? = null,
+    /** * Fagsak-referanse fra kildesystemet */
     val fagsak: Fagsak,
+    /** * Sak-ID – samme som fagsakId for Superhelt */
     val kildeReferanse: String? = null,
+    /** Samme som kildeReferanse */
     val dvhReferanse: String? = null,
-    val hjemler: List<Hjemmel> = emptyList(),
+    /** * Hjemler som liste av streng-ID-er (f.eks. "FTRL_10_7I") */
+    val hjemler: List<String> = emptyList(),
+    /** * NAV-enhet til saksbehandler som oppretter klagen – hentes fra EntraProxy */
     val forrigeBehandlendeEnhet: String? = null,
+    /** * Kan sendes som tom liste, eller med klage/andre journalposter */
     val tilknyttedeJournalposter: List<TilknyttetJournalpost> = emptyList(),
+    /** Dato klagen ble mottatt – fra Joark eller saksbehandler fritekst, ikke start i Superhelt */
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val brukersKlageMottattVedtaksinstans: LocalDate? = null,
+    /** Brukes kun når Kabal er nede */
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val frist: LocalDate? = null,
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    /** Tidspunkt saken ble mottatt i KA – ikke påkrevd, settes til starttidspunkt i Superhelt */
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val sakMottattKaTidspunkt: LocalDateTime? = null,
-    val ytelse: String? = null,
+    /** * Ytelse-kode fra Kabal-kodeverk – Superhelt bruker "HJE_HJE" */
+    val ytelse: String = "HJE_HJE",
     val kommentar: String? = null,
+    /** Ikke sett – gjelder svarbrev/oversendelsesbrev fra Kabal */
     val hindreAutomatiskSvarbrev: Boolean = false,
-    val saksbehandlerIdentForTildeling: String? = null
+    /** Ikke i bruk – ble brukt ved migrering */
+    val saksbehandlerIdentForTildeling: String? = null,
 )
 
 enum class SakType {
@@ -90,4 +110,3 @@ enum class JournalpostType {
     KLAGE_VEDTAK,
     ANNET
 }
-

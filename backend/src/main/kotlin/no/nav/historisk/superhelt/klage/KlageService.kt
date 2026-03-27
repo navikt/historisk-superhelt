@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.klage
 
+import no.nav.historisk.superhelt.enhet.NavEnhetService
 import no.nav.historisk.superhelt.klage.rest.SendKlageRequestDto
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.kabal.KabalClient
@@ -18,27 +19,31 @@ import org.springframework.stereotype.Service
 @Service
 class KlageService(
     private val kabalClient: KabalClient,
+    private val navEnhetService: NavEnhetService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun sendKlage(sak: Sak, request: SendKlageRequestDto) {
         val hjemmel = Hjemmel.fromId(request.hjemmelId)
+        val enhet = navEnhetService.hentNavEnhet()
 
         val kabalRequest = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
             klager = Klager(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
             fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = "SUPERHELT"),
-            hjemler = listOf(hjemmel),
-            brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
             kildeReferanse = sak.saksnummer.value,
+            hjemler = listOf(hjemmel.id),
+            forrigeBehandlendeEnhet = enhet.value,
+            tilknyttedeJournalposter = emptyList(),
+            brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
             kommentar = request.kommentar,
+            // ytelse defaults to "HJE_HJE" in SendSakV4Request
         )
 
-        logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}")
+        logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.value}")
         val response = kabalClient.sendSakV4(kabalRequest)
         logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}, behandlingId: ${response.behandlingId}")
     }
 }
-

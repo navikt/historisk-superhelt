@@ -89,7 +89,7 @@ class KabalClientTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "ref-123",
             dvhReferanse = "dvh-456",
-            hjemler = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12),
+            hjemler = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id),
             forrigeBehandlendeEnhet = "NAV Oslo",
             tilknyttedeJournalposter = listOf(
                 TilknyttetJournalpost(JournalpostType.BRUKERS_KLAGE, "jp-123"),
