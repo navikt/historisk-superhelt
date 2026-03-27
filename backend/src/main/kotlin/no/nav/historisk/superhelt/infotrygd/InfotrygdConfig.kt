@@ -1,9 +1,9 @@
 package no.nav.historisk.superhelt.infotrygd
 
-import no.nav.entraproxy.InfotrygdClient
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.M2mNaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
+import no.nav.infotrygd.InfotrygdClient
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean

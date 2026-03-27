@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.infotrygd
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.entraproxy.InfotrygdClient
+import no.nav.infotrygd.InfotrygdClient
 import no.nav.infotrygd.InfotrygdHistorikk
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service

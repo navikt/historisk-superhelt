@@ -14,7 +14,7 @@ class InfotrygdController(private val infotrygdService: InfotrygdService) {
 
     @Operation(operationId = "hentInfotrygdHistorikkForPerson")
     @GetMapping("historikk/{maskertPersonIdent}")
-    fun henthistorikkForPerson(@PathVariable maskertPersonIdent: MaskertPersonIdent): List<InfotrygdHistorikk> {
+    fun hentHistorikkForPerson(@PathVariable maskertPersonIdent: MaskertPersonIdent): List<InfotrygdHistorikk> {
         return infotrygdService.hentHistorikk(maskertPersonIdent.toFnr())
     }
 }

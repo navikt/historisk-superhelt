@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>infotrygd</artifactId>
-    <description>Lib hneting av infotrygd data</description>
+    <description>Lib for henting av Infotrygd-data</description>
 
     <dependencies>
         <dependency>

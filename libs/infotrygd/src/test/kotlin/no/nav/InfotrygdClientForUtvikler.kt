@@ -1,7 +1,6 @@
-package no.nav
+package no.nav.infotrygd
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.entraproxy.InfotrygdClient
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpRequest
@@ -25,7 +24,7 @@ class InfotrygdClientForUtvikler {
         """
          """.trimIndent()
 
-//    private val baseUrl = "https://historisk-helt-infotrygd.intern.dev.nav.no/"
+    //    private val baseUrl = "https://historisk-helt-infotrygd.intern.dev.nav.no/"
     private val baseUrl = "http://localhost:9080/infotrygd-mock"
 
     val client = InfotrygdClient(getRestClient())
@@ -35,7 +34,6 @@ class InfotrygdClientForUtvikler {
         val hentet = client.hentHistorikk(FolkeregisterIdent("11509133303"))
         println(hentet)
     }
-
 
 
     private fun getRestClient(): RestClient {

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("infotrygd-mock")
 class InfotrygdMockController {
-    private val respository = mutableMapOf<FolkeregisterIdent, InfotrygdHistorikkResponse>()
+    private val repository = mutableMapOf<FolkeregisterIdent, InfotrygdHistorikkResponse>()
 
     private val  logger = LoggerFactory.getLogger(javaClass)
 
@@ -21,13 +21,13 @@ class InfotrygdMockController {
     fun infotrygdHistorikk(@RequestBody req: InfotrygdHistorikkRequest): InfotrygdHistorikkResponse {
         val fnr=req.fnr.firstOrNull()?:throw IllegalStateException("Mangler fnr")
 
-       return respository[fnr]?: genererOgLagre(fnr)
+       return repository[fnr]?: genererOgLagre(fnr)
     }
 
     private fun genererOgLagre(fnr: FolkeregisterIdent): InfotrygdHistorikkResponse {
         val response= genererInfotrygdHistorikkResponse()
-        respository[fnr] = response
-        logger.debug("Genererte infotrygd historikk for fnr: {}, antall trff: {}", fnr, response.personkort.size)
+        repository[fnr] = response
+        logger.debug("Genererte infotrygd historikk for fnr: {}, antall treff: {}", fnr, response.personkort.size)
         return response
     }
 }
