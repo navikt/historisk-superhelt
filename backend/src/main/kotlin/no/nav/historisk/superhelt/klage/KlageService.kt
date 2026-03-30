@@ -18,17 +18,14 @@ import no.nav.kabal.model.SendSakV4Response
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class KlageService(
     private val kabalClient: KabalClient,
     private val navEnhetService: NavEnhetService,
-    private val klageRepository: KlageRepository,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @Transactional
     @PreAuthorize("hasAuthority('WRITE')")
     fun sendKlage(sak: Sak, request: SendKlageRequestDto): SendSakV4Response {
         val hjemmel = try {
@@ -60,14 +57,6 @@ class KlageService(
         val response = kabalClient.sendSakV4(kabalRequest)
         logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}, behandlingId: ${response.behandlingId}")
 
-        klageRepository.lagreKlage(
-            saksnummer = sak.saksnummer,
-            hjemmelId = request.hjemmelId,
-            datoKlageMottatt = request.datoKlageMottatt,
-            kommentar = request.kommentar,
-            kabalBehandlingId = response.behandlingId,
-            status = KlageStatus.SENDT,
-        )
 
         return response
     }
