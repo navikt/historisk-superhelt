@@ -57,17 +57,27 @@ class KlageService(
         )
 
         logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.value}")
-        kabalClient.sendSakV4(kabalRequest)
+        kabalClient.sendSakV4(kabalRequest)  // kastar KabalException ved feil – DB-skriv skjer ALDRI då
         logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}")
 
-        // Logg klagen til databasen etter vellykka sending
-        klageRepository.lagreKlage(
-            saksnummer = sak.saksnummer,
-            hjemmelId = hjemmel.id,
-            datoKlageMottatt = request.datoKlageMottatt,
-            kommentar = request.kommentar,
-            forrigeBehandlendeEnhet = enhet.value,
-            sendtTidspunkt = sendtTidspunkt,
-        )
+        // Logg klagen i DB berre etter vellykka Kabal-kall.
+        // Dersom DB-skrivet feiler etter at Kabal har mottatt klagen, loggar vi feilen
+        // men returnerer likevel suksess – klagen er allereie registrert hos Kabal.
+        try {
+            klageRepository.lagreKlage(
+                saksnummer = sak.saksnummer,
+                hjemmelId = hjemmel.id,
+                datoKlageMottatt = request.datoKlageMottatt,
+                kommentar = request.kommentar,
+                forrigeBehandlendeEnhet = enhet.value,
+                sendtTidspunkt = sendtTidspunkt,
+            )
+        } catch (e: Exception) {
+            logger.error(
+                "Klage for sak {} vart sendt til Kabal men kunne ikkje lagrast i DB – " +
+                        "manuell oppfølging kan vere nødvendig. Feil: {}",
+                sak.saksnummer, e.message, e,
+            )
+        }
     }
 }
