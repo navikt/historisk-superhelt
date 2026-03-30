@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.klage
 
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.klage.db.KlageJpaEntity
 import no.nav.historisk.superhelt.klage.db.KlageJpaRepository
 import no.nav.historisk.superhelt.sak.SakRepository
 import org.slf4j.LoggerFactory
