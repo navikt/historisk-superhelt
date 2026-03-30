@@ -6,6 +6,9 @@ app:
     status-topic: helved.status.v1
   statistikk:
     saks-behandling-statistikk-topic: historisk.superhelt.statistikk.saksbehandling.v1
+  klage:
+    # TODO: bekreft topic-namn med Kabal-teamet før aktivering av consumer
+    hendelse-topic: kabal.klage-hendelse.v1
 
 
 info:

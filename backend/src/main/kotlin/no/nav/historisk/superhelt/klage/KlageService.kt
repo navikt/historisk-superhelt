@@ -17,11 +17,13 @@ import no.nav.kabal.model.SendSakV4Request
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 @Service
 class KlageService(
     private val kabalClient: KabalClient,
     private val navEnhetService: NavEnhetService,
+    private val klageRepository: KlageRepository,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -37,6 +39,7 @@ class KlageService(
             )
         }
         val enhet = navEnhetService.hentNavEnhet()
+        val sendtTidspunkt = Instant.now()
 
         val kabalRequest = SendSakV4Request(
             type = SakType.KLAGE,
@@ -56,5 +59,15 @@ class KlageService(
         logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.value}")
         kabalClient.sendSakV4(kabalRequest)
         logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}")
+
+        // Logg klagen til databasen etter vellykka sending
+        klageRepository.lagreKlage(
+            saksnummer = sak.saksnummer,
+            hjemmelId = hjemmel.id,
+            datoKlageMottatt = request.datoKlageMottatt,
+            kommentar = request.kommentar,
+            forrigeBehandlendeEnhet = enhet.value,
+            sendtTidspunkt = sendtTidspunkt,
+        )
     }
 }
