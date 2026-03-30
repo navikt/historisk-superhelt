@@ -98,6 +98,11 @@ export type SendKlageRequestDto = {
     kommentar?: string;
 };
 
+export type KlageOversendtDto = {
+    behandlingId: string;
+    mottattDato: string;
+};
+
 export type HjemmelDto = {
     id: string;
     lovKildeNavn: string;
@@ -1664,8 +1669,10 @@ export type SendKlageTilKabalResponses = {
     /**
      * OK
      */
-    200: unknown;
+    200: KlageOversendtDto;
 };
+
+export type SendKlageTilKabalResponse = SendKlageTilKabalResponses[keyof SendKlageTilKabalResponses];
 
 export type GetKodeverkHjemlerData = {
     body?: never;
