@@ -91,6 +91,13 @@ class SakValidator(private val sak: Sak): Validator() {
         return this
     }
 
+    /** Krever at saken har minst én av de angitte rettighetene */
+    fun checkAnyRettighet(vararg rettigheter: SakRettighet): SakValidator {
+        val harNoen = rettigheter.any { sak.rettigheter.contains(it) }
+        check(!harNoen, "rettighet", "Manglende rettighet i sak. Krever én av: ${rettigheter.joinToString()}")
+        return this
+    }
+
     fun checkUpdate(updateSakDto: UpdateSakDto): SakValidator {
        if (sak.gjenapnet){
            check(updateSakDto.type != null && updateSakDto.type != sak.type, "type", "Kan ikke endre type på en gjenåpnet sak")

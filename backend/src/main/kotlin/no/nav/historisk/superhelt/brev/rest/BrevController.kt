@@ -94,7 +94,7 @@ class BrevController(
         )
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .checkAnyRettighet(SakRettighet.SAKSBEHANDLE, SakRettighet.SEND_KLAGE)
             .validate()
         return brevRepository.oppdater(brevId, oppdatertBrev)
     }
@@ -105,7 +105,7 @@ class BrevController(
     fun sendAnnetBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId) {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .checkAnyRettighet(SakRettighet.SAKSBEHANDLE, SakRettighet.SEND_KLAGE)
             .validate()
         brevSendingService.sendBrev(sak, brevId)
 
