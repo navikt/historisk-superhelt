@@ -50,7 +50,7 @@ class KlageService(
             forrigeBehandlendeEnhet = enhet.value,
             tilknyttedeJournalposter = emptyList(),
             brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
             kommentar = request.kommentar,
         )
 

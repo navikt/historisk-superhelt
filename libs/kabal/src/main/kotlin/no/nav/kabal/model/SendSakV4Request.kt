@@ -40,7 +40,7 @@ data class SendSakV4Request(
     /** Tidspunkt saken ble mottatt i KA – ikke påkrevd, settes til starttidspunkt i Superhelt */
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val sakMottattKaTidspunkt: LocalDateTime? = null,
-    /** Ytelse-kode fra Kabal-kodeverk (f.eks. "HJE_HJE"). Påkrevd av Kabal API. */
+    /** Ytelse-kode fra Kabal-kodeverk (f.eks. "HEL_HEL" for Hjelpemidler – Ortopediske). Påkrevd av Kabal API. */
     val ytelse: String,
     val kommentar: String? = null,
     /** Ikke sett – gjelder svarbrev/oversendelsesbrev fra Kabal */

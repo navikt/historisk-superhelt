@@ -140,7 +140,7 @@ class KabalClientTest {
             fagsak = Fagsak("654321", "K9"),
             kildeReferanse = "kilde-ref-virksomhet",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
         )
 
         val expectedResponse = SendSakV4Response(
@@ -228,7 +228,7 @@ class KabalClientTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
             tilknyttedeJournalposter = journalposter
         )
 
@@ -264,7 +264,7 @@ class KabalClientTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
         )
     }
 }

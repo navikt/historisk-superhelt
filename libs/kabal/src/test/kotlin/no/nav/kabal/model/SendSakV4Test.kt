@@ -17,7 +17,7 @@ class SendSakV4RequestTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
         )
 
         // Verifiser
@@ -53,7 +53,7 @@ class SendSakV4RequestTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
             hjemler = hjemler,
             tilknyttedeJournalposter = journalposter,
             frist = frist,
@@ -168,7 +168,7 @@ class SendSakV4RequestTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
             hjemler = hjemler
         )
 
@@ -194,7 +194,7 @@ class SendSakV4RequestTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
             tilknyttedeJournalposter = journalposter
         )
 
@@ -218,7 +218,7 @@ class SendSakV4RequestTest {
             fagsak = Fagsak("123456", "K9"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
             brukersKlageMottattVedtaksinstans = mottattDato,
             frist = frist,
             sakMottattKaTidspunkt = sakMottattTidspunkt

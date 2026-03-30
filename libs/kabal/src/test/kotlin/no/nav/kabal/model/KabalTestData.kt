@@ -13,7 +13,7 @@ object KabalTestData {
         fagsystem: String = "HJE",
         kildeReferanse: String = "kilde-ref-123",
         forrigeBehandlendeEnhet: String = "4201",
-        ytelse: String = "HJE_HJE",
+        ytelse: String = "HEL_HEL",
         kommentar: String? = null,
         hjemler: List<String> = emptyList()
     ): SendSakV4Request {
@@ -52,7 +52,7 @@ object KabalTestData {
             fagsak = Fagsak("123456", "HJE"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
         )
     }
 
@@ -68,7 +68,7 @@ object KabalTestData {
             fagsak = Fagsak("123456", "HJE"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HJE_HJE",
+            ytelse = "HEL_HEL",
             tilknyttedeJournalposter = journalposter
         )
     }

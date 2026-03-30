@@ -111,7 +111,7 @@ class KlageControllerTest {
             assertThat(request.kildeReferanse).isEqualTo(sak.saksnummer.value)
             assertThat(request.dvhReferanse).isEqualTo(sak.saksnummer.value)
             assertThat(request.hjemler).containsExactly("FTRL_10_7I")
-            assertThat(request.ytelse).isEqualTo("HJE_HJE")
+            assertThat(request.ytelse).isEqualTo("HEL_HEL")
             assertThat(request.brukersKlageMottattVedtaksinstans).isEqualTo(datoKlageMottatt)
             assertThat(request.sakenGjelder.id.verdi).isEqualTo(sak.fnr.value)
             assertThat(request.klager.id.verdi).isEqualTo(sak.fnr.value)
