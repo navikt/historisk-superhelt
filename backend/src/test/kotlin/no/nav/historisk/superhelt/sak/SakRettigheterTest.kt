@@ -78,11 +78,15 @@ class SakRettigheterTest {
         }
 
         @Test
-        fun `får LES og GJENAPNE når sak er ferdig`() {
+        fun `får LES, GJENAPNE og SEND_KLAGE når sak er ferdig`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.FERDIG
             )
-            assertThat(sak.rettigheter).containsExactlyInAnyOrder(SakRettighet.LES, SakRettighet.GJENAPNE)
+            assertThat(sak.rettigheter).containsExactlyInAnyOrder(
+                SakRettighet.LES,
+                SakRettighet.GJENAPNE,
+                SakRettighet.SEND_KLAGE,
+            )
         }
 
         @Test
