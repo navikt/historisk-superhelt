@@ -286,18 +286,19 @@ class KlageControllerTest {
     inner class `attestant kan ikke sende klage` {
 
         @Test
-        fun `returnerer 403 når attestant forsøker å sende klage`() {
+        fun `returnerer 400 når attestant forsøker å sende klage (mangler SEND_KLAGE-rettighet)`() {
             val sak = SakTestData.lagreNySak(
                 sakRepository,
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
 
             assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
-                .hasStatus(HttpStatus.FORBIDDEN)
+                .hasStatus(HttpStatus.BAD_REQUEST)
 
             verifyNoInteractions(kabalClient)
         }
     }
+
 
     // ── helpers ───────────────────────────────────────────────────────────────
 
