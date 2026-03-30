@@ -16,6 +16,6 @@ class KabalMockController {
     @PostMapping("/api/oversendelse/v4/sak")
     fun sendSak(@RequestBody body: Map<String, Any?>): ResponseEntity<Void> {
         logger.info("Kabal mock: mottatt klagesending: $body")
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.ok().build()
     }
 }

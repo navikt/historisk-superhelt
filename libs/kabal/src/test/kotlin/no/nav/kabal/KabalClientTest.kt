@@ -46,7 +46,7 @@ class KabalClientTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.type").value("KLAGE"))
             .andExpect(jsonPath("$.klager.id.verdi").value("12345678901"))
-            .andRespond(withStatus(HttpStatus.NO_CONTENT))
+            .andRespond(withStatus(HttpStatus.OK))
 
         // Utfør
         kabalClient.sendSakV4(request)
@@ -95,7 +95,7 @@ class KabalClientTest {
             .andExpect(jsonPath("$.kildeReferanse").value("ref-123"))
             .andExpect(jsonPath("$.hjemler[0]").value("FVL_11"))
             .andExpect(jsonPath("$.kommentar").value("Klager er uenig i vedtaket"))
-            .andRespond(withStatus(HttpStatus.NO_CONTENT))
+            .andRespond(withStatus(HttpStatus.OK))
 
         // Utfør
         kabalClient.sendSakV4(request)
@@ -120,7 +120,7 @@ class KabalClientTest {
         mockServer.expect(requestTo("/api/oversendelse/v4/sak"))
             .andExpect(method(HttpMethod.POST))
             .andExpect(jsonPath("$.sakenGjelder.id.type").value("VIRKSOMHET"))
-            .andRespond(withStatus(HttpStatus.NO_CONTENT))
+            .andRespond(withStatus(HttpStatus.OK))
 
         // Utfør
         kabalClient.sendSakV4(request)
@@ -153,7 +153,7 @@ class KabalClientTest {
         mockServer.expect(requestTo("/api/oversendelse/v4/sak"))
             .andExpect(method(HttpMethod.POST))
             .andExpect(jsonPath("$.tilknyttedeJournalposter.length()").value(4))
-            .andRespond(withStatus(HttpStatus.NO_CONTENT))
+            .andRespond(withStatus(HttpStatus.OK))
 
         // Utfør
         kabalClient.sendSakV4(request)
