@@ -89,6 +89,8 @@ spec:
   env:
     - name: APP_FNR_ENCRYPTOR_SECRET
       value: "{{env}}-encryptor-superhelt-fnr"
+    - name: APP_ENV
+      value: "{{env}}"
     - name: APP_GRUPPE_SAKSBEHANDLER
       value: "{{gruppe.saksbehandler}}"
     - name: APP_GRUPPE_ATTESTANT
