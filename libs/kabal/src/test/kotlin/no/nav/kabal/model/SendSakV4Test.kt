@@ -14,7 +14,10 @@ class SendSakV4RequestTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9")
+            fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
         )
 
         // Verifiser
@@ -48,6 +51,9 @@ class SendSakV4RequestTest {
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             prosessfullmektig = prosessfullmektig,
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
             hjemler = hjemler,
             tilknyttedeJournalposter = journalposter,
             frist = frist,
@@ -160,6 +166,9 @@ class SendSakV4RequestTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
             hjemler = hjemler
         )
 
@@ -183,6 +192,9 @@ class SendSakV4RequestTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
             tilknyttedeJournalposter = journalposter
         )
 
@@ -204,6 +216,9 @@ class SendSakV4RequestTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
             brukersKlageMottattVedtaksinstans = mottattDato,
             frist = frist,
             sakMottattKaTidspunkt = sakMottattTidspunkt

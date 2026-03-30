@@ -5,32 +5,31 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
- * Mandatory fields in Kabal API:
+ * Request-modell for oversendelse av klage/anke til Kabal API v4.
+ *
+ * Felt påkrevd av Kabal API (non-nullable her):
  * type, sakenGjelder, fagsak, kildeReferanse, hjemler,
  * forrigeBehandlendeEnhet, tilknyttedeJournalposter, ytelse
- *
- * Note: fields marked as mandatory by Kabal API are kept nullable/defaulted here for
- * flexibility – callers are responsible for populating them before sending.
  */
 data class SendSakV4Request(
     /** KLAGE eller ANKE */
     val type: SakType,
-    /** Person saken gjelder (mandatory) */
+    /** Person saken gjelder */
     val sakenGjelder: SakenGjelder,
     /** Klager – som regel samme som sakenGjelder */
     val klager: Klager,
     val prosessfullmektig: Prosessfullmektig? = null,
-    /** Fagsak-referanse fra kildesystemet (mandatory) */
+    /** Fagsak-referanse fra kildesystemet */
     val fagsak: Fagsak,
-    /** Sak-ID – samme som fagsakId for Superhelt (mandatory in Kabal API, nullable here) */
-    val kildeReferanse: String? = null,
-    /** Samme som kildeReferanse */
+    /** Teknisk ID i avsendersystemet – brukes av Kabal ved tilbakemelding */
+    val kildeReferanse: String,
+    /** Id som rapporteres til DVH. Kabal bruker kildeReferanse hvis denne ikke er satt. */
     val dvhReferanse: String? = null,
-    /** Hjemler som liste av streng-ID-er (f.eks. "FTRL_10_7I"). Mandatory in Kabal API – send minst én. */
+    /** Hjemler som liste av streng-ID-er (f.eks. "FTRL_10_7I"). Send minst én. */
     val hjemler: List<String> = emptyList(),
-    /** NAV-enhet til saksbehandler som oppretter klagen – hentes fra EntraProxy (mandatory in Kabal API, nullable here) */
-    val forrigeBehandlendeEnhet: String? = null,
-    /** Kan sendes som tom liste, eller med klage/andre journalposter (mandatory, men kan være tom) */
+    /** NAV-enhet til saksbehandler som oppretter klagen – hentes fra EntraProxy */
+    val forrigeBehandlendeEnhet: String,
+    /** Kan sendes som tom liste, eller med klage/andre journalposter */
     val tilknyttedeJournalposter: List<TilknyttetJournalpost> = emptyList(),
     /** Dato klagen ble mottatt – fra Joark eller saksbehandler fritekst, ikke start i Superhelt */
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -41,8 +40,8 @@ data class SendSakV4Request(
     /** Tidspunkt saken ble mottatt i KA – ikke påkrevd, settes til starttidspunkt i Superhelt */
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val sakMottattKaTidspunkt: LocalDateTime? = null,
-    /** * Ytelse-kode fra Kabal-kodeverk – team klage bekrefter verdi (se #50). Påkrevd av Kabal API. */
-    val ytelse: String = "HJE_HJE",
+    /** Ytelse-kode fra Kabal-kodeverk (f.eks. "HJE_HJE"). Påkrevd av Kabal API. */
+    val ytelse: String,
     val kommentar: String? = null,
     /** Ikke sett – gjelder svarbrev/oversendelsesbrev fra Kabal */
     val hindreAutomatiskSvarbrev: Boolean = false,

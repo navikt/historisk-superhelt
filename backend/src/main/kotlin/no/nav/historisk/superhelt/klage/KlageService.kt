@@ -49,6 +49,7 @@ class KlageService(
             hjemler = listOf(hjemmel.id),
             forrigeBehandlendeEnhet = enhet.value,
             tilknyttedeJournalposter = emptyList(),
+            brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
             ytelse = "HJE_HJE",
             kommentar = request.kommentar,
         )

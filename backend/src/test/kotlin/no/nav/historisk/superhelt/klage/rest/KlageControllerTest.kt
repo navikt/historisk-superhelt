@@ -13,6 +13,7 @@ import no.nav.historisk.superhelt.test.WithMockJwtAuth
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.kabal.KabalClient
+import no.nav.kabal.model.SendSakV4Request
 import no.nav.kabal.model.SendSakV4Response
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
@@ -86,6 +87,81 @@ class KlageControllerTest {
             assertThat(endringslogg).anySatisfy { innslag ->
                 assertThat(innslag.type).isEqualTo(EndringsloggType.KLAGE_SENDT_KABAL)
                 assertThat(innslag.beskrivelse).contains("FTRL_10_7I")
+            }
+        }
+
+        @Test
+        fun `sender korrekt payload til Kabal`() {
+            val datoKlageMottatt = LocalDate.now().minusDays(10)
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+
+            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
+                .hasStatus(HttpStatus.OK)
+
+            val captor = argumentCaptor<SendSakV4Request>()
+            verify(kabalClient).sendSakV4(captor.capture())
+            val request = captor.firstValue
+
+            assertThat(request.type.name).isEqualTo("KLAGE")
+            assertThat(request.fagsak.fagsystem).isEqualTo("HJELPEMIDLER")
+            assertThat(request.fagsak.fagsakId).isEqualTo(sak.saksnummer.value)
+            assertThat(request.kildeReferanse).isEqualTo(sak.saksnummer.value)
+            assertThat(request.dvhReferanse).isEqualTo(sak.saksnummer.value)
+            assertThat(request.hjemler).containsExactly("FTRL_10_7I")
+            assertThat(request.ytelse).isEqualTo("HJE_HJE")
+            assertThat(request.brukersKlageMottattVedtaksinstans).isEqualTo(datoKlageMottatt)
+            assertThat(request.sakenGjelder.id.verdi).isEqualTo(sak.fnr.value)
+            assertThat(request.klager.id.verdi).isEqualTo(sak.fnr.value)
+        }
+
+        @Test
+        fun `kommentar inkluderes i payload til Kabal og i endringslogg`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            val kommentar = "Klager er uenig i vedtaket"
+            val request = mapOf(
+                "hjemmelId" to "FTRL_10_7I",
+                "datoKlageMottatt" to LocalDate.now().minusDays(5).toString(),
+                "kommentar" to kommentar,
+            )
+
+            assertThat(sendKlage(sak.saksnummer.value.toString(), request))
+                .hasStatus(HttpStatus.OK)
+
+            val captor = argumentCaptor<SendSakV4Request>()
+            verify(kabalClient).sendSakV4(captor.capture())
+            assertThat(captor.firstValue.kommentar).isEqualTo(kommentar)
+
+            val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+            assertThat(endringslogg).anySatisfy { innslag ->
+                assertThat(innslag.type).isEqualTo(EndringsloggType.KLAGE_SENDT_KABAL)
+                assertThat(innslag.beskrivelse).contains(kommentar)
+            }
+        }
+
+        @Test
+        fun `skriver ikke endringslogg når Kabal-kallet feiler`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            whenever(kabalClient.sendSakV4(any())) doThrow no.nav.kabal.KabalException(
+                message = "Feil fra Kabal API: HTTP 503",
+                statusCode = 503,
+                responseBody = """{"feil":"Kabal er utilgjengelig"}""",
+            )
+
+            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
+                .hasStatus(HttpStatus.BAD_GATEWAY)
+
+            val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+            assertThat(endringslogg).noneSatisfy { innslag ->
+                assertThat(innslag.type).isEqualTo(EndringsloggType.KLAGE_SENDT_KABAL)
             }
         }
 
@@ -205,6 +281,24 @@ class KlageControllerTest {
         }
     }
 
+    @Nested
+    @WithMockJwtAuth(roles = [Role.ATTESTANT], permissions = [Permission.READ, Permission.WRITE])
+    inner class `attestant kan ikke sende klage` {
+
+        @Test
+        fun `returnerer 403 når attestant forsøker å sende klage`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+
+            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
+                .hasStatus(HttpStatus.FORBIDDEN)
+
+            verifyNoInteractions(kabalClient)
+        }
+    }
+
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private fun gyldigKlageRequest(): Map<String, String> = mapOf(
@@ -218,4 +312,3 @@ class KlageControllerTest {
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(body))
 }
-

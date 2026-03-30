@@ -47,13 +47,6 @@ class BrevController(
         return brev ?: throw IkkeFunnetException("Kunne ikke finne eller generere brev for sak")
     }
 
-    private fun genererNyttBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev? {
-        if (sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)) {
-            return brevService.genererNyttBrev(sak, type, mottaker)
-        }
-        logger.warn("Kan ikke generere brev for sak ${sak.saksnummer} fordi saksbehandler mangler rettigheter")
-        return null
-    }
 
     @Operation(operationId = "hentBrev")
     @GetMapping("{brevId}")

@@ -137,7 +137,10 @@ class KabalClientTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.VIRKSOMHET, "987654321")),
             klager = Klager(Ident(IdentType.VIRKSOMHET, "987654321")),
-            fagsak = Fagsak("654321", "K9")
+            fagsak = Fagsak("654321", "K9"),
+            kildeReferanse = "kilde-ref-virksomhet",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
         )
 
         val expectedResponse = SendSakV4Response(
@@ -223,6 +226,9 @@ class KabalClientTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
             tilknyttedeJournalposter = journalposter
         )
 
@@ -255,7 +261,10 @@ class KabalClientTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9")
+            fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
         )
     }
 }

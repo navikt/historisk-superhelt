@@ -5,6 +5,7 @@ import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithLeseBruker
@@ -32,6 +33,9 @@ class BrevControllerTest {
 
     @MockitoBean
     private lateinit var tilgangsmaskinService: TilgangsmaskinService
+
+    @MockitoBean
+    private lateinit var brevSendingService: BrevSendingService
 
     @Autowired
     private lateinit var mockMvc: MockMvcTester
@@ -235,6 +239,129 @@ class BrevControllerTest {
             saksnummer: Saksnummer,
             brevId: BrevId,
             request: OppdaterBrevRequest): MockMvcTester.MockMvcRequestBuilder =
+            mockMvc.put().uri("/api/sak/{saksnummer}/brev/{brevId}", saksnummer, brevId)
+                .with(csrf())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(request))
+    }
+
+    @WithSaksbehandler
+    @Nested
+    inner class `send brev` {
+
+        @Test
+        fun `send brev ok for saksbehandler på aktiv sak`() {
+            val sak = SakTestData.lagreNySak(sakRepository)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+
+            assertThat(sendBrev(sak.saksnummer, brev.uuid))
+                .hasStatus(HttpStatus.OK)
+
+            verify(brevSendingService).sendBrev(any(), eq(brev.uuid))
+        }
+
+        @Test
+        fun `send brev ok for saksbehandler med SEND_KLAGE på ferdig sak`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+
+            assertThat(sendBrev(sak.saksnummer, brev.uuid))
+                .hasStatus(HttpStatus.OK)
+
+            verify(brevSendingService).sendBrev(any(), eq(brev.uuid))
+        }
+
+        @WithLeseBruker
+        @Test
+        fun `send brev uten skrivetilgang skal gi feil`() {
+            val sak = SakTestData.lagreNySak(sakRepository)
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+
+            assertThat(sendBrev(sak.saksnummer, brev.uuid))
+                .hasStatus4xxClientError()
+
+            verifyNoInteractions(brevSendingService)
+        }
+
+        private fun sendBrev(saksnummer: Saksnummer, brevId: BrevId): MockMvcTester.MockMvcRequestBuilder =
+            mockMvc.post().uri("/api/sak/{saksnummer}/brev/{brevId}/send", saksnummer, brevId)
+                .with(csrf())
+    }
+
+    @WithSaksbehandler
+    @Nested
+    inner class `saksbehandler med SEND_KLAGE-rettighet på ferdig sak` {
+
+        @Test
+        fun `kan hente eller opprette brev`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+            val request = OpprettBrevRequest(type = BrevType.VEDTAKSBREV, mottaker = BrevMottaker.BRUKER)
+
+            assertThat(hentEllerOpprettBrev(sak.saksnummer, request))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Brev::class.java)
+                .satisfies({
+                    assertThat(it.uuid).isEqualTo(brev.uuid)
+                })
+        }
+
+        @Test
+        fun `kan oppdatere brev`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+            val request = OppdaterBrevRequest(tittel = "Ny tittel", innhold = "Nytt innhold")
+
+            assertThat(oppdaterBrev(sak.saksnummer, brev.uuid, request))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Brev::class.java)
+                .satisfies({
+                    assertThat(it.tittel).isEqualTo(request.tittel)
+                    assertThat(it.innhold).isEqualTo(request.innhold)
+                })
+        }
+
+        @Test
+        fun `kan sende brev`() {
+            val sak = SakTestData.lagreNySak(
+                sakRepository,
+                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            )
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+
+            assertThat(
+                mockMvc.post().uri("/api/sak/{saksnummer}/brev/{brevId}/send", sak.saksnummer, brev.uuid)
+                    .with(csrf())
+            ).hasStatus(HttpStatus.OK)
+
+            verify(brevSendingService).sendBrev(any(), eq(brev.uuid))
+        }
+
+        private fun hentEllerOpprettBrev(
+            saksnummer: Saksnummer,
+            request: OpprettBrevRequest
+        ): MockMvcTester.MockMvcRequestBuilder =
+            mockMvc.post().uri("/api/sak/{saksnummer}/brev", saksnummer)
+                .with(csrf())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(request))
+
+        private fun oppdaterBrev(
+            saksnummer: Saksnummer,
+            brevId: BrevId,
+            request: OppdaterBrevRequest
+        ): MockMvcTester.MockMvcRequestBuilder =
             mockMvc.put().uri("/api/sak/{saksnummer}/brev/{brevId}", saksnummer, brevId)
                 .with(csrf())
                 .contentType("application/json")

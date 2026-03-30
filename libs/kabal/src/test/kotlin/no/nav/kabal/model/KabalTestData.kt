@@ -11,6 +11,9 @@ object KabalTestData {
         klagerIdent: String = "12345678901",
         fagsakId: String = "123456",
         fagsystem: String = "HJE",
+        kildeReferanse: String = "kilde-ref-123",
+        forrigeBehandlendeEnhet: String = "4201",
+        ytelse: String = "HJE_HJE",
         kommentar: String? = null,
         hjemler: List<String> = emptyList()
     ): SendSakV4Request {
@@ -19,6 +22,9 @@ object KabalTestData {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, sakenGjelderIdent)),
             klager = Klager(Ident(IdentType.PERSON, klagerIdent)),
             fagsak = Fagsak(fagsakId, fagsystem),
+            kildeReferanse = kildeReferanse,
+            forrigeBehandlendeEnhet = forrigeBehandlendeEnhet,
+            ytelse = ytelse,
             kommentar = kommentar,
             hjemler = hjemler
         )
@@ -43,7 +49,10 @@ object KabalTestData {
                     land = "Norge"
                 )
             ),
-            fagsak = Fagsak("123456", "K9")
+            fagsak = Fagsak("123456", "HJE"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
         )
     }
 
@@ -56,7 +65,10 @@ object KabalTestData {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "HJE"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HJE_HJE",
             tilknyttedeJournalposter = journalposter
         )
     }
@@ -151,4 +163,3 @@ object KabalTestData {
         return TilknyttetJournalpost(type = type, journalpostId = journalpostId)
     }
 }
-
