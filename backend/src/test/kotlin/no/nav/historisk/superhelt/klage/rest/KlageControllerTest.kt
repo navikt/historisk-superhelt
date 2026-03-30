@@ -14,7 +14,6 @@ import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.kabal.KabalClient
 import no.nav.kabal.model.SendSakV4Request
-import no.nav.kabal.model.SendSakV4Response
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -57,10 +56,7 @@ class KlageControllerTest {
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
             harTilgang = true
         )
-        whenever(kabalClient.sendSakV4(any())) doReturn SendSakV4Response(
-            behandlingId = "test-behandling-id",
-            mottattDato = "2026-03-30",
-        )
+        // Kabal returnerer ingen body – Unit/void er default for mockede metoder
     }
 
     @Nested
@@ -68,7 +64,7 @@ class KlageControllerTest {
     inner class `saksbehandler med WRITE-tilgang` {
 
         @Test
-        fun `sender klage til Kabal og returnerer 200 når sak er ferdig`() {
+        fun `sender klage til Kabal og returnerer 204 når sak er ferdig`() {
             val sak = SakTestData.lagreNySak(
                 sakRepository,
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
@@ -76,10 +72,7 @@ class KlageControllerTest {
             val request = gyldigKlageRequest()
 
             assertThat(sendKlage(sak.saksnummer.value.toString(), request))
-                .hasStatus(HttpStatus.OK)
-                .bodyJson()
-                .hasPathSatisfying("$.behandlingId") { assertThat(it).isEqualTo("test-behandling-id") }
-                .hasPathSatisfying("$.mottattDato") { assertThat(it).isEqualTo("2026-03-30") }
+                .hasStatus(HttpStatus.NO_CONTENT)
 
             verify(kabalClient).sendSakV4(any())
 
@@ -99,7 +92,7 @@ class KlageControllerTest {
             )
 
             assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
-                .hasStatus(HttpStatus.OK)
+                .hasStatus(HttpStatus.NO_CONTENT)
 
             val captor = argumentCaptor<SendSakV4Request>()
             verify(kabalClient).sendSakV4(captor.capture())
@@ -131,7 +124,7 @@ class KlageControllerTest {
             )
 
             assertThat(sendKlage(sak.saksnummer.value.toString(), request))
-                .hasStatus(HttpStatus.OK)
+                .hasStatus(HttpStatus.NO_CONTENT)
 
             val captor = argumentCaptor<SendSakV4Request>()
             verify(kabalClient).sendSakV4(captor.capture())

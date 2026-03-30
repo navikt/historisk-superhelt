@@ -112,19 +112,6 @@ object KabalTestData {
         )
     }
 
-    fun createSendSakV4Response(
-        behandlingId: String = "behandling-123",
-        mottattDato: String = "2026-03-06T10:00:00",
-        journalpostId: String? = "12345",
-        feilmeldinger: List<String> = emptyList()
-    ): SendSakV4Response {
-        return SendSakV4Response(
-            behandlingId = behandlingId,
-            mottattDato = mottattDato,
-            journalpostId = journalpostId,
-            feilmeldinger = feilmeldinger
-        )
-    }
 
     fun createIdent(
         type: IdentType = IdentType.PERSON,

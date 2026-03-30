@@ -1,4 +1,4 @@
-import type { HjemmelDto, KlageOversendtDto } from "@generated";
+import type { HjemmelDto } from "@generated";
 import { getKodeverkHjemlerOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
 import { CheckmarkCircleIcon } from "@navikt/aksel-icons";
 import {
@@ -44,7 +44,7 @@ function SendKlagePage() {
     const [datoError, setDatoError] = useState<string | undefined>();
     const [valgtDato, setValgtDato] = useState<Date | undefined>();
     const [visBekreftelse, setVisBekreftelse] = useState(false);
-    const [kabalRespons, setKabalRespons] = useState<KlageOversendtDto | undefined>();
+    const [klageSendt, setKlageSendt] = useState(false);
 
     const { datepickerProps, inputProps } = useDatepicker({
         toDate: new Date(),
@@ -56,8 +56,8 @@ function SendKlagePage() {
 
     const sendKlage = useMutation({
         ...sendKlageTilKabalMutation(),
-        onSuccess: (data) => {
-            setKabalRespons(data);
+        onSuccess: () => {
+            setKlageSendt(true);
             invalidateSakQuery(saksnummer);
         },
     });
@@ -104,8 +104,8 @@ function SendKlagePage() {
         navigate({ to: "/sak/$saksnummer/oppsummering", params: { saksnummer } });
     };
 
-    // ── Step 3: Success – show Kabal response ─────────────────────────────────
-    if (kabalRespons) {
+    // ── Step 3: Success ───────────────────────────────────────────────────────
+    if (klageSendt) {
         return (
             <VStack gap="space-32">
                 <HStack gap="space-8" align="center">
@@ -117,19 +117,7 @@ function SendKlagePage() {
 
                 <Box background="neutral-moderate" borderRadius="2" padding="space-20">
                     <VStack gap="space-12">
-                        <Heading size="xsmall">Svar fra Kabal</Heading>
-
-                        <VStack gap="space-4">
-                            <BodyShort weight="semibold">Behandling-ID</BodyShort>
-                            <Tag variant="success" size="small">
-                                {kabalRespons.behandlingId}
-                            </Tag>
-                        </VStack>
-
-                        <VStack gap="space-4">
-                            <BodyShort weight="semibold">Mottatt dato</BodyShort>
-                            <BodyShort>{kabalRespons.mottattDato}</BodyShort>
-                        </VStack>
+                        <Heading size="xsmall">Oppsummering</Heading>
 
                         <VStack gap="space-4">
                             <BodyShort weight="semibold">Sak</BodyShort>

@@ -14,7 +14,6 @@ import no.nav.kabal.model.Klager
 import no.nav.kabal.model.SakType
 import no.nav.kabal.model.SakenGjelder
 import no.nav.kabal.model.SendSakV4Request
-import no.nav.kabal.model.SendSakV4Response
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -27,7 +26,7 @@ class KlageService(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE')")
-    fun sendKlage(sak: Sak, request: SendKlageRequestDto): SendSakV4Response {
+    fun sendKlage(sak: Sak, request: SendKlageRequestDto) {
         val hjemmel = try {
             Hjemmel.fromId(request.hjemmelId)
         } catch (e: IllegalArgumentException) {
@@ -55,10 +54,7 @@ class KlageService(
         )
 
         logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.value}")
-        val response = kabalClient.sendSakV4(kabalRequest)
-        logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}, behandlingId: ${response.behandlingId}")
-
-
-        return response
+        kabalClient.sendSakV4(kabalRequest)
+        logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}")
     }
 }

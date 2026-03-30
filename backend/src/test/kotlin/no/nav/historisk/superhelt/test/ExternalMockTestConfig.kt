@@ -11,7 +11,6 @@ import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.kabal.KabalClient
-import no.nav.kabal.model.SendSakV4Response
 import no.nav.pdl.HentPdlResponse
 import no.nav.pdl.IdentGruppe
 import no.nav.pdl.IdentInformasjon
@@ -138,11 +137,6 @@ class ExternalMockTestConfig {
     @Bean
     fun kabalClientMock(): KabalClient {
         logger.warn("Bruker mock av KabalClient")
-        return mock<KabalClient>().stub {
-            on { sendSakV4(any()) } doReturn SendSakV4Response(
-                behandlingId = "mock-kabal-behandling-id",
-                mottattDato = "2026-03-30",
-            )
-        }
+        return mock<KabalClient>()
     }
 }

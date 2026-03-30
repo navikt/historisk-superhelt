@@ -98,10 +98,6 @@ export type SendKlageRequestDto = {
     kommentar?: string;
 };
 
-export type KlageOversendtDto = {
-    behandlingId: string;
-    mottattDato: string;
-};
 
 export type HjemmelDto = {
     id: string;
@@ -1667,9 +1663,9 @@ export type SendKlageTilKabalError = SendKlageTilKabalErrors[keyof SendKlageTilK
 
 export type SendKlageTilKabalResponses = {
     /**
-     * OK
+     * No Content
      */
-    200: KlageOversendtDto;
+    204: void;
 };
 
 export type SendKlageTilKabalResponse = SendKlageTilKabalResponses[keyof SendKlageTilKabalResponses];

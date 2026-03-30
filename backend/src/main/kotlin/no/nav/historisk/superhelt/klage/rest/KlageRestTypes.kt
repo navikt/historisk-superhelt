@@ -19,10 +19,3 @@ data class HjemmelDto(
     /** Kortform visningsnavn, f.eks. "Ftrl § 10-3" */
     val visningsnavn: String,
 )
-
-/** Respons returnert til frontend etter vellykket oversending til Kabal */
-data class KlageOversendtDto(
-    val behandlingId: String,
-    val mottattDato: String,
-)
-

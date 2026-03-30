@@ -31,14 +31,14 @@ class KlageController(
     fun sendKlage(
         @PathVariable saksnummer: Saksnummer,
         @Valid @RequestBody request: SendKlageRequestDto,
-    ): ResponseEntity<KlageOversendtDto> {
+    ): ResponseEntity<Void> {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
             .checkRettighet(SakRettighet.SEND_KLAGE)
             .validate()
 
         logger.info("Sender klage til Kabal for sak $saksnummer")
-        val kabalResponse = klageService.sendKlage(sak, request)
+        klageService.sendKlage(sak, request)
 
         endringsloggService.logChange(
             saksnummer = saksnummer,
@@ -51,11 +51,6 @@ class KlageController(
             },
         )
 
-        return ResponseEntity.ok(
-            KlageOversendtDto(
-                behandlingId = kabalResponse.behandlingId,
-                mottattDato = kabalResponse.mottattDato,
-            )
-        )
+        return ResponseEntity.noContent().build()
     }
 }
