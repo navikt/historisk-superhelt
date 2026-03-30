@@ -10,7 +10,7 @@ object KabalTestData {
         sakenGjelderIdent: String = "12345678901",
         klagerIdent: String = "12345678901",
         fagsakId: String = "123456",
-        fagsystem: String = "K9",
+        fagsystem: String = "HJE",
         kommentar: String? = null,
         hjemler: List<String> = emptyList()
     ): SendSakV4Request {

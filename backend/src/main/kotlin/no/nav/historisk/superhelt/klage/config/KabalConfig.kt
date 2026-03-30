@@ -15,8 +15,8 @@ import org.springframework.web.client.RestClient
 class KabalConfig {
 
     @Bean
-    fun kabalClient(properties: KabalProperties, tokenService: NaisTokenService): KabalClient {
-        val restClient = RestClient.builder()
+    fun kabalClient(properties: KabalProperties, tokenService: NaisTokenService, builder: RestClient.Builder): KabalClient {
+        val restClient = builder
             .baseUrl(properties.url)
             .requestInterceptor(CallIdClientRequestInterceptor("X-Correlation-ID"))
             .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))

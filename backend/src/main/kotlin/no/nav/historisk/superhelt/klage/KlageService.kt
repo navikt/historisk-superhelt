@@ -45,12 +45,12 @@ class KlageService(
             klager = Klager(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
             fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = "SUPERHELT"),
             kildeReferanse = sak.saksnummer.value,
+            dvhReferanse = sak.saksnummer.value,
             hjemler = listOf(hjemmel.id),
             forrigeBehandlendeEnhet = enhet.value,
             tilknyttedeJournalposter = emptyList(),
-            brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
+            ytelse = "HJE_HJE",
             kommentar = request.kommentar,
-            // ytelse defaults to "HJE_HJE" in SendSakV4Request
         )
 
         logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.value}")
