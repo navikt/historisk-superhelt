@@ -1,7 +1,7 @@
 import {findSakerForPersonOptions, hentInfotrygdHistorikkForPersonOptions,} from "@generated/@tanstack/react-query.gen";
 import {useSuspenseQuery} from "@tanstack/react-query";
+import {SakshistorikkKombinertTabell} from "~/common/sak/historikk/SakshistorikkKombinertTabell";
 import {isSakFerdig} from "~/common/sak/sak.utils";
-import {SakshistorikkKombinertTabell} from "../../../../common/sak/historikk/SakshistorikkKombinertTabell";
 
 interface Props {
     maskertPersonIdent: string;
