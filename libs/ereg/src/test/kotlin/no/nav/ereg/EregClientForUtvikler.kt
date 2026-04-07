@@ -23,7 +23,7 @@ class EregClientForUtvikler {
     private val eregClient = EregClient(
         RestClient.builder()
             .baseUrl(baseUrl)
-            .defaultHeader("Authorization", "Bearer $accessToken")
+            .defaultHeader("Authorization", "Bearer ${accessToken.trim()}")
             .build()
     )
 
@@ -44,6 +44,6 @@ class EregClientForUtvikler {
         val organisasjon = eregClient.hentOrganisasjon(orgnr)
 
         println("Resultat for ukjent orgnr: $organisasjon")
-        assert(organisasjon == null) { "Forventet null for ukjent orgnr" }
+        check(organisasjon == null) { "Forventet null for ukjent orgnr, fikk: $organisasjon" }
     }
 }

@@ -3,11 +3,11 @@ package no.nav.historisk.superhelt.samhandler
 import no.nav.common.types.Organisasjonsnummer
 import no.nav.ereg.EregAdresse
 import no.nav.ereg.EregClient
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 
 //Om vi velger å bruke BrReg isteden kan det endres her.
-@Repository
-class SamhandlerRepository(private val eregClient: EregClient) {
+@Service
+class SamhandlerService(private val eregClient: EregClient) {
 
     fun hentSamhandler(orgnr: Organisasjonsnummer): Samhandler? {
         val organisasjon = eregClient.hentOrganisasjon(orgnr) ?: return null

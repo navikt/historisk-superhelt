@@ -13,6 +13,7 @@ import org.springframework.test.web.client.match.MockRestRequestMatchers.request
 import org.springframework.test.web.client.response.MockRestResponseCreators.withResourceNotFound
 import org.springframework.test.web.client.response.MockRestResponseCreators.withServerError
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 
@@ -119,7 +120,7 @@ class EregClientTest {
             .andExpect(method(HttpMethod.GET))
             .andRespond(withServerError())
 
-        assertThrows<Exception> {
+        assertThrows<HttpServerErrorException> {
             eregClient.hentOrganisasjon(orgnr)
         }
     }
