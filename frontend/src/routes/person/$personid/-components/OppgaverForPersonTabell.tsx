@@ -1,9 +1,9 @@
-import {findSakerForPersonOptions, hentOppgaverForPersonOptions} from "@generated/@tanstack/react-query.gen";
-import {InfoCard, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {OppgaveTabell} from "~/common/oppgave/OppgaveTabell";
-import {SakerTabell} from "~/common/sak/SakerTabell";
-import {isSakFerdig} from "~/common/sak/sak.utils";
+import { findSakerForPersonOptions, hentOppgaverForPersonOptions } from "@generated/@tanstack/react-query.gen";
+import { InfoCard, VStack } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { OppgaveTabell } from "~/common/oppgave/OppgaveTabell";
+import { SakerTabell } from "~/common/sak/SakerTabell";
+import { isSakFerdig } from "~/common/sak/sak.utils";
 
 interface SakerTableProps {
     maskertPersonIdent: string;

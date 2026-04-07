@@ -1,19 +1,21 @@
-import { findSakerForPersonOptions } from "@generated/@tanstack/react-query.gen";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { SakerTabell } from "~/common/sak/SakerTabell";
-import { isSakFerdig } from "~/common/sak/sak.utils";
+import {findSakerForPersonOptions, hentInfotrygdHistorikkForPersonOptions,} from "@generated/@tanstack/react-query.gen";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {isSakFerdig} from "~/common/sak/sak.utils";
+import {SakshistorikkKombinertTabell} from "../../../../common/sak/historikk/SakshistorikkKombinertTabell";
 
-interface SakerTableProps {
+interface Props {
     maskertPersonIdent: string;
 }
 
-export function SakshistorikkPersonTabell({ maskertPersonIdent }: SakerTableProps) {
-    const { data, isPending, error } = useSuspenseQuery({
-        ...findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }),
-        retry: false,
-    });
+export function SakshistorikkPersonTabell({ maskertPersonIdent }: Props) {
+    const { data: saker } = useSuspenseQuery(
+        findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }),
+    );
+    const { data: infotrygdHistorikk } = useSuspenseQuery(
+        hentInfotrygdHistorikkForPersonOptions({ path: { maskertPersonIdent } }),
+    );
 
-    const saker = data.filter(isSakFerdig);
-
-    return <SakerTabell saker={saker} isPending={isPending} error={error} />;
+    return (
+        <SakshistorikkKombinertTabell saker={saker.filter(isSakFerdig)} infotrygdHistorikk={infotrygdHistorikk ?? []} />
+    );
 }
