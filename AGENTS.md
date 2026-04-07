@@ -105,7 +105,7 @@ npx playwright test -u    # Update snapshots
 
 - Platform: Nais (Kubernetes on GCP)
 - Manifests in `.nais/` directory
-- Required endpoints: `/isalive`, `/isready`, `/metrics`
+- Required endpoints: `/actuator/health/liveness`, `/actuator/health/readiness`, `/actuator/prometheus`
 
 ## Boundaries
 
