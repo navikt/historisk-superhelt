@@ -2,6 +2,9 @@
   "env": "prod",
   "appIngress": "https://superhelt.intern.nav.no",
   "legacyEnvSuffix": "",
+  "kabalUrl": "https://kabal-api.intern.nav.no",
+  "kabalAudience": "api://prod-gcp.klage.kabal-api/.default",
+  "kabalHost": "kabal-api.intern.nav.no",
   "gruppe": {
     "saksbehandler": "4b2a3bfb-3644-4030-be87-094ac364d322",
     "attestant": "28b70009-f8b0-47dc-ba15-d31deac63817",

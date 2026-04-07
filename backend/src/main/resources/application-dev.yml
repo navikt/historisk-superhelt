@@ -8,6 +8,7 @@ DB_JDBC_URL: jdbc:postgresql://localhost:5032/historisk-superhelt
 
 NAIS_APP_IMAGE: latest
 NAIS_CLUSTER_NAME: dev
+APP_ENV: dev
 
 # overser audience sjekken i dev miljo pga problemer med mock-oidc og aud i jwt token
 spring:
@@ -58,3 +59,6 @@ app:
   entra-proxy:
     url: http://localhost:9080/entra-proxy-mock
     audience: api://mock.entra-proxy/.default
+  kabal:
+    url: http://localhost:9080/kabal-mock
+    audience: api://mock.kabal/.default

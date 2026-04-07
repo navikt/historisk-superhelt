@@ -16,10 +16,11 @@ interface FritekstBrevProps {
 export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
     const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
-    const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE");
+    const kanSendeBrev =
+        sak.rettigheter.includes("SAKSBEHANDLE") || sak.rettigheter.includes("SEND_KLAGE");
     const { data: brev } = useQuery({
         ...getOrCreateBrevOptions(saksnummer, "FRITEKSTBREV", "BRUKER"),
-        enabled: open && hasSaksbehandleRettighet,
+        enabled: open,
     });
     const invalidateSakQuery = useInvalidateSakQuery();
 
@@ -50,7 +51,7 @@ export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
                         brevId={brev?.uuid}
                         buttonText="Send brev"
                         onSuccess={onBrevSend}
-                        readOnly={!hasSaksbehandleRettighet}
+                        readOnly={!kanSendeBrev}
                     />
                     {hasError && (
                         <ErrorSummary>

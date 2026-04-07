@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.infrastruktur
 
 import jakarta.validation.ConstraintViolationException
+import no.nav.kabal.KabalException
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.infrastruktur.validation.createValidationErrorMessage
@@ -77,6 +78,19 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
         return super.handleErrorResponseException(ex, headers, status, request)
     }
 
+
+    @ExceptionHandler(KabalException::class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    fun handleKabalException(ex: KabalException): ProblemDetail {
+        val detail = buildString {
+            append(ex.message)
+            if (!ex.responseBody.isNullOrBlank()) append(". Kabal-detaljer: ${ex.responseBody}")
+        }
+        log.error("Feil mot Kabal API. Return 502. {}", detail, ex)
+        val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY, detail)
+        problemDetail.title = "KabalException"
+        return problemDetail
+    }
 
     @ExceptionHandler(AccessDeniedException::class)
     @ResponseStatus(HttpStatus.FORBIDDEN)

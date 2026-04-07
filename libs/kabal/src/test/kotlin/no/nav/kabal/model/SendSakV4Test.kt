@@ -14,7 +14,10 @@ class SendSakV4RequestTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9")
+            fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HEL_HEL",
         )
 
         // Verifiser
@@ -38,7 +41,7 @@ class SendSakV4RequestTest {
         val journalposter = listOf(
             TilknyttetJournalpost(JournalpostType.BRUKERS_KLAGE, "jp-123")
         )
-        val hjemler = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12)
+        val hjemler = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id)
         val frist = LocalDate.of(2026, 6, 1)
 
         // Utfør
@@ -48,6 +51,9 @@ class SendSakV4RequestTest {
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             prosessfullmektig = prosessfullmektig,
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HEL_HEL",
             hjemler = hjemler,
             tilknyttedeJournalposter = journalposter,
             frist = frist,
@@ -152,7 +158,7 @@ class SendSakV4RequestTest {
     @Test
     fun `SendSakV4Request should support multiple hjemler`() {
         // Forbered
-        val hjemler = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12, Hjemmel.FVL_14, Hjemmel.FTRL_10_3)
+        val hjemler = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id, Hjemmel.FVL_14.id, Hjemmel.FTRL_10_3.id)
 
         // Utfør
         val request = SendSakV4Request(
@@ -160,6 +166,9 @@ class SendSakV4RequestTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HEL_HEL",
             hjemler = hjemler
         )
 
@@ -183,6 +192,9 @@ class SendSakV4RequestTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HEL_HEL",
             tilknyttedeJournalposter = journalposter
         )
 
@@ -204,6 +216,9 @@ class SendSakV4RequestTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             fagsak = Fagsak("123456", "K9"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HEL_HEL",
             brukersKlageMottattVedtaksinstans = mottattDato,
             frist = frist,
             sakMottattKaTidspunkt = sakMottattTidspunkt
@@ -213,79 +228,5 @@ class SendSakV4RequestTest {
         assertThat(request.brukersKlageMottattVedtaksinstans).isEqualTo(mottattDato)
         assertThat(request.frist).isEqualTo(frist)
         assertThat(request.sakMottattKaTidspunkt).isEqualTo(sakMottattTidspunkt)
-    }
-}
-
-class SendSakV4ResponseTest {
-
-    @Test
-    fun `SendSakV4Response should store behandlingId and mottattDato`() {
-        // Forbered og utfør
-        val response = SendSakV4Response(
-            behandlingId = "behandling-123",
-            mottattDato = "2026-03-06T10:00:00"
-        )
-
-        // Verifiser
-        assertThat(response.behandlingId).isEqualTo("behandling-123")
-        assertThat(response.mottattDato).isEqualTo("2026-03-06T10:00:00")
-    }
-
-    @Test
-    fun `SendSakV4Response should have optional journalpostId`() {
-        // Forbered og utfør
-        val response = SendSakV4Response(
-            behandlingId = "behandling-123",
-            mottattDato = "2026-03-06T10:00:00"
-        )
-
-        // Verifiser
-        assertThat(response.journalpostId).isNull()
-    }
-
-    @Test
-    fun `SendSakV4Response should have empty feilmeldinger by default`() {
-        // Forbered og utfør
-        val response = SendSakV4Response(
-            behandlingId = "behandling-123",
-            mottattDato = "2026-03-06T10:00:00"
-        )
-
-        // Verifiser
-        assertThat(response.feilmeldinger).isEmpty()
-    }
-
-    @Test
-    fun `SendSakV4Response should support feilmeldinger`() {
-        // Forbered
-        val feilmeldinger = listOf("Ugyldig hjemmel", "Manglende journalpost")
-
-        // Utfør
-        val response = SendSakV4Response(
-            behandlingId = "behandling-error",
-            mottattDato = "2026-03-06T10:00:00",
-            feilmeldinger = feilmeldinger
-        )
-
-        // Verifiser
-        assertThat(response.feilmeldinger).hasSize(2)
-        assertThat(response.feilmeldinger).containsAll(feilmeldinger)
-    }
-
-    @Test
-    fun `SendSakV4Response should support all fields`() {
-        // Forbered og utfør
-        val response = SendSakV4Response(
-            behandlingId = "behandling-456",
-            mottattDato = "2026-03-06T10:00:00",
-            journalpostId = "jp-789",
-            feilmeldinger = listOf("Feil 1", "Feil 2")
-        )
-
-        // Verifiser
-        assertThat(response.behandlingId).isEqualTo("behandling-456")
-        assertThat(response.mottattDato).isEqualTo("2026-03-06T10:00:00")
-        assertThat(response.journalpostId).isEqualTo("jp-789")
-        assertThat(response.feilmeldinger).hasSize(2)
     }
 }

@@ -1,11 +1,9 @@
 package no.nav.kabal
 
 import no.nav.kabal.model.SendSakV4Request
-import no.nav.kabal.model.SendSakV4Response
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientResponseException
-import org.springframework.web.client.body
 
 /**
  * Klient for Kabal API (Klage og Anke)
@@ -19,18 +17,28 @@ class KabalClient(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun sendSakV4(request: SendSakV4Request): SendSakV4Response {
-        return try {
+    /**
+     * Sender sak til Kabal API v4.
+     * Kabal returnerer ingen body (void-endepunkt) – suksess = ingen exception.
+     */
+    fun sendSakV4(request: SendSakV4Request) {
+        try {
             restClient.post()
                 .uri("/api/oversendelse/v4/sak")
                 .body(request)
                 .retrieve()
-                .body<SendSakV4Response>()
-                ?: throw IllegalStateException("Tom respons fra Kabal API ved sending av sak")
+                .toBodilessEntity()
         } catch (e: RestClientResponseException) {
             logger.error("Feil fra Kabal API: HTTP ${e.statusCode} – ${e.responseBodyAsString}")
-            throw IllegalStateException("Feil fra Kabal API: HTTP ${e.statusCode}", e)
+            throw KabalException(
+                message = "Feil fra Kabal API: HTTP ${e.statusCode}",
+                cause = e,
+                statusCode = e.statusCode.value(),
+                responseBody = e.responseBodyAsString,
+            )
         }
     }
 }
+
+
 

@@ -37,20 +37,16 @@ class BrevController(
         val brevListe = brevRepository.findBySak(saksnummer)
         val brev = brevListe.finnGjeldendeBrev(request.type, request.mottaker)
 
-        if ((brev == null || brev.status.isCompleted()) && sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)) {
+        val kanBehandleBrev = sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE) ||
+                sak.rettigheter.contains(SakRettighet.SEND_KLAGE)
+
+        if ((brev == null || brev.status.isCompleted()) && kanBehandleBrev) {
             return brevService.genererNyttBrev(sak, request.type, request.mottaker)
         }
 
         return brev ?: throw IkkeFunnetException("Kunne ikke finne eller generere brev for sak")
     }
 
-    private fun genererNyttBrev(sak: Sak, type: BrevType, mottaker: BrevMottaker): Brev? {
-        if (sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)) {
-            return brevService.genererNyttBrev(sak, type, mottaker)
-        }
-        logger.warn("Kan ikke generere brev for sak ${sak.saksnummer} fordi saksbehandler mangler rettigheter")
-        return null
-    }
 
     @Operation(operationId = "hentBrev")
     @GetMapping("{brevId}")
@@ -91,7 +87,7 @@ class BrevController(
         )
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .checkAnyRettighet(SakRettighet.SAKSBEHANDLE, SakRettighet.SEND_KLAGE)
             .validate()
         return brevRepository.oppdater(brevId, oppdatertBrev)
     }
@@ -102,7 +98,7 @@ class BrevController(
     fun sendAnnetBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId) {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkRettighet(SakRettighet.SAKSBEHANDLE)
+            .checkAnyRettighet(SakRettighet.SAKSBEHANDLE, SakRettighet.SEND_KLAGE)
             .validate()
         brevSendingService.sendBrev(sak, brevId)
 

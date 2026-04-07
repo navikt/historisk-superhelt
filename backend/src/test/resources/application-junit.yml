@@ -41,6 +41,9 @@ app:
   entra-proxy:
     url: http://entra-proxy-junit.mocked
     audience: api://mock.entra-proxy/.default
+  kabal:
+    url: http://kabal-junit.mocked
+    audience: api://mock.kabal/.default
 
 spring:
   main:

@@ -18,7 +18,10 @@ enum class SakRettighet {
     HENLEGGE,
 
     /** Gir rettighet til å tilbakestille en feilaktig gjenåpnet sak til tilstanden fra siste vedtak */
-    TILBAKESTILL_GJENAPNING
+    TILBAKESTILL_GJENAPNING,
+
+    /** Gir rettighet til å sende klage til Kabal for en ferdigstilt sak */
+    SEND_KLAGE
 
 
 }
@@ -59,6 +62,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.FERDIG -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.GJENAPNE)
+                    rettigheter.add(SakRettighet.SEND_KLAGE)
                 }
             }
 

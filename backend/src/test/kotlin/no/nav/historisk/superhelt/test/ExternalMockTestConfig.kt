@@ -10,6 +10,7 @@ import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
+import no.nav.kabal.KabalClient
 import no.nav.pdl.HentPdlResponse
 import no.nav.pdl.IdentGruppe
 import no.nav.pdl.IdentInformasjon
@@ -130,5 +131,12 @@ class ExternalMockTestConfig {
             on { hentEnheter() } doReturn listOf(Enhet(enhetnummer = "4488", navn = "NAV Vest-Viken"))
             on { hentTema() } doReturn setOf("HJE", "ORT")
         }
+    }
+
+    @Primary
+    @Bean
+    fun kabalClientMock(): KabalClient {
+        logger.warn("Bruker mock av KabalClient")
+        return mock<KabalClient>()
     }
 }
