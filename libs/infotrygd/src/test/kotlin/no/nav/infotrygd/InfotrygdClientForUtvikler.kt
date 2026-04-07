@@ -17,11 +17,12 @@ class InfotrygdClientForUtvikler {
      *
      * https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.historisk.historisk-helt-infotrygd
      *
-     * Dette virker ikke ende, for appen mangler noe oppsett mot ida
-     */
+     * Dette virker ikke, Infotrygd virker kun med m2m token
+     **/
 
     val accessToken =
         """
+            <GENERERET TOKEN>
          """.trimIndent()
 
     //    private val baseUrl = "https://historisk-helt-infotrygd.intern.dev.nav.no/"

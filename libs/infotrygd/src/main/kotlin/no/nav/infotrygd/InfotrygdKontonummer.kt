@@ -30,7 +30,9 @@ enum class InfotrygdKontonummer(val kode: String, val gammelKode: String? = null
     ;
 
     companion object {
-        fun fraKode(kode: String?): InfotrygdKontonummer =
-            entries.find { it.kode == kode || it.gammelKode == kode }?: InfotrygdKontonummer.UKJENT
+        fun fraKode(kode: String?): InfotrygdKontonummer {
+            if (kode == null) return UKJENT
+            return entries.find { it.kode == kode || it.gammelKode == kode } ?: UKJENT
+        }
     }
 }
