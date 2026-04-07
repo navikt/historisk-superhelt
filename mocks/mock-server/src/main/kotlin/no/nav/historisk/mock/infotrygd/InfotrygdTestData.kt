@@ -2,6 +2,7 @@ package no.nav.historisk.mock.infotrygd
 
 import net.datafaker.Faker
 import no.nav.infotrygd.InfotrygdHistorikkResponse
+import no.nav.infotrygd.InfotrygdKontonummer
 import no.nav.infotrygd.PersonkortOversiktsdetalj
 
 val faker = Faker()
@@ -22,8 +23,8 @@ private fun personkortOversiktsdetalj(): PersonkortOversiktsdetalj {
         dato = date,
         fom = date,
         tom = null,
-        tekst = faker.chuckNorris().fact().take(30),
-        kontonummer = faker.numerify("#######"),
+        tekst = faker.breakingBad().episode().take(30),
+        kontonummer = faker.options().option(InfotrygdKontonummer::class.java).kode,
         bevilgetBelop = faker.commerce().price(),
         betaltBelop = null
     )
