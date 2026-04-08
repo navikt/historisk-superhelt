@@ -22,5 +22,10 @@ export function enumkodeTilTekst(enumKode: string | undefined, storBokstav = tru
 
 export function formatertValuta(belop: number | null | undefined, valuta: string = "NOK"): string {
     if (belop == null || Number.isNaN(belop)) return "Ukjent beløp";
-    return belop.toLocaleString("no-NO", { style: "currency", currency: valuta , maximumFractionDigits:0});
+    return belop.toLocaleString("no-NO", { style: "currency", currency: valuta, maximumFractionDigits: 0 });
+}
+
+export function formatertFnr(fnr: string): string {
+    if (fnr.length !== 11) return fnr;
+    return `${fnr.slice(0, 6)} ${fnr.slice(6)}`;
 }

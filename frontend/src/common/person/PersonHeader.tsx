@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { isoTilLokal } from "~/common/dato.utils";
 import { finnPersonQuery } from "~/common/person/person.query";
-import { enumkodeTilTekst } from "~/common/string.utils";
+import { enumkodeTilTekst, formatertFnr } from "~/common/string.utils";
 
 interface Props {
     maskertPersonId: string;
@@ -47,7 +47,7 @@ export function PersonHeader({ maskertPersonId }: Props) {
                         <BodyShort>/</BodyShort>
                         <HStack gap="space-2" align="center" justify="start">
                             <Link as={RouterLink} to={`/person/${person.maskertPersonident}`}>
-                                {person.fnr}
+                                {formatertFnr(person.fnr)}
                             </Link>
                             <Tooltip content="Kopier fødselsnummer" placement="bottom">
                                 <CopyButton size="small" copyText={person.fnr} />
