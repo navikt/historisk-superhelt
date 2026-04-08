@@ -25,7 +25,7 @@ private fun personkortOversiktsdetalj(): PersonkortOversiktsdetalj {
         tom = null,
         tekst = faker.breakingBad().episode().take(30),
         kontonummer = faker.options().option(InfotrygdKontonummer::class.java).kode,
-        bevilgetBelop = faker.commerce().price(),
+        bevilgetBelop = if (faker.random().nextInt(1, 100) <= 40) "0.00" else faker.commerce().price(0.0, 9999.0),
         betaltBelop = null
     )
 }

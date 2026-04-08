@@ -1,4 +1,5 @@
 import type {InfotrygdHistorikk, ProblemDetail, Sak} from "@generated";
+import {ArrowRightIcon} from "@navikt/aksel-icons";
 import {Button, Heading, Skeleton, type SortState, Table, Tag, VStack} from "@navikt/ds-react";
 import {Link} from "@tanstack/react-router";
 import {useState} from "react";
@@ -9,7 +10,6 @@ import {formatertValuta} from "~/common/string.utils";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 import type {HistorikkRad, HistorikkSortKey} from "./sakshistorikk.types";
 import {infotrygdTilHistorikkRad, sakTilHistorikkRad} from "./sakshistorikk.utils";
-import {ArrowRightIcon} from "@navikt/aksel-icons";
 
 interface SakshistorikkKombinertProps {
     saker: Array<Sak>;
@@ -95,6 +95,32 @@ export function SakshistorikkKombinertTabell({
         );
     }
 
+    const renderActionButton = (rad: HistorikkRad) => {
+        const sak = rad?.sak;
+        if (!sak) {
+            return;
+        }
+        if (openInNewTab) {
+            return (
+                <Button
+                    size="small"
+                    variant="secondary"
+                    as="a"
+                    href={`/sak/${sak.saksnummer}`}
+                    target={`sak-${sak.saksnummer}`}
+                    rel="noopener noreferrer"
+                    icon={<ArrowRightIcon aria-hidden />}
+                    aria-label="Åpne sak"
+                />
+            );
+        }
+        return (
+            <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
+                Åpne sak
+            </Button>
+        );
+    };
+
     return (
         <Table sort={sort} onSortChange={(key) => handleSort(key as HistorikkSortKey)}>
             <Table.Header>
@@ -132,31 +158,7 @@ export function SakshistorikkKombinertTabell({
                         <Table.DataCell>{isoTilLokal(rad.dato)}</Table.DataCell>
                         <Table.DataCell>{formatertValuta(rad.belop)}</Table.DataCell>
                         {!hideSaksbehandler && <Table.DataCell>{rad.sak?.saksbehandler.navn}</Table.DataCell>}
-                        {!hideActions && rad.sak && (
-                            <Table.DataCell>
-                                {openInNewTab ? (
-                                    <Button
-                                        size="small"
-                                        variant="secondary"
-                                        as="a"
-                                        href={`/sak/${rad.sak.saksnummer}`}
-                                        target={`sak-${rad.sak.saksnummer}`}
-                                        rel="noopener noreferrer"
-                                        icon={<ArrowRightIcon aria-hidden />}
-                                        aria-label="Åpne sak"
-                                    />
-                                ) : (
-                                    <Button
-                                        size="small"
-                                        variant="secondary"
-                                        as={Link}
-                                        to={`/sak/${rad.sak.saksnummer}`}
-                                    >
-                                        Åpne sak
-                                    </Button>
-                                )}
-                            </Table.DataCell>
-                        )}
+                        {!hideActions && <Table.DataCell>{renderActionButton(rad)}</Table.DataCell>}
                     </Table.Row>
                 ))}
             </Table.Body>
