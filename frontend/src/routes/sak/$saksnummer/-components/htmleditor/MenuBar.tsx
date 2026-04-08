@@ -49,7 +49,6 @@ export function MenuBar({ editor }: { editor: Editor }) {
         }
     }
 
-    const activeStyle = "is-active";
     return (
         <Box background="sunken" padding="space-4" borderRadius="8" borderWidth="1" borderColor="neutral-subtle">
             <HStack className={styles.redigeringsMeny} gap="space-4" align="center" justify="start">
@@ -87,7 +86,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         size="small"
                         aria-label="Fet"
                         onClick={() => editor.chain().focus().toggleBold().run()}
-                        className={`${editorState.isBold && activeStyle}`}
+                        className={`${editorState.isBold && styles.active}`}
                         disabled={!editorState.canBold}
                         icon={<Bold />}
                     />
@@ -101,7 +100,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         size="small"
                         aria-label="Kursiv"
                         onClick={() => editor.chain().focus().toggleItalic().run()}
-                        className={`${editorState.isItalic && activeStyle}`}
+                        className={`${editorState.isItalic && styles.active}`}
                         disabled={!editorState.canItalic}
                         icon={<Italic />}
                     />
@@ -117,7 +116,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                             size="small"
                             aria-label="Overskrift"
                             style={{ width: "2rem" }}
-                            className={`${editorState.activeHeading && activeStyle}`}
+                            className={`${editorState.activeHeading && styles.active}`}
                         >
                             {editorState.activeHeading ? `H${editorState.activeHeading}` : "H"}
                         </Button>
@@ -147,7 +146,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         size="small"
                         aria-label="Nummerert liste"
                         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                        className={editorState.isOrderedList ? activeStyle : ""}
+                        className={editorState.isOrderedList ? styles.active : ""}
                         icon={<NumberListIcon fontSize="1.25rem" />}
                     />
                 </Tooltip>
@@ -160,7 +159,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         size="small"
                         aria-label="Punktliste"
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
-                        className={editorState.isBulletList ? activeStyle : ""}
+                        className={editorState.isBulletList ? styles.active : ""}
                         icon={<BulletListIcon fontSize="1.25rem" />}
                     />
                 </Tooltip>
@@ -173,7 +172,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         size="small"
                         aria-label="Marker tekst"
                         onClick={() => editor.chain().focus().toggleHighlight().run()}
-                        className={editorState.isHighlight ? activeStyle : ""}
+                        className={editorState.isHighlight ? styles.active : ""}
                         icon={
                             <span style={{ position: "relative", display: "inline-flex" }}>
                                 <PencilIcon fontSize="1.25rem" />
