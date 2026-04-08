@@ -2,7 +2,7 @@ import {findSakerForPersonOptions, hentOppgaverForPersonOptions} from "@generate
 import {InfoCard, VStack} from "@navikt/ds-react";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {OppgaveTabell} from "~/common/oppgave/OppgaveTabell";
-import {SakerTabell} from "~/common/sak/SakerTabell";
+import {SakshistorikkKombinertTabell} from "~/common/sak/historikk/SakshistorikkKombinertTabell";
 import {isSakFerdig} from "~/common/sak/sak.utils";
 
 interface SakerTableProps {
@@ -47,7 +47,7 @@ export function OppgaverForPersonTabell({ maskertPersonIdent }: SakerTableProps)
                         <InfoCard.Title>Personen har åpne saker uten tilknyttet oppgave</InfoCard.Title>
                     </InfoCard.Header>
                     <InfoCard.Content>
-                        <SakerTabell saker={sakerUnderBehandlingUtenOppgave} />
+                        <SakshistorikkKombinertTabell saker={sakerUnderBehandlingUtenOppgave} infotrygdHistorikk={[]} />
                     </InfoCard.Content>
                 </InfoCard>
             ) : null}
