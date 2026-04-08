@@ -4,8 +4,8 @@ import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo } from "react";
 import { WordHighlight } from "./WordHighlight";
-import styles from "./TiptapEditor.module.css";
 import { MenuBar } from "./MenuBar";
+import styles from "./TiptapEditor.module.css";
 
 const extensions = [StarterKit, Highlight, WordHighlight];
 interface TiptapEditorProps {
@@ -44,13 +44,12 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly }:
             borderWidth="1"
             borderColor="neutral-subtle"
             className={error ? styles.errorBorder : ""}
-            onClick={() => editor?.commands.focus()}
         >
             <Bleed marginInline="space-28" marginBlock="space-1 space-0">
                 {!readOnly && <MenuBar editor={editor} />}
             </Bleed>
             <EditorContext.Provider value={providerValue}>
-                <EditorContent editor={editor} className={styles.editor} />
+                <EditorContent editor={editor} className={styles.editor} onClick={() => editor?.commands.focus()} />
             </EditorContext.Provider>
             {error && <ErrorMessage showIcon>{error}</ErrorMessage>}
         </Box>
