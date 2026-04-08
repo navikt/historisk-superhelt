@@ -5,24 +5,35 @@
     margin-right: 0;
 
     /*
-    ** Styling under her følger aksel sine anbefalinger
+    ** Styling under her følger (omtrent) aksel sine anbefalinger
     ** https://aksel.nav.no/monster-maler/brev/visuelle-retningslinjer-for-brev
     */
 
     h1 {
-        font-size: 16pt;
+        font-size: 18pt;
+        letter-spacing: 0.3;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
     }
 
     h2 {
-        font-size: 13pt;
+        font-size: 14pt;
+        letter-spacing: 0.25;
     }
 
     h3 {
-        font-size: 12pt;
+        font-size: 13pt;
+        letter-spacing: 0.2;
     }
 
     h4 {
-        font-size: 11pt;
+        font-size: 12pt;
+        letter-spacing: 0.1;
+    }
+
+    h2, h3, h4 {
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
     }
 
     li {

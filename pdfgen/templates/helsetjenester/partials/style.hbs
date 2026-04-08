@@ -3,6 +3,8 @@
         font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
         margin-left: 0;
         margin-right: 0;
+        font-size: 12px;
+        line-height: 16px;
     }
 
     @page {
@@ -11,7 +13,7 @@
         font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
 
         @bottom-left {
-            font-size: 10px;
+            font-size: 9px;
             content: "Behandlingsnummer: {{behandlingsnummer}}";
             font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
         }
@@ -19,8 +21,8 @@
 
     @page {
         @bottom-right {
-            font-size: 10px;
-            content: "side "counter(page) " av "counter(pages);
+            font-size: 9px;
+            content: "side " counter(page) " av " counter(pages);
             font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
         }
 
@@ -56,7 +58,7 @@
         float: left;
     }
 
-    .personalia p{
+    .personalia p {
         margin: 0;
     }
 
@@ -77,54 +79,47 @@
         margin-bottom: 26px;
         font-size: 16px;
         line-height: 20px;
-        font-weight: bold;
+        letter-spacing: 0.3px;
     }
 
     h2 {
         font-size: 13px;
+        letter-spacing: 0.25px;
     }
 
     h3 {
         font-size: 12px;
+        letter-spacing: 0.2px;
     }
 
     h4 {
         font-size: 11px;
+        letter-spacing: 0.1px;
     }
 
-    h2,
-    h3,
-    h4 {
+    h2, h3, h4 {
         margin-top: 26px;
         line-height: 16px;
         margin-bottom: 6px;
-      font-weight: bold;
     }
 
-    p, ul{
-        font-size: 12px;
-        line-height: 16px;
-        margin-top: 0;
-        margin-bottom: 0;
+    a {
+        text-decoration: none;
     }
 
-    p {
-        min-height: 1rem;
+    ul, ol {
+        padding-left: 16px;
     }
 
-    ul {
-        padding-left:16px;
-        margin-bottom: 16px;
-    }
-    ul p {
-        margin: 0
+    li {
+        margin-top: -8px;
     }
 
     .hilsen {
         margin-top: 32px;
     }
 
-    .hilsen p{
+    .hilsen p {
         margin: 0;
     }
 
@@ -143,10 +138,6 @@
 
     .right-align {
         text-align: right;
-    }
-
-    a {
-        text-decoration: none;
     }
 
     .forhandsvisning {
