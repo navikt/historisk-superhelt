@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RestController
 class InfotrygdMockController {
     private val repository = mutableMapOf<FolkeregisterIdent, InfotrygdHistorikkResponse>()
 
-    private val  logger = LoggerFactory.getLogger(javaClass)
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     @PostMapping("/api/hentData")
     fun infotrygdHistorikk(@RequestBody req: InfotrygdHistorikkRequest): InfotrygdHistorikkResponse {
-        val fnr=req.fnr.firstOrNull()?:throw IllegalStateException("Mangler fnr")
+        val fnr = req.fnr.firstOrNull() ?: throw IllegalStateException("Mangler fnr")
 
-       return repository[fnr]?: genererOgLagre(fnr)
+        return repository[fnr] ?: genererOgLagre(fnr)
     }
 
     private fun genererOgLagre(fnr: FolkeregisterIdent): InfotrygdHistorikkResponse {
-        val response= genererInfotrygdHistorikkResponse()
+        val response = genererInfotrygdHistorikkResponse()
         repository[fnr] = response
         logger.debug("Genererte infotrygd historikk for fnr: {}, antall treff: {}", fnr, response.personkort.size)
         return response
