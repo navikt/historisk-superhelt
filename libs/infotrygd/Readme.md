@@ -1,8 +1,6 @@
-## Api mot infortygd
+## Api mot infotrygd
 
 Dolly identer med data i test: 
-- 11509133303  
+- 11509133303
 - 02489126519
 - 20417937995
-- 02489126519
-- 11509133303 

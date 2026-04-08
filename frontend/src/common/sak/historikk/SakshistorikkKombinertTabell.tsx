@@ -24,14 +24,14 @@ interface SakshistorikkKombinertProps {
 type ScopedSortState = { orderBy?: HistorikkSortKey } & SortState;
 
 export function SakshistorikkKombinertTabell({
-    saker,
-    infotrygdHistorikk,
-    isPending,
-    error,
-    hideSaksbehandler,
-    hideActions,
-    openInNewTab,
-}: SakshistorikkKombinertProps) {
+                                                 saker,
+                                                 infotrygdHistorikk,
+                                                 isPending,
+                                                 error,
+                                                 hideSaksbehandler,
+                                                 hideActions,
+                                                 openInNewTab,
+                                             }: SakshistorikkKombinertProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
 
     const defaultSort: ScopedSortState = {
@@ -45,7 +45,7 @@ export function SakshistorikkKombinertTabell({
         const sortering = sort ?? defaultSort;
         const direction: SortState["direction"] =
             sortKey === sortering.orderBy && sortering.direction === "descending" ? "ascending" : "descending";
-        setSort({ orderBy: sortKey, direction });
+        setSort({orderBy: sortKey, direction});
     };
 
     function comparator(a: HistorikkRad, b: HistorikkRad, orderBy: HistorikkSortKey): number {
@@ -58,7 +58,7 @@ export function SakshistorikkKombinertTabell({
 
     const rader: HistorikkRad[] = [
         ...saker.map((sak: Sak) => sakTilHistorikkRad(sak, getStonadsTypeNavn(sak.type))),
-        ...infotrygdHistorikk.map((h: InfotrygdHistorikk) => infotrygdTilHistorikkRad(h)),
+        ...infotrygdHistorikk.map((h: InfotrygdHistorikk, index) => infotrygdTilHistorikkRad(h, index)),
     ];
 
     const sorterteRader = rader.slice().sort((a, b) => {
@@ -70,18 +70,18 @@ export function SakshistorikkKombinertTabell({
     });
 
     if (error) {
-        return <ErrorAlert error={error} />;
+        return <ErrorAlert error={error}/>;
     }
     if (isPending) {
         return (
             <VStack gap="space-8">
-                <Skeleton variant="text" width="100%" />
+                <Skeleton variant="text" width="100%"/>
                 {/* 'as'-prop kan brukes på all typografien vår med Skeleton */}
                 <Heading as={Skeleton} size="xlarge" width="100%">
                     Placeholder
                 </Heading>
-                <div style={{ fontSize: "5rem" }}>
-                    <Skeleton variant="text" width="100%" />
+                <div style={{fontSize: "5rem"}}>
+                    <Skeleton variant="text" width="100%"/>
                 </div>
             </VStack>
         );
@@ -109,7 +109,7 @@ export function SakshistorikkKombinertTabell({
                     href={`/sak/${sak.saksnummer}`}
                     target={`sak-${sak.saksnummer}`}
                     rel="noopener noreferrer"
-                    icon={<ArrowRightIcon aria-hidden />}
+                    icon={<ArrowRightIcon aria-hidden/>}
                     aria-label="Åpne sak"
                 />
             );
@@ -138,17 +138,17 @@ export function SakshistorikkKombinertTabell({
             <Table.Body>
                 {sorterteRader.map((rad) => (
                     <Table.Row
-                        key={`${rad.kilde}-${rad.id}-${rad.dato}`}
+                        key={rad.id}
                         style={{
                             textDecorationLine: rad.strekedGjennom ? "line-through" : "none",
                         }}
                     >
-                        <Table.HeaderCell scope="row">{rad.sak?.saksnummer}</Table.HeaderCell>
+                        <Table.HeaderCell scope="row">{rad.sak?.saksnummer ?? "-"}</Table.HeaderCell>
                         <Table.DataCell>{rad.kategori}</Table.DataCell>
                         <Table.DataCell>{rad.beskrivelse ?? "–"}</Table.DataCell>
                         <Table.DataCell>
                             {rad.sak ? (
-                                <SakStatus sak={rad.sak} />
+                                <SakStatus sak={rad.sak}/>
                             ) : (
                                 <Tag data-color="neutral" variant="outline" size="small">
                                     Infotrygd
