@@ -71,6 +71,11 @@
             <artifactId>statistikk</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>infotrygd</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 
         <!-- Spring boot dependencies -->

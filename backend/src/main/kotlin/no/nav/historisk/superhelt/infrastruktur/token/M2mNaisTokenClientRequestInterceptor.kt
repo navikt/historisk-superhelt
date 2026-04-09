@@ -6,16 +6,16 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 
-/** Request interceptor for OBO tokens **/
-class NaisTokenClientRequestInterceptor(private val tokenService: NaisTokenService, private val target: String) : ClientHttpRequestInterceptor {
+
+class M2mNaisTokenClientRequestInterceptor(private val tokenService: NaisTokenService, private val target: String) : ClientHttpRequestInterceptor {
 
     override fun intercept(
         request: HttpRequest,
         body: ByteArray,
         execution: ClientHttpRequestExecution
     ): ClientHttpResponse {
-        val oboToken = tokenService.oboToken(target)
-        request.headers.setBearerAuth(oboToken)
+        val token = tokenService.m2mToken(target)
+        request.headers.setBearerAuth(token)
         return execution.execute(request, body)
     }
 }
