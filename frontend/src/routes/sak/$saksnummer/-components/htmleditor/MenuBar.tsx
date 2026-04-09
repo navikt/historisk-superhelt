@@ -36,16 +36,13 @@ export function MenuBar({ editor }: { editor: Editor }) {
     function headingLevelToSize(level: number) {
         switch (level) {
             case 1:
-                return "16pt";
+                return "18pt";
             case 2:
-                return "13pt";
+                return "14pt";
             case 3:
-                return "12pt";
+                return "13pt";
             case 4:
-            case 5:
-                return "11pt";
-            case 6:
-                return "10pt";
+                return "12pt";
         }
     }
 
@@ -136,7 +133,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                                     onSelect={() => editor.chain().focus().toggleHeading({ level }).run()}
                                     style={{ cursor: "pointer" }}
                                 >
-                                    <span style={{ fontSize: headingLevelToSize(level), fontWeight: 500 }}>
+                                    <span style={{ fontSize: headingLevelToSize(level), fontWeight: 700 }}>
                                         Overskrift {level}
                                     </span>
                                 </ActionMenu.Item>
