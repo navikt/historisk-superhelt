@@ -60,6 +60,11 @@
         content: counter(pages);
     }
 
+    header {
+        height: 4rem;
+        position: relative;
+    }
+
     .personalia {
         margin-right: 10%;
         float: left;
