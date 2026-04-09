@@ -46,7 +46,7 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly }:
             className={error ? styles.errorBorder : ""}
         >
             <Bleed marginInline="space-28" marginBlock="space-1 space-0">
-                {!readOnly && <MenuBar editor={editor} />}
+                {!readOnly && editor && <MenuBar editor={editor} />}
             </Bleed>
             <EditorContext.Provider value={providerValue}>
                 <EditorContent editor={editor} className={styles.editor} onClick={() => editor?.commands.focus()} />

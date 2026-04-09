@@ -14,18 +14,12 @@ export function MenuBar({ editor }: { editor: Editor }) {
                 canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
                 isItalic: ctx.editor.isActive("italic") ?? false,
                 canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
-                isStrike: ctx.editor.isActive("strike") ?? false,
-                canStrike: ctx.editor.can().chain().toggleStrike().run() ?? false,
-                isCode: ctx.editor.isActive("code") ?? false,
-                canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
                 canClearMarks: ctx.editor.can().chain().unsetAllMarks().run() ?? false,
                 isParagraph: ctx.editor.isActive("paragraph") ?? false,
                 activeHeading:
                     ([1, 2, 3, 4] as const).find((level) => ctx.editor.isActive("heading", { level })) ?? null,
                 isBulletList: ctx.editor.isActive("bulletList") ?? false,
                 isOrderedList: ctx.editor.isActive("orderedList") ?? false,
-                isCodeBlock: ctx.editor.isActive("codeBlock") ?? false,
-                isBlockquote: ctx.editor.isActive("blockquote") ?? false,
                 isHighlight: ctx.editor.isActive("highlight") ?? false,
                 canUndo: ctx.editor.can().chain().undo().run() ?? false,
                 canRedo: ctx.editor.can().chain().redo().run() ?? false,
@@ -56,7 +50,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
             asChild
         >
             <HStack align="center" justify="space-between" paddingInline="space-4 space-8">
-                <HStack className={styles.redigeringsMeny} gap="space-4" align="center" justify="start">
+                <HStack gap="space-4" align="center" justify="start">
                     <Tooltip content="Angre" keys={["Ctrl", "Z"]} placement="top">
                         <Button
                             type="button"
@@ -91,7 +85,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                             size="small"
                             aria-label="Fet"
                             onClick={() => editor.chain().focus().toggleBold().run()}
-                            className={`${editorState.isBold && styles.active}`}
+                            className={editorState.isBold ? styles.active : ""}
                             disabled={!editorState.canBold}
                             icon={<Bold />}
                         />
@@ -105,7 +99,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                             size="small"
                             aria-label="Kursiv"
                             onClick={() => editor.chain().focus().toggleItalic().run()}
-                            className={`${editorState.isItalic && styles.active}`}
+                            className={editorState.isItalic ? styles.active : ""}
                             disabled={!editorState.canItalic}
                             icon={<Italic />}
                         />
@@ -120,7 +114,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                                 size="small"
                                 aria-label="Overskrift"
                                 style={{ width: "2rem" }}
-                                className={`${editorState.activeHeading && styles.active}`}
+                                className={editorState.activeHeading ? styles.active : ""}
                             >
                                 {editorState.activeHeading ? `H${editorState.activeHeading}` : "H"}
                             </Button>
@@ -167,7 +161,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         />
                     </Tooltip>
 
-                    <Tooltip content="Marker tekst" placement="top">
+                    <Tooltip content="Marker tekst" keys={["Ctrl", "Shift", "H"]} placement="top">
                         <Button
                             type="button"
                             variant="tertiary"
