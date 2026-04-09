@@ -1,22 +1,9 @@
-.redigeringsMeny {
-    padding: 2px;
-
-    button {
-        vertical-align: top;
-        height: 32px;
-        margin-left: 2px;
-    }
-
-    button:global(.is-active) {
-        background-color: darkgrey;
-    }
-}
 .editor {
     /* Fjerner blå fokus-ring rundt editoren  */
     *:focus {
         outline: none;
     }
-    min-height: 10rem;
+    min-height: 6lh;
 }
 
 .errorBorder {
