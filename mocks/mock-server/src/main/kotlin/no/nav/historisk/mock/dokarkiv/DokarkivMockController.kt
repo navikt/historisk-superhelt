@@ -1,10 +1,28 @@
 package no.nav.historisk.mock.dokarkiv
 
 import no.nav.common.types.EksternJournalpostId
-import no.nav.dokarkiv.*
-import no.nav.saf.graphql.*
+import no.nav.dokarkiv.AvsenderMottakerIdType
+import no.nav.dokarkiv.BrukerIdType
+import no.nav.dokarkiv.DokarkivClient
+import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.dokarkiv.JournalpostRequest
+import no.nav.dokarkiv.JournalpostResponse
+import no.nav.dokarkiv.OppdaterJournalpostRequest
+import no.nav.saf.graphql.JournalStatus
+import no.nav.saf.graphql.JournalpostAvsenderMottaker
+import no.nav.saf.graphql.JournalpostBruker
+import no.nav.saf.graphql.JournalpostDokumentInfo
+import no.nav.saf.graphql.JournalpostSak
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("dokarkiv-mock")
@@ -38,8 +56,16 @@ class DokarkivController(
                                 type = BrukerIdType.FNR,
                             )
                         },
+                    dokumenter = req.dokumenter.map {
+                        JournalpostDokumentInfo(
+                            tittel = it.tittel,
+                            dokumentInfoId = EksternDokumentInfoId(UUID.randomUUID().toString()),
+                            dokumentvarianter = emptyList(),
+                        )
+                    },
                 )
-        repository.lagre(id, journalpost)
+        val pdf = req.dokumenter.firstOrNull()?.dokumentvarianter?.firstOrNull()?.fysiskDokument
+        repository.lagre(id, journalpost, pdf)
 
         return JournalpostResponse(
             journalpostId = EksternJournalpostId(id.value),
@@ -87,7 +113,7 @@ class DokarkivController(
             )
 
 
-        repository.lagre(journalpostId, oppdatert)
+        repository.oppdater(journalpostId, oppdatert)
 
         return journalpost.journalpostId.value
     }
@@ -104,7 +130,7 @@ class DokarkivController(
             journalpost.copy(
                 journalstatus = JournalStatus.JOURNALFOERT,
             )
-        repository.lagre(journalpostId, oppdatert)
+        repository.oppdater(journalpostId, oppdatert)
         return journalpost.journalpostId.value
     }
 

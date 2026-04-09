@@ -2,13 +2,23 @@ package no.nav.historisk.mock.dokarkiv
 
 import no.nav.common.types.EksternJournalpostId
 import no.nav.historisk.mock.pdl.GraphqlQuery
-import no.nav.saf.graphql.*
+import no.nav.saf.graphql.DokumentoversiktData
+import no.nav.saf.graphql.DokumentoversiktFagsakResult
+import no.nav.saf.graphql.DokumentoversiktGraphqlResponse
+import no.nav.saf.graphql.HentJournalpostData
+import no.nav.saf.graphql.HentJournalpostGraphqlResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("saf-mock")
@@ -24,15 +34,15 @@ class SafMockController(
 
     @GetMapping("/rest/hentdokument/{journalpostId}/{dokumentInfoId}/{variantFormat}")
     fun lastNedDokument(
-        @PathVariable journalpostId: String,
+        @PathVariable journalpostId: EksternJournalpostId,
         @PathVariable dokumentInfoId: String,
         @PathVariable variantFormat: String,
     ): ResponseEntity<ByteArray> {
-        val body = pdfdoc
+        val body = repository.getPdf(journalpostId)
         return ResponseEntity
             .status(HttpStatus.OK)
             .contentType(MediaType.APPLICATION_PDF)
-            .contentLength(pdfdoc.size.toLong())
+            .contentLength(body.size.toLong())
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"mock.pdf\"")
             .body(body)
     }
