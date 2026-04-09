@@ -11,7 +11,6 @@ import { useOppgaveTypeNavn } from "~/common/oppgave/useOppgaveTypeNavn";
 import { useSakStatusNavn } from "~/common/sak/useSakStatusNavn";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import { OppgaveActionButton } from "./OppgaveActionButton";
-import { formatertFnr } from "../string.utils";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
@@ -144,7 +143,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                                 to={`/person/${oppgave.maskertPersonIdent}`}
                                                 style={{ textDecoration: "none" }}
                                             >
-                                                {formatertFnr(oppgave.fnr)}
+                                                {oppgave.fnr}
                                             </Link>
                                         ) : (
                                             "ukjent"

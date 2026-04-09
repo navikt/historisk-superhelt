@@ -2,7 +2,6 @@ import { findPersonByFnr as findPerson } from "@generated";
 import { PersonIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, HStack, Label, Loader, TextField, VStack } from "@navikt/ds-react";
 import { useState } from "react";
-import { formatertFnr } from "~/common/string.utils";
 
 export type PersonValue = {
     fnr: string;
@@ -60,7 +59,7 @@ export function PersonVelger(props: Props) {
                     <HStack gap="space-8" align="center">
                         <PersonIcon title="person" fontSize="1.5rem" />
                         <BodyShort>
-                            {props.value.navn}/{formatertFnr(props.value.fnr)}
+                            {props.value.navn}/{props.value.fnr}
                         </BodyShort>
                     </HStack>
                     <Button

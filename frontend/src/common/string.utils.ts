@@ -29,8 +29,3 @@ export function formatertValuta(
     if (belop === 0) return nullValue;
     return belop.toLocaleString("no-NO", { style: "currency", currency: valuta, maximumFractionDigits: 0 });
 }
-
-export function formatertFnr(fnr: string): string {
-    if (fnr.length !== 11) return fnr;
-    return `${fnr.slice(0, 6)} ${fnr.slice(6)}`;
-}
