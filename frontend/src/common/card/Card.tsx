@@ -3,11 +3,13 @@ import { Box, Heading, VStack } from "@navikt/ds-react";
 interface CardProps {
     title?: string;
     children: React.ReactNode;
+    className?: string;
 }
 
-export function Card({ title, children }: CardProps) {
+export function Card({ title, children, className }: CardProps) {
     return (
         <Box
+            className={className}
             padding="space-24"
             background="neutral-soft"
             borderWidth="1"

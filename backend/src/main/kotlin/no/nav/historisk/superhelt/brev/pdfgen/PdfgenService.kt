@@ -35,7 +35,7 @@ class PdfgenService(
             datoForUtsending = LocalDate.now(),
             saksbehandlerNavn = sak.saksbehandler.navn,
             beslutterNavn = beslutterNavn,
-            kontor = "NAV Arbeid og ytelser",
+            kontor = "Nav Arbeid og ytelser",
             html = htmlToXhtml(brev.innhold ?: ""),
             brevtype = brev.type.asPdfGenBrevType(),
             mottaker = brev.mottakerType.asPdfgenMottakerType(),

@@ -17,8 +17,8 @@
         "node": ">=24"
     },
     "dependencies": {
-        "@navikt/ds-css": "^8.8.0",
-        "@navikt/ds-react": "^8.8.0",
+        "@navikt/ds-css": "^8.9.0",
+        "@navikt/ds-react": "^8.9.0",
         "@tanstack/react-query": "^5.95.2",
         "@tanstack/react-query-devtools": "^5.95.2",
         "@tanstack/react-router": "^1.168.7",
