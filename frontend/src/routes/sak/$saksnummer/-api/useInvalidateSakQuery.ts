@@ -1,6 +1,6 @@
-import {finnJournalposterForSakQueryKey, hentEndringsloggForSakQueryKey} from "@generated/@tanstack/react-query.gen";
-import {useQueryClient} from "@tanstack/react-query";
-import {sakQueryKey} from "~/routes/sak/$saksnummer/-api/sak.query";
+import { finnJournalposterForSakQueryKey, hentEndringsloggForSakQueryKey } from "@generated/@tanstack/react-query.gen";
+import { useQueryClient } from "@tanstack/react-query";
+import { sakQueryKey } from "~/routes/sak/$saksnummer/-api/sak.query";
 
 /** Invaliderer cachen for en sak og tilhørende endringslogg */
 export function useInvalidateSakQuery() {
