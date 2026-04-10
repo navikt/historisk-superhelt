@@ -78,6 +78,7 @@ spec:
         - application: superhelt-pdfgen
         - application: entra-proxy
           namespace: sikkerhetstjenesten
+        - application: historisk-helt-infotrygd
       external:
         - host: "pdl-api.{{env}}-fss-pub.nais.io"
         - host: "oppgave.{{env}}-fss-pub.nais.io"
@@ -126,6 +127,10 @@ spec:
       value: "http://entra-proxy.sikkerhetstjenesten"
     - name: APP_ENTRA_PROXY_AUDIENCE
       value: "api://{{env}}-gcp.sikkerhetstjenesten.entra-proxy/.default"
+    - name: APP_INFOTRYGD_URL
+      value: "http://historisk-helt-infotrygd"
+    - name: APP_INFOTRYGD_AUDIENCE
+      value: "api://{{env}}-gcp.historisk.historisk-helt-infotrygd/.default"
 
 
 

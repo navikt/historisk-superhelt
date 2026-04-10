@@ -57,8 +57,7 @@
     {{/eq}}
     <section class="hilsen">
         <p>Med vennlig hilsen</p>
-        <p>{{kontor}}</p>
-        <div class="signatur">
+        <div>
             <div class="beslutter">
                 {{#if beslutterNavn}}
                     <p>{{beslutterNavn}}</p>
@@ -71,6 +70,9 @@
                     <p>{{saksbehandlerNavn}}</p>
                 {{/if}}
             </div>
+        </div>
+        <div class="signatur">
+            <p>{{kontor}}</p>
         </div>
     </section>
 </article>

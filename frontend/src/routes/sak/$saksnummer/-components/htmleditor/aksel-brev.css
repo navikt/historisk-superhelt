@@ -1,74 +1,56 @@
 .htmleditor {
     font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
+    font-size: 12pt;
     margin-left: 0;
     margin-right: 0;
 
     /*
-    ** Styling under her følger aksel sine anbefalinger
+    ** Styling under her følger (omtrent) aksel sine anbefalinger
     ** https://aksel.nav.no/monster-maler/brev/visuelle-retningslinjer-for-brev
     */
 
     h1 {
-        margin-top: 40px;
-        margin-bottom: 26px;
-        font-size: 16px;
-        line-height: 20px;
-        font-weight: bold;
+        font-size: 18pt;
+        letter-spacing: 0.3px;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
     }
 
     h2 {
-        font-size: 13px;
+        font-size: 14pt;
+        letter-spacing: 0.25px;
     }
 
     h3 {
-        font-size: 12px;
+        font-size: 13pt;
+        letter-spacing: 0.2px;
     }
 
     h4 {
-        font-size: 11px;
+        font-size: 12pt;
+        letter-spacing: 0.1px;
     }
 
-    h2,
-    h3,
-    h4 {
-        margin-top: 26px;
-        line-height: 16px;
-        margin-bottom: 6px;
-        font-weight: bold;
+    h2, h3, h4 {
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
     }
 
-    p,
-    ul {
-        font-size: 12px;
-        line-height: 16px;
-        margin-top: 0;
-        margin-bottom: 0;
+    li {
+        margin-top: -0.5rem;
     }
 
-    ul {
-        padding-left: 16px;
-        margin-bottom: 16px;
-    }
-
-    p {
-        min-height: 1rem;
-    }
-
-    ul p {
-        margin: 0;
-    }
-
-    header {
-        height: 48px;
-        position: relative;
+    mark {
+        background-color: var(--ax-bg-warning-moderate-hoverA);
+        color: var(--ax-bg-warning-strong);
+        padding: 0 .25rem;
+        border-radius: var(--ax-radius-4);
     }
 
     .navLogo {
-        height: 16px;
-        margin-bottom: 48px;
+        height: 1.25rem;
+        margin-bottom: 2.5rem;
     }
-
-    /* End aksel sine anbefalinger */
 
     #pagenumber:before {
         content: counter(page);
@@ -76,6 +58,11 @@
 
     #pagecount:before {
         content: counter(pages);
+    }
+
+    header {
+        height: 4rem;
+        position: relative;
     }
 
     .personalia {

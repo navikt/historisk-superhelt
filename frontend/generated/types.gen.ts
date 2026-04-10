@@ -62,15 +62,15 @@ export type Sak = {
     belop?: number;
     vedtaksbrevBruker?: Brev;
     readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly maskertPersonIdent: string;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
-    readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
+    readonly gjenapnet: boolean;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -170,8 +170,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
-    loggId$superhelt_backend: string;
     annulleres: boolean;
+    loggId$superhelt_backend: string;
 };
 
 export type User = {
@@ -300,6 +300,16 @@ export type JournalpostSak = {
     fagsakId?: string;
 };
 
+export type InfotrygdHistorikk = {
+    dato?: string;
+    fom?: string;
+    tom?: string;
+    tekst?: string;
+    kontonummer: string;
+    kontonavn: string;
+    belop?: string;
+};
+
 export type BrevWritable = {
     saksnummer: string;
     uuid: string;
@@ -333,8 +343,8 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
@@ -1518,7 +1528,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: string;
+        dokumentId: number;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';
@@ -1619,3 +1629,38 @@ export type FinnJournalposterForSakResponses = {
 };
 
 export type FinnJournalposterForSakResponse = FinnJournalposterForSakResponses[keyof FinnJournalposterForSakResponses];
+
+export type HentInfotrygdHistorikkForPersonData = {
+    body?: never;
+    path: {
+        maskertPersonIdent: string;
+    };
+    query?: never;
+    url: '/api/infotrygd/historikk/{maskertPersonIdent}';
+};
+
+export type HentInfotrygdHistorikkForPersonErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentInfotrygdHistorikkForPersonError = HentInfotrygdHistorikkForPersonErrors[keyof HentInfotrygdHistorikkForPersonErrors];
+
+export type HentInfotrygdHistorikkForPersonResponses = {
+    /**
+     * OK
+     */
+    200: Array<InfotrygdHistorikk>;
+};
+
+export type HentInfotrygdHistorikkForPersonResponse = HentInfotrygdHistorikkForPersonResponses[keyof HentInfotrygdHistorikkForPersonResponses];

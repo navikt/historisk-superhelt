@@ -23,6 +23,7 @@
         <module>entra-proxy</module>
         <module>statistikk</module>
         <module>ereg</module>
+        <module>infotrygd</module>
     </modules>
 
     <dependencies>

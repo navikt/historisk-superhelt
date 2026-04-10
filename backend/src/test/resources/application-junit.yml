@@ -44,6 +44,9 @@ app:
   ereg:
     url: http://ereg-junit.mocked
     audience: api://mock.ereg-services/.default
+  infotrygd:
+    url: http://infotrygd-junit.mocked
+    audience: api://mock.infotrygd/.default
 
 spring:
   main:
