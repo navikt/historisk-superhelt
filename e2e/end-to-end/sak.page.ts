@@ -55,7 +55,7 @@ export class SakPage {
         await this.page.getByRole("button", {name: "Lagre og gå videre"}).click();
     }
 
-    async selectBehandlingsmenyItem(item: "Feilregistrer sak"| "Henlegg sak"| "Gjenåpne sak" | "Fritekstbrev til bruker") {
+    async selectBehandlingsmenyItem(item: "Feilregistrer sak" | "Henlegg sak" | "Gjenåpne sak" | "Fritekstbrev til bruker") {
         const behandlingsmeny= this.page.getByRole('button', { name: 'Behandlingsmeny' })
         await expect(behandlingsmeny).toBeVisible();
         await behandlingsmeny.click();

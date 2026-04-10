@@ -1,11 +1,11 @@
-import {Bleed, Box, ErrorMessage} from "@navikt/ds-react";
+import { Bleed, Box, ErrorMessage } from "@navikt/ds-react";
 import Highlight from "@tiptap/extension-highlight";
-import {EditorContent, EditorContext, useEditor} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import {useEffect, useMemo} from "react";
-import {MenuBar} from "./MenuBar";
+import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import { useEffect, useMemo } from "react";
 import styles from "./TiptapEditor.module.css";
-import {WordHighlight} from "./WordHighlight";
+import { MenuBar } from "./MenuBar";
+import { WordHighlight } from "./WordHighlight";
 
 const extensions = [StarterKit, Highlight, WordHighlight];
 interface TiptapEditorProps {
