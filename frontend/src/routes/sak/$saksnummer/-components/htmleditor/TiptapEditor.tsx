@@ -1,11 +1,11 @@
-import { Bleed, Box, ErrorMessage } from "@navikt/ds-react";
+import {Bleed, Box, ErrorMessage} from "@navikt/ds-react";
 import Highlight from "@tiptap/extension-highlight";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import {EditorContent, EditorContext, useEditor} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useMemo } from "react";
-import { WordHighlight } from "./WordHighlight";
-import { MenuBar } from "./MenuBar";
+import {useEffect, useMemo} from "react";
+import {MenuBar} from "./MenuBar";
 import styles from "./TiptapEditor.module.css";
+import {WordHighlight} from "./WordHighlight";
 
 const extensions = [StarterKit, Highlight, WordHighlight];
 interface TiptapEditorProps {
@@ -49,7 +49,12 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly }:
                 {!readOnly && editor && <MenuBar editor={editor} />}
             </Bleed>
             <EditorContext.Provider value={providerValue}>
-                <EditorContent editor={editor} className={styles.editor} onClick={() => editor?.commands.focus()} />
+                <EditorContent
+                    editor={editor}
+                    className={styles.editor}
+                    data-testid="tiptapeditor"
+                    onClick={() => editor?.commands.focus()}
+                />
             </EditorContext.Provider>
             {error && <ErrorMessage showIcon>{error}</ErrorMessage>}
         </Box>
