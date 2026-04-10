@@ -41,6 +41,9 @@ app:
   entra-proxy:
     url: http://entra-proxy-junit.mocked
     audience: api://mock.entra-proxy/.default
+  ereg:
+    url: http://ereg-junit.mocked
+    audience: api://mock.ereg-services/.default
   infotrygd:
     url: http://infotrygd-junit.mocked
     audience: api://mock.infotrygd/.default
