@@ -1,0 +1,21 @@
+- textbox:
+  - paragraph: Header
+  - paragraph: Her er vanlig tekst i ett brev som er ganske lang kanskje så lang at den ikke får plass i en enkelt linje
+  - paragraph: "Her er en liste:"
+  - list:
+    - listitem:
+      - paragraph: Punkt 1
+    - listitem:
+      - paragraph: "- Punkt 2"
+    - listitem:
+      - paragraph: "- Punkt 3"
+  - paragraph:
+    - text: "Her er en lenke:"
+    - link "https://www.nav.no":
+      - /url: https://www.nav.no
+  - paragraph:
+    - strong: Bold
+    - emphasis: italic
+    - mark: highlight
+  - paragraph
+  - paragraph
