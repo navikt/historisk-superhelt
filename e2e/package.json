@@ -9,6 +9,11 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
   "license": "ISC",
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",

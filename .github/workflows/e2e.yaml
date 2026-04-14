@@ -37,7 +37,7 @@ jobs:
 
       - name: Installer node moduler
         working-directory: ./e2e
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
 #      - name: Biome check
 #        working-directory: ./e2e
@@ -48,20 +48,20 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
-          key: ${{ runner.os }}-playwright-${{ hashFiles('./e2e/package-lock.json') }} # Endres hvis Playwright-versjonen i package-lock.json endres
+          key: ${{ runner.os }}-playwright-${{ hashFiles('./e2e/pnpm-lock.yaml') }} # Endres hvis Playwright-versjonen i pnpm-lock.yaml endres
           restore-keys: |
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
         working-directory: ./e2e
-        run: npx playwright install chromium --with-deps
+        run: pnpm dlx playwright install chromium --with-deps
 
       - name: Vent på backend
         run: timeout 300 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
 
       - name: Run E2E tests
         working-directory: ./e2e
-        run: npx playwright test
+        run: pnpm exec playwright test
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v7

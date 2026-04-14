@@ -13,8 +13,10 @@
         "biome:write": "biome check --write",
         "openapi-ts": "openapi-ts"
     },
+    "packageManager": "pnpm@10.33.0",
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "pnpm": ">=10"
     },
     "dependencies": {
         "@navikt/ds-css": "^8.9.0",
