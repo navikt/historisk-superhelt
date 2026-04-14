@@ -22,7 +22,7 @@ runs:
       with:
         node-version: '24'
         cache: pnpm
-        cache-dependency-path: frontend/pnpm-lock.yaml
+        cache-dependency-path: '**/pnpm-lock.yaml'
         registry-url: "https://npm.pkg.github.com"
 
     - name: Installere node moduler
