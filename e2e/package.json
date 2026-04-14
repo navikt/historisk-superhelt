@@ -7,7 +7,8 @@
     "format:write": "biome format --write .",
     "lint:fix": "biome check --write .",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "playwright:install": "playwright install --with-deps"
   },
   "packageManager": "pnpm@10.33.0",
   "engines": {

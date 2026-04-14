@@ -54,7 +54,7 @@ jobs:
 
       - name: Install Playwright browsers
         working-directory: ./e2e
-        run: pnpm dlx playwright install chromium --with-deps
+        run: pnpm playwright:install
 
       - name: Vent på backend
         run: timeout 300 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
