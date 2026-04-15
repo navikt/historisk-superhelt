@@ -16,7 +16,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
         with:
           node-auth-token: ${{ secrets.READER_TOKEN }}
@@ -45,7 +45,7 @@ jobs:
 
       # --- Caching av Playwright-browsere ---
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
           key: ${{ runner.os }}-playwright-${{ hashFiles('./e2e/pnpm-lock.yaml') }} # Endres hvis Playwright-versjonen i pnpm-lock.yaml endres
@@ -64,7 +64,7 @@ jobs:
         run: pnpm exec playwright test
 
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
           name: e2e-playwright-report
@@ -83,7 +83,7 @@ jobs:
             kill $(cat backend.pid) 2>/dev/null || true
           fi
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
           name: backend-log
