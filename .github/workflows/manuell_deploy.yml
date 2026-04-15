@@ -6,7 +6,8 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/build-and-test.yml
-    secrets: inherit
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
       packages: write
       contents: read
@@ -31,4 +32,3 @@ jobs:
           VARS: .nais/dev.json
           IMAGE: ${{ needs.build.outputs.image }}
           TELEMETRY: ${{ needs.build.outputs.telemetry }}
-
