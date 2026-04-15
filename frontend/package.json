@@ -19,13 +19,16 @@
         "pnpm": ">=10"
     },
     "dependencies": {
+        "@navikt/aksel-icons": "^8.9.0",
         "@navikt/ds-css": "^8.9.0",
         "@navikt/ds-react": "^8.9.0",
+        "@navikt/ds-tokens": "^8.9.0",
         "@tanstack/react-query": "^5.95.2",
         "@tanstack/react-query-devtools": "^5.95.2",
         "@tanstack/react-router": "^1.168.7",
         "@tanstack/react-router-devtools": "^1.166.11",
         "@tanstack/router-core": "1.168.9",
+        "@tiptap/core": "^3.20.5",
         "@tiptap/extension-highlight": "^3.20.5",
         "@tiptap/pm": "^3.20.5",
         "@tiptap/react": "^3.20.5",
