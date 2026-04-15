@@ -6,7 +6,8 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/build-and-test.yml
-    secrets: inherit
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
       packages: write
       contents: read
@@ -21,7 +22,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Deploy backend til dev-gcp
         uses: nais/deploy/actions/deploy@437e4adfe270e3f1c98fd0eed7f86ecf0e0873db #v2
@@ -31,4 +32,3 @@ jobs:
           VARS: .nais/dev.json
           IMAGE: ${{ needs.build.outputs.image }}
           TELEMETRY: ${{ needs.build.outputs.telemetry }}
-
