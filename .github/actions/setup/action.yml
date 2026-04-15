@@ -14,16 +14,22 @@ runs:
         java-version: '25'
         cache: maven
 
+    - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+      with:
+        version: 10
+
     - uses: actions/setup-node@v6
       with:
         node-version: '24'
-        cache: npm
-        cache-dependency-path: frontend/package-lock.json
+        cache: pnpm
+        cache-dependency-path: |
+          frontend/pnpm-lock.yaml
+          e2e/pnpm-lock.yaml
         registry-url: "https://npm.pkg.github.com"
 
     - name: Installere node moduler
       shell: bash
       working-directory: ./frontend
-      run: npm ci
+      run: pnpm install --frozen-lockfile
       env:
         NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
