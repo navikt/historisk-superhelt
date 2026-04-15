@@ -20,7 +20,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
       telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Verify: curl -s https://api.github.com/repos/nais/docker-build-push/git/refs/tags/v0 | jq -r '.object.sha'
       - name: Bygg og push docker image til GAR
@@ -38,7 +38,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
       - name: Deploy pdfgen til dev-gcp
@@ -58,7 +58,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
       - name: Deploy pdfgen til prod-gcp
