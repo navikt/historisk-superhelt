@@ -59,9 +59,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-          registry-url: "https://npm.pkg.github.com"
 
       # Add any setup steps before running the `github/codeql-action/init` action.
       # This includes steps like installing compilers or runtimes (`actions/setup-node`
@@ -75,7 +72,7 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-          dependency-caching: true
+          dependency-caching: false
           # If you wish to specify custom queries, you can do so here or in a config file.
           # By default, queries listed here will override any specified in a config file.
           # Prefix the list here with "+" to use these queries and those in the config file.
@@ -121,8 +118,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
           registry-url: "https://npm.pkg.github.com"
 
       - name: Initialize CodeQL
@@ -130,7 +125,7 @@ jobs:
         with:
           languages: java-kotlin
           build-mode: manual
-          dependency-caching: true
+          dependency-caching: false
 
       - name: Build artifacts
         run: mvn test-compile
