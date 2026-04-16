@@ -48,12 +48,20 @@ import { Box, VStack, HGrid } from "@navikt/ds-react";
 // Aldri bruk Tailwind padding/margin
 <div className="p-4 md:p-6">  // ❌ Feil
 <div className="mx-4 my-2">   // ❌ Feil
-<Box padding="4">             // ❌ Feil — mangler space-prefiks
+<Box padding="4">             // ❌ Feil — Box krever space-prefiks: padding="space-4"
+<VStack gap="space-4">        // ❌ Feil — gap bruker numerisk shorthand: gap="4"
 ```
 
 ## Spacing-tokens
 
-Tilgjengelige tokens (alltid med `space-`-prefiks):
+Aksel DS bruker **to ulike token-systemer** avhengig av prop:
+
+| Prop | Komponent | Format | Eksempel |
+|------|-----------|--------|---------|
+| `padding`, `paddingBlock`, `paddingInline` | `Box` | `space-*` streng | `"space-16"` |
+| `gap` | `VStack`, `HStack`, `HGrid` | Numerisk shorthand | `"4"`, `"8"` |
+
+`Box` padding-tokens (alltid med `space-`-prefiks):
 
 - `space-4` (4px)
 - `space-8` (8px)
@@ -63,6 +71,9 @@ Tilgjengelige tokens (alltid med `space-`-prefiks):
 - `space-24` (24px)
 - `space-32` (32px)
 - `space-40` (40px)
+
+`gap`-verdier for layout-komponenter (numerisk, uten `space-`-prefiks):
+`"0"` `"1"` `"2"` `"3"` `"4"` `"5"` `"6"` `"7"` `"8"` `"10"` `"12"` `"16"` `"20"` `"24"` `"32"`
 
 ## Responsiv design
 
@@ -443,7 +454,7 @@ export function ResourceList() {
   if (error) return <Alert variant="error">Kunne ikke laste data</Alert>;
 
   return (
-    <VStack gap="space-4">
+    <VStack gap="4">
       {data.map((resource) => (
         <ResourceCard key={resource.id} resource={resource} />
       ))}
@@ -484,7 +495,7 @@ export function RegistrationForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack gap="space-4">
+      <VStack gap="4">
         <TextField
           label="Navn"
           {...register("name", { required: "Navn er påkrevd" })}
@@ -540,7 +551,8 @@ pnpm test
 ### 🚫 Never
 
 - Use Tailwind padding/margin utilities (`p-*`, `m-*`)
-- Use numeric spacing without `space-` prefix
+- Use numeric value without `space-` prefix on `Box` padding props (`padding="4"` → `padding="space-4"`)
+- Use `space-*` prefix on layout component `gap` props (`gap="space-4"` → `gap="4"`)
 - Ignore accessibility requirements
 - Skip responsive props
 - Add code comments unless explicitly requested
