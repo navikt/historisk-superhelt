@@ -25,7 +25,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
       telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
         with:
           node-auth-token: ${{ secrets.READER_TOKEN }}
@@ -36,7 +36,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Bygg og push docker image til GAR
-        uses: nais/docker-build-push@45d352fb62fb52ccb5ff6cba22c047fa02b35321 #v0
+        uses: nais/docker-build-push@cd5ec5663feb0e05c3fa374d1fb442605b046c6b #v0
         id: docker-build-push
         with:
           team: historisk
