@@ -2,9 +2,10 @@ package no.nav.historisk.superhelt.brev
 
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.JournalpostResponse
-import no.nav.dokdist.DistribuerJournalpostResponse
+import no.nav.dokdist.DokdistRespons
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -31,6 +32,9 @@ class BrevSendingServiceTest {
     @Autowired
     private lateinit var sakRepository: SakRepository
 
+    @Autowired
+    private lateinit var endringsloggService: EndringsloggService
+
     @MockitoBean
     private lateinit var pdfgenService: PdfgenService
 
@@ -55,7 +59,13 @@ class BrevSendingServiceTest {
 
     private fun mockDokdistSuccess(bestillingsId: String = "bestilling-123") {
         whenever(dokarkivService.distribuerBrev(any(), any())).thenReturn(
-            DistribuerJournalpostResponse(bestillingsId = bestillingsId)
+            DokdistRespons(bestillingsId = bestillingsId, sendtOk = true)
+        )
+    }
+
+    private fun mockDokdistManglerAdresse(feilbegrunnelse: String = "Journalpost kan ikke distribueres: mangler adresse") {
+        whenever(dokarkivService.distribuerBrev(any(), any())).thenReturn(
+            DokdistRespons(sendtOk = false, feilbegrunnelse = feilbegrunnelse)
         )
     }
 
@@ -270,6 +280,29 @@ class BrevSendingServiceTest {
         )
 
         brevSendingService.sendBrev(sak, brev)
+    }
+
+    @Test
+    fun `skal sette status SENDT og logge passende melding når brev mangler adresse (410)`() {
+        mockPdfgenSuccess()
+        mockDokarkivSuccess()
+        mockDokdistManglerAdresse()
+
+        val (sak, brev) = lagreSakMedBrev(
+            status = BrevStatus.NY,
+            tittel = "Vedtaksbrev"
+        )
+
+        brevSendingService.sendBrev(sak, brev)
+
+        val oppdatertBrev = brevRepository.getByUUid(brev.uuid)
+        assertThat(oppdatertBrev.status).isEqualTo(BrevStatus.SENDT)
+
+        val endringslogg = endringsloggService.findBySak(sak.saksnummer)
+        assertThat(endringslogg).anySatisfy { linje ->
+            assertThat(linje.endring).contains("arkivert")
+            assertThat(linje.endring).contains("mangler adresse")
+        }
     }
 
 

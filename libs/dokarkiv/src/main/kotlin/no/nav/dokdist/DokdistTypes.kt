@@ -21,8 +21,12 @@ data class DistribuerJournalpostRequest(
     }
 }
 
-
-
 data class DistribuerJournalpostResponse(
     val bestillingsId: String,
+)
+
+data class DokdistRespons  (
+    val bestillingsId: String? = null,
+    val sendtOk: Boolean,
+    val feilbegrunnelse: String?=null,
 )

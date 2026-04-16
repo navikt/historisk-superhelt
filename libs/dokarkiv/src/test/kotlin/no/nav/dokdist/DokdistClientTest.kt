@@ -94,4 +94,18 @@ class DokdistClientTest {
         assertThatThrownBy { dokdistClient.distribuerJournalpost(request) }
             .isInstanceOf(HttpClientErrorException::class.java)
     }
+
+    @Test
+    fun `distribuer skal returnere sendtOk false med feilbegrunnelse ved manglende adresse (410)`() {
+        mockServer
+            .expect(requestTo("/rest/v1/distribuerjournalpost"))
+            .andExpect(method(HttpMethod.POST))
+            .andRespond(withStatus(HttpStatus.GONE))
+
+        val result = dokdistClient.distribuerJournalpost(request)
+
+        assertThat(result.sendtOk).isFalse()
+        assertThat(result.feilbegrunnelse).contains("mangler adresse")
+        assertThat(result.bestillingsId).isNull()
+    }
 }
