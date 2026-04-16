@@ -25,9 +25,6 @@ class DokdistForUtvikler {
     val baseUrl = "http://localhost:9080/dokdist-mock"
     val client = DokdistClient(getRestClient())
 
-
-    "MANGLER-ADRESSE"
-
     @Test
     fun `Distribuer journalpost`() {
         val request = DistribuerJournalpostRequest(
@@ -41,6 +38,7 @@ class DokdistForUtvikler {
         println("sendtOk=${respons.sendtOk}, bestillingsId=${respons.bestillingsId}, feilbegrunnelse=${respons.feilbegrunnelse}")
     }
 
+    @Test
     fun `Distribuer journalpost uten adresse`() {
         val request = DistribuerJournalpostRequest(
             journalpostId = EksternJournalpostId("MANGLER-ADRESSE"),
