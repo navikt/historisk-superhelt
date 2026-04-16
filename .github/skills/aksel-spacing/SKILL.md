@@ -11,7 +11,8 @@ Responsive layout-mønstre med Navs Aksel Design System spacing-tokens.
 
 **Aldri bruk Tailwind padding/margin (`p-`, `m-`, `px-`, `py-`) med Aksel-komponenter.**
 
-Bruk alltid Aksel spacing-tokens: `space-4`, `space-6`, `space-8`, osv.
+Bruk alltid Aksel spacing-tokens for Box padding: `space-16`, `space-24`, `space-32`, osv.
+For VStack/HStack/HGrid `gap` brukes numerisk shorthand: `"4"`, `"6"`, `"8"`, osv.
 
 ## Page container-mønster
 
@@ -22,10 +23,10 @@ export default function Page() {
   return (
     <main className="max-w-7xl mx-auto">
       <Box
-        paddingBlock={{ xs: 'space-8', md: 'space-12' }}
-        paddingInline={{ xs: 'space-4', md: 'space-10' }}
+        paddingBlock={{ xs: 'space-32', md: 'space-48' }}
+        paddingInline={{ xs: 'space-16', md: 'space-40' }}
       >
-        <VStack gap={{ xs: 'space-6', md: 'space-8' }}>
+        <VStack gap={{ xs: "6", md: "8" }}>
           {/* Sideinnhold */}
         </VStack>
       </Box>
@@ -43,12 +44,12 @@ export function Card({ title, children }: { title: string; children: React.React
   return (
     <Box
       background="surface-default"
-      padding={{ xs: 'space-6', md: 'space-8' }}
+      padding={{ xs: 'space-24', md: 'space-32' }}
       borderRadius="large"
       borderWidth="1"
       borderColor="border-subtle"
     >
-      <VStack gap="space-4">
+      <VStack gap="4">
         <Heading size="medium">{title}</Heading>
         <BodyShort>{children}</BodyShort>
       </VStack>
@@ -64,16 +65,16 @@ import { VStack, HStack, TextField, Button } from '@navikt/ds-react';
 
 export function UserForm() {
   return (
-    <VStack gap="space-6">
+    <VStack gap="6">
       {/* Input-felt med konsistent vertikal spacing */}
-      <VStack gap="space-4">
+      <VStack gap="4">
         <TextField label="Fornavn" />
         <TextField label="Etternavn" />
         <TextField label="E-post" type="email" />
       </VStack>
 
       {/* Button row med horisontal spacing */}}
-      <HStack gap="space-4" justify="end">
+      <HStack gap="4" justify="end">
         <Button variant="secondary">Avbryt</Button>
         <Button variant="primary">Send inn</Button>
       </HStack>
@@ -89,11 +90,11 @@ import { HGrid, Box, VStack, Heading } from '@navikt/ds-react';
 
 export function Dashboard() {
   return (
-    <VStack gap={{ xs: 'space-6', md: 'space-8' }}>
+    <VStack gap={{ xs: "6", md: "8" }}>
       <Heading size="xlarge">Dashboard</Heading>
 
       {/* Responsiv grid: 1 kolonne mobil, 2 nettbrett, 4 desktop */}
-      <HGrid gap="space-4" columns={{ xs: 1, sm: 2, lg: 4 }}>
+      <HGrid gap="4" columns={{ xs: 1, sm: 2, lg: 4 }}>
         <MetricCard title="Brukere" value="1 234" />
         <MetricCard title="Inntekt" value="5 678" />
         <MetricCard title="Bestillinger" value="910" />
@@ -103,7 +104,7 @@ export function Dashboard() {
       {/* Innholdsområde */}
       <Box
         background="surface-subtle"
-        padding={{ xs: 'space-6', md: 'space-8' }}
+        padding={{ xs: 'space-24', md: 'space-32' }}
         borderRadius="large"
       >
         {/* Innhold */}
@@ -120,14 +121,14 @@ import { HGrid, Box, VStack } from '@navikt/ds-react';
 
 export function TwoColumnLayout() {
   return (
-    <HGrid gap="space-6" columns={{ xs: 1, md: 2 }}>
+    <HGrid gap="6" columns={{ xs: 1, md: 2 }}>
       {/* Venstre kolonne */}
       <Box
         background="surface-default"
-        padding={{ xs: 'space-6', md: 'space-8' }}
+        padding={{ xs: 'space-24', md: 'space-32' }}
         borderRadius="large"
       >
-        <VStack gap="space-4">
+        <VStack gap="4">
           {/* Venstre innhold */}
         </VStack>
       </Box>
@@ -135,10 +136,10 @@ export function TwoColumnLayout() {
       {/* Høyre kolonne */}
       <Box
         background="surface-subtle"
-        padding={{ xs: 'space-6', md: 'space-8' }}
+        padding={{ xs: 'space-24', md: 'space-32' }}
         borderRadius="large"
       >
-        <VStack gap="space-4">
+        <VStack gap="4">
           {/* Høyre innhold */}
         </VStack>
       </Box>
@@ -156,14 +157,14 @@ export function FilterSection() {
   return (
     <Box
       background="surface-subtle"
-      padding={{ xs: 'space-4', md: 'space-6' }}
+      padding={{ xs: 'space-16', md: 'space-24' }}
       borderRadius="large"
     >
-      <VStack gap="space-4">
+      <VStack gap="4">
         <Heading size="small">Filters</Heading>
 
         {/* Responsive filter inputs */}
-        <HGrid gap="space-4" columns={{ xs: 1, md: 3 }}>
+        <HGrid gap="4" columns={{ xs: 1, md: 3 }}>
           <Select label="Department">
             <option>All</option>
           </Select>
@@ -183,16 +184,15 @@ export function FilterSection() {
 ## Spacing Tokens Reference
 
 ```typescript
-"space-0"; // 0px
-"space-1"; // 4px
-"space-2"; // 8px
-"space-3"; // 12px
-"space-4"; // 16px  ← Form field gaps
-"space-5"; // 20px
-"space-6"; // 24px  ← Card padding (mobile)
-"space-8"; // 32px  ← Card padding (desktop), section gaps
-"space-10"; // 40px  ← Page padding (desktop)
-"space-12"; // 48px  ← Page padding block (desktop)
+"space-4";  // 4px
+"space-8";  // 8px
+"space-12"; // 12px
+"space-16"; // 16px  ← Form field gaps
+"space-20"; // 20px
+"space-24"; // 24px  ← Card padding (mobile)
+"space-32"; // 32px  ← Card padding (desktop), section gaps
+"space-40"; // 40px  ← Page padding (desktop)
+"space-48"; // 48px  ← Page padding block (desktop)
 ```
 
 ## Responsive Breakpoints
@@ -209,20 +209,20 @@ xl: "1280px"; // Large desktop
 
 ```typescript
 // ✅ Page padding
-paddingBlock={{ xs: 'space-8', md: 'space-12' }}
-paddingInline={{ xs: 'space-4', md: 'space-10' }}
+paddingBlock={{ xs: 'space-32', md: 'space-48' }}
+paddingInline={{ xs: 'space-16', md: 'space-40' }}
 
 // ✅ Card padding
-padding={{ xs: 'space-6', md: 'space-8' }}
+padding={{ xs: 'space-24', md: 'space-32' }}
 
-// ✅ Section gaps
-gap={{ xs: 'space-6', md: 'space-8' }}
+// ✅ Section gaps (VStack/HStack/HGrid — numerisk shorthand)
+gap={{ xs: "6", md: "8" }}
 
 // ✅ Form field gaps
-gap="space-4"
+gap="4"
 
 // ✅ Button group gaps
-gap="space-4"
+gap="4"
 
 // ❌ NEVER use Tailwind
 className="p-4 m-2"  // WRONG!
