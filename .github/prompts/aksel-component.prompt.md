@@ -9,7 +9,7 @@ Du lager en ny React-komponent med Navs Aksel Design System.
 
 1. **Aldri bruk Tailwind padding/margin** (`p-*`, `m-*`, `px-*`, `py-*`)
 2. **Alltid bruk Aksel spacing-tokens** med `space-`-prefiks
-3. **Mobil først**, responsivt design med breakpoints: `xs`, `sm`, `md`, `lg`, `xl`
+3. **Desktop-først**, responsivt design med breakpoints: `lg`, `md` som primær — ikke `xs`-basert
 4. **Bruk Aksel-komponenter**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
 
 ## Spør brukeren
@@ -37,7 +37,7 @@ export function {ComponentName}({
   return (
     <Box
       background="surface-subtle"
-      padding={{ xs: "space-16", md: "space-24" }}
+      padding="space-24"
       borderRadius="large"
     >
       <VStack gap="4">
@@ -62,9 +62,8 @@ export function {ComponentName}({
 ```tsx
 <Box
   background="surface-subtle"
-  padding={{ xs: "space-16", md: "space-24" }}
+  padding="space-24"
   borderRadius="large"
-  className="hover:shadow-lg transition-shadow"
 >
   <VStack gap="4">
     <Heading size="medium" level="3">
@@ -78,7 +77,7 @@ export function {ComponentName}({
 ### Responsiv grid-layout
 
 ```tsx
-<HGrid columns={{ xs: 1, md: 2, lg: 3 }} gap="4">
+<HGrid columns={{ lg: 3, md: 2 }} gap="4">
   {items.map((item) => (
     <Card key={item.id} {...item} />
   ))}
@@ -105,17 +104,17 @@ export function {ComponentName}({
 ### Dashboard Section
 
 ```tsx
-<Box background="surface-default" padding={{ xs: "space-16", md: "space-24" }} borderRadius="medium">
+<Box background="surface-default" padding="space-24" borderRadius="medium">
   <VStack gap="6">
-    <div className="flex items-center justify-between">
+    <HStack justify="space-between" align="center">
       <Heading size="large" level="2">
         Section Title
       </Heading>
       <Button variant="secondary" size="small">
         Action
       </Button>
-    </div>
-    <HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="4">
+    </HStack>
+    <HGrid columns={{ lg: 4, md: 2 }} gap="4">
       {metrics.map((metric) => (
         <MetricCard key={metric.id} {...metric} />
       ))}
@@ -127,9 +126,9 @@ export function {ComponentName}({
 ### Page Container
 
 ```tsx
-<main className="max-w-7xl mx-auto">
-  <Box paddingBlock={{ xs: "space-16", md: "space-24" }} paddingInline={{ xs: "space-16", md: "space-40" }}>
-    <VStack gap={{ xs: "space-16", md: "space-24" }}>{/* Page content */}</VStack>
+<main>
+  <Box paddingBlock="space-24" paddingInline="space-40">
+    <VStack gap="8">{/* Page content */}</VStack>
   </Box>
 </main>
 ```
@@ -190,23 +189,23 @@ background = "surface-danger-subtle"; // Light red
 
 ## Responsive Breakpoints
 
-```tsx
-// Mobile-first approach
-padding={{ xs: "space-16" }}                          // All sizes
-padding={{ xs: "space-16", md: "space-24" }}         // Mobile + tablet
-padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}  // All breakpoints
+Desktop-først — bruk `lg`/`md` som primær, tilpass ned ved behov:
 
-columns={{ xs: 1, md: 2, lg: 3 }}  // Responsive grid
-gap={{ xs: "4", md: "6" }}          // Responsive gap
+```tsx
+// ✅ Desktop-først
+padding="space-24"                                   // Fast desktop-verdi
+padding={{ lg: "space-32", md: "space-24" }}        // Litt komprimert på tablet
+
+columns={{ lg: 3, md: 2 }}  // Desktop 3-kolonne, tablet 2-kolonne
+gap="4"                      // Fast gap (sjelden behov for responsiv gap)
 ```
 
 Breakpoints:
 
-- `xs`: 0px (mobile)
-- `sm`: 480px
-- `md`: 768px (tablet)
-- `lg`: 1024px (desktop)
-- `xl`: 1280px (large desktop)
+- `lg`: 1024px (desktop — primær)
+- `md`: 768px (tablet — tilpass ned)
+- `sm`: 480px (sjelden aktuelt)
+- `xs`: 0px (ikke i bruk som base)
 
 ## Testing
 

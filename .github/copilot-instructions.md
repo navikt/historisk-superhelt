@@ -99,7 +99,7 @@ npx playwright test -u    # oppdater snapshots
 ### Styling og komponenter
 - **Alltid** Nav Aksel Design System (`@navikt/ds-react`) – aldri custom CSS eller Tailwind padding/margin
 - Spacing via `Box paddingBlock/paddingInline` med `space-*`-tokens, aldri Tailwind `p-*`/`m-*`
-- Responsivt design med `{ xs: ..., md: ..., lg: ... }`-props
+- Desktop-først layout — responsivt med `md`/`lg` som primær, ikke `xs`-basert
 
 ## Lokal utvikling – oppstartsrekkefølge
 

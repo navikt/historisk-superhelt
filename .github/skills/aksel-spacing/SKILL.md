@@ -21,12 +21,12 @@ import { Box, VStack } from '@navikt/ds-react';
 
 export default function Page() {
   return (
-    <main className="max-w-7xl mx-auto">
+    <main>
       <Box
-        paddingBlock={{ xs: 'space-32', md: 'space-48' }}
-        paddingInline={{ xs: 'space-16', md: 'space-40' }}
+        paddingBlock="space-32"
+        paddingInline="space-40"
       >
-        <VStack gap={{ xs: "6", md: "8" }}>
+        <VStack gap="8">
           {/* Sideinnhold */}
         </VStack>
       </Box>
@@ -44,7 +44,7 @@ export function Card({ title, children }: { title: string; children: React.React
   return (
     <Box
       background="surface-default"
-      padding={{ xs: 'space-24', md: 'space-32' }}
+      padding="space-24"
       borderRadius="large"
       borderWidth="1"
       borderColor="border-subtle"
@@ -90,11 +90,11 @@ import { HGrid, Box, VStack, Heading } from '@navikt/ds-react';
 
 export function Dashboard() {
   return (
-    <VStack gap={{ xs: "6", md: "8" }}>
+    <VStack gap="8">
       <Heading size="xlarge">Dashboard</Heading>
 
-      {/* Responsiv grid: 1 kolonne mobil, 2 nettbrett, 4 desktop */}
-      <HGrid gap="4" columns={{ xs: 1, sm: 2, lg: 4 }}>
+      {/* Desktop-grid: 4 kolonner, 2 på tablet */}
+      <HGrid gap="4" columns={{ lg: 4, md: 2 }}>
         <MetricCard title="Brukere" value="1 234" />
         <MetricCard title="Inntekt" value="5 678" />
         <MetricCard title="Bestillinger" value="910" />
@@ -104,7 +104,7 @@ export function Dashboard() {
       {/* Innholdsområde */}
       <Box
         background="surface-subtle"
-        padding={{ xs: 'space-24', md: 'space-32' }}
+        padding="space-24"
         borderRadius="large"
       >
         {/* Innhold */}
@@ -121,11 +121,11 @@ import { HGrid, Box, VStack } from '@navikt/ds-react';
 
 export function TwoColumnLayout() {
   return (
-    <HGrid gap="6" columns={{ xs: 1, md: 2 }}>
+    <HGrid gap="6" columns={{ lg: 2, md: 1 }}>
       {/* Venstre kolonne */}
       <Box
         background="surface-default"
-        padding={{ xs: 'space-24', md: 'space-32' }}
+        padding="space-24"
         borderRadius="large"
       >
         <VStack gap="4">
@@ -136,7 +136,7 @@ export function TwoColumnLayout() {
       {/* Høyre kolonne */}
       <Box
         background="surface-subtle"
-        padding={{ xs: 'space-24', md: 'space-32' }}
+        padding="space-24"
         borderRadius="large"
       >
         <VStack gap="4">
@@ -157,14 +157,13 @@ export function FilterSection() {
   return (
     <Box
       background="surface-subtle"
-      padding={{ xs: 'space-16', md: 'space-24' }}
+      padding="space-24"
       borderRadius="large"
     >
       <VStack gap="4">
         <Heading size="small">Filters</Heading>
 
-        {/* Responsive filter inputs */}
-        <HGrid gap="4" columns={{ xs: 1, md: 3 }}>
+        <HGrid gap="4" columns={{ lg: 3, md: 2 }}>
           <Select label="Department">
             <option>All</option>
           </Select>
@@ -189,34 +188,40 @@ export function FilterSection() {
 "space-12"; // 12px
 "space-16"; // 16px  ← Form field gaps
 "space-20"; // 20px
-"space-24"; // 24px  ← Card padding (mobile)
-"space-32"; // 32px  ← Card padding (desktop), section gaps
-"space-40"; // 40px  ← Page padding (desktop)
-"space-48"; // 48px  ← Page padding block (desktop)
+"space-24"; // 24px  ← Card padding
+"space-32"; // 32px  ← Section gaps
+"space-40"; // 40px  ← Page padding inline
+"space-48"; // 48px  ← Page padding block
 ```
 
-## Responsive Breakpoints
+## Responsive Breakpoints — desktop-først
 
 ```typescript
-xs: "0px"; // Mobile (default)
-sm: "480px"; // Large mobile
-md: "768px"; // Tablet
-lg: "1024px"; // Desktop
-xl: "1280px"; // Large desktop
+lg: "1024px"; // Desktop (primær)
+md: "768px";  // Tablet (tilpass ned)
+sm: "480px";  // Sjelden aktuelt
+xs: "0px";    // Ikke i bruk som base
 ```
 
 ## Common Patterns
 
 ```typescript
-// ✅ Page padding
-paddingBlock={{ xs: 'space-32', md: 'space-48' }}
-paddingInline={{ xs: 'space-16', md: 'space-40' }}
+// ✅ Page padding — fast desktop-verdi
+paddingBlock="space-32"
+paddingInline="space-40"
+
+// ✅ Page padding — responsivt (tilpass ned)
+paddingBlock={{ lg: "space-48", md: "space-32" }}
+paddingInline={{ lg: "space-40", md: "space-24" }}
 
 // ✅ Card padding
-padding={{ xs: 'space-24', md: 'space-32' }}
+padding="space-24"
+
+// ✅ Grid — desktop-først
+columns={{ lg: 4, md: 2 }}
 
 // ✅ Section gaps (VStack/HStack/HGrid — numerisk shorthand)
-gap={{ xs: "6", md: "8" }}
+gap="8"
 
 // ✅ Form field gaps
 gap="4"

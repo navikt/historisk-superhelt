@@ -45,7 +45,6 @@ export default defineConfig({
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
     command: "pnpm dev",
