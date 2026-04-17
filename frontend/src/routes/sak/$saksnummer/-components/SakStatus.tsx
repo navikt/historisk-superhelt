@@ -1,10 +1,9 @@
-import type {Sak} from "@generated";
-import {getSakStatusOptions} from "@generated/@tanstack/react-query.gen";
-import {ExclamationmarkTriangleIcon} from "@navikt/aksel-icons";
-import {Tag} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import type {SakStatusType} from "~/common/sak/sak.types";
-import {useSakVedtakNavn} from "~/common/sak/useSakVedtakNavn";
+import type { Sak } from "@generated";
+import { getSakStatusOptions } from "@generated/@tanstack/react-query.gen";
+import { HStack, Tag } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { SakStatusTag } from "~/common/sak/SakStatusTag";
+import { useSakVedtakNavn } from "~/common/sak/useSakVedtakNavn";
 
 interface Props {
     sak: Sak;
@@ -13,59 +12,25 @@ interface Props {
 export default function SakStatus({ sak }: Props) {
     const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
     const getSakVedtakNavn = useSakVedtakNavn();
-    const hasError = sakStatus.aggregertStatus === "FEILET";
+    const hasUtbetalingsFeil = sakStatus.aggregertStatus === "FEILET";
 
-    function getAlertIcon() {
-        if (hasError) {
-            return <ExclamationmarkTriangleIcon title="Det er noe feil med saken" />;
-        }
+    if (sak.status !== "FERDIG") {
+        return <SakStatusTag status={sak.status} />;
     }
 
-    const status: SakStatusType = sak.status;
+    const vedtaksResultatColor =
+        sak.vedtaksResultat === "INNVILGET" || sak.vedtaksResultat === "DELVIS_INNVILGET" ? "success" : "neutral";
 
-    const renderFerdigStatusTag = () => {
-        if (sak.vedtaksResultat === "HENLAGT") {
-            return (
-                <Tag data-color="meta-purple" variant="outline" size="small">
-                    Henlagt
-                </Tag>
-            );
-        }
-        const variant = hasError ? "error" : "success";
-        const icon = getAlertIcon();
-
-        return (
-            <Tag variant={variant} size="small" icon={icon}>
+    return (
+        <HStack gap="2" wrap={false}>
+            <Tag data-color={vedtaksResultatColor} variant="moderate" size="small">
                 {getSakVedtakNavn(sak.vedtaksResultat)}
             </Tag>
-        );
-    };
-    switch (status) {
-        case "FEILREGISTRERT":
-            return (
-                <Tag data-color="neutral" variant="strong" size="small">
-                    Feilregistert
+            {hasUtbetalingsFeil && (
+                <Tag variant="error" size="small">
+                    Utbetalingsfeil
                 </Tag>
-            );
-        case "UNDER_BEHANDLING":
-            return (
-                <Tag data-color="warning" variant="outline" size="small">
-                    Under behandling
-                </Tag>
-            );
-        case "TIL_ATTESTERING":
-            return (
-                <Tag data-color="info" variant="outline" size="small">
-                    Til attestering
-                </Tag>
-            );
-        case "FERDIG_ATTESTERT":
-            return (
-                <Tag data-color="success" variant="moderate" size="small">
-                    Ferdig attestert
-                </Tag>
-            );
-        case "FERDIG":
-            return renderFerdigStatusTag();
-    }
+            )}
+        </HStack>
+    );
 }
