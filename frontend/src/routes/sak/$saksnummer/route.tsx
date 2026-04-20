@@ -1,7 +1,11 @@
-import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
+import {
+    findSakerForPersonOptions,
+    finnJournalposterForSakOptions,
+    hentInfotrygdHistorikkForPersonOptions,
+} from "@generated/@tanstack/react-query.gen";
 import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
@@ -40,6 +44,19 @@ function SakLayout() {
     const { data: journalposter } = useSuspenseQuery(finnJournalposterForSakOptions({ path: { saksnummer } }));
 
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
+
+    const { data: sakerForPerson, isSuccess: erSakerLastet } = useQuery(
+        findSakerForPersonOptions({ query: { maskertPersonId: sak.maskertPersonIdent } }),
+    );
+    const { data: infotrygdHistorikk, isSuccess: erInfotrygdLastet } = useQuery(
+        hentInfotrygdHistorikkForPersonOptions({ path: { maskertPersonIdent: sak.maskertPersonIdent } }),
+    );
+    const antallSakshistorikk =
+        erSakerLastet && erInfotrygdLastet
+            ? (sakerForPerson?.length ?? 0) + (infotrygdHistorikk?.length ?? 0)
+            : undefined;
+    const sakshistorikkLabel =
+        antallSakshistorikk !== undefined ? `Sakshistorikk (${antallSakshistorikk})` : "Sakshistorikk";
 
     useEffect(() => {
         document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;
@@ -118,7 +135,11 @@ function SakLayout() {
                                     label={`Dokumenter (${antallDokumenter})`}
                                     icon={<FilePdfIcon aria-hidden />}
                                 />
-                                <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
+                                <Tabs.Tab
+                                    value="historikk"
+                                    label={sakshistorikkLabel}
+                                    icon={<TasklistIcon aria-hidden />}
+                                />
                                 <Tabs.Tab
                                     value="endringslogg"
                                     label="Endringslogg"

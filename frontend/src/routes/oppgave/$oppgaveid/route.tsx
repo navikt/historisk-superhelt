@@ -1,4 +1,8 @@
-import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
+import {
+    findSakerForPersonOptions,
+    getOppgaveOptions,
+    hentInfotrygdHistorikkForPersonOptions,
+} from "@generated/@tanstack/react-query.gen";
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Tabs } from "@navikt/ds-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -25,6 +29,19 @@ function OppgaveLayout() {
     const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
+    const { data: sakerForPerson, isSuccess: erSakerLastet } = useQuery(
+        findSakerForPersonOptions({ query: { maskertPersonId: oppgave.maskertPersonIdent } }),
+    );
+    const { data: infotrygdHistorikk, isSuccess: erInfotrygdLastet } = useQuery(
+        hentInfotrygdHistorikkForPersonOptions({ path: { maskertPersonIdent: oppgave.maskertPersonIdent } }),
+    );
+    const antallSakshistorikk =
+        erSakerLastet && erInfotrygdLastet
+            ? (sakerForPerson?.length ?? 0) + (infotrygdHistorikk?.length ?? 0)
+            : undefined;
+    const sakshistorikkLabel =
+        antallSakshistorikk !== undefined ? `Sakshistorikk (${antallSakshistorikk})` : "Sakshistorikk";
+
     return (
         <>
             <PersonHeader maskertPersonId={oppgave.maskertPersonIdent} />
@@ -36,7 +53,11 @@ function OppgaveLayout() {
                     <Tabs defaultValue="dokumenter">
                         <Tabs.List>
                             <Tabs.Tab value="dokumenter" label={dokumenterLabel} icon={<FilePdfIcon aria-hidden />} />
-                            <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
+                            <Tabs.Tab
+                                value="historikk"
+                                label={sakshistorikkLabel}
+                                icon={<TasklistIcon aria-hidden />}
+                            />
                         </Tabs.List>
                         <Tabs.Panel value="dokumenter">
                             <PdfViewer journalpostId={journalpostId} />
