@@ -66,9 +66,6 @@ export type Sak = {
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE'>;
     readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
-    readonly gjenapnet: boolean;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING'>;
-    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
