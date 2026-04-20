@@ -6,6 +6,7 @@ import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.klage.rest.SendKlageRequestDto
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.kabal.KabalClient
+
 import no.nav.kabal.model.Fagsak
 import no.nav.kabal.model.Hjemmel
 import no.nav.kabal.model.Ident
@@ -17,13 +18,11 @@ import no.nav.kabal.model.SendSakV4Request
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
-import java.time.Instant
 
 @Service
 class KlageService(
     private val kabalClient: KabalClient,
     private val navEnhetService: NavEnhetService,
-    private val klageRepository: KlageRepository,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -39,7 +38,6 @@ class KlageService(
             )
         }
         val enhet = navEnhetService.hentNavEnhet()
-        val sendtTidspunkt = Instant.now()
 
         val kabalRequest = SendSakV4Request(
             type = SakType.KLAGE,
@@ -57,27 +55,7 @@ class KlageService(
         )
 
         logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.value}")
-        kabalClient.sendSakV4(kabalRequest)  // kastar KabalException ved feil – DB-skriv skjer ALDRI då
+        kabalClient.sendSakV4(kabalRequest)
         logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}")
-
-        // Logg klagen i DB berre etter vellykka Kabal-kall.
-        // Dersom DB-skrivet feiler etter at Kabal har mottatt klagen, loggar vi feilen
-        // men returnerer likevel suksess – klagen er allereie registrert hos Kabal.
-        try {
-            klageRepository.lagreKlage(
-                saksnummer = sak.saksnummer,
-                hjemmelId = hjemmel.id,
-                datoKlageMottatt = request.datoKlageMottatt,
-                kommentar = request.kommentar,
-                forrigeBehandlendeEnhet = enhet.value,
-                sendtTidspunkt = sendtTidspunkt,
-            )
-        } catch (e: Exception) {
-            logger.error(
-                "Klage for sak {} vart sendt til Kabal men kunne ikkje lagrast i DB – " +
-                        "manuell oppfølging kan vere nødvendig. Feil: {}",
-                sak.saksnummer, e.message, e,
-            )
-        }
     }
 }
