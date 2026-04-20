@@ -16,7 +16,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
         with:
           node-auth-token: ${{ secrets.READER_TOKEN }}
@@ -37,7 +37,7 @@ jobs:
 
       - name: Installer node moduler
         working-directory: ./e2e
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
 #      - name: Biome check
 #        working-directory: ./e2e
@@ -45,26 +45,26 @@ jobs:
 
       # --- Caching av Playwright-browsere ---
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
-          key: ${{ runner.os }}-playwright-${{ hashFiles('./e2e/package-lock.json') }} # Endres hvis Playwright-versjonen i package-lock.json endres
+          key: ${{ runner.os }}-playwright-${{ hashFiles('./e2e/pnpm-lock.yaml') }} # Endres hvis Playwright-versjonen i pnpm-lock.yaml endres
           restore-keys: |
             ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers
         working-directory: ./e2e
-        run: npx playwright install chromium --with-deps
+        run: pnpm playwright:install
 
       - name: Vent på backend
         run: timeout 300 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'
 
       - name: Run E2E tests
         working-directory: ./e2e
-        run: npx playwright test
+        run: pnpm exec playwright test
 
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
           name: e2e-playwright-report
@@ -83,7 +83,7 @@ jobs:
             kill $(cat backend.pid) 2>/dev/null || true
           fi
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
           name: backend-log
