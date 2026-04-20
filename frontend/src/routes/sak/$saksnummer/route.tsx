@@ -1,5 +1,5 @@
 import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
-import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -16,6 +16,7 @@ import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn, kortSaksnummer } from "~/common/string.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
+import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
 import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
 import { getSakOptions } from "./-api/sak.query";
@@ -118,6 +119,11 @@ function SakLayout() {
                                     icon={<FilePdfIcon aria-hidden />}
                                 />
                                 <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
+                                <Tabs.Tab
+                                    value="endringslogg"
+                                    label="Endringslogg"
+                                    icon={<ClockDashedIcon aria-hidden />}
+                                />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
                                 <Box width="100%" height="100%" paddingBlock="space-16 space-0">
@@ -127,6 +133,11 @@ function SakLayout() {
                             <Tabs.Panel value="historikk">
                                 <Box width="100%" height="6rem" paddingBlock="space-16 space-0">
                                     <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
+                                </Box>
+                            </Tabs.Panel>
+                            <Tabs.Panel value="endringslogg">
+                                <Box width="100%" paddingBlock="space-16 space-0">
+                                    <SakEndringer sak={sak} />
                                 </Box>
                             </Tabs.Panel>
                         </Tabs>
