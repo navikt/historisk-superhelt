@@ -22,7 +22,7 @@ export default function SakStatus({ sak }: Props) {
         sak.vedtaksResultat === "INNVILGET" || sak.vedtaksResultat === "DELVIS_INNVILGET" ? "success" : "neutral";
 
     return (
-        <HStack gap="2" wrap={false}>
+        <HStack gap="space-8" wrap={false}>
             <Tag data-color={vedtaksResultatColor} variant="moderate" size="small">
                 {getSakVedtakNavn(sak.vedtaksResultat)}
             </Tag>
