@@ -93,7 +93,7 @@ class KlageControllerTest {
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
+            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest(datoKlageMottatt)))
                 .hasStatus(HttpStatus.NO_CONTENT)
 
             val captor = argumentCaptor<SendSakV4Request>()
@@ -299,9 +299,9 @@ class KlageControllerTest {
 
     // ── helpers ───────────────────────────────────────────────────────────────
 
-    private fun gyldigKlageRequest(): Map<String, String> = mapOf(
+    private fun gyldigKlageRequest(datoKlageMottatt: LocalDate = LocalDate.now().minusDays(10)): Map<String, String> = mapOf(
         "hjemmelId" to "FTRL_10_7I",
-        "datoKlageMottatt" to LocalDate.now().minusDays(10).toString(),
+        "datoKlageMottatt" to datoKlageMottatt.toString(),
     )
 
     private fun sendKlage(saksnummer: String, body: Any): MockMvcTester.MockMvcRequestBuilder =
