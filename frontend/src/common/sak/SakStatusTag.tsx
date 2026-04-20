@@ -15,7 +15,8 @@ const statusConfig: Record<SakStatusType, { color: "warning" | "info" | "success
 };
 
 export function SakStatusTag({ status }: Props) {
-    const label = useSakStatusNavn(status);
+    const getSakStatusNavn = useSakStatusNavn();
+    const label = getSakStatusNavn(status);
     const { color } = statusConfig[status];
     return (
         <Tag data-color={color} variant="moderate" size="small">
