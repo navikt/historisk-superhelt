@@ -1,37 +1,47 @@
-import type {InfotrygdHistorikk, ProblemDetail, Sak} from "@generated";
-import {ArrowRightIcon} from "@navikt/aksel-icons";
-import {Button, Heading, Skeleton, type SortState, Table, Tag, VStack} from "@navikt/ds-react";
-import {Link} from "@tanstack/react-router";
-import {useState} from "react";
-import {isoTilLokal} from "~/common/dato.utils";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
-import {formatertValuta} from "~/common/string.utils";
+import type { InfotrygdHistorikk, ProblemDetail, Sak } from "@generated";
+import { ExternalLinkIcon } from "@navikt/aksel-icons";
+import {
+    BodyShort,
+    Box,
+    Button,
+    Heading,
+    HGrid,
+    Label,
+    Skeleton,
+    type SortState,
+    Table,
+    Tag,
+    VStack,
+} from "@navikt/ds-react";
+import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { isoTilLokal } from "~/common/dato.utils";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import { formatertValuta } from "~/common/string.utils";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
-import type {HistorikkRad, HistorikkSortKey} from "./sakshistorikk.types";
-import {infotrygdTilHistorikkRad, sakTilHistorikkRad} from "./sakshistorikk.utils";
+import type { HistorikkRad, HistorikkSortKey } from "./sakshistorikk.types";
+import { infotrygdTilHistorikkRad, sakTilHistorikkRad } from "./sakshistorikk.utils";
 
 interface SakshistorikkKombinertProps {
     saker: Array<Sak>;
     infotrygdHistorikk: Array<InfotrygdHistorikk>;
     isPending?: boolean;
     error?: ProblemDetail | null;
-    hideSaksbehandler?: boolean;
-    hideActions?: boolean;
     openInNewTab?: boolean;
+    size?: "medium" | "large";
 }
 
 type ScopedSortState = { orderBy?: HistorikkSortKey } & SortState;
 
 export function SakshistorikkKombinertTabell({
-                                                 saker,
-                                                 infotrygdHistorikk,
-                                                 isPending,
-                                                 error,
-                                                 hideSaksbehandler,
-                                                 hideActions,
-                                                 openInNewTab,
-                                             }: SakshistorikkKombinertProps) {
+    saker,
+    infotrygdHistorikk,
+    isPending,
+    error,
+    openInNewTab,
+    size = "large",
+}: SakshistorikkKombinertProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
 
     const defaultSort: ScopedSortState = {
@@ -45,7 +55,7 @@ export function SakshistorikkKombinertTabell({
         const sortering = sort ?? defaultSort;
         const direction: SortState["direction"] =
             sortKey === sortering.orderBy && sortering.direction === "descending" ? "ascending" : "descending";
-        setSort({orderBy: sortKey, direction});
+        setSort({ orderBy: sortKey, direction });
     };
 
     function comparator(a: HistorikkRad, b: HistorikkRad, orderBy: HistorikkSortKey): number {
@@ -70,18 +80,18 @@ export function SakshistorikkKombinertTabell({
     });
 
     if (error) {
-        return <ErrorAlert error={error}/>;
+        return <ErrorAlert error={error} />;
     }
     if (isPending) {
         return (
             <VStack gap="space-8">
-                <Skeleton variant="text" width="100%"/>
+                <Skeleton variant="text" width="100%" />
                 {/* 'as'-prop kan brukes på all typografien vår med Skeleton */}
                 <Heading as={Skeleton} size="xlarge" width="100%">
                     Placeholder
                 </Heading>
-                <div style={{fontSize: "5rem"}}>
-                    <Skeleton variant="text" width="100%"/>
+                <div style={{ fontSize: "5rem" }}>
+                    <Skeleton variant="text" width="100%" />
                 </div>
             </VStack>
         );
@@ -98,7 +108,7 @@ export function SakshistorikkKombinertTabell({
     const renderActionButton = (rad: HistorikkRad) => {
         const sak = rad?.sak;
         if (!sak) {
-            return;
+            return null;
         }
         if (openInNewTab) {
             return (
@@ -109,9 +119,12 @@ export function SakshistorikkKombinertTabell({
                     href={`/sak/${sak.saksnummer}`}
                     target={`sak-${sak.saksnummer}`}
                     rel="noopener noreferrer"
-                    icon={<ArrowRightIcon aria-hidden/>}
+                    icon={<ExternalLinkIcon aria-hidden />}
+                    iconPosition="right"
                     aria-label="Åpne sak"
-                />
+                >
+                    Åpne sak
+                </Button>
             );
         }
         return (
@@ -121,46 +134,123 @@ export function SakshistorikkKombinertTabell({
         );
     };
 
+    function SakshistorikkDetaljer(rad: HistorikkRad) {
+        return (
+            <HGrid gap="space-16" columns={"repeat(auto-fit, minmax(10rem, 1fr))"}>
+                <VStack>
+                    <Label size="small" textColor="subtle">
+                        Beskrivelse
+                    </Label>
+                    <BodyShort size="small">{rad.beskrivelse ?? "-"}</BodyShort>
+                </VStack>
+
+                <VStack>
+                    <Label size="small" textColor="subtle">
+                        Dato
+                    </Label>
+                    <BodyShort size="small">{isoTilLokal(rad.dato)}</BodyShort>
+                </VStack>
+                <VStack>
+                    <Label size="small" textColor="subtle">
+                        Beløp
+                    </Label>
+                    <BodyShort size="small">{formatertValuta(rad.belop)}</BodyShort>
+                </VStack>
+                <VStack>
+                    <Label size="small" textColor="subtle">
+                        Saksbehandler
+                    </Label>
+                    <BodyShort size="small">{rad.sak?.saksbehandler.navn ?? "-"}</BodyShort>
+                </VStack>
+                {renderActionButton(rad) && (
+                    <VStack>
+                        <Label size="small" textColor="subtle">
+                            Handlinger
+                        </Label>
+                        {<Box>{renderActionButton(rad)}</Box>}
+                    </VStack>
+                )}
+            </HGrid>
+        );
+    }
+
+    function MeduimHeaderRad() {
+        return (
+            <Table.Row>
+                <Table.ColumnHeader scope="col"></Table.ColumnHeader>
+                <SortableColumnHeader sortKey="id">Saksnr</SortableColumnHeader>
+                <SortableColumnHeader sortKey="kategori">Kategori</SortableColumnHeader>
+                <Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
+            </Table.Row>
+        );
+    }
+
+    function MediumRadDetaljer(rad: HistorikkRad) {
+        return (
+            <Table.ExpandableRow key={rad.id} content={<SakshistorikkDetaljer {...rad} />}>
+                <Table.HeaderCell>{rad.sak?.saksnummer ?? "-"}</Table.HeaderCell>
+                <Table.DataCell>
+                    <BodyShort>{rad.kategori}</BodyShort>
+                </Table.DataCell>
+                <Table.DataCell>
+                    {rad.sak ? (
+                        <SakStatus sak={rad.sak} />
+                    ) : (
+                        <Tag data-color="neutral" variant="outline" size="small">
+                            Infotrygd
+                        </Tag>
+                    )}
+                </Table.DataCell>
+            </Table.ExpandableRow>
+        );
+    }
+
     return (
-        <Table sort={sort} onSortChange={(key) => handleSort(key as HistorikkSortKey)}>
+        <Table sort={sort} onSortChange={(key) => handleSort(key as HistorikkSortKey)} zebraStripes>
             <Table.Header>
-                <Table.Row>
-                    <SortableColumnHeader sortKey="id">Saksnr</SortableColumnHeader>
-                    <SortableColumnHeader sortKey="kategori">Kategori</SortableColumnHeader>
-                    <Table.ColumnHeader scope="col">Beskrivelse</Table.ColumnHeader>
-                    <Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
-                    <SortableColumnHeader sortKey="dato">Dato</SortableColumnHeader>
-                    <SortableColumnHeader sortKey="belop">Beløp</SortableColumnHeader>
-                    {!hideSaksbehandler && <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>}
-                    {!hideActions && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
-                </Table.Row>
+                {size === "medium" ? (
+                    <MeduimHeaderRad />
+                ) : (
+                    <Table.Row>
+                        <SortableColumnHeader sortKey="id">Saksnr</SortableColumnHeader>
+                        <SortableColumnHeader sortKey="kategori">Kategori</SortableColumnHeader>
+                        <Table.ColumnHeader scope="col">Beskrivelse</Table.ColumnHeader>
+                        <Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
+                        <SortableColumnHeader sortKey="dato">Dato</SortableColumnHeader>
+                        <SortableColumnHeader sortKey="belop">Beløp</SortableColumnHeader>
+                        <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>
+                        <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
+                    </Table.Row>
+                )}
             </Table.Header>
             <Table.Body>
-                {sorterteRader.map((rad) => (
-                    <Table.Row
-                        key={rad.id}
-                        style={{
-                            textDecorationLine: rad.strekedGjennom ? "line-through" : "none",
-                        }}
-                    >
-                        <Table.HeaderCell scope="row">{rad.sak?.saksnummer ?? "-"}</Table.HeaderCell>
-                        <Table.DataCell>{rad.kategori}</Table.DataCell>
-                        <Table.DataCell>{rad.beskrivelse ?? "–"}</Table.DataCell>
-                        <Table.DataCell>
-                            {rad.sak ? (
-                                <SakStatus sak={rad.sak}/>
-                            ) : (
-                                <Tag data-color="neutral" variant="outline" size="small">
-                                    Infotrygd
-                                </Tag>
-                            )}
-                        </Table.DataCell>
-                        <Table.DataCell>{isoTilLokal(rad.dato)}</Table.DataCell>
-                        <Table.DataCell>{formatertValuta(rad.belop)}</Table.DataCell>
-                        {!hideSaksbehandler && <Table.DataCell>{rad.sak?.saksbehandler.navn}</Table.DataCell>}
-                        {!hideActions && <Table.DataCell>{renderActionButton(rad)}</Table.DataCell>}
-                    </Table.Row>
-                ))}
+                {size === "medium"
+                    ? sorterteRader.map((rad) => <MediumRadDetaljer key={rad.id} {...rad} />)
+                    : sorterteRader.map((rad) => (
+                          <Table.Row
+                              key={rad.id}
+                              style={{
+                                  textDecorationLine: rad.strekedGjennom ? "line-through" : "none",
+                              }}
+                          >
+                              <Table.HeaderCell scope="row">{rad.sak?.saksnummer ?? "-"}</Table.HeaderCell>
+                              <Table.DataCell>{rad.kategori}</Table.DataCell>
+                              <Table.DataCell>{rad.beskrivelse ?? "–"}</Table.DataCell>
+                              <Table.DataCell>
+                                  {rad.sak ? (
+                                      <SakStatus sak={rad.sak} />
+                                  ) : (
+                                      <Tag data-color="neutral" variant="outline" size="small">
+                                          Infotrygd
+                                      </Tag>
+                                  )}
+                              </Table.DataCell>
+                              <Table.DataCell>{isoTilLokal(rad.dato)}</Table.DataCell>
+                              <Table.DataCell>{formatertValuta(rad.belop)}</Table.DataCell>
+                              <Table.DataCell>{rad.sak?.saksbehandler.navn}</Table.DataCell>
+                              <Table.DataCell>{renderActionButton(rad)}</Table.DataCell>
+                          </Table.Row>
+                      ))}
             </Table.Body>
         </Table>
     );
