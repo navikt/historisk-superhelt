@@ -1655,16 +1655,6 @@ export type SendKlageTilKabalData = {
 };
 
 export type SendKlageTilKabalErrors = {
-export type HentInfotrygdHistorikkForPersonData = {
-    body?: never;
-    path: {
-        maskertPersonIdent: string;
-    };
-    query?: never;
-    url: '/api/infotrygd/historikk/{maskertPersonIdent}';
-};
-
-export type HentInfotrygdHistorikkForPersonErrors = {
     /**
      * Bad Request
      */
@@ -1714,6 +1704,30 @@ export type GetKodeverkHjemlerResponses = {
 };
 
 export type GetKodeverkHjemlerResponse = GetKodeverkHjemlerResponses[keyof GetKodeverkHjemlerResponses];
+
+export type HentInfotrygdHistorikkForPersonData = {
+    body?: never;
+    path: {
+        maskertPersonIdent: string;
+    };
+    query?: never;
+    url: '/api/infotrygd/historikk/{maskertPersonIdent}';
+};
+
+export type HentInfotrygdHistorikkForPersonErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
 
 export type HentInfotrygdHistorikkForPersonError = HentInfotrygdHistorikkForPersonErrors[keyof HentInfotrygdHistorikkForPersonErrors];
 
