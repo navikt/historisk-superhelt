@@ -1,5 +1,5 @@
 import "./aksel-brev.css";
-import { Box, VStack } from "@navikt/ds-react";
+import { ReadMore, VStack } from "@navikt/ds-react";
 import { FixedHtml } from "~/routes/sak/$saksnummer/-components/htmleditor/FixedHtml";
 import {
     finnRedigerbartInnhold,
@@ -8,7 +8,7 @@ import {
     utledPrefiksInnhold,
 } from "~/routes/sak/$saksnummer/-components/htmleditor/pdfgen.utils";
 import TiptapEditor from "~/routes/sak/$saksnummer/-components/htmleditor/TiptapEditor";
-import { BrevExpandable } from "./BrevExpandable";
+import { Card } from "~/common/card/Card";
 
 interface HtmlEditorProps {
     html: string;
@@ -25,8 +25,8 @@ export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly }: Ht
     const editorContent = finnRedigerbartInnhold(html);
 
     return (
-        <Box background={"neutral-moderate"} padding={"space-16"} className="htmleditor">
-            <VStack gap={"space-8"}>
+        <Card className="htmleditor">
+            <VStack gap="space-24" paddingBlock="space-16">
                 <FixedHtml html={prefix} />
                 <TiptapEditor
                     initialContentHtml={editorContent}
@@ -35,10 +35,10 @@ export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly }: Ht
                     onBlur={onBlur}
                     readOnly={readOnly}
                 />
-                <BrevExpandable title={"Standardtekster og signatur"}>
+                <ReadMore header="Standardtekster og signatur" variant="moderate" data-color="neutral">
                     <FixedHtml html={postfix} />
-                </BrevExpandable>
+                </ReadMore>
             </VStack>
-        </Box>
+        </Card>
     );
 }

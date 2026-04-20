@@ -20,7 +20,12 @@ export function enumkodeTilTekst(enumKode: string | undefined, storBokstav = tru
         .join(" ");
 }
 
-export function formatertValuta(belop: number | null | undefined, valuta: string = "NOK"): string {
-    if (belop == null || Number.isNaN(belop)) return "Ukjent beløp";
-    return belop.toLocaleString("no-NO", { style: "currency", currency: valuta , maximumFractionDigits:0});
+export function formatertValuta(
+    belop: number | null | undefined,
+    nullValue: string = "-",
+    valuta: string = "NOK",
+): string {
+    if (belop == null || Number.isNaN(belop)) return nullValue;
+    if (belop === 0) return nullValue;
+    return belop.toLocaleString("no-NO", { style: "currency", currency: valuta, maximumFractionDigits: 0 });
 }

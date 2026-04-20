@@ -15,6 +15,7 @@
     <properties>
         <!-- Siste lts version -->
         <node.version>v24.11.1</node.version>
+        <pnpm.version>v10.33.0</pnpm.version>
     </properties>
     <build>
         <plugins>
@@ -46,23 +47,24 @@
                 <version>1.15.4</version>
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
+                    <pnpmVersion>${pnpm.version}</pnpmVersion>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node and npm</id>
+                        <id>install node and pnpm</id>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>install-node-and-pnpm</goal>
                         </goals>
                         <phase>initialize</phase>
                     </execution>
                     <execution>
-                        <id>npm install</id>
+                        <id>pnpm install</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>pnpm</goal>
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
-                            <arguments>ci</arguments>
+                            <arguments>install --frozen-lockfile</arguments>
                         </configuration>
                     </execution>
 <!--                    <execution>-->
@@ -79,9 +81,9 @@
 <!--                        </configuration>-->
 <!--                    </execution>-->
                     <execution>
-                        <id>npm build</id>
+                        <id>pnpm build</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>pnpm</goal>
                         </goals>
                         <phase>compile</phase>
                         <configuration>

@@ -7,16 +7,22 @@
     "format:write": "biome format --write .",
     "lint:fix": "biome check --write .",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "playwright:install": "playwright install --with-deps"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
   },
   "license": "ISC",
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
-    "@biomejs/biome": "2.4.6",
-    "@faker-js/faker": "^10.3.0",
-    "@playwright/test": "^1.58.2",
+    "@biomejs/biome": "2.4.11",
+    "@faker-js/faker": "^10.4.0",
+    "@playwright/test": "^1.59.1",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.1",
     "uuid": "^13.0.0"
   }
 }

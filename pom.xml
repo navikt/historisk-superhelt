@@ -23,10 +23,10 @@
         <springdoc.version>3.0.2</springdoc.version>
     </properties>
     <modules>
-        <module>backend</module>
+        <module>libs</module>
         <module>frontend</module>
         <module>mocks</module>
-        <module>libs</module>
+        <module>backend</module>
     </modules>
 
     <build>

@@ -62,3 +62,9 @@ app:
   kabal:
     url: http://localhost:9080/kabal-mock
     audience: api://mock.kabal/.default
+  ereg:
+    url: http://localhost:9080/ereg-mock
+    audience: api://mock.ereg-services/.default
+  infotrygd:
+    url: http://localhost:9080/infotrygd-mock
+    audience: api://mock.infotrygd/.default
