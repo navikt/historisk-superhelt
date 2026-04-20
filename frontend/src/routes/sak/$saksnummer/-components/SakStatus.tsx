@@ -14,10 +14,10 @@ export default function SakStatus({ sak }: Props) {
         return <SakStatusTag status={sak.status} />;
     }
 
-    return <FerdigSakStatus sak={sak} />;
+    return <SakStatusFerdig sak={sak} />;
 }
 
-function FerdigSakStatus({ sak }: Props) {
+function SakStatusFerdig({ sak }: Props) {
     const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
     const getSakVedtakNavn = useSakVedtakNavn();
     const hasUtbetalingsFeil = sakStatus.aggregertStatus === "FEILET";
