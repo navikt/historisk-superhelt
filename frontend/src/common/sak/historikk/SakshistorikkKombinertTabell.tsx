@@ -162,7 +162,7 @@ export function SakshistorikkKombinertTabell({
                     </Label>
                     <BodyShort size="small">{rad.sak?.saksbehandler.navn ?? "-"}</BodyShort>
                 </VStack>
-                {renderActionButton(rad) && (
+                {rad.sak && (
                     <VStack>
                         <Label size="small" textColor="subtle">
                             Handlinger
@@ -174,10 +174,10 @@ export function SakshistorikkKombinertTabell({
         );
     }
 
-    function MeduimHeaderRad() {
+    function MediumHeaderRad() {
         return (
             <Table.Row>
-                <Table.ColumnHeader scope="col"></Table.ColumnHeader>
+                <Table.ColumnHeader scope="col" aria-label="Vis mer" />
                 <SortableColumnHeader sortKey="id">Saksnr</SortableColumnHeader>
                 <SortableColumnHeader sortKey="kategori">Kategori</SortableColumnHeader>
                 <Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
@@ -209,7 +209,7 @@ export function SakshistorikkKombinertTabell({
         <Table sort={sort} onSortChange={(key) => handleSort(key as HistorikkSortKey)} zebraStripes>
             <Table.Header>
                 {size === "medium" ? (
-                    <MeduimHeaderRad />
+                    <MediumHeaderRad />
                 ) : (
                     <Table.Row>
                         <SortableColumnHeader sortKey="id">Saksnr</SortableColumnHeader>
