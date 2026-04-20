@@ -85,7 +85,7 @@ spec:
         - host: "dokarkiv{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
         - host: "dokdistfordeling.{{env}}-fss-pub.nais.io"
         - host: "saf{{legacyEnvSuffix}}.{{env}}-fss-pub.nais.io"
-        - host: "{{kabalHost}}"
+        - host: "kabal-api.intern.{{env}}.nav.no"
 
   env:
     - name: APP_FNR_ENCRYPTOR_SECRET
@@ -131,9 +131,9 @@ spec:
     - name: APP_ENTRA_PROXY_AUDIENCE
       value: "api://{{env}}-gcp.sikkerhetstjenesten.entra-proxy/.default"
     - name: APP_KABAL_URL
-      value: "{{kabalUrl}}"
+      value: "https://kabal-api.intern.{{env}}.nav.no"
     - name: APP_KABAL_AUDIENCE
-      value: "{{kabalAudience}}"
+      value: "api://{{env}}-gcp.klage.kabal-api/.default"
     - name: APP_INFOTRYGD_URL
       value: "http://historisk-helt-infotrygd"
     - name: APP_INFOTRYGD_AUDIENCE
