@@ -1,8 +1,8 @@
 {
   "collection": "fullstack",
-  "version": "2026.04.15-085456-a1b5704",
+  "version": "2026.04.18-211516-38e1d47",
   "scope": "repo",
-  "source_sha": "a1b5704",
+  "source_sha": "38e1d47",
   "installed_at": "2026-04-16T11:42:15Z",
   "files": [
     {
@@ -15,11 +15,11 @@
     },
     {
       "path": ".github/agents/aksel.agent.md",
-      "hash": "9a80d306394a0cf4"
+      "hash": "f3f31e695bc1df0f"
     },
     {
       "path": ".github/agents/aksel.metadata.json",
-      "hash": "019ce826aad4c5e9"
+      "hash": "8eada8fad9d3b868"
     },
     {
       "path": ".github/agents/auth.agent.md",
@@ -39,7 +39,7 @@
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "42eb060eeeaef4cf"
+      "hash": "f638bd5c234f329b"
     },
     {
       "path": ".github/agents/forfatter.metadata.json",
@@ -79,7 +79,7 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "3eac438b61ab279a"
+      "hash": "becdb418816be1e0"
     },
     {
       "path": ".github/agents/nav-pilot.metadata.json",
@@ -87,87 +87,93 @@
     },
     {
       "path": ".github/skills/aksel-spacing/",
-      "hash": "5c7a8fe6dc1027ff"
+      "hash": "690f23009e204e36"
     },
     {
       "path": ".github/skills/api-design/",
-      "hash": "2760ab46cc8b8993"
+      "hash": "a353aded69a4bd4c"
     },
     {
       "path": ".github/skills/flyway-migration/",
-      "hash": "4e04be57f47a8fbe"
+      "hash": "ebb952121b180fac"
     },
     {
       "path": ".github/skills/java-to-kotlin/",
-      "hash": "8e1a5340ab7fa111"
+      "hash": "8e1a5340ab7fa111",
+      "status": "ignored"
     },
     {
       "path": ".github/skills/kotlin-app-config/",
-      "hash": "a7f564fa07377a83"
+      "hash": "9168a07cc0b620c3"
     },
     {
       "path": ".github/skills/ktor-scaffold/",
-      "hash": "a7216a1e137896a6"
+      "hash": "a7216a1e137896a6",
+      "status": "ignored"
     },
     {
       "path": ".github/skills/observability-setup/",
-      "hash": "7cfbbd31f8793a0b"
+      "hash": "533cfb6d1dd88af3"
     },
     {
       "path": ".github/skills/playwright-testing/",
-      "hash": "2b2fa6a6440ecccd"
+      "hash": "d8991a8ed8a5e0b5"
     },
     {
       "path": ".github/skills/security-review/",
-      "hash": "dd9e871d55b4ecc6"
+      "hash": "c74a83a4e61fbf58"
     },
     {
       "path": ".github/skills/threat-model/",
-      "hash": "de9a895aa078fd27"
+      "hash": "305fe669dec42981"
     },
     {
       "path": ".github/skills/tokenx-auth/",
-      "hash": "820c38611e471ff3"
+      "hash": "7afa1c42b4e8e859"
     },
     {
       "path": ".github/skills/web-design-reviewer/",
-      "hash": "6a734ef4c3d544d9"
+      "hash": "07b2096b77bf5ae3"
     },
     {
       "path": ".github/skills/nav-plan/",
-      "hash": "c1dccd4a9b3c3c4c"
+      "hash": "0849265460ea23e2"
     },
     {
       "path": ".github/skills/nav-deep-interview/",
-      "hash": "db67aa1434fb4610"
+      "hash": "42e9aab52e591ef0"
     },
     {
       "path": ".github/skills/nav-architecture-review/",
-      "hash": "3210c935f870aa0a"
+      "hash": "4618dec566442509"
     },
     {
       "path": ".github/skills/nav-troubleshoot/",
-      "hash": "a836d38dbcabe99e"
+      "hash": "ce043cf29ce427b1"
     },
     {
       "path": ".github/instructions/kotlin-ktor.instructions.md",
-      "hash": "556cd450ae2bedf3"
+      "hash": "556cd450ae2bedf3",
+      "status": "ignored"
     },
     {
       "path": ".github/instructions/kotlin-spring.instructions.md",
-      "hash": "75458689164c6c1b"
+      "hash": "0a6fca898f27e2d6"
     },
     {
       "path": ".github/instructions/golang.instructions.md",
-      "hash": "68b80af9d00ccf92"
+      "hash": "68b80af9d00ccf92",
+      "status": "ignored"
     },
     {
       "path": ".github/instructions/nextjs-aksel.instructions.md",
-      "hash": "6aa56ec320c72809"
+      "hash": "6aa56ec320c72809",
+      "status": "ignored"
     },
     {
       "path": ".github/instructions/performance.instructions.md",
-      "hash": "23b58fe157ef8f0e"
+      "hash": "23b58fe157ef8f0e",
+      "status": "ignored"
     },
     {
       "path": ".github/instructions/security-owasp.instructions.md",
@@ -203,7 +209,8 @@
     },
     {
       "path": ".github/prompts/ktor-endpoint.prompt.md",
-      "hash": "81e78e842e5b973b"
+      "hash": "81e78e842e5b973b",
+      "status": "ignored"
     },
     {
       "path": ".github/prompts/spring-boot-endpoint.prompt.md",
@@ -223,11 +230,13 @@
     },
     {
       "path": ".github/prompts/nextjs-api-route.prompt.md",
-      "hash": "6dc6506e5264a67b"
+      "hash": "6dc6506e5264a67b",
+      "status": "ignored"
     },
     {
       "path": ".github/prompts/golang-service.prompt.md",
-      "hash": "b3c85da75dc6b19c"
+      "hash": "b3c85da75dc6b19c",
+      "status": "ignored"
     }
   ]
 }

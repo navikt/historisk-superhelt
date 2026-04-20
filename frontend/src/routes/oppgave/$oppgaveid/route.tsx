@@ -21,8 +21,8 @@ function OppgaveLayout() {
     const { data: oppgave } = useSuspenseQuery(getOppgaveOptions({ path: { oppgaveId: Number(oppgaveId) } }));
     const journalpostId = oppgave.journalpostId;
 
-    const { data: journalpost } = useQuery(hentJournalpostMetadataQuery(journalpostId));
-    const antallDokumenter = journalpost?.dokumenter?.length;
+    const { data: journalpost, isSuccess: erJournalpostLastet } = useQuery(hentJournalpostMetadataQuery(journalpostId));
+    const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
     return (

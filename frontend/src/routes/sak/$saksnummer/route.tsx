@@ -38,7 +38,7 @@ function SakLayout() {
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
     const { data: journalposter } = useSuspenseQuery(finnJournalposterForSakOptions({ path: { saksnummer } }));
 
-    const antallDokumenter = journalposter.flatMap((jp) => jp.dokumenter ?? []).length;
+    const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
     useEffect(() => {
         document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;

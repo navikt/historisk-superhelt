@@ -4,6 +4,10 @@ applyTo: "**/*.kt"
 
 Spring Boot-mønstre for Nav-backends: controller, service, repository, validering og feilhåndtering.
 
+> Ktor er det mest brukte rammeverket for nye Kotlin-backends i Nav, men Spring Boot brukes aktivt av mange team. Teamene velger selv. For migrering mellom rammeverkene, se [$java-to-kotlin](../skills/java-to-kotlin/).
+
+> Spring Boot patterns for Nav backends. Apply when the file uses Spring (`@RestController`, `@Service`, Spring Data etc.) — for Ktor/Rapids & Rivers apps, see `kotlin-ktor.instructions.md` instead.
+
 # Spring Boot Framework Patterns
 
 ## Controller Layer
@@ -243,6 +247,9 @@ class ResourceServiceTest {
 
 | Type | Name | When to use |
 |------|------|-------------|
-| Skill | [$spring-boot-scaffold](../skills/spring-boot-scaffold/) | Scaffolding a new Spring Boot project |
+| Instruction | [kotlin-ktor](kotlin-ktor.instructions.md) | Ktor patterns for Nav backends |
+| Skill | [$java-to-kotlin](../skills/java-to-kotlin/) | Migrating Spring Boot code to Kotlin/Ktor |
+| Skill | [$ktor-scaffold](../skills/ktor-scaffold/) | Scaffolding a new Ktor project to replace a Spring service |
+| Skill | [$spring-boot-scaffold](../skills/spring-boot-scaffold/) | Scaffolding a new Spring Boot Kotlin project |
 | Skill | [$flyway-migration](../skills/flyway-migration/) | Database migration patterns |
 | Agent | @auth-agent | Authentication setup (TokenX, Azure AD) |

@@ -1,6 +1,10 @@
 ---
 name: threat-model
 description: STRIDE-A trusselmodellering for Nais-mikrotjenester — dataflyt, tillitsgrenser og risikovurdering
+license: MIT
+metadata:
+  domain: auth
+  tags: threat-modeling stride security nais architecture
 ---
 
 # Threat Model — STRIDE-A Analysis
