@@ -10,13 +10,17 @@ interface Props {
 }
 
 export default function SakStatus({ sak }: Props) {
-    const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
-    const getSakVedtakNavn = useSakVedtakNavn();
-    const hasUtbetalingsFeil = sakStatus.aggregertStatus === "FEILET";
-
     if (sak.status !== "FERDIG") {
         return <SakStatusTag status={sak.status} />;
     }
+
+    return <FerdigSakStatus sak={sak} />;
+}
+
+function FerdigSakStatus({ sak }: Props) {
+    const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
+    const getSakVedtakNavn = useSakVedtakNavn();
+    const hasUtbetalingsFeil = sakStatus.aggregertStatus === "FEILET";
 
     const vedtaksResultatColor =
         sak.vedtaksResultat === "INNVILGET" || sak.vedtaksResultat === "DELVIS_INNVILGET" ? "success" : "neutral";
