@@ -629,6 +629,16 @@ export const getKodeverkHjemlerQueryKey = (options?: Options<GetKodeverkHjemlerD
 export const getKodeverkHjemlerOptions = (options?: Options<GetKodeverkHjemlerData>) => queryOptions<GetKodeverkHjemlerResponse, GetKodeverkHjemlerError, GetKodeverkHjemlerResponse, ReturnType<typeof getKodeverkHjemlerQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
         const { data } = await getKodeverkHjemler({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getKodeverkHjemlerQueryKey(options)
+});
+
 export const hentInfotrygdHistorikkForPersonQueryKey = (options: Options<HentInfotrygdHistorikkForPersonData>) => createQueryKey('hentInfotrygdHistorikkForPerson', options);
 
 export const hentInfotrygdHistorikkForPersonOptions = (options: Options<HentInfotrygdHistorikkForPersonData>) => queryOptions<HentInfotrygdHistorikkForPersonResponse, HentInfotrygdHistorikkForPersonError, HentInfotrygdHistorikkForPersonResponse, ReturnType<typeof hentInfotrygdHistorikkForPersonQueryKey>>({
@@ -641,6 +651,5 @@ export const hentInfotrygdHistorikkForPersonOptions = (options: Options<HentInfo
         });
         return data;
     },
-    queryKey: getKodeverkHjemlerQueryKey(options)
     queryKey: hentInfotrygdHistorikkForPersonQueryKey(options)
 });
