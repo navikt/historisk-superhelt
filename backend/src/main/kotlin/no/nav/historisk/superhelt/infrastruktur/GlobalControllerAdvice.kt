@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.infrastruktur
 
 import jakarta.validation.ConstraintViolationException
-import no.nav.kabal.KabalException
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.infrastruktur.validation.createValidationErrorMessage
@@ -14,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.client.RestClientResponseException
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
@@ -79,16 +79,13 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
     }
 
 
-    @ExceptionHandler(KabalException::class)
+    @ExceptionHandler(RestClientResponseException::class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    fun handleKabalException(ex: KabalException): ProblemDetail {
-        val detail = buildString {
-            append(ex.message)
-            if (!ex.responseBody.isNullOrBlank()) append(". Kabal-detaljer: ${ex.responseBody}")
-        }
-        log.error("Feil mot Kabal API. Return 502. {}", detail, ex)
+    fun handleRestClientResponseException(ex: RestClientResponseException): ProblemDetail {
+        val detail = "Feil mot eksternt API: HTTP ${ex.statusCode}. ${ex.responseBodyAsString}"
+        log.error("Feil mot eksternt API. Return 502. {}", detail, ex)
         val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY, detail)
-        problemDetail.title = "KabalException"
+        problemDetail.title = ex.javaClass.simpleName
         return problemDetail
     }
 

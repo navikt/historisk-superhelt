@@ -13,6 +13,8 @@ import no.nav.historisk.superhelt.test.WithMockJwtAuth
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.kabal.KabalClient
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpServerErrorException
 import no.nav.kabal.model.SendSakV4Request
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
@@ -143,10 +145,11 @@ class KlageControllerTest {
                 sakRepository,
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
-            whenever(kabalClient.sendSakV4(any())) doThrow no.nav.kabal.KabalException(
-                message = "Feil fra Kabal API: HTTP 503",
-                statusCode = 503,
-                responseBody = """{"feil":"Kabal er utilgjengelig"}""",
+            whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.ServiceUnavailable(
+                "Kabal er utilgjengelig",
+                org.springframework.http.HttpHeaders.EMPTY,
+                """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
+                null
             )
 
             assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
@@ -238,10 +241,11 @@ class KlageControllerTest {
                 sakRepository,
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
-            whenever(kabalClient.sendSakV4(any())) doThrow no.nav.kabal.KabalException(
-                message = "Feil fra Kabal API: HTTP 503",
-                statusCode = 503,
-                responseBody = """{"feil":"Kabal er utilgjengelig"}""",
+            whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.ServiceUnavailable(
+                "Kabal er utilgjengelig",
+                org.springframework.http.HttpHeaders.EMPTY,
+                """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
+                null
             )
 
             assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
