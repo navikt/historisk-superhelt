@@ -1,6 +1,11 @@
 ---
 name: playwright-testing
 description: Generer og kjør Playwright E2E-tester for webapplikasjoner med page objects, auth fixtures og tilgjengelighetstester
+license: MIT
+compatibility: Node.js with Playwright
+metadata:
+  domain: testing
+  tags: playwright e2e testing accessibility responsive
 ---
 
 # Playwright E2E Testing Skill
@@ -45,6 +50,7 @@ export default defineConfig({
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
     command: "pnpm dev",
@@ -226,15 +232,15 @@ e2e:
   runs-on: ubuntu-latest
   timeout-minutes: 10
   steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: 22
         cache: pnpm
     - run: pnpm install --frozen-lockfile
     - run: npx playwright install --with-deps chromium
     - run: pnpm exec playwright test
-    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: playwright-report

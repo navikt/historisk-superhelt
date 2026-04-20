@@ -98,7 +98,7 @@ metadata:
   labels:
     team: team-namespace
 spec:
-  image: {{image}}
+  image: { { image } }
   port: 8080
 
   # Observability

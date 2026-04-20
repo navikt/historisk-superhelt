@@ -1,3 +1,4 @@
+import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
 import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
     loader: ({ params: { saksnummer }, context }) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer));
+        context.queryClient.ensureQueryData(finnJournalposterForSakOptions({ path: { saksnummer } }));
     },
     errorComponent: ({ error }) => {
         return <ErrorAlert error={error} />;
@@ -35,6 +37,9 @@ function SakLayout() {
     const { saksnummer } = Route.useParams();
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
+    const { data: journalposter } = useSuspenseQuery(finnJournalposterForSakOptions({ path: { saksnummer } }));
+
+    const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
     useEffect(() => {
         document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;
@@ -108,7 +113,11 @@ function SakLayout() {
                         <SakOppsummering sak={sak} />
                         <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
                             <Tabs.List>
-                                <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />
+                                <Tabs.Tab
+                                    value="dokumenter"
+                                    label={`Dokumenter (${antallDokumenter})`}
+                                    icon={<FilePdfIcon aria-hidden />}
+                                />
                                 <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
                                 <Tabs.Tab
                                     value="endringslogg"
