@@ -6,7 +6,7 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 
-/** Request interceptor for OBO tokens **/
+/** Request interceptor adding bearer tokens from nais **/
 class NaisTokenClientRequestInterceptor(private val tokenService: NaisTokenService, private val target: String) : ClientHttpRequestInterceptor {
 
     override fun intercept(
@@ -14,7 +14,7 @@ class NaisTokenClientRequestInterceptor(private val tokenService: NaisTokenServi
         body: ByteArray,
         execution: ClientHttpRequestExecution
     ): ClientHttpResponse {
-        val oboToken = tokenService.oboToken(target)
+        val oboToken = tokenService.oboOrM2mToken(target)
         request.headers.setBearerAuth(oboToken)
         return execution.execute(request, body)
     }

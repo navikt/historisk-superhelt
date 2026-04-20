@@ -20,7 +20,7 @@ class TilgangsmaskinAuthLogic(private val tilgangsmaskinService: TilgangsmaskinS
             return null
         }
         if (hasPermission(Permission.IGNORE_TILGANGSMASKIN)) {
-            logger.debug("Bruker har IGNORE_TILGANGSMASKIN permission, hopper over tilgangssjekk i tilgangsmaskin")
+            logger.trace("Bruker har IGNORE_TILGANGSMASKIN permission, hopper over tilgangssjekk i tilgangsmaskin")
             return true
         }
         val (granted, response) = tilgangsmaskinService.sjekkKomplettTilgang(FolkeregisterIdent(fnr))

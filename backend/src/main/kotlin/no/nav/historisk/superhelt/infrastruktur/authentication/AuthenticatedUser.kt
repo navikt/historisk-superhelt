@@ -7,18 +7,21 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 data class AuthenticatedUser(
     val navIdent: NavIdent,
     val userName: String,
-    val jwt: Jwt?
-){
+    val jwt: Jwt?,
+    val systemUser: Boolean = false
+) {
     val navUser: NavUser = NavUser(
         navIdent = navIdent,
         navn = userName
     )
     val userToken: String? = jwt?.tokenValue
+
+
 }
 
 val JwtAuthenticationToken.authenticatedUser: AuthenticatedUser
-    get() =  AuthenticatedUser(
-        navIdent =  this.name?.let { NavIdent(it) } ?: throw IllegalStateException("NavIdent ikke funnet i JWT"),
+    get() = AuthenticatedUser(
+        navIdent = this.name?.let { NavIdent(it) } ?: throw IllegalStateException("NavIdent ikke funnet i JWT"),
         userName = this.token.getClaimAsString("name")
             ?: this.token.getClaimAsString("given_name")
             ?: this.name,
