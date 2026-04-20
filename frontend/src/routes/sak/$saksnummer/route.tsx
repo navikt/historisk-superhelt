@@ -53,7 +53,7 @@ function SakLayout() {
     );
     const antallSakshistorikk =
         erSakerLastet && erInfotrygdLastet
-            ? (sakerForPerson?.length ?? 0) + (infotrygdHistorikk?.length ?? 0)
+            ? (sakerForPerson?.filter((s) => s.status === "FERDIG").length ?? 0) + (infotrygdHistorikk?.length ?? 0)
             : undefined;
     const sakshistorikkLabel =
         antallSakshistorikk !== undefined ? `Sakshistorikk (${antallSakshistorikk})` : "Sakshistorikk";
