@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
-import org.springframework.http.HttpStatus
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
@@ -145,7 +144,8 @@ class KlageControllerTest {
                 sakRepository,
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
-            whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.ServiceUnavailable(
+            whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
+                HttpStatus.SERVICE_UNAVAILABLE,
                 "Kabal er utilgjengelig",
                 org.springframework.http.HttpHeaders.EMPTY,
                 """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
@@ -241,7 +241,8 @@ class KlageControllerTest {
                 sakRepository,
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
-            whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.ServiceUnavailable(
+            whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
+                HttpStatus.SERVICE_UNAVAILABLE,
                 "Kabal er utilgjengelig",
                 org.springframework.http.HttpHeaders.EMPTY,
                 """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
