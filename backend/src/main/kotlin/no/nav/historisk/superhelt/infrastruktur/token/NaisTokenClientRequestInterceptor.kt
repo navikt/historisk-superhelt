@@ -14,8 +14,8 @@ class NaisTokenClientRequestInterceptor(private val tokenService: NaisTokenServi
         body: ByteArray,
         execution: ClientHttpRequestExecution
     ): ClientHttpResponse {
-        val oboToken = tokenService.oboOrM2mToken(target)
-        request.headers.setBearerAuth(oboToken)
+        val token = tokenService.oboOrM2mToken(target)
+        request.headers.setBearerAuth(token)
         return execution.execute(request, body)
     }
 }

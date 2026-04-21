@@ -16,9 +16,7 @@ class OppgaveAdminController(private val oppgaveGjenopprettingService: OppgaveGj
 
     @Operation(operationId = "gjenopprettOppgaver", summary = "Gjenopprett manglende oppgaver for saker")
     @PostMapping("gjenopprettOppgaver")
-    fun gjenopprettOppgaer(): List<Saksnummer> {
+    fun gjenopprettOppgaver(): List<Saksnummer> {
         return oppgaveGjenopprettingService.gjenopprettManglendeOppgaver()
     }
-
-
 }
