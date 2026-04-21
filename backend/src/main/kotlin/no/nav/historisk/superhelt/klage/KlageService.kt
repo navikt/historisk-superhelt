@@ -43,7 +43,7 @@ class KlageService(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
             klager = Klager(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
-            fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = "HJELPEMIDLER"),
+            fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = "SUPERHELT"),
             kildeReferanse = sak.saksnummer.value,
             dvhReferanse = sak.saksnummer.value,
             hjemler = listOf(hjemmel.id),
