@@ -1,11 +1,7 @@
-import {
-    findSakerForPersonOptions,
-    finnJournalposterForSakOptions,
-    hentInfotrygdHistorikkForPersonOptions,
-} from "@generated/@tanstack/react-query.gen";
+import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
 import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
@@ -15,6 +11,7 @@ import { PersonHeader } from "~/common/person/PersonHeader";
 import { finnPersonQuery } from "~/common/person/person.query";
 import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
 import { StepType } from "~/common/process-menu/StepType";
+import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
 import type { TilstandStatusType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn, kortSaksnummer } from "~/common/string.utils";
@@ -45,18 +42,7 @@ function SakLayout() {
 
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
-    const { data: sakerForPerson, isSuccess: erSakerLastet } = useQuery(
-        findSakerForPersonOptions({ query: { maskertPersonId: sak.maskertPersonIdent } }),
-    );
-    const { data: infotrygdHistorikk, isSuccess: erInfotrygdLastet } = useQuery(
-        hentInfotrygdHistorikkForPersonOptions({ path: { maskertPersonIdent: sak.maskertPersonIdent } }),
-    );
-    const antallSakshistorikk =
-        erSakerLastet && erInfotrygdLastet
-            ? (sakerForPerson?.filter((s) => s.status === "FERDIG").length ?? 0) + (infotrygdHistorikk?.length ?? 0)
-            : undefined;
-    const sakshistorikkLabel =
-        antallSakshistorikk !== undefined ? `Sakshistorikk (${antallSakshistorikk})` : "Sakshistorikk";
+    const { sakshistorikkLabel } = useSakshistorikkAntall(sak.maskertPersonIdent, "ferdig");
 
     useEffect(() => {
         document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;

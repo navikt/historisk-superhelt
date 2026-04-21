@@ -1,8 +1,4 @@
-import {
-    findSakerForPersonOptions,
-    getOppgaveOptions,
-    hentInfotrygdHistorikkForPersonOptions,
-} from "@generated/@tanstack/react-query.gen";
+import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Tabs } from "@navikt/ds-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -10,6 +6,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
 import { PdfViewer } from "~/common/pdf/PdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
+import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
 import { SakshistorikkJournalTabell } from "~/routes/oppgave/$oppgaveid/-components/SakshistorikkJournalTabell";
 import { hentJournalpostMetadataQuery } from "./-api/journalpost.query";
 
@@ -29,18 +26,7 @@ function OppgaveLayout() {
     const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
-    const { data: sakerForPerson, isSuccess: erSakerLastet } = useQuery(
-        findSakerForPersonOptions({ query: { maskertPersonId: oppgave.maskertPersonIdent } }),
-    );
-    const { data: infotrygdHistorikk, isSuccess: erInfotrygdLastet } = useQuery(
-        hentInfotrygdHistorikkForPersonOptions({ path: { maskertPersonIdent: oppgave.maskertPersonIdent } }),
-    );
-    const antallSakshistorikk =
-        erSakerLastet && erInfotrygdLastet
-            ? (sakerForPerson?.length ?? 0) + (infotrygdHistorikk?.length ?? 0)
-            : undefined;
-    const sakshistorikkLabel =
-        antallSakshistorikk !== undefined ? `Sakshistorikk (${antallSakshistorikk})` : "Sakshistorikk";
+    const { sakshistorikkLabel } = useSakshistorikkAntall(oppgave.maskertPersonIdent, "aapen");
 
     return (
         <>
