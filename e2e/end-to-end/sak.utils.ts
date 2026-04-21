@@ -64,14 +64,14 @@ export async function attesterSakGodkjenn(
         await page.getByRole("button", { name: "Attester" }).click();
     });
 
-    await test.step("Velg oppsummering", async () => {
-        await sak.selectMenuItem("Oppsummering");
+    await test.step("Velg Godkjenning", async () => {
+        await sak.selectMenuItem("Godkjenning");
     });
 
     await test.step("Attester og ferdigstill", async () => {
         await expect(page.getByRole("heading", { name: "Godkjenne sak" })).toBeVisible();
         await page.getByRole("radio", { name: "Godkjenn vedtak" }).check();
         await page.getByRole("button", { name: "Attester sak" }).click();
-        await expect(page.getByRole("heading", { name: "Saken er ferdigstilt" })).toBeVisible({ timeout: 20_000 });
+        await expect(page.getByRole("heading", { name: "Saken er innvilget og ferdigstilt" })).toBeVisible({ timeout: 20_000 });
     });
 }

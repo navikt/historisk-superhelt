@@ -42,7 +42,7 @@ test.describe("Henlegg sak", () => {
     });
 
     await test.step("Sjekk at sak er henlagt", async () => {
-      await sak.selectMenuItem("Oppsummering");
+      await sak.selectMenuItem("Godkjenning");
       await expect(page.getByText("Sak henlagt")).toBeVisible();
     });
   });
