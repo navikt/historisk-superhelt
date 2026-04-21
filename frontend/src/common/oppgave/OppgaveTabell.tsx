@@ -8,7 +8,7 @@ import { isoTilLokal } from "~/common/dato.utils";
 import { OppgaveDetaljer } from "~/common/oppgave/OppgaveDetaljer";
 import { useOppgaveGjelderNavn } from "~/common/oppgave/useOppgaveGjelderNavn";
 import { useOppgaveTypeNavn } from "~/common/oppgave/useOppgaveTypeNavn";
-import { useSakStatusNavn } from "~/common/sak/useSakStatusNavn";
+import { SakStatusTag } from "~/common/sak/SakStatusTag";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import { OppgaveActionButton } from "./OppgaveActionButton";
 
@@ -29,7 +29,6 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
     const { data: saksbehandler } = useSuspenseQuery(getUserInfoOptions());
     const oppgaveGjelderNavn = useOppgaveGjelderNavn();
     const oppgaveTypeNavn = useOppgaveTypeNavn();
-    const sakStatusNavn = useSakStatusNavn();
     const stonadsTypeNavn = useStonadsTypeNavn();
 
     const [page, setPage] = useState(1);
@@ -133,7 +132,9 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                             >
                                 <Table.DataCell>{renderSakLink(oppgave.saksnummer)}</Table.DataCell>
                                 <Table.DataCell>{renderOppgaveText(oppgave)}</Table.DataCell>
-                                <Table.DataCell>{sakStatusNavn(oppgave.sakStatus)}</Table.DataCell>
+                                <Table.DataCell>
+                                    {oppgave.sakStatus && <SakStatusTag status={oppgave.sakStatus} />}
+                                </Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
                                 {dineOppgaver && (
                                     <Table.DataCell>
