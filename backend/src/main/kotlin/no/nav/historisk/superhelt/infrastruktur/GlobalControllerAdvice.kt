@@ -5,7 +5,11 @@ import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.infrastruktur.validation.createValidationErrorMessage
 import org.slf4j.LoggerFactory
-import org.springframework.http.*
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import org.springframework.http.ProblemDetail
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.web.ErrorResponseException
@@ -76,7 +80,6 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
         log.info("Error: {} returning:  {}", ex.javaClass.simpleName, ex.message)
         return super.handleErrorResponseException(ex, headers, status, request)
     }
-
 
     @ExceptionHandler(AccessDeniedException::class)
     @ResponseStatus(HttpStatus.FORBIDDEN)

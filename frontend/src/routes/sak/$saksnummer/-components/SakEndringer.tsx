@@ -7,6 +7,7 @@ import {
     ChevronRightIcon,
     EnvelopeClosedIcon,
     HourglassBottomFilledIcon,
+    PaperplaneIcon,
     SackKronerIcon,
     SparkLargeIcon,
     ThumbDownIcon,
@@ -59,6 +60,8 @@ export default function SakEndringer({ sak }: SakEndringerProps) {
                 return <EnvelopeClosedIcon/>;
             case "OPPRETTET_SAK":
                 return <SparkLargeIcon />;
+            case "KLAGE_SENDT_KABAL":
+                return <PaperplaneIcon />;
             default:
                 return <ChevronRightIcon />;
         }

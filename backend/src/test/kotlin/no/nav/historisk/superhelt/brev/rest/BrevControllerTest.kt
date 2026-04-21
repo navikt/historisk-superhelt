@@ -1,7 +1,12 @@
 package no.nav.historisk.superhelt.brev.rest
 
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.brev.*
+import no.nav.historisk.superhelt.brev.Brev
+import no.nav.historisk.superhelt.brev.BrevId
+import no.nav.historisk.superhelt.brev.BrevMottaker
+import no.nav.historisk.superhelt.brev.BrevRepository
+import no.nav.historisk.superhelt.brev.BrevTestdata
+import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -15,7 +20,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus

@@ -16,7 +16,7 @@ object DokarkivTestdata {
             journalstatus = JournalStatus.entries.random(),
             tittel = faker.lorem().sentence(),
             sak = JournalpostSak(
-                fagsaksystem = faker.options().option("AO01", "FS22", "K9", "IT01"),
+                fagsaksystem = faker.options().option("AO01", "FS22", "K9", "IT01", "SUPERHELT"),
                 fagsakId = faker.number().digits(8)
             ),
             bruker = JournalpostBruker(
