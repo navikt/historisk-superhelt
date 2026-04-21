@@ -52,7 +52,7 @@ class BrevSendingService(
                 saksnummer = sak.saksnummer,
                 endringsType = EndringsloggType.SENDT_BREV,
                 endring = "Brev sendt til ${brev.mottakerType.name.lowercase()}",
-                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert og distribuert til ${brev.mottakerType.name.lowercase()}",
+                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert og sendt til ${brev.mottakerType.name.lowercase()}",
 
                 )
         } else {
@@ -60,7 +60,7 @@ class BrevSendingService(
                 saksnummer = sak.saksnummer,
                 endringsType = EndringsloggType.SENDT_BREV,
                 endring = "Brev kunne ikke sendes men er arkivert",
-                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert men kunne ikke distribueres til ${brev.mottakerType.name.lowercase()}.  Årsak: ${distStatus.feilbegrunnelse}"
+                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert men kunne ikke sendes til ${brev.mottakerType.name.lowercase()}.  Årsak: ${distStatus.feilbegrunnelse}"
             )
         }
     }
