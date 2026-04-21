@@ -3,16 +3,28 @@ package no.nav.historisk.superhelt.brev.rest
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.brev.*
+import no.nav.historisk.superhelt.brev.Brev
+import no.nav.historisk.superhelt.brev.BrevId
+import no.nav.historisk.superhelt.brev.BrevOppdatering
+import no.nav.historisk.superhelt.brev.BrevRepository
+import no.nav.historisk.superhelt.brev.BrevSendingService
+import no.nav.historisk.superhelt.brev.BrevService
+import no.nav.historisk.superhelt.brev.BrevStatus
+import no.nav.historisk.superhelt.brev.finnGjeldendeBrev
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
-import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakRettighet
 import no.nav.historisk.superhelt.sak.SakValidator
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/sak/{saksnummer}/brev")
@@ -37,16 +49,12 @@ class BrevController(
         val brevListe = brevRepository.findBySak(saksnummer)
         val brev = brevListe.finnGjeldendeBrev(request.type, request.mottaker)
 
-        val kanBehandleBrev = sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE) ||
-                sak.rettigheter.contains(SakRettighet.SEND_KLAGE)
-
-        if ((brev == null || brev.status.isCompleted()) && kanBehandleBrev) {
+        if ((brev == null || brev.status.isCompleted()) && sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)) {
             return brevService.genererNyttBrev(sak, request.type, request.mottaker)
         }
 
         return brev ?: throw IkkeFunnetException("Kunne ikke finne eller generere brev for sak")
     }
-
 
     @Operation(operationId = "hentBrev")
     @GetMapping("{brevId}")
@@ -87,7 +95,7 @@ class BrevController(
         )
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkAnyRettighet(SakRettighet.SAKSBEHANDLE, SakRettighet.SEND_KLAGE)
+            .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
         return brevRepository.oppdater(brevId, oppdatertBrev)
     }
@@ -98,7 +106,7 @@ class BrevController(
     fun sendAnnetBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId) {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
-            .checkAnyRettighet(SakRettighet.SAKSBEHANDLE, SakRettighet.SEND_KLAGE)
+            .checkRettighet(SakRettighet.SAKSBEHANDLE)
             .validate()
         brevSendingService.sendBrev(sak, brevId)
 
