@@ -100,7 +100,7 @@ class KlageControllerTest {
             val request = captor.firstValue
 
             assertThat(request.type.name).isEqualTo("KLAGE")
-            assertThat(request.fagsak.fagsystem).isEqualTo("HJELPEMIDLER")
+            assertThat(request.fagsak.fagsystem).isEqualTo("SUPERHELT")
             assertThat(request.fagsak.fagsakId).isEqualTo(sak.saksnummer.value)
             assertThat(request.kildeReferanse).isEqualTo(sak.saksnummer.value)
             assertThat(request.dvhReferanse).isEqualTo(sak.saksnummer.value)
