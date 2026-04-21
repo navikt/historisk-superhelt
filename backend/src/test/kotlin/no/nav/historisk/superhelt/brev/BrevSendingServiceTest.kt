@@ -15,7 +15,12 @@ import no.nav.historisk.superhelt.test.WithSaksbehandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.inOrder
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 
@@ -301,7 +306,7 @@ class BrevSendingServiceTest {
         val endringslogg = endringsloggService.findBySak(sak.saksnummer)
         assertThat(endringslogg).anySatisfy { linje ->
             assertThat(linje.endring).contains("arkivert")
-            assertThat(linje.endring).contains("mangler adresse")
+            assertThat(linje.beskrivelse).contains("mangler adresse")
         }
     }
 
