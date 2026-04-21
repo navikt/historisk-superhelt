@@ -5,7 +5,11 @@ import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.infrastruktur.validation.createValidationErrorMessage
 import org.slf4j.LoggerFactory
-import org.springframework.http.*
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import org.springframework.http.ProblemDetail
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.web.ErrorResponseException
@@ -13,7 +17,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.client.RestClientResponseException
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
@@ -76,17 +79,6 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
         request: WebRequest): ResponseEntity<in Any>? {
         log.info("Error: {} returning:  {}", ex.javaClass.simpleName, ex.message)
         return super.handleErrorResponseException(ex, headers, status, request)
-    }
-
-
-    @ExceptionHandler(RestClientResponseException::class)
-    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    fun handleRestClientResponseException(ex: RestClientResponseException): ProblemDetail {
-        val detail = "Feil mot eksternt API: HTTP ${ex.statusCode}. ${ex.responseBodyAsString}"
-        log.error("Feil mot eksternt API. Return 502. {}", detail, ex)
-        val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY, detail)
-        problemDetail.title = ex.javaClass.simpleName
-        return problemDetail
     }
 
     @ExceptionHandler(AccessDeniedException::class)

@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.klage.config
 
-import no.nav.historisk.superhelt.infrastruktur.http.RequestBodyLoggingInterceptor
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
@@ -28,10 +27,6 @@ class KabalConfig(
             .baseUrl(properties.url)
             .requestInterceptor(CallIdClientRequestInterceptor("X-Correlation-ID"))
             .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))
-
-        if (env != "prod") {
-            restClientBuilder.requestInterceptor(RequestBodyLoggingInterceptor())
-        }
 
         return KabalClient(restClientBuilder.build())
     }
