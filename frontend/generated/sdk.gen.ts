@@ -326,7 +326,7 @@ export const sendKlageTilKabal = <ThrowOnError extends boolean = false>(options:
 
 export const getKodeverkHjemler = <ThrowOnError extends boolean = false>(options?: Options<GetKodeverkHjemlerData, ThrowOnError>) => (options?.client ?? client).get<GetKodeverkHjemlerResponses, GetKodeverkHjemlerErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/sak/kodeverk/hjemler',
+    url: '/api/klage/kodeverk/hjemler',
     ...options
 });
 

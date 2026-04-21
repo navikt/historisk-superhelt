@@ -1,0 +1,362 @@
+import type { HjemmelDto } from "@generated";
+import { getKodeverkHjemlerOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
+import { CheckmarkCircleIcon } from "@navikt/aksel-icons";
+import {
+    Alert,
+    BodyLong,
+    BodyShort,
+    Box,
+    Button,
+    DatePicker,
+    Dialog,
+    Heading,
+    HStack,
+    Select,
+    Tag,
+    Textarea,
+    useDatepicker,
+    VStack,
+} from "@navikt/ds-react";
+import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { useState } from "react";
+import { dateTilIsoDato, isoTilLokal } from "~/common/dato.utils";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
+import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+
+interface SendKlageProps {
+    readonly open: boolean;
+    readonly onOpenChange: (open: boolean) => void;
+}
+
+const MAX_KOMMENTAR_LENGDE = 2000;
+
+export function SendKlage({ open, onOpenChange }: SendKlageProps) {
+    const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
+    const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
+    const { data: hjemler } = useQuery({
+        ...getKodeverkHjemlerOptions(),
+        staleTime: Number.POSITIVE_INFINITY,
+        enabled: open,
+    });
+    const invalidateSakQuery = useInvalidateSakQuery();
+    const navigate = useNavigate();
+    const getStonadsTypeNavn = useStonadsTypeNavn();
+
+    const [valgtHjemmelId, setValgtHjemmelId] = useState<string>("");
+    const [kommentar, setKommentar] = useState<string>("");
+    const [hjemmelError, setHjemmelError] = useState<string | undefined>();
+    const [datoError, setDatoError] = useState<string | undefined>();
+    const [valgtDato, setValgtDato] = useState<Date | undefined>();
+    const [visBekreftelse, setVisBekreftelse] = useState(false);
+    const [klageSendt, setKlageSendt] = useState(false);
+
+    const { datepickerProps, inputProps } = useDatepicker({
+        toDate: new Date(),
+        onDateChange: (day) => {
+            setValgtDato(day);
+            setDatoError(undefined);
+        },
+    });
+
+    const sendKlage = useMutation({
+        ...sendKlageTilKabalMutation(),
+        onSuccess: () => {
+            setKlageSendt(true);
+            invalidateSakQuery(saksnummer);
+        },
+    });
+
+    const valgtHjemmel: HjemmelDto | undefined = Array.isArray(hjemler)
+        ? hjemler.find((h) => h.id === valgtHjemmelId)
+        : undefined;
+
+    const resetState = () => {
+        setValgtHjemmelId("");
+        setKommentar("");
+        setHjemmelError(undefined);
+        setDatoError(undefined);
+        setValgtDato(undefined);
+        setVisBekreftelse(false);
+        setKlageSendt(false);
+        sendKlage.reset();
+    };
+
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!nextOpen) resetState();
+        onOpenChange(nextOpen);
+    };
+
+    const validate = () => {
+        let valid = true;
+        if (!valgtHjemmelId) {
+            setHjemmelError("Du må velge en hjemmel");
+            valid = false;
+        } else {
+            setHjemmelError(undefined);
+        }
+        if (!valgtDato) {
+            setDatoError("Du må oppgi dato for når klagen ble mottatt");
+            valid = false;
+        } else {
+            setDatoError(undefined);
+        }
+        return valid;
+    };
+
+    const onVisBekreftelse = () => {
+        if (!validate()) return;
+        sendKlage.reset();
+        setVisBekreftelse(true);
+    };
+
+    const onBekreftOgSend = async () => {
+        await sendKlage.mutateAsync({
+            path: { saksnummer },
+            body: {
+                hjemmelId: valgtHjemmelId,
+                datoKlageMottatt: dateTilIsoDato(valgtDato) ?? "",
+                kommentar: kommentar.trim() || undefined,
+            },
+        });
+    };
+
+    let dialogTitle = "Send klage til Kabal";
+    if (klageSendt) dialogTitle = "Klage sendt til Kabal";
+    else if (visBekreftelse) dialogTitle = "Bekreft sending til Kabal";
+
+    return (
+        <Dialog open={open} onOpenChange={handleOpenChange}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg }}>
+                <Dialog.Header>
+                    <Dialog.Title>{dialogTitle}</Dialog.Title>
+                </Dialog.Header>
+
+                <Dialog.Body>
+                    {/* ── Step 3: Success ─────────────────────────────────────── */}
+                    {klageSendt && (
+                        <VStack gap="space-16">
+                            <HStack gap="space-8" align="center">
+                                <CheckmarkCircleIcon
+                                    fontSize="1.5rem"
+                                    style={{ color: "var(--a-green-600)" }}
+                                    aria-hidden
+                                />
+                                <BodyShort>Klagen ble oversendt til Kabal og er mottatt.</BodyShort>
+                            </HStack>
+
+                            <Alert variant="success">Klagen er registrert i Kabal.</Alert>
+
+                            <Box background="neutral-moderate" borderRadius="2" padding="space-16">
+                                <VStack gap="space-8">
+                                    <VStack gap="space-4">
+                                        <BodyShort weight="semibold">Sak</BodyShort>
+                                        <HStack gap="space-8" align="center">
+                                            <Tag variant="neutral" size="small">
+                                                {sak.saksnummer}
+                                            </Tag>
+                                            <BodyShort>{getStonadsTypeNavn(sak.type)}</BodyShort>
+                                        </HStack>
+                                    </VStack>
+                                    <VStack gap="space-4">
+                                        <BodyShort weight="semibold">Hjemmel</BodyShort>
+                                        <HStack gap="space-8" align="center">
+                                            <BodyShort>
+                                                {valgtHjemmel?.lovKildeNavn} – {valgtHjemmel?.spesifikasjon}
+                                            </BodyShort>
+                                            <Tag variant="neutral" size="small">
+                                                {valgtHjemmel?.id}
+                                            </Tag>
+                                        </HStack>
+                                    </VStack>
+                                </VStack>
+                            </Box>
+
+                            <HStack gap="space-8" justify="end">
+                                <Button type="button" variant="tertiary" onClick={() => handleOpenChange(false)}>
+                                    Lukk
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    onClick={() => {
+                                        handleOpenChange(false);
+                                        navigate({
+                                            to: "/sak/$saksnummer/oppsummering",
+                                            params: { saksnummer },
+                                        });
+                                    }}
+                                >
+                                    Gå til oppsummering
+                                </Button>
+                            </HStack>
+                        </VStack>
+                    )}
+
+                    {/* ── Step 2: Confirmation ─────────────────────────────────── */}
+                    {!klageSendt && visBekreftelse && (
+                        <VStack gap="space-16">
+                            <Alert variant="info">
+                                Kontroller at informasjonen nedenfor er korrekt før du sender klagen til Kabal.
+                            </Alert>
+
+                            <Box background="neutral-moderate" borderRadius="2" padding="space-16">
+                                <VStack gap="space-12">
+                                    <VStack gap="space-4">
+                                        <BodyShort weight="semibold">Sak</BodyShort>
+                                        <HStack gap="space-8" align="center">
+                                            <Tag variant="neutral" size="small">
+                                                {sak.saksnummer}
+                                            </Tag>
+                                            <BodyShort>{getStonadsTypeNavn(sak.type)}</BodyShort>
+                                        </HStack>
+                                    </VStack>
+                                    <VStack gap="space-4">
+                                        <BodyShort weight="semibold">Dato klage mottatt</BodyShort>
+                                        <BodyShort>{isoTilLokal(valgtDato?.toISOString() ?? "")}</BodyShort>
+                                    </VStack>
+                                    <VStack gap="space-4">
+                                        <BodyShort weight="semibold">Hjemmel</BodyShort>
+                                        <HStack gap="space-8" align="center">
+                                            <BodyShort>
+                                                {valgtHjemmel?.lovKildeNavn} – {valgtHjemmel?.spesifikasjon}
+                                            </BodyShort>
+                                            <Tag variant="neutral" size="small">
+                                                {valgtHjemmel?.id}
+                                            </Tag>
+                                        </HStack>
+                                    </VStack>
+                                    {kommentar.trim() && (
+                                        <VStack gap="space-4">
+                                            <BodyShort weight="semibold">Kommentar</BodyShort>
+                                            <BodyLong>{kommentar.trim()}</BodyLong>
+                                        </VStack>
+                                    )}
+                                </VStack>
+                            </Box>
+
+                            {sendKlage.isError && (
+                                <Alert variant="error">
+                                    <Heading size="xsmall" spacing>
+                                        Sending til Kabal feilet
+                                    </Heading>
+                                    <BodyShort>
+                                        {sendKlage.error?.detail ??
+                                            "En ukjent feil oppstod. Prøv igjen eller kontakt support."}
+                                    </BodyShort>
+                                </Alert>
+                            )}
+
+                            <HStack gap="space-8" justify="end">
+                                <Button
+                                    type="button"
+                                    variant="tertiary"
+                                    onClick={() => setVisBekreftelse(false)}
+                                    disabled={sendKlage.isPending}
+                                >
+                                    Tilbake
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    onClick={onBekreftOgSend}
+                                    loading={sendKlage.isPending}
+                                >
+                                    Bekreft og send til Kabal
+                                </Button>
+                            </HStack>
+                        </VStack>
+                    )}
+
+                    {/* ── Step 1: Form ─────────────────────────────────────────── */}
+                    {!klageSendt && !visBekreftelse && (
+                        <VStack gap="space-16">
+                            <Box background="neutral-moderate" borderRadius="2" padding="space-12">
+                                <VStack gap="space-8">
+                                    <BodyShort weight="semibold">Sak</BodyShort>
+                                    <HStack gap="space-8" align="center">
+                                        <Tag variant="neutral" size="small">
+                                            {sak.saksnummer}
+                                        </Tag>
+                                        <BodyShort>{getStonadsTypeNavn(sak.type)}</BodyShort>
+                                    </HStack>
+                                </VStack>
+                            </Box>
+
+                            <DatePicker {...datepickerProps}>
+                                <DatePicker.Input {...inputProps} label="Dato klage mottatt" error={datoError} />
+                            </DatePicker>
+
+                            <VStack gap="space-8">
+                                <Select
+                                    label="Hjemmel"
+                                    description="Velg den lovhjemmelen klagen gjelder"
+                                    value={valgtHjemmelId}
+                                    onChange={(e) => {
+                                        setValgtHjemmelId(e.target.value);
+                                        setHjemmelError(undefined);
+                                    }}
+                                    error={hjemmelError}
+                                >
+                                    <option value="">– Velg hjemmel –</option>
+                                    {Array.isArray(hjemler) &&
+                                        hjemler.map((hjemmel) => (
+                                            <option key={hjemmel.id} value={hjemmel.id}>
+                                                {hjemmel.visningsnavn}
+                                            </option>
+                                        ))}
+                                </Select>
+
+                                {valgtHjemmel && (
+                                    <Box
+                                        background="neutral-soft"
+                                        borderRadius="2"
+                                        borderColor="neutral-subtle"
+                                        borderWidth="1"
+                                        padding="space-12"
+                                    >
+                                        <VStack gap="space-4">
+                                            <BodyShort weight="semibold">Valgt hjemmel</BodyShort>
+                                            <BodyShort>
+                                                {valgtHjemmel.lovKildeNavn} – {valgtHjemmel.spesifikasjon}
+                                            </BodyShort>
+                                            <Tag variant="neutral" size="small">
+                                                {valgtHjemmel.id}
+                                            </Tag>
+                                        </VStack>
+                                    </Box>
+                                )}
+                            </VStack>
+
+                            <Textarea
+                                label="Kommentar (valgfri)"
+                                description="Eventuell tilleggsinformasjon til Kabal"
+                                value={kommentar}
+                                onChange={(e) => setKommentar(e.target.value)}
+                                maxLength={MAX_KOMMENTAR_LENGDE}
+                                rows={4}
+                            />
+
+                            <HStack gap="space-8" justify="end">
+                                <Button type="button" variant="tertiary" onClick={() => handleOpenChange(false)}>
+                                    Avbryt
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    onClick={onVisBekreftelse}
+                                    disabled={!sak.rettigheter.includes("SEND_KLAGE")}
+                                >
+                                    Neste
+                                </Button>
+                            </HStack>
+                        </VStack>
+                    )}
+                </Dialog.Body>
+            </Dialog.Popup>
+        </Dialog>
+    );
+}
+

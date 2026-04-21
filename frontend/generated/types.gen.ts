@@ -1684,7 +1684,7 @@ export type GetKodeverkHjemlerData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/sak/kodeverk/hjemler';
+    url: '/api/klage/kodeverk/hjemler';
 };
 
 export type GetKodeverkHjemlerErrors = {

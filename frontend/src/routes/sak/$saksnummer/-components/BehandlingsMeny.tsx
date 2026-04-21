@@ -9,13 +9,13 @@ import {
     TrashIcon,
 } from "@navikt/aksel-icons";
 import { ActionMenu, Button } from "@navikt/ds-react";
-import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import type { RettighetType } from "~/common/sak/sak.types";
 import { Feilregistrer } from "./Feilregistrer";
 import { FritekstBrev } from "./Fritekstbrev";
 import { Gjenapne } from "./Gjenapne";
 import { Henlegg } from "./Henlegg";
+import { SendKlage } from "./SendKlage";
 import { Tilbakestill } from "./Tilbakestill";
 
 interface SakMenyProps {
@@ -29,7 +29,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
     const [openGjenapne, setOpenGjenapne] = useState(false);
     const [openTilbakestill, setOpenTilbakestill] = useState(false);
     const [openFritekstbrev, setOpenFritekstbrev] = useState(false);
-    const navigate = useNavigate();
+    const [openSendKlage, setOpenSendKlage] = useState(false);
 
     return (
         <>
@@ -81,14 +81,10 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                             Gjenåpne sak
                         </ActionMenu.Item>
                         <ActionMenu.Item
-                            onSelect={() =>
-                                navigate({
-                                    to: "/sak/$saksnummer/sendklage",
-                                    params: { saksnummer: sak.saksnummer },
-                                })
-                            }
+                            onSelect={() => setOpenSendKlage(true)}
                             disabled={!harRettighet("SEND_KLAGE")}
                             icon={<PaperplaneIcon aria-hidden />}
+                            aria-haspopup="dialog"
                         >
                             Send klage til Kabal
                         </ActionMenu.Item>
@@ -114,6 +110,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
             {openGjenapne && <Gjenapne open={openGjenapne} onOpenChange={setOpenGjenapne} />}
             {openTilbakestill && <Tilbakestill open={openTilbakestill} onOpenChange={setOpenTilbakestill} />}
             {openFritekstbrev && <FritekstBrev open={openFritekstbrev} onOpenChange={setOpenFritekstbrev} />}
+            {openSendKlage && <SendKlage open={openSendKlage} onOpenChange={setOpenSendKlage} />}
         </>
     );
 }
