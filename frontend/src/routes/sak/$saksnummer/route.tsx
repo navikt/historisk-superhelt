@@ -1,4 +1,5 @@
-import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
+import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -15,6 +16,7 @@ import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn, kortSaksnummer } from "~/common/string.utils";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
+import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
 import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
 import { getSakOptions } from "./-api/sak.query";
@@ -24,6 +26,7 @@ export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
     loader: ({ params: { saksnummer }, context }) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer));
+        context.queryClient.ensureQueryData(finnJournalposterForSakOptions({ path: { saksnummer } }));
     },
     errorComponent: ({ error }) => {
         return <ErrorAlert error={error} />;
@@ -34,6 +37,9 @@ function SakLayout() {
     const { saksnummer } = Route.useParams();
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
+    const { data: journalposter } = useSuspenseQuery(finnJournalposterForSakOptions({ path: { saksnummer } }));
+
+    const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
     useEffect(() => {
         document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;
@@ -107,8 +113,17 @@ function SakLayout() {
                         <SakOppsummering sak={sak} />
                         <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
                             <Tabs.List>
-                                <Tabs.Tab value="dokumenter" label="Dokumenter" icon={<FilePdfIcon aria-hidden />} />
+                                <Tabs.Tab
+                                    value="dokumenter"
+                                    label={`Dokumenter (${antallDokumenter})`}
+                                    icon={<FilePdfIcon aria-hidden />}
+                                />
                                 <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
+                                <Tabs.Tab
+                                    value="endringslogg"
+                                    label="Endringslogg"
+                                    icon={<ClockDashedIcon aria-hidden />}
+                                />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
                                 <Box width="100%" height="100%" paddingBlock="space-16 space-0">
@@ -118,6 +133,11 @@ function SakLayout() {
                             <Tabs.Panel value="historikk">
                                 <Box width="100%" height="6rem" paddingBlock="space-16 space-0">
                                     <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
+                                </Box>
+                            </Tabs.Panel>
+                            <Tabs.Panel value="endringslogg">
+                                <Box width="100%" paddingBlock="space-16 space-0">
+                                    <SakEndringer sak={sak} />
                                 </Box>
                             </Tabs.Panel>
                         </Tabs>
