@@ -11,4 +11,6 @@ interface SakJpaRepository : JpaRepository<SakJpaEntity, Long> {
     fun findSakEntitiesByFnr(fnr: FolkeregisterIdent): List<SakJpaEntity>
 
     fun countByTypeAndStatus(type: StonadsType, status: SakStatus): Long
+
+    fun findByStatusNotIn(statuses: List<SakStatus>): List<SakJpaEntity>
 }

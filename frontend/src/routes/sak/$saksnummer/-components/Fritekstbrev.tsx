@@ -1,6 +1,5 @@
 import { sendBrevMutation } from "@generated/@tanstack/react-query.gen";
 import { Dialog, ErrorSummary } from "@navikt/ds-react";
-import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
@@ -16,10 +15,11 @@ interface FritekstBrevProps {
 export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
     const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
-    const hasSaksbehandleRettighet = sak.rettigheter.includes("SAKSBEHANDLE");
+    const kanSendeBrev =
+        sak.rettigheter.includes("SAKSBEHANDLE") || sak.rettigheter.includes("SEND_KLAGE");
     const { data: brev } = useQuery({
         ...getOrCreateBrevOptions(saksnummer, "FRITEKSTBREV", "BRUKER"),
-        enabled: open && hasSaksbehandleRettighet,
+        enabled: open,
     });
     const invalidateSakQuery = useInvalidateSakQuery();
 
@@ -40,7 +40,7 @@ export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg }}>
+            <Dialog.Popup closeOnOutsideClick={false}>
                 <Dialog.Header>
                     <Dialog.Title>Skriv brev til bruker</Dialog.Title>
                 </Dialog.Header>
@@ -50,11 +50,11 @@ export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
                         brevId={brev?.uuid}
                         buttonText="Send brev"
                         onSuccess={onBrevSend}
-                        readOnly={!hasSaksbehandleRettighet}
+                        readOnly={!kanSendeBrev}
                     />
                     {hasError && (
-                        <ErrorSummary>
-                            {sendBrev.error && <ErrorSummary.Item>{sendBrev?.error?.detail}</ErrorSummary.Item>}
+                        <ErrorSummary heading="Sending av brev feilet">
+                            <ErrorSummary.Item>{sendBrev.error?.detail ?? "En ukjent feil oppstod"}</ErrorSummary.Item>
                         </ErrorSummary>
                     )}
                 </Dialog.Body>

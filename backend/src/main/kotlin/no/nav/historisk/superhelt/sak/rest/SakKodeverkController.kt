@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/sak/kodeverk")
 class SakKodeverkController {
 
+
     @Operation(operationId = "getKodeverkStonadType",)
     @GetMapping("stonadtyper")
     fun stonadstypeKodeverk(): List<StonadsTypeDto> {

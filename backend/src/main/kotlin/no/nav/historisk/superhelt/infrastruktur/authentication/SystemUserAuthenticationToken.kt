@@ -21,7 +21,8 @@ class SystemUserAuthenticationToken(
     val authenticatedUser= AuthenticatedUser(
         navIdent = NavIdent(name?: "system"),
         userName = name?: "system",
-        jwt = null
+        jwt = null,
+        systemUser = true
     )
 
 }

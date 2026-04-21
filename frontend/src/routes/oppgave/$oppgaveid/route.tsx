@@ -6,6 +6,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
 import { PdfViewer } from "~/common/pdf/PdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
+import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
 import { SakshistorikkJournalTabell } from "~/routes/oppgave/$oppgaveid/-components/SakshistorikkJournalTabell";
 import { hentJournalpostMetadataQuery } from "./-api/journalpost.query";
 
@@ -25,6 +26,8 @@ function OppgaveLayout() {
     const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
+    const { sakshistorikkLabel } = useSakshistorikkAntall(oppgave.maskertPersonIdent, "aapen");
+
     return (
         <>
             <PersonHeader maskertPersonId={oppgave.maskertPersonIdent} />
@@ -36,7 +39,11 @@ function OppgaveLayout() {
                     <Tabs defaultValue="dokumenter">
                         <Tabs.List>
                             <Tabs.Tab value="dokumenter" label={dokumenterLabel} icon={<FilePdfIcon aria-hidden />} />
-                            <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
+                            <Tabs.Tab
+                                value="historikk"
+                                label={sakshistorikkLabel}
+                                icon={<TasklistIcon aria-hidden />}
+                            />
                         </Tabs.List>
                         <Tabs.Panel value="dokumenter">
                             <PdfViewer journalpostId={journalpostId} />
