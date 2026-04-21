@@ -14,7 +14,7 @@ class SendSakV4RequestTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -50,7 +50,7 @@ class SendSakV4RequestTest {
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
             prosessfullmektig = prosessfullmektig,
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -148,11 +148,11 @@ class SendSakV4RequestTest {
     @Test
     fun `Fagsak should store fagsakId and fagsystem`() {
         // Forbered og utfør
-        val fagsak = Fagsak(fagsakId = "123456", fagsystem = "K9")
+        val fagsak = Fagsak(fagsakId = "123456", fagsystem = "SUPERHELT")
 
         // Verifiser
         assertThat(fagsak.fagsakId).isEqualTo("123456")
-        assertThat(fagsak.fagsystem).isEqualTo("K9")
+        assertThat(fagsak.fagsystem).isEqualTo("SUPERHELT")
     }
 
     @Test
@@ -165,7 +165,7 @@ class SendSakV4RequestTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -191,7 +191,7 @@ class SendSakV4RequestTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -215,7 +215,7 @@ class SendSakV4RequestTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",

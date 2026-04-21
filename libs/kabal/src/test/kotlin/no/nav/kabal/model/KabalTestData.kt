@@ -49,7 +49,7 @@ object KabalTestData {
                     land = "Norge"
                 )
             ),
-            fagsak = Fagsak("123456", "HJE"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -65,7 +65,7 @@ object KabalTestData {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "HJE"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -93,7 +93,7 @@ object KabalTestData {
                     land = "Norge"
                 )
             ),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             dvhReferanse = "dvh-ref-456",
             hjemler = hjemler,
@@ -138,7 +138,7 @@ object KabalTestData {
 
     fun createFagsak(
         fagsakId: String = "123456",
-        fagsystem: String = "K9"
+        fagsystem: String = "SUPERHELT"
     ): Fagsak {
         return Fagsak(fagsakId = fagsakId, fagsystem = fagsystem)
     }
