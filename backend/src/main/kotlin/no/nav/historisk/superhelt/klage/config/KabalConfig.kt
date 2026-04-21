@@ -1,10 +1,9 @@
 package no.nav.historisk.superhelt.klage.config
 
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
-import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.token.M2mNaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.kabal.KabalClient
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -13,9 +12,7 @@ import org.springframework.web.client.RestClient
 
 @Configuration
 @EnableConfigurationProperties(KabalProperties::class)
-class KabalConfig(
-    @Value("\${APP_ENV:local}") private val env: String,
-) {
+class KabalConfig{
 
     @Bean
     fun kabalClient(
@@ -26,7 +23,7 @@ class KabalConfig(
         val restClientBuilder = builder
             .baseUrl(properties.url)
             .requestInterceptor(CallIdClientRequestInterceptor("X-Correlation-ID"))
-            .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(M2mNaisTokenClientRequestInterceptor(tokenService, properties.audience))
 
         return KabalClient(restClientBuilder.build())
     }
