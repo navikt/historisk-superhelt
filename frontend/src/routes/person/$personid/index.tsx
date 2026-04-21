@@ -31,7 +31,7 @@ function PersonPage() {
             <Page.Block width="2xl">
                 <VStack paddingBlock="space-24" gap="space-32">
                     <RfcErrorBoundary key={personid}>
-                        <Heading size="large">Personside</Heading>
+                        <Heading size="large">Saksoversikt for {person.navn}</Heading>
                         <Card>
                             <Heading size="medium">Under behandling</Heading>
                             <OppgaverForPersonTabell maskertPersonIdent={personid} />
