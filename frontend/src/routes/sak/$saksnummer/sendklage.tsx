@@ -1,6 +1,5 @@
 import type { HjemmelDto } from "@generated";
 import { getKodeverkHjemlerOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
-import { CheckmarkCircleIcon } from "@navikt/aksel-icons";
 import {
     Alert,
     BodyLong,
@@ -108,10 +107,7 @@ function SendKlagePage() {
     if (klageSendt) {
         return (
             <VStack gap="space-32">
-                <HStack gap="space-8" align="center">
-                    <CheckmarkCircleIcon fontSize="2rem" style={{ color: "var(--a-green-600)" }} />
-                    <Heading size="medium">Klage sendt til Kabal</Heading>
-                </HStack>
+                <Heading size="medium">Klage sendt til Kabal</Heading>
 
                 <Alert variant="success">Klagen ble oversendt til Kabal og er mottatt.</Alert>
 
