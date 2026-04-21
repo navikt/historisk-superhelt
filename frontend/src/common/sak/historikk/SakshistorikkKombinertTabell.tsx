@@ -187,8 +187,12 @@ export function SakshistorikkKombinertTabell({
 
     function MediumRadDetaljer(rad: HistorikkRad) {
         return (
-            <Table.ExpandableRow key={rad.id} content={<SakshistorikkDetaljer {...rad} />}>
-                <Table.HeaderCell>{rad.sak?.saksnummer ?? "-"}</Table.HeaderCell>
+            <Table.ExpandableRow
+                key={rad.id}
+                content={<SakshistorikkDetaljer {...rad} />}
+                style={{ textDecorationLine: rad.strekedGjennom ? "line-through" : "none" }}
+            >
+                <Table.HeaderCell scope="row">{rad.sak?.saksnummer ?? "-"}</Table.HeaderCell>
                 <Table.DataCell>
                     <BodyShort>{rad.kategori}</BodyShort>
                 </Table.DataCell>
