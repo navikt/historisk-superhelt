@@ -3,10 +3,9 @@
 
 MVN ?= $(shell command -v mvnd >/dev/null 2>&1 && echo mvnd || echo mvn) # Bruk mvnd hvis tilgjengelig, ellers fallback til mvn
 
-# Prosjektet krever Java 25. Sett JAVA_HOME via java_home (macOS) dersom det
-# ikke allerede er satt, slik at Maven og den forgrenede Surefire-prosessen
-# bruker riktig JDK og unngår "class file version"-feil.
-export JAVA_HOME ?= $(shell /usr/libexec/java_home -v 25 2>/dev/null)
+# Prosjektet krever Java 25.
+# Sett JAVA_HOME via sdkman (`sdk use java 25-...`) eller tilsvarende verktøy før du kjører make.
+# Makefilen overstyrer ikke JAVA_HOME – bruk sdkman, jenv eller lignende til å styre aktiv JDK.
 
 help: ## Vis tilgjengelige targets og beskrivelse
 	@echo "Bruk: make [target]"
