@@ -24,8 +24,6 @@ class OppgaveConfig {
 
         return OppgaveClient(restClient)
     }
-
-
 }
 
 @ConfigurationProperties(prefix = "app.oppgave")

@@ -31,8 +31,15 @@ class NaisTokenService(
     /** Henter token for denne applikajsonen */
     fun m2mToken(target: String): String {
         return texas.m2mToken(target).access_token
-
     }
 
-
+    /** Gir obo token for vanlige brukere, m2m token for systembrukere */
+    fun oboOrM2mToken(target: String): String {
+        if (getAuthenticatedUser().systemUser) {
+            return m2mToken(target)
+        }
+        return oboToken(target)
+    }
 }
+
+

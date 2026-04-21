@@ -15,6 +15,7 @@ import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PostAuthorize
+import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -96,6 +97,8 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     }
 
 
+
+
     private fun getSakEntity(saksnummer: Saksnummer): SakJpaEntity? {
         return jpaRepository.findByIdOrNull(saksnummer.id)
     }
@@ -117,6 +120,12 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     fun findSaker(fnr: FolkeregisterIdent): List<Sak> {
         return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
     }
+
+    @PreAuthorize("hasAuthority('READ')")
+    @PostFilter("@tilgangsmaskin.harTilgang(filterObject.fnr)")
+    internal fun finnAapneSaker(): List<Sak> =
+        jpaRepository.findByStatusNotIn(listOf(SakStatus.FERDIG, SakStatus.FEILREGISTRERT))
+            .map { it.toDomain() }
 }
 
 data class OpprettSakDto(
