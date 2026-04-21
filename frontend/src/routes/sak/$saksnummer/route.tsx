@@ -11,6 +11,7 @@ import { PersonHeader } from "~/common/person/PersonHeader";
 import { finnPersonQuery } from "~/common/person/person.query";
 import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
 import { StepType } from "~/common/process-menu/StepType";
+import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
 import type { TilstandStatusType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn, kortSaksnummer } from "~/common/string.utils";
@@ -40,6 +41,8 @@ function SakLayout() {
     const { data: journalposter } = useSuspenseQuery(finnJournalposterForSakOptions({ path: { saksnummer } }));
 
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
+
+    const { sakshistorikkLabel } = useSakshistorikkAntall(sak.maskertPersonIdent, "ferdig");
 
     useEffect(() => {
         document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;
@@ -118,7 +121,11 @@ function SakLayout() {
                                     label={`Dokumenter (${antallDokumenter})`}
                                     icon={<FilePdfIcon aria-hidden />}
                                 />
-                                <Tabs.Tab value="historikk" label="Sakshistorikk" icon={<TasklistIcon aria-hidden />} />
+                                <Tabs.Tab
+                                    value="historikk"
+                                    label={sakshistorikkLabel}
+                                    icon={<TasklistIcon aria-hidden />}
+                                />
                                 <Tabs.Tab
                                     value="endringslogg"
                                     label="Endringslogg"

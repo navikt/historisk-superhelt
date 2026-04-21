@@ -1,20 +1,22 @@
-import type {Sak} from "@generated";
+import type { Sak } from "@generated";
 import {
     ArrowUndoIcon,
     ChevronDownIcon,
     EnvelopeClosedIcon,
     GavelIcon,
     PadlockUnlockedIcon,
+    PaperplaneIcon,
     TrashIcon,
 } from "@navikt/aksel-icons";
-import {ActionMenu, Button} from "@navikt/ds-react";
-import {useState} from "react";
-import type {RettighetType} from "~/common/sak/sak.types";
-import {Feilregistrer} from "./Feilregistrer";
-import {FritekstBrev} from "./Fritekstbrev";
-import {Gjenapne} from "./Gjenapne";
-import {Henlegg} from "./Henlegg";
-import {Tilbakestill} from "./Tilbakestill";
+import { ActionMenu, Button } from "@navikt/ds-react";
+import { useState } from "react";
+import type { RettighetType } from "~/common/sak/sak.types";
+import { Feilregistrer } from "./Feilregistrer";
+import { FritekstBrev } from "./Fritekstbrev";
+import { Gjenapne } from "./Gjenapne";
+import { Henlegg } from "./Henlegg";
+import { SendKlage } from "./SendKlage";
+import { Tilbakestill } from "./Tilbakestill";
 
 interface SakMenyProps {
     sak: Sak;
@@ -27,6 +29,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
     const [openGjenapne, setOpenGjenapne] = useState(false);
     const [openTilbakestill, setOpenTilbakestill] = useState(false);
     const [openFritekstbrev, setOpenFritekstbrev] = useState(false);
+    const [openSendKlage, setOpenSendKlage] = useState(false);
 
     return (
         <>
@@ -77,11 +80,19 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                         >
                             Gjenåpne sak
                         </ActionMenu.Item>
+                        <ActionMenu.Item
+                            onSelect={() => setOpenSendKlage(true)}
+                            disabled={!harRettighet("SEND_KLAGE")}
+                            icon={<PaperplaneIcon aria-hidden />}
+                            aria-haspopup="dialog"
+                        >
+                            Send klage til Kabal
+                        </ActionMenu.Item>
                     </ActionMenu.Group>
                     <ActionMenu.Group label={"Brev"}>
                         <ActionMenu.Item
                             onSelect={() => setOpenFritekstbrev(true)}
-                            disabled={!harRettighet("SAKSBEHANDLE")}
+                            disabled={!harRettighet("SAKSBEHANDLE") && !harRettighet("SEND_KLAGE")}
                             icon={<EnvelopeClosedIcon aria-hidden />}
                             aria-haspopup="dialog"
                         >
@@ -99,6 +110,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
             {openGjenapne && <Gjenapne open={openGjenapne} onOpenChange={setOpenGjenapne} />}
             {openTilbakestill && <Tilbakestill open={openTilbakestill} onOpenChange={setOpenTilbakestill} />}
             {openFritekstbrev && <FritekstBrev open={openFritekstbrev} onOpenChange={setOpenFritekstbrev} />}
+            {openSendKlage && <SendKlage open={openSendKlage} onOpenChange={setOpenSendKlage} />}
         </>
     );
 }

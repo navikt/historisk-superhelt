@@ -10,15 +10,21 @@ object KabalTestData {
         sakenGjelderIdent: String = "12345678901",
         klagerIdent: String = "12345678901",
         fagsakId: String = "123456",
-        fagsystem: String = "K9",
+        fagsystem: String = "HJE",
+        kildeReferanse: String = "kilde-ref-123",
+        forrigeBehandlendeEnhet: String = "4201",
+        ytelse: String = "HEL_HEL",
         kommentar: String? = null,
-        hjemler: List<Hjemmel> = emptyList()
+        hjemler: List<String> = emptyList()
     ): SendSakV4Request {
         return SendSakV4Request(
             type = type,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, sakenGjelderIdent)),
             klager = Klager(Ident(IdentType.PERSON, klagerIdent)),
             fagsak = Fagsak(fagsakId, fagsystem),
+            kildeReferanse = kildeReferanse,
+            forrigeBehandlendeEnhet = forrigeBehandlendeEnhet,
+            ytelse = ytelse,
             kommentar = kommentar,
             hjemler = hjemler
         )
@@ -43,7 +49,10 @@ object KabalTestData {
                     land = "Norge"
                 )
             ),
-            fagsak = Fagsak("123456", "K9")
+            fagsak = Fagsak("123456", "SUPERHELT"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HEL_HEL",
         )
     }
 
@@ -56,14 +65,17 @@ object KabalTestData {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
+            kildeReferanse = "kilde-ref-123",
+            forrigeBehandlendeEnhet = "4201",
+            ytelse = "HEL_HEL",
             tilknyttedeJournalposter = journalposter
         )
     }
 
     fun createSendSakV4RequestWithAllFields(
         type: SakType = SakType.KLAGE,
-        hjemler: List<Hjemmel> = listOf(Hjemmel.FVL_11, Hjemmel.FVL_12),
+        hjemler: List<String> = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id),
         ytelse: String = "OMS_OMP"
     ): SendSakV4Request {
         return SendSakV4Request(
@@ -81,7 +93,7 @@ object KabalTestData {
                     land = "Norge"
                 )
             ),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             dvhReferanse = "dvh-ref-456",
             hjemler = hjemler,
@@ -100,19 +112,6 @@ object KabalTestData {
         )
     }
 
-    fun createSendSakV4Response(
-        behandlingId: String = "behandling-123",
-        mottattDato: String = "2026-03-06T10:00:00",
-        journalpostId: String? = "12345",
-        feilmeldinger: List<String> = emptyList()
-    ): SendSakV4Response {
-        return SendSakV4Response(
-            behandlingId = behandlingId,
-            mottattDato = mottattDato,
-            journalpostId = journalpostId,
-            feilmeldinger = feilmeldinger
-        )
-    }
 
     fun createIdent(
         type: IdentType = IdentType.PERSON,
@@ -139,7 +138,7 @@ object KabalTestData {
 
     fun createFagsak(
         fagsakId: String = "123456",
-        fagsystem: String = "K9"
+        fagsystem: String = "SUPERHELT"
     ): Fagsak {
         return Fagsak(fagsakId = fagsakId, fagsystem = fagsystem)
     }
@@ -151,4 +150,3 @@ object KabalTestData {
         return TilknyttetJournalpost(type = type, journalpostId = journalpostId)
     }
 }
-

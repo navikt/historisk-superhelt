@@ -10,6 +10,7 @@ app:
     url: ${EREG_URL}
     audience: ${EREG_AUDIENCE}
 
+
 info:
   nais:
     app: ${NAIS_APP_NAME:superhelt}
