@@ -3,8 +3,8 @@ package no.nav.historisk.superhelt.dokarkiv
 import no.nav.common.types.*
 import no.nav.dokarkiv.*
 import no.nav.dokdist.DistribuerJournalpostRequest
-import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
+import no.nav.dokdist.DokdistRespons
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
@@ -74,7 +74,7 @@ class DokarkivService(
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
-    fun distribuerBrev(sak: Sak, brev: Brev): DistribuerJournalpostResponse {
+    fun distribuerBrev(sak: Sak, brev: Brev): DokdistRespons {
         val journalPostId = brev.journalpostId
             ?: throw IllegalStateException("Kan ikke distribuere brev uten journalpostId. BrevId=${brev.uuid}")
 
@@ -90,7 +90,6 @@ class DokarkivService(
                 distribusjonstidspunkt = DistribuerJournalpostRequest.Distribusjonstidspunkt.UMIDDELBART
             )
         )
-
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
