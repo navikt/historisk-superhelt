@@ -31,8 +31,8 @@ class OppgaveGjenopprettingService(
                 val oppgaveType = OppgaveTypeMapper.fromSakstatus(sak.status) ?: continue
                 runCatching {
                     if (!harAapenOppgave(sak, oppgaveType)) {
-                        oppgaveService.opprettOppgave(oppgaveType, sak)
-                        logger.info("Gjenopprettet oppgave ${oppgaveType} for sak $sak")
+                        oppgaveService.opprettOppgave(type = oppgaveType, sak = sak, beskrivelse = "Gjenopprettet oppgave i Superhelt for sak ${sak.saksnummer}")
+                        logger.info("Gjenopprettet oppgave $oppgaveType for sak ${sak.saksnummer}")
                         gjenopprettet.add(sak.saksnummer)
                     }
                 }.onFailure { e ->
@@ -55,7 +55,11 @@ class OppgaveGjenopprettingService(
         return oppgaveIds.any { oppgaveId ->
             runCatching {
                 val oppgave = oppgaveClient.hentOppgave(oppgaveId)
-                oppgave != null && oppgave.status != OppgaveDto.Status.FERDIGSTILT
+                oppgave != null && oppgave.status in arrayOf(
+                    OppgaveDto.Status.OPPRETTET,
+                    OppgaveDto.Status.AAPNET,
+                    OppgaveDto.Status.UNDER_BEHANDLING
+                )
             }.getOrElse { e ->
                 logger.warn(
                     "Klarte ikke hente oppgave {} for sak {} — antar åpen",
@@ -63,7 +67,7 @@ class OppgaveGjenopprettingService(
                     sak.saksnummer,
                     e
                 )
-                true // Trygt default: anta åpen hvis Gosys ikke svarer
+                true //  anta åpen hvis Gosys ikke svarer
             }
         }
     }
