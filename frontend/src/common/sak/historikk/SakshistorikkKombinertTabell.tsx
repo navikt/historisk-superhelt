@@ -139,6 +139,13 @@ export function SakshistorikkKombinertTabell({
             <HGrid gap="space-16" columns={"repeat(auto-fit, minmax(10rem, 1fr))"}>
                 <VStack>
                     <Label size="small" textColor="subtle">
+                        Saksnummer
+                    </Label>
+                    <BodyShort size="small">{rad.sak?.saksnummer ?? "-"}</BodyShort>
+                </VStack>
+
+                <VStack>
+                    <Label size="small" textColor="subtle">
                         Beskrivelse
                     </Label>
                     <BodyShort size="small">{rad.beskrivelse ?? "-"}</BodyShort>
@@ -146,22 +153,18 @@ export function SakshistorikkKombinertTabell({
 
                 <VStack>
                     <Label size="small" textColor="subtle">
-                        Dato
-                    </Label>
-                    <BodyShort size="small">{isoTilLokal(rad.dato)}</BodyShort>
-                </VStack>
-                <VStack>
-                    <Label size="small" textColor="subtle">
                         Beløp
                     </Label>
                     <BodyShort size="small">{formatertValuta(rad.belop)}</BodyShort>
                 </VStack>
+
                 <VStack>
                     <Label size="small" textColor="subtle">
                         Saksbehandler
                     </Label>
                     <BodyShort size="small">{rad.sak?.saksbehandler.navn ?? "-"}</BodyShort>
                 </VStack>
+
                 {rad.sak && (
                     <VStack>
                         <Label size="small" textColor="subtle">
@@ -178,7 +181,7 @@ export function SakshistorikkKombinertTabell({
         return (
             <Table.Row>
                 <Table.ColumnHeader scope="col" aria-label="Vis mer" />
-                <SortableColumnHeader sortKey="id">Saksnr</SortableColumnHeader>
+                <SortableColumnHeader sortKey="id">Søknadsdato</SortableColumnHeader>
                 <SortableColumnHeader sortKey="kategori">Kategori</SortableColumnHeader>
                 <Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
             </Table.Row>
@@ -192,7 +195,7 @@ export function SakshistorikkKombinertTabell({
                 content={<SakshistorikkDetaljer {...rad} />}
                 style={{ textDecorationLine: rad.strekedGjennom ? "line-through" : "none" }}
             >
-                <Table.HeaderCell scope="row">{rad.sak?.saksnummer ?? "-"}</Table.HeaderCell>
+                <Table.HeaderCell scope="row">{isoTilLokal(rad.dato)}</Table.HeaderCell>
                 <Table.DataCell>
                     <BodyShort>{rad.kategori}</BodyShort>
                 </Table.DataCell>
@@ -220,7 +223,7 @@ export function SakshistorikkKombinertTabell({
                         <SortableColumnHeader sortKey="kategori">Kategori</SortableColumnHeader>
                         <Table.ColumnHeader scope="col">Beskrivelse</Table.ColumnHeader>
                         <Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
-                        <SortableColumnHeader sortKey="dato">Dato</SortableColumnHeader>
+                        <SortableColumnHeader sortKey="dato">Søknadsdato</SortableColumnHeader>
                         <SortableColumnHeader sortKey="belop">Beløp</SortableColumnHeader>
                         <Table.HeaderCell scope="col">Saksbehandler</Table.HeaderCell>
                         <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
