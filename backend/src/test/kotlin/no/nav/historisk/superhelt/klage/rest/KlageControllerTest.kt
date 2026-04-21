@@ -13,20 +13,26 @@ import no.nav.historisk.superhelt.test.WithMockJwtAuth
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.kabal.KabalClient
-import org.springframework.http.HttpStatus
-import org.springframework.web.client.HttpServerErrorException
 import no.nav.kabal.model.SendSakV4Request
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.http.HttpStatus
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import org.springframework.web.client.HttpServerErrorException
 import tools.jackson.databind.ObjectMapper
 import java.time.LocalDate
 
@@ -72,7 +78,7 @@ class KlageControllerTest {
             )
             val request = gyldigKlageRequest()
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), request))
+            assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.NO_CONTENT)
 
             verify(kabalClient).sendSakV4(any())
@@ -92,7 +98,7 @@ class KlageControllerTest {
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest(datoKlageMottatt)))
+            assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest(datoKlageMottatt)))
                 .hasStatus(HttpStatus.NO_CONTENT)
 
             val captor = argumentCaptor<SendSakV4Request>()
@@ -124,7 +130,7 @@ class KlageControllerTest {
                 "kommentar" to kommentar,
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), request))
+            assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.NO_CONTENT)
 
             val captor = argumentCaptor<SendSakV4Request>()
@@ -152,8 +158,8 @@ class KlageControllerTest {
                 null
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
-                .hasStatus(HttpStatus.BAD_GATEWAY)
+            assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))
+                .hasStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 
             val endringslogg = endringsloggService.findBySak(sak.saksnummer)
             assertThat(endringslogg).noneSatisfy { innslag ->
@@ -168,7 +174,7 @@ class KlageControllerTest {
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
+            assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))
                 .hasStatus(HttpStatus.BAD_REQUEST)
                 .bodyAsProblemDetail()
                 .satisfies({ assertThat(it?.detail).isNotBlank() })
@@ -187,7 +193,7 @@ class KlageControllerTest {
                 "datoKlageMottatt" to "2026-01-15",
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), request))
+            assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.BAD_REQUEST)
                 .bodyAsProblemDetail()
                 .satisfies({ assertThat(it?.detail).isNotBlank() })
@@ -205,7 +211,7 @@ class KlageControllerTest {
                 "datoKlageMottatt" to "2026-01-15",
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), request))
+            assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.BAD_REQUEST)
 
             verifyNoInteractions(kabalClient)
@@ -221,7 +227,7 @@ class KlageControllerTest {
                 "hjemmelId" to "FTRL_10_7I",
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), request))
+            assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.BAD_REQUEST)
 
             verifyNoInteractions(kabalClient)
@@ -249,8 +255,8 @@ class KlageControllerTest {
                 null
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
-                .hasStatus(HttpStatus.BAD_GATEWAY)
+            assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))
+                .hasStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .bodyAsProblemDetail()
                 .satisfies({
                     assertThat(it?.detail).contains("Kabal")
@@ -270,7 +276,7 @@ class KlageControllerTest {
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
+            assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))
                 .hasStatus(HttpStatus.FORBIDDEN)
                 .bodyAsProblemDetail()
                 .satisfies({ assertThat(it?.detail).isNotBlank() })
@@ -290,7 +296,7 @@ class KlageControllerTest {
                 SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
             )
 
-            assertThat(sendKlage(sak.saksnummer.value.toString(), gyldigKlageRequest()))
+            assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))
                 .hasStatus(HttpStatus.BAD_REQUEST)
 
             verifyNoInteractions(kabalClient)
