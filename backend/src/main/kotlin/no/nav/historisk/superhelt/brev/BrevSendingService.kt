@@ -51,13 +51,16 @@ class BrevSendingService(
             endringsloggService.logChange(
                 saksnummer = sak.saksnummer,
                 endringsType = EndringsloggType.SENDT_BREV,
-                endring = "Brev ${oppdatertBrev.tittel} sendt til ${brev.mottakerType.name.lowercase()}",
-            )
+                endring = "Brev sendt til ${brev.mottakerType.name.lowercase()}",
+                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert og distribuert til ${brev.mottakerType.name.lowercase()}",
+
+                )
         } else {
             endringsloggService.logChange(
                 saksnummer = sak.saksnummer,
                 endringsType = EndringsloggType.SENDT_BREV,
-                endring = "Brev ${oppdatertBrev.tittel} arkivert, men kunne ikke distribueres til ${brev.mottakerType.name.lowercase()}: ${distStatus.feilbegrunnelse}",
+                endring = "Brev kunne ikke sendes men er arkivert",
+                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert men kunne ikke distribueres til ${brev.mottakerType.name.lowercase()}.  Årsak: ${distStatus.feilbegrunnelse}"
             )
         }
     }
