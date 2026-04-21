@@ -3,8 +3,8 @@ package no.nav.historisk.superhelt.dokarkiv
 import no.nav.common.types.*
 import no.nav.dokarkiv.*
 import no.nav.dokdist.DistribuerJournalpostRequest
-import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.dokdist.DokdistClient
+import no.nav.dokdist.DokdistRespons
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
 import no.nav.historisk.superhelt.person.PersonService
@@ -140,7 +140,7 @@ class DokarkivServiceTest {
         val sak = SakTestData.sakUtenUtbetaling()
         val journalpostId = EksternJournalpostId("JP123")
         val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = journalpostId)
-        val expectedResponse = DistribuerJournalpostResponse(bestillingsId = "BEST123")
+        val expectedResponse = DokdistRespons(bestillingsId = "BEST123", sendtOk = true)
 
         whenever(dokdistClient.distribuerJournalpost(any())).thenReturn(expectedResponse)
 
