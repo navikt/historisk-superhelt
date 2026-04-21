@@ -22,8 +22,8 @@ export function SakshistorikkJournalTabell({ maskertPersonIdent }: Sakshistorikk
             infotrygdHistorikk={infotrygdHistorikk}
             isPending={isPending}
             error={error}
-            hideSaksbehandler={true}
             openInNewTab={true}
+            size="medium"
         />
     );
 }

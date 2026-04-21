@@ -1,7 +1,7 @@
-import type {OppgaveMedSak} from "@generated";
-import {Button, HStack} from "@navikt/ds-react";
-import {Link as RouterLink} from "@tanstack/react-router";
-import {FerdigstillOppgaveDialogButton} from "~/common/oppgave/FerdigstillOppgaveDialogButton";
+import type { OppgaveMedSak } from "@generated";
+import { Button, HStack } from "@navikt/ds-react";
+import { Link as RouterLink } from "@tanstack/react-router";
+import { FerdigstillOppgaveDialogButton } from "~/common/oppgave/FerdigstillOppgaveDialogButton";
 
 interface Props {
     oppgave: OppgaveMedSak;
@@ -9,7 +9,6 @@ interface Props {
 }
 
 export function OppgaveActionButton({ oppgave, saksbehandlerIdent }: Props) {
-
     const saksnummer = oppgave.saksnummer;
     const tildeltOppgave = !!saksbehandlerIdent && oppgave.tilordnetRessurs === saksbehandlerIdent;
 
@@ -19,7 +18,7 @@ export function OppgaveActionButton({ oppgave, saksbehandlerIdent }: Props) {
 
     const actionButton = (to: string, title: string) => {
         return (
-            <Button as={RouterLink} to={to} variant={tildeltOppgave ? "primary" : "secondary"} size="xsmall">
+            <Button as={RouterLink} to={to} variant={tildeltOppgave ? "primary" : "secondary"} size="small">
                 {title}
             </Button>
         );

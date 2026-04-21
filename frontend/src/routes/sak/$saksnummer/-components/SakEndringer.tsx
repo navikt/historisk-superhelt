@@ -1,10 +1,11 @@
-import type { Sak } from "@generated";
-import { hentEndringsloggForSakOptions } from "@generated/@tanstack/react-query.gen";
+import type {Sak} from "@generated";
+import {hentEndringsloggForSakOptions} from "@generated/@tanstack/react-query.gen";
 import {
     ArrowCirclepathReverseIcon,
     ArrowRightIcon,
     CheckmarkCircleIcon,
     ChevronRightIcon,
+    EnvelopeClosedIcon,
     HourglassBottomFilledIcon,
     SackKronerIcon,
     SparkLargeIcon,
@@ -13,10 +14,10 @@ import {
     TrashIcon,
     XMarkIcon,
 } from "@navikt/aksel-icons";
-import { BodyLong, Process } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { isoTilLokal } from "~/common/dato.utils";
-import type { EndringsloggType } from "~/routes/sak/$saksnummer/-types/endringslogg.types";
+import {BodyLong, Process} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {isoTilLokal} from "~/common/dato.utils";
+import type {EndringsloggType} from "~/routes/sak/$saksnummer/-types/endringslogg.types";
 
 interface SakEndringerProps {
     sak: Sak;
@@ -55,8 +56,7 @@ export default function SakEndringer({ sak }: SakEndringerProps) {
             case "GJENAPNET_SAK":
                 return <ArrowCirclepathReverseIcon />;
             case "SENDT_BREV":
-                // subtask
-                return undefined;
+                return <EnvelopeClosedIcon/>;
             case "OPPRETTET_SAK":
                 return <SparkLargeIcon />;
             default:
