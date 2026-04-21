@@ -56,7 +56,7 @@ function OppsummeringPage() {
                 };
                 return (
                     <>
-                        <VStack gap="2">
+                        <VStack gap="space-2">
                             <Heading size={"medium"}>{ferdigTekst()}</Heading>
                             {(sak.vedtaksResultat === "INNVILGET" || sak.vedtaksResultat === "DELVIS_INNVILGET") && (
                                 <UtbetalingStatusVis sak={sak} />
