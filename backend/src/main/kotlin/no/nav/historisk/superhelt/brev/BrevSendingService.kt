@@ -44,14 +44,25 @@ class BrevSendingService(
 
         oppdatertBrev = arkiverBrev(brev = oppdatertBrev, sak = sak)
 
-        dokarkivService.distribuerBrev(sak = sak, brev = oppdatertBrev)
+        val distStatus = dokarkivService.distribuerBrev(sak = sak, brev = oppdatertBrev)
 
         oppdatertBrev = brevRepository.oppdater(uuid = brevId, oppdatering = BrevOppdatering(status = BrevStatus.SENDT))
-        endringsloggService.logChange(
-            saksnummer = sak.saksnummer,
-            endringsType = EndringsloggType.SENDT_BREV,
-            endring = "Brev ${oppdatertBrev.tittel} sendt til ${brev.mottakerType.name.lowercase()}",
-        )
+        if (distStatus.sendtOk) {
+            endringsloggService.logChange(
+                saksnummer = sak.saksnummer,
+                endringsType = EndringsloggType.SENDT_BREV,
+                endring = "Brev sendt til ${brev.mottakerType.name.lowercase()}",
+                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert og sendt til ${brev.mottakerType.name.lowercase()}",
+
+                )
+        } else {
+            endringsloggService.logChange(
+                saksnummer = sak.saksnummer,
+                endringsType = EndringsloggType.SENDT_BREV,
+                endring = "Brev kunne ikke sendes men er arkivert",
+                beskrivelse = "Brev \"${oppdatertBrev.tittel}\" er arkivert men kunne ikke sendes til ${brev.mottakerType.name.lowercase()}.  Årsak: ${distStatus.feilbegrunnelse}"
+            )
+        }
     }
 
     private fun arkiverBrev(brev: Brev, sak: Sak): Brev {

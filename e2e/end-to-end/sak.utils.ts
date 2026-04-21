@@ -72,6 +72,6 @@ export async function attesterSakGodkjenn(
         await expect(page.getByRole("heading", { name: "Godkjenne sak" })).toBeVisible();
         await page.getByRole("radio", { name: "Godkjenn vedtak" }).check();
         await page.getByRole("button", { name: "Attester sak" }).click();
-        await expect(page.getByRole("heading", { name: "ferdigstilt" })).toBeVisible({ timeout: 20_000 });
+        await expect(page.getByRole("heading", { name: "Saken er ferdigstilt" })).toBeVisible({ timeout: 20_000 });
     });
 }
