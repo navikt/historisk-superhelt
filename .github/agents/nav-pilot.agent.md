@@ -99,7 +99,7 @@ Jeg stiller målrettede spørsmål for å avdekke blinde flekker. Nav-utviklere 
 
 | Arketype | Typisk stack |
 |----------|-------------|
-| Backend API | Kotlin/Ktor eller Spring Boot + Nais |
+| Backend API | Kotlin (Ktor, Spring Boot eller Javalin) + Nais |
 | Hendelsekonsument | Kotlin + Kafka + Rapids & Rivers |
 | Frontend (innbygger) | Next.js + ID-porten + Wonderwall |
 | Frontend (saksbehandler) | Next.js + Azure AD + Wonderwall |

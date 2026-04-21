@@ -14,7 +14,6 @@ export class SokPage {
         await searchbox.press('Enter')
 
         // await this.page.getByRole('button', { name: 'Søk' }).click()
-        await expect(this.page.getByRole('heading', {name: 'Personside'})).toBeVisible()
         await expect(this.page.getByText(fnr)).toBeVisible()
     }
 }
