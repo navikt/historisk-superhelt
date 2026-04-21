@@ -2,6 +2,7 @@ package no.nav.kabal
 
 import no.nav.kabal.model.*
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod
@@ -10,6 +11,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import tools.jackson.databind.json.JsonMapper
@@ -71,7 +74,7 @@ class KabalClientTest {
                     poststed = "Oslo"
                 )
             ),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "ref-123",
             dvhReferanse = "dvh-456",
             hjemler = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id),
@@ -111,7 +114,7 @@ class KabalClientTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.VIRKSOMHET, "987654321")),
             klager = Klager(Ident(IdentType.VIRKSOMHET, "987654321")),
-            fagsak = Fagsak("654321", "K9"),
+            fagsak = Fagsak("654321", "SUPERHELT"),
             kildeReferanse = "kilde-ref-virksomhet",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -143,7 +146,7 @@ class KabalClientTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
@@ -162,6 +165,54 @@ class KabalClientTest {
         mockServer.verify()
     }
 
+    // ==================== Feilhåndtering ====================
+
+    @Test
+    fun `sendSakV4 kaster HttpClientErrorException ved 400 Bad Request`() {
+        val request = createValidSendSakV4Request()
+
+        mockServer.expect(requestTo("/api/oversendelse/v4/sak"))
+            .andExpect(method(HttpMethod.POST))
+            .andRespond(
+                withStatus(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("""{"detail":"Ugyldig oversendelse"}""")
+            )
+
+        assertThatThrownBy { kabalClient.sendSakV4(request) }
+            .isInstanceOf(HttpClientErrorException::class.java)
+            .satisfies({ ex ->
+                val httpEx = ex as HttpClientErrorException
+                assertThat(httpEx.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+                assertThat(httpEx.responseBodyAsString).contains("Ugyldig oversendelse")
+            })
+
+        mockServer.verify()
+    }
+
+    @Test
+    fun `sendSakV4 kaster HttpServerErrorException ved 500 Internal Server Error`() {
+        val request = createValidSendSakV4Request()
+
+        mockServer.expect(requestTo("/api/oversendelse/v4/sak"))
+            .andExpect(method(HttpMethod.POST))
+            .andRespond(
+                withStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body("""{"detail":"Kabal er nede"}""")
+            )
+
+        assertThatThrownBy { kabalClient.sendSakV4(request) }
+            .isInstanceOf(HttpServerErrorException::class.java)
+            .satisfies({ ex ->
+                val httpEx = ex as HttpServerErrorException
+                assertThat(httpEx.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+                assertThat(httpEx.responseBodyAsString).contains("Kabal er nede")
+            })
+
+        mockServer.verify()
+    }
+
     // ==================== Hjelpemetoder ====================
 
     private fun createValidSendSakV4Request(): SendSakV4Request {
@@ -169,7 +220,7 @@ class KabalClientTest {
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(Ident(IdentType.PERSON, "12345678901")),
             klager = Klager(Ident(IdentType.PERSON, "12345678901")),
-            fagsak = Fagsak("123456", "K9"),
+            fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
             ytelse = "HEL_HEL",
