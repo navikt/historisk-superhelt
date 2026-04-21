@@ -72,6 +72,7 @@ npx playwright test -u    # oppdater snapshots
 - **Aldri endre eksisterende migrasjonsfiler**
 - Repository-klasser returnerer alltid domenemodell (ikke JPA-entity) utad
 - `@Transactional` settes på service-metoder, ikke repository
+- JPA-entity skal aldri eksponeres utenfor repository-laget
 
 ### Kafka
 - Producer: `UtbetalingKafkaProducer` sender `UtbetalingMelding` til Helved
