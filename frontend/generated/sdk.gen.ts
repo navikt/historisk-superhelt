@@ -153,6 +153,16 @@ export const retryFeiletUtbetaling = <ThrowOnError extends boolean = false>(opti
     ...options
 });
 
+export const sendKlageTilKabal = <ThrowOnError extends boolean = false>(options: Options<SendKlageTilKabalData, ThrowOnError>) => (options.client ?? client).post<SendKlageTilKabalResponses, SendKlageTilKabalErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/sak/{saksnummer}/klage',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
 export const hentEllerOpprettBrev = <ThrowOnError extends boolean = false>(options: Options<HentEllerOpprettBrevData, ThrowOnError>) => (options.client ?? client).post<HentEllerOpprettBrevResponses, HentEllerOpprettBrevErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/sak/{saksnummer}/brev',
@@ -300,6 +310,12 @@ export const getKodeverkOppgaveGjelder = <ThrowOnError extends boolean = false>(
     ...options
 });
 
+export const getKodeverkHjemler = <ThrowOnError extends boolean = false>(options?: Options<GetKodeverkHjemlerData, ThrowOnError>) => (options?.client ?? client).get<GetKodeverkHjemlerResponses, GetKodeverkHjemlerErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/klage/kodeverk/hjemler',
+    ...options
+});
+
 export const lastnedDokumentFraJournalpost = <ThrowOnError extends boolean = false>(options: Options<LastnedDokumentFraJournalpostData, ThrowOnError>) => (options.client ?? client).get<LastnedDokumentFraJournalpostResponses, LastnedDokumentFraJournalpostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/journalpost/{journalpostId}/{dokumentId}',
@@ -315,18 +331,6 @@ export const hentJournalpostMetaData = <ThrowOnError extends boolean = false>(op
 export const finnJournalposterForSak = <ThrowOnError extends boolean = false>(options: Options<FinnJournalposterForSakData, ThrowOnError>) => (options.client ?? client).get<FinnJournalposterForSakResponses, FinnJournalposterForSakErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/journalpost/sak/{saksnummer}',
-    ...options
-});
-
-export const sendKlageTilKabal = <ThrowOnError extends boolean = false>(options: Options<SendKlageTilKabalData, ThrowOnError>) => (options.client ?? client).post<SendKlageTilKabalResponses, SendKlageTilKabalErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/sak/{saksnummer}/klage',
-    ...options
-});
-
-export const getKodeverkHjemler = <ThrowOnError extends boolean = false>(options?: Options<GetKodeverkHjemlerData, ThrowOnError>) => (options?.client ?? client).get<GetKodeverkHjemlerResponses, GetKodeverkHjemlerErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/klage/kodeverk/hjemler',
     ...options
 });
 

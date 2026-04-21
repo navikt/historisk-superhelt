@@ -61,17 +61,17 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
+    readonly gjenapnet: boolean;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE'>;
     readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE'>;
-    readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
@@ -90,21 +90,6 @@ export type HenlagtSakRequestDto = {
 
 export type GjenapneSakRequestDto = {
     aarsak: string;
-};
-
-export type SendKlageRequestDto = {
-    hjemmelId: string;
-    datoKlageMottatt: string;
-    kommentar?: string;
-};
-
-
-export type HjemmelDto = {
-    id: string;
-    lovKildeNavn: string;
-    lovKildeBeskrivelse: string;
-    spesifikasjon: string;
-    visningsnavn: string;
 };
 
 export type FeilregisterRequestDto = {
@@ -141,6 +126,12 @@ export type JournalforEksisterendeSakRequest = {
     bruker: string;
     avsender: string;
     dokumenter: Array<JournalforDokument>;
+};
+
+export type SendKlageRequestDto = {
+    hjemmelId: string;
+    datoKlageMottatt: string;
+    kommentar?: string;
 };
 
 export type OpprettBrevRequest = {
@@ -277,6 +268,14 @@ export type OppgaveGjelderKodeDto = {
     navn: string;
 };
 
+export type HjemmelDto = {
+    id: string;
+    lovKildeNavn: string;
+    lovKildeBeskrivelse: string;
+    spesifikasjon: string;
+    visningsnavn: string;
+};
+
 export type Journalpost = {
     journalpostId: string;
     journalstatus: 'MOTTATT' | 'JOURNALFOERT' | 'FERDIGSTILT' | 'EKSPEDERT' | 'UNDER_ARBEID' | 'FEILREGISTRERT' | 'UTGAAR' | 'AVBRUTT' | 'UKJENT_BRUKER' | 'RESERVERT' | 'OPPLASTING_DOKUMENT' | 'UKJENT';
@@ -358,9 +357,9 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -853,6 +852,39 @@ export type RetryFeiletUtbetalingErrors = {
 export type RetryFeiletUtbetalingError = RetryFeiletUtbetalingErrors[keyof RetryFeiletUtbetalingErrors];
 
 export type RetryFeiletUtbetalingResponses = {
+    /**
+     * OK
+     */
+    200: unknown;
+};
+
+export type SendKlageTilKabalData = {
+    body: SendKlageRequestDto;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/sak/{saksnummer}/klage';
+};
+
+export type SendKlageTilKabalErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type SendKlageTilKabalError = SendKlageTilKabalErrors[keyof SendKlageTilKabalErrors];
+
+export type SendKlageTilKabalResponses = {
     /**
      * OK
      */
@@ -1539,6 +1571,39 @@ export type GetKodeverkOppgaveGjelderResponses = {
 
 export type GetKodeverkOppgaveGjelderResponse = GetKodeverkOppgaveGjelderResponses[keyof GetKodeverkOppgaveGjelderResponses];
 
+export type GetKodeverkHjemlerData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/klage/kodeverk/hjemler';
+};
+
+export type GetKodeverkHjemlerErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkHjemlerError = GetKodeverkHjemlerErrors[keyof GetKodeverkHjemlerErrors];
+
+export type GetKodeverkHjemlerResponses = {
+    /**
+     * OK
+     */
+    200: Array<HjemmelDto>;
+};
+
+export type GetKodeverkHjemlerResponse = GetKodeverkHjemlerResponses[keyof GetKodeverkHjemlerResponses];
+
 export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
@@ -1644,66 +1709,6 @@ export type FinnJournalposterForSakResponses = {
 };
 
 export type FinnJournalposterForSakResponse = FinnJournalposterForSakResponses[keyof FinnJournalposterForSakResponses];
-
-export type SendKlageTilKabalData = {
-    body: SendKlageRequestDto;
-    path: {
-        saksnummer: string;
-    };
-    query?: never;
-    url: '/api/sak/{saksnummer}/klage';
-};
-
-export type SendKlageTilKabalErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type SendKlageTilKabalError = SendKlageTilKabalErrors[keyof SendKlageTilKabalErrors];
-
-export type SendKlageTilKabalResponses = {
-    /**
-     * No Content
-     */
-    204: void;
-};
-
-export type SendKlageTilKabalResponse = SendKlageTilKabalResponses[keyof SendKlageTilKabalResponses];
-
-export type GetKodeverkHjemlerData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/klage/kodeverk/hjemler';
-};
-
-export type GetKodeverkHjemlerErrors = {
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type GetKodeverkHjemlerError = GetKodeverkHjemlerErrors[keyof GetKodeverkHjemlerErrors];
-
-export type GetKodeverkHjemlerResponses = {
-    /**
-     * OK
-     */
-    200: Array<HjemmelDto>;
-};
-
-export type GetKodeverkHjemlerResponse = GetKodeverkHjemlerResponses[keyof GetKodeverkHjemlerResponses];
 
 export type HentInfotrygdHistorikkForPersonData = {
     body?: never;
