@@ -1,8 +1,8 @@
 {
   "collection": "fullstack",
-  "version": "2026.04.18-211516-38e1d47",
+  "version": "2026.04.20-194821-8b2cb9f",
   "scope": "repo",
-  "source_sha": "38e1d47",
+  "source_sha": "8b2cb9f",
   "installed_at": "2026-04-16T11:42:15Z",
   "files": [
     {
@@ -55,7 +55,7 @@
     },
     {
       "path": ".github/agents/nais.agent.md",
-      "hash": "396a51def78b3f38"
+      "hash": "fa07ad8cfdf54a4a"
     },
     {
       "path": ".github/agents/nais.metadata.json",
@@ -79,7 +79,7 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "becdb418816be1e0"
+      "hash": "3179adb5db9ae3af"
     },
     {
       "path": ".github/agents/nav-pilot.metadata.json",
