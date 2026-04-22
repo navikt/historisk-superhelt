@@ -1,6 +1,6 @@
+import { faker } from "@faker-js/faker";
 import { expect } from "@playwright/test";
 import { test } from "./test.fixtures";
-import { faker } from "@faker-js/faker";
 
 test.describe("Feilregistrer sak", () => {
     test.describe.configure({ mode: "serial" });
