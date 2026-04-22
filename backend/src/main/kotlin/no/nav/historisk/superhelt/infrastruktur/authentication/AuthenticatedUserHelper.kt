@@ -40,7 +40,12 @@ fun getAuthenticatedUser(): AuthenticatedUser {
     }
 }
 
-fun isAuthenticated(): Boolean {
-    val authentication=SecurityContextHolder.getContext().authentication
-    return authentication != null && authentication.isAuthenticated
+private fun getAuthenticatedUserNullable(): AuthenticatedUser? {
+    return when (val authentication = SecurityContextHolder.getContext().authentication) {
+        is JwtAuthenticationToken -> authentication.authenticatedUser
+        is SystemUserAuthenticationToken -> authentication.authenticatedUser
+        else -> null
+    }
 }
+
+fun isAuthenticated(): Boolean = getAuthenticatedUserNullable() != null

@@ -130,7 +130,7 @@ class TilgangsmaskinAuthLogicTest {
 
     @WithSystemUser
     @Test
-    fun `Skal ikke sjekke tilgang for sytembruker`() {
+    fun `Skal ikke sjekke tilgang for systembruker`() {
         val fnr = FolkeregisterIdent("12345678901")
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr))
             .thenReturn(TilgangsmaskinClient.TilgangResult(false))
