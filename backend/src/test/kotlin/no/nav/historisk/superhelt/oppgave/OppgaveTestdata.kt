@@ -7,8 +7,8 @@ import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.oppgave.OppgaveGjelder
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.OppgaveDto

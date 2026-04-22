@@ -1,9 +1,9 @@
 package no.nav.historisk.superhelt.oppgave
 
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.oppgave.OppgaveGjelder
 import no.nav.oppgave.gjelder
 import no.nav.oppgave.model.OppgaveDto

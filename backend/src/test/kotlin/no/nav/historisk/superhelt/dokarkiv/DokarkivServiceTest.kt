@@ -1,17 +1,33 @@
 package no.nav.historisk.superhelt.dokarkiv
 
-import no.nav.common.types.*
-import no.nav.dokarkiv.*
+import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.Enhetsnummer
+import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.Saksnummer
+import no.nav.dokarkiv.AvsenderMottakerIdType
+import no.nav.dokarkiv.BrukerIdType
+import no.nav.dokarkiv.DokarkivClient
+import no.nav.dokarkiv.DokumentMedTittel
+import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.dokarkiv.JournalpostRequest
+import no.nav.dokarkiv.JournalpostResponse
+import no.nav.dokarkiv.JournalpostType
+import no.nav.dokarkiv.Kanal
+import no.nav.dokarkiv.Sakstype
 import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DokdistClient
 import no.nav.dokdist.DokdistRespons
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.person.PersonTestData
 import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.sak.StonadsType
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -19,7 +35,11 @@ import org.mockito.Mock
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.never
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.security.test.context.support.WithMockUser
 
 @ExtendWith(MockitoExtension::class)
