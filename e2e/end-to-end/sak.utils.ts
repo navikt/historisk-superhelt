@@ -65,7 +65,7 @@ export async function attesterSakGodkjenn(
     });
 
     await test.step("Velg oppsummering", async () => {
-        await sak.selectMenuItem("Oppsummering");
+        await sak.selectMenuItem("Godkjenning");
     });
 
     await test.step("Attester og ferdigstill", async () => {
