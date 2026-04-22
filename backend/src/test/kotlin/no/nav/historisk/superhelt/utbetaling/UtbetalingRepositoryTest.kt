@@ -4,16 +4,16 @@ import no.nav.common.types.Behandlingsnummer
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.withMockedUser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.security.test.context.support.WithMockUser
 
 @MockedSpringBootTest
-@WithMockUser(authorities = ["READ", "WRITE"])
+@WithSaksbehandler
 class UtbetalingRepositoryTest {
 
     @Autowired

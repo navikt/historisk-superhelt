@@ -9,7 +9,11 @@ import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
 import no.nav.historisk.superhelt.utbetaling.UtbetalingService
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "Admin", description = "Admin API for utbetalinger")
 @RestController
@@ -41,7 +45,7 @@ class AdminUtbetalingController(
             "Kjører på nytt feilete utbetalinger {}",
             utbetalingerToRetry.map { "${it.saksnummer}: ${it.transaksjonsId}" })
 
-        SecurityContextUtils.runWithPermissions(listOf(Permission.READ, Permission.WRITE, Permission.IGNORE_TILGANGSMASKIN)) {
+        SecurityContextUtils.runAsSystemuser(name="retry-feilet-utbetaling", permissions =  listOf(Permission.READ, Permission.WRITE)) {
             utbetalingerToRetry.forEach {
                 val sak = sakRepository.getSak(it.saksnummer)
                 utbetalingService.retryUtbetaling(sak)

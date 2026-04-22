@@ -39,3 +39,8 @@ fun getAuthenticatedUser(): AuthenticatedUser {
         else -> throw IllegalStateException("Unknown Authenticated user $authentication")
     }
 }
+
+fun isAuthenticated(): Boolean {
+    val authentication=SecurityContextHolder.getContext().authentication
+    return authentication != null && authentication.isAuthenticated
+}

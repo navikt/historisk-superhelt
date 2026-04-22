@@ -1,17 +1,21 @@
 package no.nav.historisk.superhelt.infrastruktur.permission
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
-import no.nav.historisk.superhelt.test.WithMockJwtAuth
+import no.nav.historisk.superhelt.test.WithSaksbehandler
+import no.nav.historisk.superhelt.test.WithSystemUser
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Import
 import org.springframework.security.access.prepost.PostAuthorize
@@ -23,6 +27,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 @MockedSpringBootTest
 @Import(TilgangsmaskinAuthLogicTest.TestService::class)
+@WithSaksbehandler
 class TilgangsmaskinAuthLogicTest {
 
     @MockitoBean
@@ -123,9 +128,9 @@ class TilgangsmaskinAuthLogicTest {
         verify(tilgangsmaskinService, times(3)).sjekkKomplettTilgang(any())
     }
 
-    @WithMockJwtAuth(permissions = [Permission.IGNORE_TILGANGSMASKIN])
+    @WithSystemUser
     @Test
-    fun `Skal ikke sjekke tilgang om bruker har Ignore_tilgangsmaskin rettighet`() {
+    fun `Skal ikke sjekke tilgang for sytembruker`() {
         val fnr = FolkeregisterIdent("12345678901")
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr))
             .thenReturn(TilgangsmaskinClient.TilgangResult(false))
