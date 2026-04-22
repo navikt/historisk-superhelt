@@ -1,5 +1,3 @@
-import type { Sak } from "@generated";
-import { getSakStatusOptions } from "@generated/@tanstack/react-query.gen";
 import { BodyShort, Heading, InfoCard, VStack } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -45,11 +43,10 @@ function OppsummeringPage() {
                         case "HENLAGT":
                             return "Saken er henlagt";
                         case "INNVILGET":
-                            return "Saken er innvilget og ferdigstilt";
                         case "DELVIS_INNVILGET":
-                            return "Saken er delvis innvilget og ferdigstilt";
+                            return "Saken er godkjent";
                         case "AVSLATT":
-                            return "Saken er avslått og ferdigstilt";
+                            return "Saken er ikke godkjent";
                         default:
                             return "Saken er ferdigstilt";
                     }
@@ -58,9 +55,8 @@ function OppsummeringPage() {
                     <>
                         <VStack gap="space-2">
                             <Heading size={"medium"}>{ferdigTekst()}</Heading>
-                            {(sak.vedtaksResultat === "INNVILGET" || sak.vedtaksResultat === "DELVIS_INNVILGET") && (
-                                <UtbetalingStatusVis sak={sak} />
-                            )}
+                            <BodyShort>Saksbehandler: {sak.saksbehandler.navn}</BodyShort>
+                            {sak.attestant && <BodyShort>Attestant: {sak.attestant.navn}</BodyShort>}
                         </VStack>
                         <SakErrorSummary sak={sak} />
                     </>
@@ -70,27 +66,4 @@ function OppsummeringPage() {
     }
 
     return <VStack gap={"space-32"}>{renderAction()}</VStack>;
-}
-
-function UtbetalingStatusVis({ sak }: { sak: Sak }) {
-    const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
-
-    const tekst = (() => {
-        switch (sakStatus.utbetalingStatus) {
-            case "UTBETALT":
-                return "Utbetaling er gjennomført";
-            case "BEHANDLET_AV_UTBETALING":
-            case "MOTTATT_AV_UTBETALING":
-            case "SENDT_TIL_UTBETALING":
-                return "Utbetaling pågår";
-            case "KLAR_TIL_UTBETALING":
-            case "UTKAST":
-                return "Venter på utbetaling";
-            default:
-                return null;
-        }
-    })();
-
-    if (!tekst) return null;
-    return <BodyShort>{tekst}</BodyShort>;
 }
