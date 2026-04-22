@@ -61,10 +61,10 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly gjenapnet: boolean;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE'>;
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
+    readonly gjenapnet: boolean;
     readonly tilstand: SakTilstand;
 };
 
@@ -176,8 +176,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string;
-    annulleres: boolean;
     loggId$superhelt_backend: string;
+    annulleres: boolean;
 };
 
 export type User = {
@@ -1058,6 +1058,39 @@ export type RekjorFeileteUtbetalingerResponses = {
 };
 
 export type RekjorFeileteUtbetalingerResponse = RekjorFeileteUtbetalingerResponses[keyof RekjorFeileteUtbetalingerResponses];
+
+export type GjenopprettOppgaverData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/admin/oppgave/gjenopprettOppgaver';
+};
+
+export type GjenopprettOppgaverErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GjenopprettOppgaverError = GjenopprettOppgaverErrors[keyof GjenopprettOppgaverErrors];
+
+export type GjenopprettOppgaverResponses = {
+    /**
+     * OK
+     */
+    200: Array<string>;
+};
+
+export type GjenopprettOppgaverResponse = GjenopprettOppgaverResponses[keyof GjenopprettOppgaverResponses];
 
 export type GetUserInfoData = {
     body?: never;
