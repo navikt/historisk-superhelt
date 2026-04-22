@@ -6,9 +6,12 @@
     "format": "biome format .",
     "format:write": "biome format --write .",
     "lint:fix": "biome check --write .",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "playwright:install": "playwright install --with-deps"
+    "playwright:test": "playwright test",
+    "playwright:install": "playwright install chromium --with-deps",
+    "playwright:test:ui": "playwright test --ui",
+    "playwright:snapshot-update": "playwright test -u",
+    "playwright:show-report": "playwright show-report",
+    "playwright:codegen": "playwright codegen"
   },
   "packageManager": "pnpm@10.33.0",
   "engines": {

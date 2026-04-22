@@ -10,18 +10,18 @@ fullstendige instruksjoner. Deretter bygg og kjør docker images:
     ```
     Alternativt må du starte tjenestene lokalt på annen måte.
 
-2.  **Installer prosjektets avhengigheter:** Sørg for at du har installert alle prosjektets avhengigheter ved å kjøre `npm install` fra prosjektets **rotmappe**.
+2.  **Installer prosjektets avhengigheter:** Sørg for at du har installert alle prosjektets avhengigheter ved å kjøre `pnpm install` fra `/e2e`-mappen.
 3.  **Installer nettlesere:** Første gang du kjører Playwright, må du installere nettleserne som skal brukes til testing. Kjør denne kommandoen fra mappen `/tests`:
     ```bash
-    npx playwright install
+    pnpm playwright:install
     ```
 4.  **Kjør alle tester:** Nå kan du starte testene. Kjør følgende kommando fra denne mappen (`/e2e`). Testene kjører da i "headless" modus (uten synlig nettleservindu).
     ```bash
-    npx playwright test
+    pnpm playwright:test
     ```
 5.  **Kjør tester med UI:** For å se testene kjøre i en nettleser med Playwrights UI-modus, bruk følgende kommando. Dette er nyttig for feilsøking.
     ```bash
-    npx playwright test --ui
+    pnpm playwright:test:ui
     ```
 
 ---
@@ -32,7 +32,7 @@ fullstendige instruksjoner. Deretter bygg og kjør docker images:
 
 Playwright bruker snapshots for å oppdage visuelle eller tekstbaserte regresjoner. Dette kan være **bilder av UI-komponenter** eller bare **tekstbasert innhold**. Dersom det er en tilsiktet endring i brukergrensesnittet eller innholdet, må snapshots oppdateres:
 ```bash
-npx playwright test -u
+pnpm playwright:snapshot-update
 ```
 
 **Viktig:** Verifiser alltid at endringene i snapshots er korrekte før du committer dem.
@@ -45,14 +45,14 @@ Etter at testene er kjørt, genereres en detaljert HTML-rapport.
 
 Fra denne mappen (`/e2e`), kjør:
 ```bash
-npx playwright show-report
+pnpm playwright:show-report
 ```
 
 #### Fra GitHub Actions
 
 I seksjonen **Artifacts**, klikk på `playwright-report` for å laste ned rapporten som en zip-fil. Etter å ha pakket den ut, kan du åpne den med følgende kommando:
 ```bash
-npx playwright show-report <navn-på-min-utpakkede-playwright-rapport>
+pnpm playwright:show-report <navn-på-min-utpakkede-playwright-rapport>
 ```
 
 For mer informasjon om CI, se Playwrights offisielle dokumentasjon: Setting up GitHub Actions.
@@ -83,18 +83,18 @@ Playwright har et verktøy som kan ta opp brukerinteraksjoner og generere testko
 
 * **Spill inn mot et lokalt miljø (f.eks. `http://localhost:4000`):**
     ```bash
-    npx playwright codegen http://localhost:4000
+    pnpm playwright:codegen http://localhost:4000
     ```
 * **Spill inn mot en annen URL:**
     ```bash
-    npx playwright codegen [https://www.eksempel.no](https://www.eksempel.no)
+    pnpm playwright:codegen [https://www.eksempel.no](https://www.eksempel.no)
     ```
 
 ### Playwright Inspector
 
 For avansert feilsøking kan du bruke Playwright Inspector, som lar deg trinnvis utføre tester og inspisere selektorer.
 ```bash
-PWDEBUG=1 npx playwright test
+PWDEBUG=1 pnpm playwright:test
 ```
 
 ---
@@ -105,19 +105,19 @@ Prosjektet bruker **Biome** for formattering og linting i `/e2e`.
 
 - Kjør lint-sjekk:
     ```bash
-    npm run lint
+    pnpm run lint
     ```
 - Forsøk automatisk fiksing av lint-regler:
     ```bash
-    npm run lint:fix
+    pnpm run lint:fix
     ```
 - Formater filer uten å skrive endringer:
     ```bash
-    npm run format
+    pnpm run format
     ```
 - Formater og skriv endringer til disk:
     ```bash
-    npm run format:write
+    pnpm run format:write
     ```
 
 Konfigurasjonen finnes i `biome.json`. Scriptene er definert i `package.json` i denne mappen.

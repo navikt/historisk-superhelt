@@ -193,7 +193,7 @@ const mutation = useMutation({
 ## Genererte typer fra backend
 
 ```tsx
-// Typer genereres med: npm run openapi-ts
+// Typer genereres med: pnpm run openapi-ts
 import type { Sak } from "@generated";
 
 // Lokale utility-typer utledes fra genererte typer
@@ -202,13 +202,13 @@ type SakStatusType = Sak["status"];
 
 ## Pakkebehandler
 
-Bruk `npm` (ikke pnpm):
+Bruk `pnpm`:
 
 ```bash
-npm install
-npm run test
-npm run biome:write
-npm run openapi-ts
+pnpm install
+pnpm run test
+pnpm run biome:write
+pnpm run openapi-ts
 ```
 
 ## Boundaries
