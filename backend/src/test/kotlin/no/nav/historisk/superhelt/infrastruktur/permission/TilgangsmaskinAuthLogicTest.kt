@@ -140,7 +140,7 @@ class TilgangsmaskinAuthLogicTest {
 
 
     @Service
-    open class TestService {
+     class TestService {
 
         @PreAuthorize("@tilgangsmaskin.harTilgang(#fnr)")
         fun testPreAuthorize(fnr: String): String {
