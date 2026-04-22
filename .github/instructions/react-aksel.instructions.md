@@ -55,7 +55,7 @@ import { Box, VStack, HGrid } from "@navikt/ds-react";
 
 ## Spacing-tokens
 
-Aksel DS bruker **to ulike token-systemer** avhengig av prop:
+Aksel DS bruker **ett felles spacing-system** på tvers av props:
 
 | Prop | Komponent | Format | Eksempel |
 |------|-----------|--------|---------|
