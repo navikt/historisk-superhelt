@@ -21,7 +21,6 @@ class BrevValidator(private val brev: Brev) : Validator() {
             SakStatus.UNDER_BEHANDLING -> {
                 check(brev.type == BrevType.VEDTAKSBREV, "status", "Vedtaksbrev kan ikke sendes når saken er under behandling")
             }
-
             else -> {}
         }
 
