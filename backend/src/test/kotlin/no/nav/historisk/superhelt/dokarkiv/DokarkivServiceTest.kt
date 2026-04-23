@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.dokarkiv
 
-import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.consts.EksternFellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer

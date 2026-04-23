@@ -1,6 +1,7 @@
 package no.nav.historisk.mock.oppgave
 
 import net.datafaker.Faker
+import no.nav.common.consts.EksternFellesKodeverkTema
 import no.nav.common.types.AktorId
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
@@ -60,7 +61,7 @@ fun generateOppgave(fnr:String?= null, tilordnetRessurs: NavIdent?= null): Oppga
         opprettetAv = faker.numerify("Z######"),
         opprettetTidspunkt = faker.timeAndDate().past().atOffset(ZoneOffset.UTC),
         fristFerdigstillelse = LocalDate.ofInstant(faker.timeAndDate().future(), ZoneOffset.UTC),
-        tema = "HEL",
+        tema = EksternFellesKodeverkTema.HEL.kode,
         behandlingstema = behandlingstema.kode,
         behandlingstype = behandlingstype?.kode,
         oppgavetype = OppgaveType.JFR.oppgavetype,

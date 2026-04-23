@@ -1,6 +1,10 @@
 package no.nav.dokarkiv
 
-import no.nav.common.types.*
+import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Enhetsnummer
+import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.Saksnummer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hamcrest.Matchers
@@ -10,7 +14,9 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers.*
+import org.springframework.test.web.client.match.MockRestRequestMatchers.content
+import org.springframework.test.web.client.match.MockRestRequestMatchers.method
+import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.HttpClientErrorException

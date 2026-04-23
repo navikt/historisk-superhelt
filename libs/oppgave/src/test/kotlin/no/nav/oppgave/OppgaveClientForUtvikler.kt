@@ -1,6 +1,6 @@
 package no.nav.oppgave
 
-import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.consts.EksternFellesKodeverkTema
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.FinnOppgaverParams
@@ -13,7 +13,7 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestClient
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 @Disabled
 class OppgaveClientForUtvikler {

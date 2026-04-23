@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.oppgave
 
+import no.nav.common.consts.APP_NAVN
+import no.nav.common.consts.EksternFellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
@@ -22,9 +24,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-private const val TEMA_HEL = "HEL"
-private const val APP_NAVN = "SUPERHELT"
-
 @Service
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
@@ -46,7 +45,7 @@ class OppgaveService(
             FinnOppgaverParams(
                 tilordnetRessurs = navident,
                 statuskategori = "AAPEN",
-                tema = listOf(TEMA_HEL),
+                tema = listOf(EksternFellesKodeverkTema.HEL.kode),
                 limit = 50L
             )
         ).oppgaver ?: emptyList()
@@ -70,7 +69,7 @@ class OppgaveService(
             FinnOppgaverParams(
                 aktoerId = listOf(person.aktorId),
                 statuskategori = "AAPEN",
-                tema = listOf(TEMA_HEL),
+                tema = listOf(EksternFellesKodeverkTema.HEL.kode),
                 limit = 50L
             )
         ).oppgaver ?: emptyList()
@@ -161,7 +160,7 @@ class OppgaveService(
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(
-                tema = TEMA_HEL,
+                tema = sak.type.tema.kode,
                 oppgavetype = type.oppgavetype,
                 opprettetAvEnhetsnr = defaultEnhetsnummer.value,
                 journalpostId = journalpostId,

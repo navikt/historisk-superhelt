@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.oppgave
 
 import net.datafaker.Faker
+import no.nav.common.consts.EksternFellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
@@ -22,7 +23,7 @@ object OppgaveTestdata {
             id = EksternOppgaveId(faker.number().positive().toLong()),
             tildeltEnhetsnr = Enhetsnummer("1234"),
             oppgavetype = faker.options().option(OppgaveType::class.java).oppgavetype,
-            tema = "HEL",
+            tema = EksternFellesKodeverkTema.HEL.kode,
             status = faker.options().option(OppgaveDto.Status::class.java),
             journalpostId = EksternJournalpostId(faker.number().positive().toString()),
             aktoerId = null,
