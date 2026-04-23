@@ -61,11 +61,11 @@ export type Sak = {
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number;
     vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
     readonly gjenapnet: boolean;
+    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
@@ -241,8 +241,8 @@ export type OppgaveMedSak = {
     fnr: string;
     oppgaveId: number;
     oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
-    oppgavetype: 'BEH_SED' | 'VURD_NOTAT' | 'VURD_BREV' | 'BEH_SAK' | 'BEH_SAK_MK' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_HENV' | 'BEH_AVV_ADR' | 'FDR' | 'GOD_VED' | 'BEH_UND_VED' | 'UKJENT';
-    oppgaveGjelder: 'ORTOPEDISKE_HJELPEMIDLER_SOKNAD' | 'ANKE' | 'KLAGE' | 'ORTOPEDISKE_HJELPEMIDLER_UTLAND' | 'TIDLIGERE_HJEMSENDT_SAK' | 'HJEMSENDT_TIL_NY_BEHANDLING' | 'ORTOPEDISKE_HJELPEMIDLER' | 'REISEUTGIFTER' | 'BIDRAG_EKSKL_FARSKAP' | 'ANSIKTSDEFEKTSPROTESE' | 'BRYSTPROTESE_PROTESEBH' | 'FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER' | 'OYEPROTESE' | 'PARYKK_HODEPLAGG' | 'REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER' | 'PARTSINNSYN' | 'MEDLEMSKAP' | 'UKJENT';
+    oppgavetype: 'BEH_SED' | 'BEH_SAK' | 'BEH_SAK_MK' | 'BEH_UND_VED' | 'FDR' | 'GOD_VED' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_BREV' | 'VURD_HENV' | 'VURD_NOTAT' | 'FLY' | 'HJELP_UTPROV' | 'MOTK' | 'ROB_BEH' | 'UKJENT';
+    oppgaveGjelderTekst: string;
     journalpostId?: string;
     tilordnetRessurs?: string;
     beskrivelse?: string;
@@ -256,16 +256,7 @@ export type OppgaveMedSak = {
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     sakBeskrivelse?: string;
     readonly maskertPersonIdent: string;
-};
-
-export type OppgaveTypeKodeDto = {
-    type: 'BEH_SED' | 'VURD_NOTAT' | 'VURD_BREV' | 'BEH_SAK' | 'BEH_SAK_MK' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_HENV' | 'BEH_AVV_ADR' | 'FDR' | 'GOD_VED' | 'BEH_UND_VED' | 'UKJENT';
-    navn: string;
-};
-
-export type OppgaveGjelderKodeDto = {
-    type: 'ORTOPEDISKE_HJELPEMIDLER_SOKNAD' | 'ANKE' | 'KLAGE' | 'ORTOPEDISKE_HJELPEMIDLER_UTLAND' | 'TIDLIGERE_HJEMSENDT_SAK' | 'HJEMSENDT_TIL_NY_BEHANDLING' | 'ORTOPEDISKE_HJELPEMIDLER' | 'REISEUTGIFTER' | 'BIDRAG_EKSKL_FARSKAP' | 'ANSIKTSDEFEKTSPROTESE' | 'BRYSTPROTESE_PROTESEBH' | 'FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER' | 'OYEPROTESE' | 'PARYKK_HODEPLAGG' | 'REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER' | 'PARTSINNSYN' | 'MEDLEMSKAP' | 'UKJENT';
-    navn: string;
+    readonly oppgaveTypeTekst: string;
 };
 
 export type HjemmelDto = {
@@ -366,8 +357,8 @@ export type OppgaveMedSakWritable = {
     fnr: string;
     oppgaveId: number;
     oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
-    oppgavetype: 'BEH_SED' | 'VURD_NOTAT' | 'VURD_BREV' | 'BEH_SAK' | 'BEH_SAK_MK' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_HENV' | 'BEH_AVV_ADR' | 'FDR' | 'GOD_VED' | 'BEH_UND_VED' | 'UKJENT';
-    oppgaveGjelder: 'ORTOPEDISKE_HJELPEMIDLER_SOKNAD' | 'ANKE' | 'KLAGE' | 'ORTOPEDISKE_HJELPEMIDLER_UTLAND' | 'TIDLIGERE_HJEMSENDT_SAK' | 'HJEMSENDT_TIL_NY_BEHANDLING' | 'ORTOPEDISKE_HJELPEMIDLER' | 'REISEUTGIFTER' | 'BIDRAG_EKSKL_FARSKAP' | 'ANSIKTSDEFEKTSPROTESE' | 'BRYSTPROTESE_PROTESEBH' | 'FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER' | 'OYEPROTESE' | 'PARYKK_HODEPLAGG' | 'REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER' | 'PARTSINNSYN' | 'MEDLEMSKAP' | 'UKJENT';
+    oppgavetype: 'BEH_SED' | 'BEH_SAK' | 'BEH_SAK_MK' | 'BEH_UND_VED' | 'FDR' | 'GOD_VED' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_BREV' | 'VURD_HENV' | 'VURD_NOTAT' | 'FLY' | 'HJELP_UTPROV' | 'MOTK' | 'ROB_BEH' | 'UKJENT';
+    oppgaveGjelderTekst: string;
     journalpostId?: string;
     tilordnetRessurs?: string;
     beskrivelse?: string;
@@ -1537,72 +1528,6 @@ export type HentOppgaverForPersonResponses = {
 };
 
 export type HentOppgaverForPersonResponse = HentOppgaverForPersonResponses[keyof HentOppgaverForPersonResponses];
-
-export type GetKodeverkOppgaveTypeData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/oppgave/kodeverk/oppgavetype';
-};
-
-export type GetKodeverkOppgaveTypeErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type GetKodeverkOppgaveTypeError = GetKodeverkOppgaveTypeErrors[keyof GetKodeverkOppgaveTypeErrors];
-
-export type GetKodeverkOppgaveTypeResponses = {
-    /**
-     * OK
-     */
-    200: Array<OppgaveTypeKodeDto>;
-};
-
-export type GetKodeverkOppgaveTypeResponse = GetKodeverkOppgaveTypeResponses[keyof GetKodeverkOppgaveTypeResponses];
-
-export type GetKodeverkOppgaveGjelderData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/oppgave/kodeverk/oppgavegjelder';
-};
-
-export type GetKodeverkOppgaveGjelderErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type GetKodeverkOppgaveGjelderError = GetKodeverkOppgaveGjelderErrors[keyof GetKodeverkOppgaveGjelderErrors];
-
-export type GetKodeverkOppgaveGjelderResponses = {
-    /**
-     * OK
-     */
-    200: Array<OppgaveGjelderKodeDto>;
-};
-
-export type GetKodeverkOppgaveGjelderResponse = GetKodeverkOppgaveGjelderResponses[keyof GetKodeverkOppgaveGjelderResponses];
 
 export type GetKodeverkHjemlerData = {
     body?: never;

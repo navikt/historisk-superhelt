@@ -1,16 +1,14 @@
-import type { OppgaveMedSak } from "@generated";
-import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
-import { BodyShort, HStack, Link, Pagination, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link as RouterLink } from "@tanstack/react-router";
-import { useState } from "react";
-import { isoTilLokal } from "~/common/dato.utils";
-import { OppgaveDetaljer } from "~/common/oppgave/OppgaveDetaljer";
-import { useOppgaveGjelderNavn } from "~/common/oppgave/useOppgaveGjelderNavn";
-import { useOppgaveTypeNavn } from "~/common/oppgave/useOppgaveTypeNavn";
-import { SakStatusTag } from "~/common/sak/SakStatusTag";
-import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
-import { OppgaveActionButton } from "./OppgaveActionButton";
+import type {OppgaveMedSak} from "@generated";
+import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
+import {BodyShort, HStack, Link, Pagination, type SortState, Table, Tag, VStack} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {Link as RouterLink} from "@tanstack/react-router";
+import {useState} from "react";
+import {isoTilLokal} from "~/common/dato.utils";
+import {OppgaveDetaljer} from "~/common/oppgave/OppgaveDetaljer";
+import {SakStatusTag} from "~/common/sak/SakStatusTag";
+import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import {OppgaveActionButton} from "./OppgaveActionButton";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
@@ -27,8 +25,6 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         direction: "ascending",
     });
     const { data: saksbehandler } = useSuspenseQuery(getUserInfoOptions());
-    const oppgaveGjelderNavn = useOppgaveGjelderNavn();
-    const oppgaveTypeNavn = useOppgaveTypeNavn();
     const stonadsTypeNavn = useStonadsTypeNavn();
 
     const [page, setPage] = useState(1);
@@ -78,16 +74,22 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
             </Link>
         );
     };
+    const getKategori = (oppgave: OppgaveMedSak) => {
+        if (oppgave.oppgavetype=== "JFR"){
+            return oppgave.oppgaveGjelderTekst
+        }
+        return oppgave.stonadsType
+            ? stonadsTypeNavn(oppgave.stonadsType)
+            : (oppgave.oppgaveGjelderTekst);
+    }
     const renderOppgaveText = (oppgave: OppgaveMedSak) => {
         return (
             <HStack gap={"space-8"}>
                 <Tag variant="moderate" data-color="neutral" size="small">
-                    {oppgaveTypeNavn(oppgave.oppgavetype)}
+                    {oppgave.oppgaveTypeTekst}
                 </Tag>
                 <Tag variant="outline" data-color={"info"} size="small">
-                    {oppgave.stonadsType
-                        ? stonadsTypeNavn(oppgave.stonadsType)
-                        : oppgaveGjelderNavn(oppgave.oppgaveGjelder)}
+                    {getKategori(oppgave)}
                 </Tag>
                 <BodyShort truncate style={{ maxWidth: "20rem" }}>
                     {oppgave.sakBeskrivelse}

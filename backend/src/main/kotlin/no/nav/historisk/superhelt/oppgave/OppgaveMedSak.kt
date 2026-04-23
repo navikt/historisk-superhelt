@@ -40,4 +40,8 @@ data class OppgaveMedSak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent
         get() = fnr.toMaskertPersonIdent()
+
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val oppgaveTypeTekst: String
+        get() = oppgavetype.beskrivelse
 }
