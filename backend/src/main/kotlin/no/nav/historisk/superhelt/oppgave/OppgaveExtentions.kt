@@ -1,25 +1,15 @@
 package no.nav.historisk.superhelt.oppgave
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.Sak
-import no.nav.oppgave.OppgaveGjelder
-import no.nav.oppgave.gjelder
+import no.nav.oppgave.behandlingstemaEnum
+import no.nav.oppgave.behandlingstypeEnum
 import no.nav.oppgave.model.OppgaveDto
 import no.nav.oppgave.type
 
-fun StonadsType.tilOppgaveGjelder(): OppgaveGjelder =
-    when (this) {
-        StonadsType.PARYKK -> OppgaveGjelder.PARYKK_HODEPLAGG
-        StonadsType.PROTESE, StonadsType.SPESIALSKO,
-        StonadsType.ORTOSE, StonadsType.FOTSENG -> OppgaveGjelder.ORTOPEDISKE_HJELPEMIDLER
-        StonadsType.ANSIKT_PROTESE -> OppgaveGjelder.ANSIKTSDEFEKTSPROTESE
-        StonadsType.OYE_PROTESE -> OppgaveGjelder.OYEPROTESE
-        StonadsType.BRYSTPROTESE -> OppgaveGjelder.BRYSTPROTESE_PROTESEBH
-        StonadsType.FOTTOY -> OppgaveGjelder.ORTOPEDISKE_HJELPEMIDLER
-        StonadsType.REISEUTGIFTER -> OppgaveGjelder.REISEUTGIFTER
-    }
+val OppgaveDto.gjelderTekst: String
+    get() = listOfNotNull(this.behandlingstemaEnum?.term, this.behandlingstypeEnum?.term).joinToString(" ")
 
 fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
     val ident = this.bruker?.ident ?: sak?.fnr?.value
@@ -30,7 +20,7 @@ fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
         oppgaveId = this.id,
         oppgavestatus = this.status,
         oppgavetype = this.type,
-        oppgaveGjelder = this.gjelder,
+        oppgaveGjelderTekst = this.gjelderTekst,
         journalpostId = this.journalpostId,
         tilordnetRessurs = this.tilordnetRessurs,
         beskrivelse = this.beskrivelse,
@@ -45,3 +35,5 @@ fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
         sakBeskrivelse = sak?.beskrivelse,
     )
 }
+
+

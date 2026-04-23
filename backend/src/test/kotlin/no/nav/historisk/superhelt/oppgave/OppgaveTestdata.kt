@@ -9,7 +9,6 @@ import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.oppgave.OppgaveGjelder
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.OppgaveDto
 import java.time.LocalDate
@@ -49,7 +48,7 @@ object OppgaveTestdata {
         journalpostId = EksternJournalpostId(faker.number().positive().toString()),
         tilordnetRessurs = NavIdent(faker.bothify("?#####")),
         fnr = FolkeregisterIdent(faker.numerify("###########")),
-        oppgaveGjelder = OppgaveGjelder.entries.random(),
+        oppgaveGjelderTekst = faker.pokemon().name(),
         beskrivelse = faker.lorem().sentence(),
         fristFerdigstillelse = LocalDate.now().plusDays(1),
         opprettetTidspunkt = OffsetDateTime.now(),

@@ -4,6 +4,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
+import no.nav.historisk.superhelt.oppgave.gjelderTekst
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.person.PersonTestData
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
@@ -12,7 +13,6 @@ import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveClient
-import no.nav.oppgave.gjelder
 import no.nav.oppgave.model.SokOppgaverResponse
 import no.nav.oppgave.type
 import org.assertj.core.api.Assertions.assertThat
@@ -111,7 +111,7 @@ class OppgaveControllerTest {
                 assertThat(it.fnr.value).isEqualTo(oppgave.bruker?.ident)
                 assertThat(it.oppgavestatus).isEqualTo(oppgave.status)
                 assertThat(it.oppgavetype.oppgavetype).isEqualTo(oppgave.oppgavetype)
-                assertThat(it.oppgaveGjelder).isEqualTo(oppgave.gjelder)
+                assertThat(it.oppgaveGjelderTekst).isEqualTo(oppgave.gjelderTekst)
                 assertThat(it.journalpostId).isEqualTo(oppgave.journalpostId)
                 assertThat(it.tilordnetRessurs).isEqualTo(oppgave.tilordnetRessurs)
                 assertThat(it.beskrivelse).isEqualTo(oppgave.beskrivelse)

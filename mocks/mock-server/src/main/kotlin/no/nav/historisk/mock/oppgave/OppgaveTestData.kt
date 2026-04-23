@@ -1,9 +1,14 @@
 package no.nav.historisk.mock.oppgave
 
 import net.datafaker.Faker
-import no.nav.common.types.*
+import no.nav.common.types.AktorId
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.Enhetsnummer
+import no.nav.common.types.NavIdent
 import no.nav.historisk.mock.pdl.fakeAktoerIdFromFnr
-import no.nav.oppgave.OppgaveGjelder
+import no.nav.oppgave.Behandlingstema
+import no.nav.oppgave.Behandlingstype
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.OppgaveDto
 import java.time.LocalDate
@@ -16,7 +21,6 @@ val faker= Faker()
 
 fun generateOppgave(fnr:String?= null, tilordnetRessurs: NavIdent?= null): OppgaveDto {
     val ident = fnr?: faker.numerify("5##########")
-    val gjelder = faker.options().option(OppgaveGjelder::class.java)
     return OppgaveDto(
         id = EksternOppgaveId(faker.number().positive().toLong()),
         tildeltEnhetsnr = Enhetsnummer("1234"),
@@ -27,8 +31,8 @@ fun generateOppgave(fnr:String?= null, tilordnetRessurs: NavIdent?= null): Oppga
         opprettetTidspunkt = faker.timeAndDate().past().atOffset(ZoneOffset.UTC),
         fristFerdigstillelse = LocalDate.ofInstant(faker.timeAndDate().future(), ZoneOffset.UTC),
         tema = "HEL",
-        behandlingstema = gjelder.behandlingstema,
-        behandlingstype = gjelder.behandlingstype,
+        behandlingstema = faker.options().option(Behandlingstema::class.java).kode,
+        behandlingstype = faker.options().option(Behandlingstype::class.java).kode,
         oppgavetype = OppgaveType.JFR.oppgavetype,
         status = OppgaveDto.Status.OPPRETTET,
         prioritet = OppgaveDto.Prioritet.NORM,
