@@ -6,4 +6,10 @@ enum class EksternFellesKodeverkTema(val navn: String) {
 
     val kode: String
         get() = this.name
+
+    companion object {
+        fun hasItem(value: String): Boolean {
+            return entries.any { it.name == value }
+        }
+    }
 }

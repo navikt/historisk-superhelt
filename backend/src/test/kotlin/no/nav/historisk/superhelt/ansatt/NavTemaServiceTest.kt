@@ -1,5 +1,6 @@
-package no.nav.historisk.superhelt.tema
+package no.nav.historisk.superhelt.ansatt
 
+import no.nav.common.consts.EksternFellesKodeverkTema
 import no.nav.entraproxy.EntraProxyClient
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -10,15 +11,15 @@ import org.mockito.kotlin.whenever
 class NavTemaServiceTest {
 
     private val entraProxyClient: EntraProxyClient = mock()
-    private val service = NavTemaService(entraProxyClient)
+    private val service = NavAnsattService(entraProxyClient)
 
     @Test
     fun `hentNavTema returnerer sett med tema fra entra-proxy`() {
-        whenever(entraProxyClient.hentTema()).thenReturn(setOf("HJE", "ORT", "AAP"))
+        whenever(entraProxyClient.hentTema()).thenReturn(setOf("HJE", "ORT", "AAP", "HEL"))
 
         val result = service.hentNavTema()
 
-        assertThat(result).containsExactlyInAnyOrder("HJE", "ORT", "AAP")
+        assertThat(result).containsExactlyInAnyOrder(EksternFellesKodeverkTema.HJE, EksternFellesKodeverkTema.HEL)
     }
 
     @Test

@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.test
 
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Enhetsnummer
 import no.nav.dokarkiv.DokarkivClient
 import no.nav.dokarkiv.JournalpostResponse
 import no.nav.dokdist.DokdistClient
@@ -129,7 +130,7 @@ class ExternalMockTestConfig {
     fun entraProxyClientMock(): EntraProxyClient {
         logger.warn("Bruker mock av EntraProxyClient")
         return mock<EntraProxyClient>().stub {
-            on { hentEnheter() } doReturn listOf(Enhet(enhetnummer = "4488", navn = "NAV Vest-Viken"))
+            on { hentEnheter() } doReturn listOf(Enhet(enhetnummer = Enhetsnummer("4488"), navn = "NAV Vest-Viken"))
             on { hentTema() } doReturn setOf("HJE", "ORT")
         }
     }

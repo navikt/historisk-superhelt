@@ -1,6 +1,8 @@
 package no.nav.entraproxy
 
+import no.nav.common.types.Enhetsnummer
+
 data class Enhet(
-    val enhetnummer: String,
+    val enhetnummer: Enhetsnummer,
     val navn: String,
 )

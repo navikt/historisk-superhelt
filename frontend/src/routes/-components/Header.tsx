@@ -1,6 +1,6 @@
-import { findPersonByFnr as findPerson } from "@generated";
-import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
-import { LeaveIcon } from "@navikt/aksel-icons";
+import {findPersonByFnr as findPerson} from "@generated";
+import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
+import {LeaveIcon} from "@navikt/aksel-icons";
 import {
     Bleed,
     BodyShort,
@@ -13,22 +13,21 @@ import {
     Search,
     Spacer,
 } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Breakpoint3xl } from "~/common/layout/layout.constants";
-import { temaBeskrivelse } from "~/common/tema.utils";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
+import {useState} from "react";
+import {Breakpoint3xl} from "~/common/layout/layout.constants";
 
 export function Header() {
     const [search, setSearch] = useState<string>();
     const [searchError, setSearchError] = useState<string>();
     const navigate = useNavigate();
 
-    const { data: user } = useSuspenseQuery({
+    const { data: navAnsatt } = useSuspenseQuery({
         ...getUserInfoOptions(),
     });
 
-    const hasAccess = user.roles.length > 0;
+    const hasAccess = navAnsatt.roles.length > 0;
 
     async function doSearch() {
         setSearchError(undefined);
@@ -83,15 +82,15 @@ export function Header() {
                     <Spacer />
 
                     <Dropdown>
-                        <InternalHeader.UserButton as={Dropdown.Toggle} name={user?.name ?? "--"} />
+                        <InternalHeader.UserButton as={Dropdown.Toggle} name={navAnsatt?.name ?? "--"} />
                         <Dropdown.Menu>
                             <dl>
                                 <BodyShort as="dt" size="small">
-                                    {user?.name}
+                                    {navAnsatt?.name}
                                 </BodyShort>
-                                <Detail as="dd">Roller: {user?.roles.join(", ")}</Detail>
-                                <Detail as="dd">Enhet: {user?.enhet}</Detail>
-                                <Detail as="dd">Tema: {user?.tema.map(temaBeskrivelse).join(", ")}</Detail>
+                                <Detail as="dd">Roller: {navAnsatt?.roles.join(", ")}</Detail>
+                                <Detail as="dd">Enhet: {navAnsatt?.enheter.map(e => `${e.navn}(${e.enhetnummer}) ` ).join(", ")}</Detail>
+                                <Detail as="dd">Tema: {navAnsatt?.tema.join(", ")}</Detail>
                             </dl>
                             <Dropdown.Menu.Divider />
                             <Dropdown.Menu.List>

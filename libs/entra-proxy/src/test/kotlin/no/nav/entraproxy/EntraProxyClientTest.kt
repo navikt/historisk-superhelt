@@ -15,7 +15,6 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
-import kotlin.jvm.java
 
 class EntraProxyClientTest {
 
@@ -49,10 +48,8 @@ class EntraProxyClientTest {
         val result = client.hentEnheter()
 
         assertThat(result).hasSize(2)
-        assertThat(result[0].enhetnummer).isEqualTo("4488")
-        assertThat(result[0].navn).isEqualTo("NAV Vest-Viken")
-        assertThat(result[1].enhetnummer).isEqualTo("0300")
-        assertThat(result[1].navn).isEqualTo("NAV Oslo")
+        assertThat(result).extracting<String> { it.navn  }.contains("NAV Vest-Viken", "NAV Oslo")
+        assertThat(result).extracting<String> { it.enhetnummer.value  }.contains("4488", "0300")
     }
 
     @Test
