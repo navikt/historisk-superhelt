@@ -2,7 +2,7 @@ package no.nav.historisk.superhelt
 
 import no.nav.helved.KlasseKode
 
-enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskrivelse: String? = null, tema: Tema) {
+enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskrivelse: String? = null, val tema: Tema) {
 
     /* Helsetjenester */
     PARYKK(navn = "Parykk/hodeplagg", klassekode = KlasseKode.PARYKK, beskrivelse = "Dekker kostnader til parykk og hodeplagg", tema = Tema.HEL),

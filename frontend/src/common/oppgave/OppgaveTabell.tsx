@@ -19,12 +19,12 @@ type ScopedSortState = {
     orderBy: keyof OppgaveMedSak;
 } & SortState;
 
-export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
+export function OppgaveTabell({oppgaver, dineOppgaver}: Props) {
     const [sort, setSort] = useState<ScopedSortState | undefined>({
         orderBy: "fristFerdigstillelse",
         direction: "ascending",
     });
-    const { data: saksbehandler } = useSuspenseQuery(getUserInfoOptions());
+    const {data: saksbehandler} = useSuspenseQuery(getUserInfoOptions());
     const stonadsTypeNavn = useStonadsTypeNavn();
 
     const [page, setPage] = useState(1);
@@ -35,12 +35,12 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
             sort && sortKey === sort.orderBy && sort.direction === "descending"
                 ? undefined
                 : {
-                      orderBy: sortKey,
-                      direction:
-                          sort && sortKey === sort.orderBy && sort.direction === "ascending"
-                              ? "descending"
-                              : "ascending",
-                  },
+                    orderBy: sortKey,
+                    direction:
+                        sort && sortKey === sort.orderBy && sort.direction === "ascending"
+                            ? "descending"
+                            : "ascending",
+                },
         );
     };
 
@@ -75,8 +75,8 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
         );
     };
     const getKategori = (oppgave: OppgaveMedSak) => {
-        if (oppgave.oppgavetype=== "JFR"){
-            return oppgave.oppgaveGjelderTekst
+        if (oppgave.oppgavetype === "JFR") {
+            return oppgave.oppgaveGjelderTekst;
         }
         return oppgave.stonadsType
             ? stonadsTypeNavn(oppgave.stonadsType)
@@ -91,7 +91,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                 <Tag variant="outline" data-color={"info"} size="small">
                     {getKategori(oppgave)}
                 </Tag>
-                <BodyShort truncate style={{ maxWidth: "20rem" }}>
+                <BodyShort truncate style={{maxWidth: "20rem"}}>
                     {oppgave.sakBeskrivelse}
                 </BodyShort>
             </HStack>
@@ -107,7 +107,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                 >
                     <Table.Header>
                         <Table.Row>
-                            <Table.DataCell aria-label="Vis mer" />
+                            <Table.DataCell aria-label="Vis mer"/>
 
                             <Table.ColumnHeader sortKey="saksnummer" sortable>
                                 Saksnummer
@@ -130,12 +130,12 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                         {sortedData.map((oppgave) => (
                             <Table.ExpandableRow
                                 key={`${oppgave.oppgaveId}`}
-                                content={<OppgaveDetaljer oppgave={oppgave} />}
+                                content={<OppgaveDetaljer oppgave={oppgave}/>}
                             >
                                 <Table.DataCell>{renderSakLink(oppgave.saksnummer)}</Table.DataCell>
                                 <Table.DataCell>{renderOppgaveText(oppgave)}</Table.DataCell>
                                 <Table.DataCell>
-                                    {oppgave.sakStatus && <SakStatusTag status={oppgave.sakStatus} />}
+                                    {oppgave.sakStatus && <SakStatusTag status={oppgave.sakStatus}/>}
                                 </Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
                                 {dineOppgaver && (
@@ -144,7 +144,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                             <Link
                                                 as={RouterLink}
                                                 to={`/person/${oppgave.maskertPersonIdent}`}
-                                                style={{ textDecoration: "none" }}
+                                                style={{textDecoration: "none"}}
                                             >
                                                 {oppgave.fnr}
                                             </Link>
@@ -155,7 +155,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                 )}
                                 {!dineOppgaver && <Table.DataCell>{oppgave.tilordnetRessurs ?? ""}</Table.DataCell>}
                                 <Table.DataCell>
-                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident} />
+                                    <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident}/>
                                 </Table.DataCell>
                             </Table.ExpandableRow>
                         ))}
