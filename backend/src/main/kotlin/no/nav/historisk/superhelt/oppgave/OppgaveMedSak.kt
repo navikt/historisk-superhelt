@@ -7,11 +7,10 @@ import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.StonadsType
-import no.nav.oppgave.OppgaveGjelder
 import no.nav.oppgave.OppgaveType
 import no.nav.oppgave.model.OppgaveDto
 import java.time.LocalDate
@@ -22,7 +21,7 @@ data class OppgaveMedSak(
     val oppgaveId: EksternOppgaveId,
     val oppgavestatus: OppgaveDto.Status,
     val oppgavetype: OppgaveType,
-    val oppgaveGjelder: OppgaveGjelder,
+    val oppgaveGjelderTekst: String,
     val journalpostId: EksternJournalpostId?,
     val tilordnetRessurs: NavIdent?,
     val beskrivelse: String?,
@@ -41,4 +40,8 @@ data class OppgaveMedSak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent
         get() = fnr.toMaskertPersonIdent()
+
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val oppgaveTypeTekst: String
+        get() = oppgavetype.beskrivelse
 }

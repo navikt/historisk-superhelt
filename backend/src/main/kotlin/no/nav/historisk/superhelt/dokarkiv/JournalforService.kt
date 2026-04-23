@@ -48,7 +48,7 @@ class JournalforService (
                     endring = "Dokument mottatt av NAV",
                     tidspunkt = it.toInstant(),
                     navBruker = NavIdent("system"),
-                    beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelder.stringValue}\" registrert som mottatt"
+                    beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelderTekst}\" registrert som mottatt"
                 )
         }
         endringsloggService.logChange(

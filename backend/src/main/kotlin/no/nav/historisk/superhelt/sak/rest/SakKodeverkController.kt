@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

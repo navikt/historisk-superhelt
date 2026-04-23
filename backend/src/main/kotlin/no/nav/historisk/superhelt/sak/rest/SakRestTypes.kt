@@ -3,10 +3,10 @@ package no.nav.historisk.superhelt.sak.rest
 import jakarta.validation.constraints.Size
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.BrevId
 import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat

@@ -64,8 +64,8 @@ class OppgaveClientForUtvikler {
                     personident = "28497016101",
                     tema = EksternFellesKodeverkTema.HEL.name,
                     oppgavetype = OppgaveType.BEH_SAK.oppgavetype,
-                    behandlingstema = OppgaveGjelder.REISEUTGIFTER.behandlingstema,
-                    behandlingstype = OppgaveGjelder.REISEUTGIFTER.behandlingstype,
+                    behandlingstema = Behandlingstema.REISEUTGIFTER.kode,
+                    behandlingstype = null,
                     beskrivelse = "Test oppgave fra utvikler",
                     uuid = UUID.randomUUID(),
                 )
