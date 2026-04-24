@@ -1,10 +1,10 @@
-import type {Page} from "@playwright/test";
-import {expect} from "@playwright/test";
-import {test} from "./test.fixtures";
-import type {AuthUtils} from "./auth.utils";
-import type {SakPage} from "./sak.page";
-import type {SokPage} from "./sok.page";
-import type {JournalforingPage} from "./journalforing.page";
+import type { Page } from "@playwright/test";
+import { expect } from "@playwright/test";
+import type { AuthUtils } from "./auth.utils";
+import type { JournalforingPage } from "./journalforing.page";
+import type { SakPage } from "./sak.page";
+import type { SokPage } from "./sok.page";
+import { test } from "./test.fixtures";
 
 interface SaraFixtures {
     auth: AuthUtils;
@@ -19,10 +19,7 @@ interface AtleFixtures {
     sak: SakPage;
 }
 
-export async function behandleSakTilAttestring(
-    { auth, sak, journalforing }: SaraFixtures,
-    brukerFnr: string,
-) {
+export async function behandleSakTilAttestring({ auth, sak, journalforing }: SaraFixtures, brukerFnr: string) {
     await test.step("Logg inn Sara", async () => {
         await auth.loginSara();
     });
@@ -48,10 +45,7 @@ export async function behandleSakTilAttestring(
     });
 }
 
-export async function attesterSakGodkjenn(
-    { page, auth, sok, sak }: AtleFixtures,
-    brukerFnr: string,
-) {
+export async function attesterSakGodkjenn({ page, auth, sok, sak }: AtleFixtures, brukerFnr: string) {
     await test.step("Logg inn Atle", async () => {
         await auth.loginAtle();
     });
@@ -64,14 +58,16 @@ export async function attesterSakGodkjenn(
         await page.getByRole("button", { name: "Attester" }).click();
     });
 
-    await test.step("Velg oppsummering", async () => {
-        await sak.selectMenuItem("Oppsummering");
+    await test.step("Velg Godkjenning", async () => {
+        await sak.selectMenuItem("Godkjenning");
     });
 
     await test.step("Attester og ferdigstill", async () => {
         await expect(page.getByRole("heading", { name: "Godkjenne sak" })).toBeVisible();
         await page.getByRole("radio", { name: "Godkjenn vedtak" }).check();
         await page.getByRole("button", { name: "Attester sak" }).click();
-        await expect(page.getByRole("heading", { name: "Saken er ferdigstilt" })).toBeVisible({ timeout: 20_000 });
+        await expect(page.getByRole("heading", { name: "Saken er innvilget og ferdigstilt" })).toBeVisible({
+            timeout: 20_000,
+        });
     });
 }

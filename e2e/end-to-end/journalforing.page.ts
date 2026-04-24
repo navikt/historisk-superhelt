@@ -1,10 +1,10 @@
-import {expect, type Page} from "@playwright/test";
-import {opprettJFR, tildelOppgave} from "./oppgave.utils";
+import { expect, type Page } from "@playwright/test";
+import { opprettJFR, tildelOppgave } from "./oppgave.utils";
 
 export class JournalforingPage {
     constructor(public readonly page: Page) {}
 
-    async journalforNySak(fnr: string, saksbehandler: string, soknadType = "REISEUTGIFTER", dokumentTittel?: string ) {
+    async journalforNySak(fnr: string, saksbehandler: string, soknadType = "REISEUTGIFTER", dokumentTittel?: string) {
         const jfrId = await opprettJFR(fnr);
         await tildelOppgave(jfrId, saksbehandler);
         await this.velgOppgave(fnr);
@@ -35,7 +35,7 @@ export class JournalforingPage {
         await expect(this.page.getByRole("heading", { name: "Journalfør oppgave" })).toBeVisible();
     }
 
-    private async settTittel(dokumentTittel: string| undefined) {
+    private async settTittel(dokumentTittel: string | undefined) {
         if (dokumentTittel) {
             await this.page.getByRole("textbox", { name: "Dokumenttittel", exact: true }).fill(dokumentTittel);
         }

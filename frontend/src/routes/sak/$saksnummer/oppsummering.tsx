@@ -1,9 +1,8 @@
-import { Heading, InfoCard, VStack } from "@navikt/ds-react";
+import { BodyShort, Heading, InfoCard, VStack } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
 import AttesterSakAction from "~/routes/sak/$saksnummer/-components/AttesterSakAction";
-import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import SakErrorSummary from "~/routes/sak/$saksnummer/-components/SakErrorSummary";
 import TotrinnkontrollAction from "~/routes/sak/$saksnummer/-components/TotrinnkontrollAction";
 
@@ -38,23 +37,33 @@ function OppsummeringPage() {
                         <SakErrorSummary sak={sak} />
                     </>
                 );
-            case "FERDIG":
-                if (sak.vedtaksResultat === "HENLAGT") {
-                    return <Heading size={"medium"}>Saken er henlagt</Heading>;
-                }
+            case "FERDIG": {
+                const ferdigTekst = () => {
+                    switch (sak.vedtaksResultat) {
+                        case "HENLAGT":
+                            return "Saken er henlagt";
+                        case "INNVILGET":
+                        case "DELVIS_INNVILGET":
+                            return "Saken er godkjent";
+                        case "AVSLATT":
+                            return "Saken er ikke godkjent";
+                        default:
+                            return "Saken er ferdigstilt";
+                    }
+                };
                 return (
                     <>
-                        <Heading size={"medium"}>Saken er ferdigstilt</Heading>
+                        <VStack gap="space-2">
+                            <Heading size={"medium"}>{ferdigTekst()}</Heading>
+                            <BodyShort>Saksbehandler: {sak.saksbehandler.navn}</BodyShort>
+                            {sak.attestant && <BodyShort>Attestant: {sak.attestant.navn}</BodyShort>}
+                        </VStack>
                         <SakErrorSummary sak={sak} />
                     </>
                 );
+            }
         }
     }
 
-    return (
-        <VStack gap={"space-32"}>
-            {renderAction()}
-            <SakEndringer sak={sak} />
-        </VStack>
-    );
+    return <VStack gap={"space-32"}>{renderAction()}</VStack>;
 }
