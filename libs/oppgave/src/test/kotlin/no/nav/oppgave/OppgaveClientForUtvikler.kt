@@ -38,7 +38,7 @@ class OppgaveClientForUtvikler {
             FinnOppgaverParams(
                 statuskategori = "AAPEN",
                 tilordnetRessurs = NavIdent("Z990749"),
-                tema = listOf("HEL"),
+                tema = listOf(EksternFellesKodeverkTema.HEL),
             )
         )
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))
@@ -50,7 +50,7 @@ class OppgaveClientForUtvikler {
             FinnOppgaverParams(
                 statuskategori = "AAPEN",
                 saksreferanse = listOf("Test-123"),
-                tema = listOf("HEL"),
+                tema = listOf(EksternFellesKodeverkTema.HEL),
             )
         )
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))

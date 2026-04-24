@@ -1,17 +1,27 @@
 package no.nav.oppgave
 
+import no.nav.common.consts.EksternFellesKodeverkTema
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.NavIdent
-import no.nav.oppgave.model.*
+import no.nav.oppgave.model.FinnOppgaverParams
+import no.nav.oppgave.model.OppgaveDto
+import no.nav.oppgave.model.OpprettOppgaveRequest
+import no.nav.oppgave.model.PatchOppgaveRequest
+import no.nav.oppgave.model.SokOppgaverResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.hamcrest.CoreMatchers.startsWith
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers.*
+import org.springframework.test.web.client.match.MockRestRequestMatchers.content
+import org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath
+import org.springframework.test.web.client.match.MockRestRequestMatchers.method
+import org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam
+import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
@@ -183,7 +193,7 @@ class OppgaveClientTest {
         // Arrange
         val params = FinnOppgaverParams(
             statuskategori = "AAPEN",
-            tema = listOf("OPP"),
+            tema = listOf(EksternFellesKodeverkTema.HEL),
             limit = 10
         )
 
@@ -197,10 +207,10 @@ class OppgaveClientTest {
             oppgaver = oppgaver
         )
 
-        mockServer.expect(requestTo("/api/v1/oppgaver?statuskategori=AAPEN&tema=OPP&limit=10"))
+        mockServer.expect(requestTo(startsWith("/api/v1/oppgaver?")))
             .andExpect(method(HttpMethod.GET))
             .andExpect(queryParam("statuskategori", "AAPEN"))
-            .andExpect(queryParam("tema", "OPP"))
+            .andExpect(queryParam("tema", "HEL"))
             .andExpect(queryParam("limit", "10"))
             .andRespond(
                 withStatus(HttpStatus.OK)
@@ -220,7 +230,7 @@ class OppgaveClientTest {
         // Arrange
         val params = FinnOppgaverParams(
             statuskategori = "AAPEN",
-            tema = listOf("OPP", "FOR"),
+            tema = listOf(EksternFellesKodeverkTema.HEL, EksternFellesKodeverkTema.HJE),
             oppgavetype = listOf("JFR", "KONT"),
             tildeltEnhetsnr = Enhetsnummer("4100"),
             tilordnetRessurs = NavIdent("Z999999"),
@@ -235,10 +245,10 @@ class OppgaveClientTest {
             )
         )
 
-        mockServer.expect(requestTo("/api/v1/oppgaver?statuskategori=AAPEN&tema=OPP&tema=FOR&oppgavetype=JFR&oppgavetype=KONT&tildeltEnhetsnr=4100&tilordnetRessurs=Z999999&limit=20&offset=0"))
+        mockServer.expect(requestTo(startsWith("/api/v1/oppgaver?")))
             .andExpect(method(HttpMethod.GET))
             .andExpect(queryParam("statuskategori", "AAPEN"))
-            .andExpect(queryParam("tema", "OPP", "FOR"))
+            .andExpect(queryParam("tema", "HEL", "HJE"))
             .andExpect(queryParam("oppgavetype", "JFR", "KONT"))
             .andExpect(queryParam("tildeltEnhetsnr", "4100"))
             .andExpect(queryParam("tilordnetRessurs", "Z999999"))
