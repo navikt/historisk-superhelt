@@ -9,7 +9,7 @@ data class NavAnsatt(
     val name: String,
     val ident: NavIdent,
     val roles: List<Role>,
-    val enheter: Set<Enhet>,
-    val tema: Set<EksternFellesKodeverkTema>
+    val enheter: List<Enhet>,
+    val tema: List<EksternFellesKodeverkTema>
 
 )
