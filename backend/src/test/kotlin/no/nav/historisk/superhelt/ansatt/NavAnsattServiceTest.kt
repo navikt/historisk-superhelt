@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.ansatt
 
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.withMockedUser
@@ -43,7 +43,7 @@ class NavAnsattServiceTest {
         val result = service.hentNavAnsatt()
 
         assertThat(result.enheter).isEqualTo(enheter)
-        assertThat(result.tema).containsExactlyInAnyOrder(EksternFellesKodeverkTema.HJE, EksternFellesKodeverkTema.HEL)
+        assertThat(result.tema).containsExactlyInAnyOrder(FellesKodeverkTema.HJE, FellesKodeverkTema.HEL)
     }
 
     @Test

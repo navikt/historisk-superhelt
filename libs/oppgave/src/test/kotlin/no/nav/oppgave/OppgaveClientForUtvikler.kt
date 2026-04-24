@@ -1,6 +1,6 @@
 package no.nav.oppgave
 
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.FinnOppgaverParams
@@ -38,7 +38,7 @@ class OppgaveClientForUtvikler {
             FinnOppgaverParams(
                 statuskategori = "AAPEN",
                 tilordnetRessurs = NavIdent("Z990749"),
-                tema = listOf(EksternFellesKodeverkTema.HEL),
+                tema = listOf(FellesKodeverkTema.HEL),
             )
         )
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))
@@ -50,7 +50,7 @@ class OppgaveClientForUtvikler {
             FinnOppgaverParams(
                 statuskategori = "AAPEN",
                 saksreferanse = listOf("Test-123"),
-                tema = listOf(EksternFellesKodeverkTema.HEL),
+                tema = listOf(FellesKodeverkTema.HEL),
             )
         )
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))
@@ -62,7 +62,7 @@ class OppgaveClientForUtvikler {
             client.opprettOppgave(
                 OpprettOppgaveRequest(
                     personident = "28497016101",
-                    tema = EksternFellesKodeverkTema.HEL.name,
+                    tema = FellesKodeverkTema.HEL.name,
                     oppgavetype = OppgaveType.BEH_SAK.oppgavetype,
                     behandlingstema = Behandlingstema.REISEUTGIFTER.kode,
                     behandlingstype = null,

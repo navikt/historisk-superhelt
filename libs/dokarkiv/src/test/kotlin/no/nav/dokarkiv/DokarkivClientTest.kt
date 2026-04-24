@@ -1,6 +1,6 @@
 package no.nav.dokarkiv
 
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
@@ -198,7 +198,7 @@ class DokarkivClientTest {
     private fun journalpostRequest(): JournalpostRequest =
         JournalpostRequest(
             tittel = "Test tittel",
-            tema = EksternFellesKodeverkTema.HEL,
+            tema = FellesKodeverkTema.HEL,
             journalpostType = JournalpostType.INNGAAENDE,
             avsenderMottaker =
                 AvsenderMottaker(

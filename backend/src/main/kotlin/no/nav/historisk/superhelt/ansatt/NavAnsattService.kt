@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.ansatt
 
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.entraproxy.Enhet
 import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
@@ -21,10 +21,10 @@ class NavAnsattService(private val entraProxyClient: EntraProxyClient, cacheMana
         return entraProxyClient.hentEnheter()
     }
 
-    private fun hentNavTema(): List<EksternFellesKodeverkTema> {
+    private fun hentNavTema(): List<FellesKodeverkTema> {
         return entraProxyClient.hentTema()
-            .filter { EksternFellesKodeverkTema.hasItem(it) }
-            .map { EksternFellesKodeverkTema.valueOf(it) }
+            .filter { FellesKodeverkTema.hasItem(it) }
+            .map { FellesKodeverkTema.valueOf(it) }
     }
 
     private fun hentFraEntraProxy(): NavAnsatt {

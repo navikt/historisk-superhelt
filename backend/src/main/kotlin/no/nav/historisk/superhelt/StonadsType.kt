@@ -1,10 +1,10 @@
 package no.nav.historisk.superhelt
 
-import no.nav.common.consts.EksternFellesKodeverkTema
-import no.nav.common.consts.EksternFellesKodeverkTema.HEL
+import no.nav.common.consts.FellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema.HEL
 import no.nav.helved.KlasseKode
 
-enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskrivelse: String? = null, val tema: EksternFellesKodeverkTema) {
+enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskrivelse: String? = null, val tema: FellesKodeverkTema) {
 
     /* Helsetjenester */
     PARYKK(navn = "Parykk/hodeplagg", klassekode = KlasseKode.PARYKK, beskrivelse = "Dekker kostnader til parykk og hodeplagg", tema = HEL),

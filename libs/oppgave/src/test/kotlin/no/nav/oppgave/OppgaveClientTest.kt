@@ -1,6 +1,6 @@
 package no.nav.oppgave
 
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.NavIdent
@@ -193,7 +193,7 @@ class OppgaveClientTest {
         // Arrange
         val params = FinnOppgaverParams(
             statuskategori = "AAPEN",
-            tema = listOf(EksternFellesKodeverkTema.HEL),
+            tema = listOf(FellesKodeverkTema.HEL),
             limit = 10
         )
 
@@ -230,7 +230,7 @@ class OppgaveClientTest {
         // Arrange
         val params = FinnOppgaverParams(
             statuskategori = "AAPEN",
-            tema = listOf(EksternFellesKodeverkTema.HEL, EksternFellesKodeverkTema.HJE),
+            tema = listOf(FellesKodeverkTema.HEL, FellesKodeverkTema.HJE),
             oppgavetype = listOf("JFR", "KONT"),
             tildeltEnhetsnr = Enhetsnummer("4100"),
             tilordnetRessurs = NavIdent("Z999999"),

@@ -1,6 +1,6 @@
 package no.nav.common.consts
 
-enum class EksternFellesKodeverkTema(val navn: String) {
+enum class FellesKodeverkTema(val navn: String) {
     HEL("Helsetjenester"),
     HJE("Hjelpemidler");
 

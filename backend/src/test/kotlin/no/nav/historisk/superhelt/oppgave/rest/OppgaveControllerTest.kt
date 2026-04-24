@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.oppgave.rest
 
 import no.nav.common.consts.APP_NAVN
-import no.nav.common.consts.EksternFellesKodeverkTema.HEL
-import no.nav.common.consts.EksternFellesKodeverkTema.HJE
+import no.nav.common.consts.FellesKodeverkTema.HEL
+import no.nav.common.consts.FellesKodeverkTema.HJE
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak

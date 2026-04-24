@@ -1,7 +1,7 @@
 package no.nav.historisk.superhelt.oppgave
 
 import net.datafaker.Faker
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
@@ -17,7 +17,7 @@ import java.time.OffsetDateTime
 object OppgaveTestdata {
     private val faker: Faker = Faker()
 
-    fun opprettOppgave(bruker: String = faker.numerify("###########"), tema: EksternFellesKodeverkTema= EksternFellesKodeverkTema.HEL) =
+    fun opprettOppgave(bruker: String = faker.numerify("###########"), tema: FellesKodeverkTema= FellesKodeverkTema.HEL) =
         OppgaveDto(
             id = EksternOppgaveId(faker.number().positive().toLong()),
             tildeltEnhetsnr = Enhetsnummer("1234"),

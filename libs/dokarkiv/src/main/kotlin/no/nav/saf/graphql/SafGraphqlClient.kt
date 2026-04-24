@@ -1,6 +1,6 @@
 package no.nav.saf.graphql
 
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
 import org.springframework.http.MediaType
@@ -27,7 +27,7 @@ class SafGraphqlClient(
 
     fun dokumentoversiktFagsak(
         saksnummer: Saksnummer,
-        tema: List<EksternFellesKodeverkTema> = listOf(EksternFellesKodeverkTema.HEL),
+        tema: List<FellesKodeverkTema> = listOf(FellesKodeverkTema.HEL),
    // TODO Bytte ut med konstant for fagsak
         fagsakSystem: String = "HELT"
     ): DokumentoversiktGraphqlResponse {

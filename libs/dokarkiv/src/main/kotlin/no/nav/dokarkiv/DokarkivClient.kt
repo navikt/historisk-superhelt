@@ -1,6 +1,6 @@
 package no.nav.dokarkiv
 
-import no.nav.common.consts.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
@@ -78,7 +78,7 @@ class DokarkivClient(
         tittel: String,
         bruker: FolkeregisterIdent,
         avsender: FolkeregisterIdent,
-        tema: EksternFellesKodeverkTema = EksternFellesKodeverkTema.HEL,
+        tema: FellesKodeverkTema = FellesKodeverkTema.HEL,
         dokumenter: List<DokumentMedTittel>? = null,
     ) {
         val req =
