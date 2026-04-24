@@ -30,7 +30,7 @@ class NavAnsattServiceTest {
 
     @BeforeEach
     fun setUp() {
-        cacheManager.getCache("entraProxyCache")?.clear()
+        cacheManager.getCache(NAVANSATT_CACHE)?.clear()
         service = NavAnsattService(entraProxyClient, cacheManager)
     }
 

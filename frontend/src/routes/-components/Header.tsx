@@ -1,6 +1,6 @@
-import {findPersonByFnr as findPerson} from "@generated";
-import {getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
-import {LeaveIcon} from "@navikt/aksel-icons";
+import { findPersonByFnr as findPerson } from "@generated";
+import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
+import { LeaveIcon } from "@navikt/aksel-icons";
 import {
     Bleed,
     BodyShort,
@@ -13,10 +13,10 @@ import {
     Search,
     Spacer,
 } from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {Link as RouterLink, useNavigate} from "@tanstack/react-router";
-import {useState} from "react";
-import {Breakpoint3xl} from "~/common/layout/layout.constants";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { Breakpoint3xl } from "~/common/layout/layout.constants";
 
 export function Header() {
     const [search, setSearch] = useState<string>();
@@ -89,7 +89,9 @@ export function Header() {
                                     {navAnsatt?.name}
                                 </BodyShort>
                                 <Detail as="dd">Roller: {navAnsatt?.roles.join(", ")}</Detail>
-                                <Detail as="dd">Enhet: {navAnsatt?.enheter.map(e => `${e.navn}(${e.enhetnummer}) ` ).join(", ")}</Detail>
+                                <Detail as="dd">
+                                    Enhet: {navAnsatt?.enheter.map((e) => `${e.navn}(${e.enhetnummer})`).join(", ")}
+                                </Detail>
                                 <Detail as="dd">Tema: {navAnsatt?.tema.join(", ")}</Detail>
                             </dl>
                             <Dropdown.Menu.Divider />

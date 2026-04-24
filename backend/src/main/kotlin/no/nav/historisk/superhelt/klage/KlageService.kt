@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service
 @Service
 class KlageService(
     private val kabalClient: KabalClient,
-    private val navEnhetService: NavAnsattService,
+    private val navAnsattService: NavAnsattService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -37,7 +37,7 @@ class KlageService(
                 validationErrors = listOf(ValidationFieldError("hjemmelId", "Ukjent hjemmelId: ${request.hjemmelId}")),
             )
         }
-        val enhet = navEnhetService.hentNavAnsatt().enheter.firstOrNull()
+        val enhet = navAnsattService.hentNavAnsatt().enheter.firstOrNull()
             ?: throw IllegalArgumentException("Bruker må være tilknyttet minst én enhet for å sende klage")
 
         val kabalRequest = SendSakV4Request(

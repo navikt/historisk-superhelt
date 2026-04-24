@@ -116,7 +116,7 @@ class OppgaveControllerTest {
             assertThat(it.tema).containsExactlyInAnyOrder( HEL)
             assertThat(it.tilordnetRessurs).isNull()
             assertThat(it.statuskategori).isEqualTo("AAPEN")
-            assertThat(it.aktoerId).isNotNull
+            assertThat(it.aktoerId).isNotNull()
 
         })
     }
