@@ -19,6 +19,6 @@ class EntraProxyMockController {
 
     @GetMapping("/api/v1/tema")
     fun hentTema(): List<String> {
-        return listOf("HJE", "ORT")
+        return listOf("HJE", "HEL")
     }
 }

@@ -1,10 +1,10 @@
 package no.nav.historisk.superhelt.oppgave
 
 import net.datafaker.Faker
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
-import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.StonadsType
@@ -17,16 +17,18 @@ import java.time.OffsetDateTime
 object OppgaveTestdata {
     private val faker: Faker = Faker()
 
-    fun opprettOppgave(bruker: String = faker.numerify("###########")) =
+    fun opprettOppgave(bruker: String = faker.numerify("###########"), tema: FellesKodeverkTema= FellesKodeverkTema.HEL) =
         OppgaveDto(
             id = EksternOppgaveId(faker.number().positive().toLong()),
             tildeltEnhetsnr = Enhetsnummer("1234"),
             oppgavetype = faker.options().option(OppgaveType::class.java).oppgavetype,
-            tema = "HEL",
+            tema = tema.kode,
             status = faker.options().option(OppgaveDto.Status::class.java),
             journalpostId = EksternJournalpostId(faker.number().positive().toString()),
             aktoerId = null,
             tilordnetRessurs = NavIdent(faker.bothify("?#####")),
+            fristFerdigstillelse = LocalDate.now().plusDays(2),
+            opprettetTidspunkt = OffsetDateTime.now().minusDays(4),
             versjon = 1,
             prioritet = OppgaveDto.Prioritet.NORM,
             aktivDato = LocalDate.now(),
@@ -40,23 +42,6 @@ object OppgaveTestdata {
         sakBeskrivelse = faker.ghostbusters().quote()
     )
 
-    fun oppgaveUtenSak() = OppgaveMedSak(
-        oppgaveId = EksternOppgaveId(faker.number().positive().toLong()),
-        tildeltEnhetsnr = Enhetsnummer("1234"),
-        oppgavetype = faker.options().option(OppgaveType::class.java),
-        oppgavestatus = faker.options().option(OppgaveDto.Status::class.java),
-        journalpostId = EksternJournalpostId(faker.number().positive().toString()),
-        tilordnetRessurs = NavIdent(faker.bothify("?#####")),
-        fnr = FolkeregisterIdent(faker.numerify("###########")),
-        oppgaveGjelderTekst = faker.pokemon().name(),
-        beskrivelse = faker.lorem().sentence(),
-        fristFerdigstillelse = LocalDate.now().plusDays(1),
-        opprettetTidspunkt = OffsetDateTime.now(),
-        behandlesAvApplikasjon = null,
-        opprettetAv = faker.bothify("?#####"),
-        saksnummer = null,
-        sakStatus = null,
-        stonadsType = null,
-        sakBeskrivelse = null
-    )
+    fun oppgaveUtenSak()= opprettOppgave().toOppgaveMedSak(null)
+
 }

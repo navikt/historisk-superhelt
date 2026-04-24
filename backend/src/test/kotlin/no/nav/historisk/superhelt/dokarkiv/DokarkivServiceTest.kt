@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.dokarkiv
 
-import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
@@ -80,7 +80,7 @@ class DokarkivServiceTest {
         val capturedRequest = journalpostRequestCaptor.firstValue
         assertEquals(brev.tittel, capturedRequest.tittel)
         assertEquals(JournalpostType.UTGAAENDE, capturedRequest.journalpostType)
-        assertEquals(EksternFellesKodeverkTema.HEL, capturedRequest.tema)
+        assertEquals(FellesKodeverkTema.HEL, capturedRequest.tema)
         assertEquals(sak.fnr.value, capturedRequest.avsenderMottaker?.id)
         assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)
         assertEquals(brev.uuid.toString(), capturedRequest.eksternReferanseId)
@@ -232,7 +232,7 @@ class DokarkivServiceTest {
             tittel = eq("Test dokument"),
             bruker = eq(bruker),
             avsender = eq(avsender),
-            tema = eq(EksternFellesKodeverkTema.HEL),
+            tema = eq(FellesKodeverkTema.HEL),
             dokumenter = dokumenterCaptor.capture()
         )
 

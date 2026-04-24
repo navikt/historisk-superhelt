@@ -1,9 +1,11 @@
 package no.nav.saf.graphql
 
+import no.nav.common.consts.FellesKodeverkTema
+
 data class DokumentoversiktFagsakVariables(
     val fagsakId: String,
     val fagsaksystem: String,
-    val tema: List<DokarkivTema>,
+    val tema: List<FellesKodeverkTema>,
     val foerste: Int = 10
 )
 

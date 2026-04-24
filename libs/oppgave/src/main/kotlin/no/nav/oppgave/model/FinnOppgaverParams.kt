@@ -1,5 +1,6 @@
 package no.nav.oppgave.model
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.AktorId
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Enhetsnummer
@@ -9,7 +10,7 @@ data class FinnOppgaverParams(
     /** Statuskategori er en kategorisering av statuser internt i oppgave, dvs at det kan søkes på enten AAPEN eller AVSLUTTET og de relevante oppgave vil returneres uten at konsument trenger å spesifisere alle statuser som representerer åpne oppgaver eller motsatt (avsluttede oppgaver) */
     val statuskategori: String? = null,
     /** Filtrering på aktuelle tema (iht felles kodeverk) */
-    val tema: List<String>? = null,
+    val tema: List<FellesKodeverkTema>? = null,
     /** Filtrering på aktuelle oppgavetyper (iht felles kodeverk) */
     val oppgavetype: List<String>? = null,
     /** Filtrering på tildelt enhet, enheten som har fått overført oppgaven til behandling */

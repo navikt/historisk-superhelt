@@ -1,6 +1,10 @@
 package no.nav.historisk.superhelt.oppgave.rest
 
+import no.nav.common.consts.APP_NAVN
+import no.nav.common.consts.FellesKodeverkTema.HEL
+import no.nav.common.consts.FellesKodeverkTema.HJE
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
@@ -18,7 +22,9 @@ import no.nav.oppgave.type
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.check
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
@@ -45,17 +51,22 @@ class OppgaveControllerTest {
     @MockitoBean
     private lateinit var personService: PersonService
 
+    @MockitoBean
+    private lateinit var entraProxyClient: EntraProxyClient
+
     @Autowired
     private lateinit var sakRepository: SakRepository
 
-    @WithSaksbehandler(navIdent = "Z123456")
+
+    @WithSaksbehandler(navIdent = "Z1111111")
     @Test
-    fun `Hent oppgaver for saksbehandler`() {
+    fun `Hent oppgaver for saksbehandler filterer ut oppgaver som ikke kan behandles `() {
+        whenever(entraProxyClient.hentTema()) doReturn setOf("HJE", "HEL")
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
             antallTreffTotalt = 4,
             oppgaver = listOf(
                 OppgaveTestdata.opprettOppgave().copy(oppgavetype = "JFR"),
-                OppgaveTestdata.opprettOppgave().copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "SUPERHELT"),
+                OppgaveTestdata.opprettOppgave().copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = APP_NAVN),
                 OppgaveTestdata.opprettOppgave().copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = null),
                 OppgaveTestdata.opprettOppgave().copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "other")
             )
@@ -68,19 +79,27 @@ class OppgaveControllerTest {
             .satisfies({
                 assertThat(it).hasSize(2)
             })
+
+        verify(oppgaveClient).finnOppgaver(check {
+            assertThat(it.tema).containsExactlyInAnyOrder(HJE, HEL)
+            assertThat(it.tilordnetRessurs?.value).isEqualTo("Z1111111")
+            assertThat(it.statuskategori).isEqualTo("AAPEN")
+        })
+
     }
 
     @WithSaksbehandler(navIdent = "Z123456")
     @Test
-    fun `Hent oppgaver for person`() {
+    fun `Hent oppgaver for person henter oppgaver for andre applikasjoner også`() {
+        whenever(entraProxyClient.hentTema()) doReturn setOf("HEL")
         val fnr = FolkeregisterIdent("12345678901")
         whenever(personService.hentPerson(fnr)) doReturn PersonTestData.testPerson.copy(fnr = fnr)
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
             antallTreffTotalt = 4,
             oppgaver = listOf(
                 OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "JFR"),
-                OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "SUPERHELT"),
-                OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "VUR", behandlesAvApplikasjon = "SUPERHELT"),
+                OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = APP_NAVN),
+                OppgaveTestdata.opprettOppgave(fnr.value, tema = HJE).copy(oppgavetype = "VUR", behandlesAvApplikasjon = APP_NAVN),
                 OppgaveTestdata.opprettOppgave(fnr.value).copy(oppgavetype = "BEH_SAK", behandlesAvApplikasjon = "other")
             )
         )
@@ -92,6 +111,14 @@ class OppgaveControllerTest {
             .satisfies({
                 assertThat(it).hasSize(3)
             })
+
+        verify(oppgaveClient).finnOppgaver(check {
+            assertThat(it.tema).containsExactlyInAnyOrder( HEL)
+            assertThat(it.tilordnetRessurs).isNull()
+            assertThat(it.statuskategori).isEqualTo("AAPEN")
+            assertThat(it.aktoerId).isNotNull()
+
+        })
     }
 
     @WithSaksbehandler
