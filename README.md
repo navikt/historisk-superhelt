@@ -50,7 +50,7 @@ Appen er tilgjengelig på http://localhost:4000 (gjennom Wonderwall med mock-aut
 **3. Start frontend:**
 ```shell
 # i /frontend
-npm start
+pnpm start
 ```
 
 Frontend er tilgjengelig på http://localhost:3000 med hot reload.  
@@ -67,14 +67,14 @@ For Colima på Mac, se https://golang.testcontainers.org/system_requirements/usi
 **Frontend:**
 ```shell
 # i /frontend
-npm run test
+pnpm run test
 ```
 
 **E2E** – krever at hele appen kjører:
 ```shell
 # i /e2e
-npx playwright test        # headless
-npx playwright test --ui   # med UI
+pnpm playwright:test        # headless
+pnpm playwright:test:ui     # med UI
 ```
 Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
 
@@ -86,6 +86,6 @@ Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.
 
 ```shell
 # i /frontend
-npm run biome        # sjekk
-npm run biome:write  # sjekk og skriv endringer
+pnpm run biome        # sjekk
+pnpm run biome:write  # sjekk og skriv endringer
 ```

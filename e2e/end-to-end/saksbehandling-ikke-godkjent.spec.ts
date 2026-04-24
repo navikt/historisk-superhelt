@@ -36,7 +36,7 @@ test.describe("Saksbehandling og attestering ikke godkjent", () => {
         });
 
         await test.step("Velg oppsummering ", async () => {
-            await sak.selectMenuItem("Oppsummering");
+            await sak.selectMenuItem("Godkjenning");
         });
 
         await test.step("Attester og avvis", async () => {
