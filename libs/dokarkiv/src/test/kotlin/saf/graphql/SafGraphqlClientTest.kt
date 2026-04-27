@@ -355,7 +355,7 @@ class SafGraphqlClientTest {
                    "journalstatus": "JOURNALFOERT",
                    "sak": {
                      "fagsakId": "$saksnummer",
-                     "fagsaksystem": "SUPERHELT"
+                     "fagsaksystem": "$APP_NAVN"
                    },
                    "bruker": {
                      "id": "987654321",
