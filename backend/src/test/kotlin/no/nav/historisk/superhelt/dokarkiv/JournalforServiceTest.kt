@@ -2,19 +2,28 @@ package no.nav.historisk.superhelt.dokarkiv
 
 import no.nav.common.types.NavIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
-import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.OpprettSakDto
+import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 

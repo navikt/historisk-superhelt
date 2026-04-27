@@ -5,6 +5,7 @@ import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
 import no.nav.historisk.superhelt.dokarkiv.JournalforDokument
@@ -15,7 +16,6 @@ import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
-import no.nav.historisk.superhelt.sak.StonadsType
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveType

@@ -51,7 +51,8 @@ class SakRettigheterTest {
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE,
                 SakRettighet.FEILREGISTERE,
-                SakRettighet.HENLEGGE
+                SakRettighet.HENLEGGE,
+                SakRettighet.FRITEKSTBREV
             )
         }
 
@@ -61,11 +62,12 @@ class SakRettigheterTest {
                 status = SakStatus.UNDER_BEHANDLING,
                 behandlingsnummer = Behandlingsnummer(2)
             )
-            assertThat( sak.gjenapnet ).isTrue
+            assertThat(sak.gjenapnet).isTrue
             assertThat(sak.rettigheter).containsExactlyInAnyOrder(
                 SakRettighet.LES,
                 SakRettighet.SAKSBEHANDLE,
-                SakRettighet.TILBAKESTILL_GJENAPNING
+                SakRettighet.TILBAKESTILL_GJENAPNING,
+                SakRettighet.FRITEKSTBREV
             )
         }
 
@@ -78,7 +80,7 @@ class SakRettigheterTest {
         }
 
         @Test
-        fun `får LES, GJENAPNE og SEND_KLAGE når sak er ferdig`() {
+        fun `rettigheter når sak er ferdig`() {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 status = SakStatus.FERDIG
             )
@@ -86,6 +88,7 @@ class SakRettigheterTest {
                 SakRettighet.LES,
                 SakRettighet.GJENAPNE,
                 SakRettighet.SEND_KLAGE,
+                SakRettighet.FRITEKSTBREV
             )
         }
 

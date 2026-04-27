@@ -1,4 +1,4 @@
-import type { Sak } from "@generated";
+import type {Sak} from "@generated";
 import {
     ArrowUndoIcon,
     ChevronDownIcon,
@@ -8,21 +8,21 @@ import {
     PaperplaneIcon,
     TrashIcon,
 } from "@navikt/aksel-icons";
-import { ActionMenu, Button } from "@navikt/ds-react";
-import { useState } from "react";
-import type { RettighetType } from "~/common/sak/sak.types";
-import { Feilregistrer } from "./Feilregistrer";
-import { FritekstBrev } from "./Fritekstbrev";
-import { Gjenapne } from "./Gjenapne";
-import { Henlegg } from "./Henlegg";
-import { SendKlage } from "./SendKlage";
-import { Tilbakestill } from "./Tilbakestill";
+import {ActionMenu, Button} from "@navikt/ds-react";
+import {useState} from "react";
+import type {RettighetType} from "~/common/sak/sak.types";
+import {Feilregistrer} from "./Feilregistrer";
+import {FritekstBrev} from "./Fritekstbrev";
+import {Gjenapne} from "./Gjenapne";
+import {Henlegg} from "./Henlegg";
+import {SendKlage} from "./SendKlage";
+import {Tilbakestill} from "./Tilbakestill";
 
 interface SakMenyProps {
     sak: Sak;
 }
 
-export default function BehandlingsMeny({ sak }: SakMenyProps) {
+export default function BehandlingsMeny({sak}: SakMenyProps) {
     const harRettighet = (rettighet: RettighetType) => sak.rettigheter.includes(rettighet);
     const [openFeilregistrer, setOpenFeilregistrer] = useState(false);
     const [openHenlegg, setOpenHenlegg] = useState(false);
@@ -37,7 +37,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                 <ActionMenu.Trigger>
                     <Button
                         variant="secondary"
-                        icon={<ChevronDownIcon aria-hidden />}
+                        icon={<ChevronDownIcon aria-hidden/>}
                         iconPosition="right"
                         size="medium"
                     >
@@ -49,7 +49,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                         {harRettighet("TILBAKESTILL_GJENAPNING") ? (
                             <ActionMenu.Item
                                 onSelect={() => setOpenTilbakestill(true)}
-                                icon={<ArrowUndoIcon aria-hidden />}
+                                icon={<ArrowUndoIcon aria-hidden/>}
                                 aria-haspopup="dialog"
                             >
                                 Angre gjenåpning
@@ -58,7 +58,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                             <ActionMenu.Item
                                 disabled={!harRettighet("FEILREGISTERE")}
                                 onSelect={() => setOpenFeilregistrer(true)}
-                                icon={<TrashIcon aria-hidden />}
+                                icon={<TrashIcon aria-hidden/>}
                                 aria-haspopup="dialog"
                             >
                                 Feilregistrer sak
@@ -67,7 +67,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                         <ActionMenu.Item
                             onSelect={() => setOpenHenlegg(true)}
                             disabled={!harRettighet("HENLEGGE")}
-                            icon={<GavelIcon aria-hidden />}
+                            icon={<GavelIcon aria-hidden/>}
                             aria-haspopup="dialog"
                         >
                             Henlegg sak
@@ -75,7 +75,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                         <ActionMenu.Item
                             onSelect={() => setOpenGjenapne(true)}
                             disabled={!harRettighet("GJENAPNE")}
-                            icon={<PadlockUnlockedIcon aria-hidden />}
+                            icon={<PadlockUnlockedIcon aria-hidden/>}
                             aria-haspopup="dialog"
                         >
                             Gjenåpne sak
@@ -83,7 +83,7 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                         <ActionMenu.Item
                             onSelect={() => setOpenSendKlage(true)}
                             disabled={!harRettighet("SEND_KLAGE")}
-                            icon={<PaperplaneIcon aria-hidden />}
+                            icon={<PaperplaneIcon aria-hidden/>}
                             aria-haspopup="dialog"
                         >
                             Send klage til Kabal
@@ -92,25 +92,23 @@ export default function BehandlingsMeny({ sak }: SakMenyProps) {
                     <ActionMenu.Group label={"Brev"}>
                         <ActionMenu.Item
                             onSelect={() => setOpenFritekstbrev(true)}
-                            disabled={!harRettighet("SAKSBEHANDLE") && !harRettighet("SEND_KLAGE")}
-                            icon={<EnvelopeClosedIcon aria-hidden />}
+                            disabled={!harRettighet("FRITEKSTBREV")}
+                            icon={<EnvelopeClosedIcon aria-hidden/>}
                             aria-haspopup="dialog"
                         >
-                            Fritekstbrev til bruker{" "}
+                            Fritekstbrev til bruker
                         </ActionMenu.Item>
-                        <ActionMenu.Item disabled={true} icon={<EnvelopeClosedIcon aria-hidden />}>
-                            Fritekstbrev til samhandler{" "}
-                        </ActionMenu.Item>
+
                     </ActionMenu.Group>
                 </ActionMenu.Content>
             </ActionMenu>
 
-            {openFeilregistrer && <Feilregistrer open={openFeilregistrer} onOpenChange={setOpenFeilregistrer} />}
-            {openHenlegg && <Henlegg open={openHenlegg} onOpenChange={setOpenHenlegg} />}
-            {openGjenapne && <Gjenapne open={openGjenapne} onOpenChange={setOpenGjenapne} />}
-            {openTilbakestill && <Tilbakestill open={openTilbakestill} onOpenChange={setOpenTilbakestill} />}
-            {openFritekstbrev && <FritekstBrev open={openFritekstbrev} onOpenChange={setOpenFritekstbrev} />}
-            {openSendKlage && <SendKlage open={openSendKlage} onOpenChange={setOpenSendKlage} />}
+            {openFeilregistrer && <Feilregistrer open={openFeilregistrer} onOpenChange={setOpenFeilregistrer}/>}
+            {openHenlegg && <Henlegg open={openHenlegg} onOpenChange={setOpenHenlegg}/>}
+            {openGjenapne && <Gjenapne open={openGjenapne} onOpenChange={setOpenGjenapne}/>}
+            {openTilbakestill && <Tilbakestill open={openTilbakestill} onOpenChange={setOpenTilbakestill}/>}
+            {openFritekstbrev && <FritekstBrev open={openFritekstbrev} onOpenChange={setOpenFritekstbrev}/>}
+            {openSendKlage && <SendKlage open={openSendKlage} onOpenChange={setOpenSendKlage}/>}
         </>
     );
 }

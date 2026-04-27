@@ -11,7 +11,7 @@ import no.nav.oppgave.model.OppgaveDto
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
-private val SYSTEM_PERMISSIONS = listOf(Permission.READ, Permission.WRITE, Permission.IGNORE_TILGANGSMASKIN)
+private val SYSTEM_PERMISSIONS = listOf(Permission.READ, Permission.WRITE)
 
 @Service
 class OppgaveGjenopprettingService(
@@ -31,7 +31,11 @@ class OppgaveGjenopprettingService(
                 val oppgaveType = OppgaveTypeMapper.fromSakstatus(sak.status) ?: continue
                 runCatching {
                     if (!harAapenOppgave(sak, oppgaveType)) {
-                        oppgaveService.opprettOppgave(type = oppgaveType, sak = sak, beskrivelse = "Gjenopprettet oppgave i Superhelt for sak ${sak.saksnummer}")
+                        oppgaveService.opprettOppgave(
+                            type = oppgaveType,
+                            sak = sak,
+                            beskrivelse = "Gjenopprettet oppgave i Superhelt for sak ${sak.saksnummer}"
+                        )
                         logger.info("Gjenopprettet oppgave $oppgaveType for sak ${sak.saksnummer}")
                         gjenopprettet.add(sak.saksnummer)
                     }

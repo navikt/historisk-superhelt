@@ -69,7 +69,7 @@ spring:
   cache:
     caffeine:
       spec: maximumSize=5000,expireAfterWrite=20m
-    cache-names: pdlCache,tilgangsmaskinCache
+    cache-names: pdlCache, tilgangsmaskinCache, navansattCache
 
 management:
   endpoints:

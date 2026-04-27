@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotNull
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.dokarkiv.JournalforData
 import no.nav.historisk.superhelt.dokarkiv.JournalforDokument
-import no.nav.historisk.superhelt.sak.StonadsType
 
 data class JournalforNySakRequest(
     @field:NotNull

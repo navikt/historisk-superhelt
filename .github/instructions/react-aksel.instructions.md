@@ -47,7 +47,7 @@ import { Box, VStack, HGrid } from "@navikt/ds-react";
 <div className="p-4 md:p-6">   // ❌ Feil
 <div className="mx-4 my-2">    // ❌ Feil
 <Box padding="4">              // ❌ Feil — Box krever space-prefiks: padding="space-4"
-<VStack gap="space-4">         // ❌ Feil — gap bruker numerisk shorthand: gap="4"
+<VStack gap="4">               // ❌ Feil — gap krever space-prefiks: gap="space-4"
 
 // Aldri mobil-først breakpoints
 <Box padding={{ xs: "space-16", md: "space-24" }}>  // ❌ Mobil-først
@@ -55,14 +55,14 @@ import { Box, VStack, HGrid } from "@navikt/ds-react";
 
 ## Spacing-tokens
 
-Aksel DS bruker **to ulike token-systemer** avhengig av prop:
+Aksel DS bruker **ett felles spacing-system** på tvers av props:
 
 | Prop | Komponent | Format | Eksempel |
 |------|-----------|--------|---------|
 | `padding`, `paddingBlock`, `paddingInline` | `Box` | `space-*` streng | `"space-16"` |
-| `gap` | `VStack`, `HStack`, `HGrid` | Numerisk shorthand | `"4"`, `"8"` |
+| `gap` | `VStack`, `HStack`, `HGrid` | `space-*` streng | `"space-4"`, `"space-8"` |
 
-`Box` padding-tokens (alltid med `space-`-prefiks):
+Spacing-tokens (alltid med `space-`-prefiks — gjelder **alle** props inkl. `gap`):
 
 - `space-4` (4px)
 - `space-8` (8px)
@@ -72,9 +72,6 @@ Aksel DS bruker **to ulike token-systemer** avhengig av prop:
 - `space-24` (24px)
 - `space-32` (32px)
 - `space-40` (40px)
-
-`gap`-verdier for layout-komponenter (numerisk, uten `space-`-prefiks):
-`"0"` `"1"` `"2"` `"3"` `"4"` `"5"` `"6"` `"7"` `"8"` `"10"` `"12"` `"16"` `"20"` `"24"` `"32"`
 
 ## Responsivt design — desktop-først
 
@@ -87,7 +84,7 @@ Desktop er standardtilstand. Bruk breakpoints kun når layouten skal tilpasses n
 
 ```tsx
 // ✅ Desktop-først — tilpass ned
-<HGrid columns={{ lg: 3, md: 2 }} gap="4">
+<HGrid columns={{ lg: 3, md: 2 }} gap="space-4">
   {items.map(item => <Card key={item.id} {...item} />)}
 </HGrid>
 
@@ -102,19 +99,19 @@ Desktop er standardtilstand. Bruk breakpoints kun når layouten skal tilpasses n
 import { Box, VStack, HStack, HGrid } from "@navikt/ds-react";
 
 // Vertikal stack med mellomrom
-<VStack gap="4">
+<VStack gap="space-4">
   <Komponent1 />
   <Komponent2 />
 </VStack>
 
 // Horisontal stack
-<HStack gap="4" align="center">
+<HStack gap="space-4" align="center">
   <Icon />
   <Text />
 </HStack>
 
 // Desktop-grid med fallback
-<HGrid columns={{ lg: 3, md: 2 }} gap="4">
+<HGrid columns={{ lg: 3, md: 2 }} gap="space-4">
   {/* Grid-elementer */}
 </HGrid>
 ```
@@ -193,7 +190,7 @@ const mutation = useMutation({
 ## Genererte typer fra backend
 
 ```tsx
-// Typer genereres med: npm run openapi-ts
+// Typer genereres med: pnpm run openapi-ts
 import type { Sak } from "@generated";
 
 // Lokale utility-typer utledes fra genererte typer
@@ -202,13 +199,13 @@ type SakStatusType = Sak["status"];
 
 ## Pakkebehandler
 
-Bruk `npm` (ikke pnpm):
+Bruk `pnpm`:
 
 ```bash
-npm install
-npm run test
-npm run biome:write
-npm run openapi-ts
+pnpm install
+pnpm run test
+pnpm run biome:write
+pnpm run openapi-ts
 ```
 
 ## Boundaries
@@ -230,7 +227,7 @@ npm run openapi-ts
 
 - Tailwind padding/margin (`p-*`, `m-*`)
 - Numerisk verdi uten `space-`-prefiks på `Box` padding (`padding="4"` → `padding="space-4"`)
-- `space-*`-prefiks på layout-komponent `gap` (`gap="space-4"` → `gap="4"`)
+- Numerisk verdi uten `space-`-prefiks på `gap` (`gap="4"` → `gap="space-4"`)
 - Mobil-først breakpoints (`xs` som base)
 - Ignorere tilgjengelighetskrav
 

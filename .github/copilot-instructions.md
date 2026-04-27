@@ -48,9 +48,9 @@ Når Biome kjøres for å validere endringer: kjør kun på filer som er endret 
 ### E2E
 ```bash
 # i /e2e
-pnpm playwright:test        # headless
-pnpm playwright:test:ui     # med UI
-pnpm playwright:snapshot-update  # oppdater snapshots
+pnpm playwright:test              # headless
+pnpm playwright:test:ui           # med UI
+pnpm playwright:snapshot-update   # oppdater snapshots
 ```
 
 ## Backend-konvensjoner

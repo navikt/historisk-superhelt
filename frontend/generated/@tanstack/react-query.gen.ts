@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { attersterSak, feilregisterSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, finnJournalposterForSak, getKodeverkHjemler, getKodeverkOppgaveGjelder, getKodeverkOppgaveType, getKodeverkSakStatus, getKodeverkStonadType, getKodeverkVedtaksResultat, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getSakStatus, getUserInfo, gjenapneSak, henleggSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentFeileteUtbetalinger, hentInfotrygdHistorikkForPerson, hentJournalpostMetaData, hentOppgaverForPerson, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalforKnyttTilEksisterendeSak, journalforNySak, lastnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, type Options, rekjorFeileteUtbetalinger, retryFeiletUtbetaling, sendBrev, sendKlageTilKabal, sendTilAttestering, tilbakestillGjenapning } from '../sdk.gen';
-import type { AttersterSakData, AttersterSakError, FeilregisterSakData, FeilregisterSakError, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, FinnJournalposterForSakData, FinnJournalposterForSakError, FinnJournalposterForSakResponse, GetKodeverkHjemlerData, GetKodeverkHjemlerError, GetKodeverkHjemlerResponse, GetKodeverkOppgaveGjelderData, GetKodeverkOppgaveGjelderError, GetKodeverkOppgaveGjelderResponse, GetKodeverkOppgaveTypeData, GetKodeverkOppgaveTypeError, GetKodeverkOppgaveTypeResponse, GetKodeverkSakStatusData, GetKodeverkSakStatusError, GetKodeverkSakStatusResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetKodeverkVedtaksResultatData, GetKodeverkVedtaksResultatError, GetKodeverkVedtaksResultatResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetSakStatusData, GetSakStatusError, GetSakStatusResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, HenleggSakData, HenleggSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentFeileteUtbetalingerData, HentFeileteUtbetalingerError, HentFeileteUtbetalingerResponse, HentInfotrygdHistorikkForPersonData, HentInfotrygdHistorikkForPersonError, HentInfotrygdHistorikkForPersonResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForPersonData, HentOppgaverForPersonError, HentOppgaverForPersonResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforKnyttTilEksisterendeSakData, JournalforKnyttTilEksisterendeSakError, JournalforKnyttTilEksisterendeSakResponse, JournalforNySakData, JournalforNySakError, JournalforNySakResponse, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerError, RekjorFeileteUtbetalingerResponse, RetryFeiletUtbetalingData, RetryFeiletUtbetalingError, SendBrevData, SendBrevError, SendKlageTilKabalData, SendKlageTilKabalError, SendTilAttesteringData, SendTilAttesteringError, TilbakestillGjenapningData, TilbakestillGjenapningError } from '../types.gen';
+import { attersterSak, feilregisterSak, ferdigstillSak, findPersonByFnr, findSakerForPerson, finnJournalposterForSak, getKodeverkHjemler, getKodeverkSakStatus, getKodeverkStonadType, getKodeverkVedtaksResultat, getOppgave, getPersonByMaskertIdent, getSakBySaksnummer, getSakStatus, getUserInfo, gjenapneSak, gjenopprettOppgaver, henleggSak, hentBrev, hentEllerOpprettBrev, hentEndringsloggForSak, hentFeileteUtbetalinger, hentInfotrygdHistorikkForPerson, hentJournalpostMetaData, hentOppgaverForPerson, hentOppgaverForSaksbehandler, hentVedtakForSak, htmlBrev, journalforKnyttTilEksisterendeSak, journalforNySak, lastnedDokumentFraJournalpost, oppdaterBrev, oppdaterSak, type Options, rekjorFeileteUtbetalinger, retryFeiletUtbetaling, sendBrev, sendKlageTilKabal, sendTilAttestering, tilbakestillGjenapning } from '../sdk.gen';
+import type { AttersterSakData, AttersterSakError, FeilregisterSakData, FeilregisterSakError, FerdigstillSakData, FerdigstillSakError, FindPersonByFnrData, FindPersonByFnrError, FindPersonByFnrResponse, FindSakerForPersonData, FindSakerForPersonError, FindSakerForPersonResponse, FinnJournalposterForSakData, FinnJournalposterForSakError, FinnJournalposterForSakResponse, GetKodeverkHjemlerData, GetKodeverkHjemlerError, GetKodeverkHjemlerResponse, GetKodeverkSakStatusData, GetKodeverkSakStatusError, GetKodeverkSakStatusResponse, GetKodeverkStonadTypeData, GetKodeverkStonadTypeError, GetKodeverkStonadTypeResponse, GetKodeverkVedtaksResultatData, GetKodeverkVedtaksResultatError, GetKodeverkVedtaksResultatResponse, GetOppgaveData, GetOppgaveError, GetOppgaveResponse, GetPersonByMaskertIdentData, GetPersonByMaskertIdentError, GetPersonByMaskertIdentResponse, GetSakBySaksnummerData, GetSakBySaksnummerError, GetSakBySaksnummerResponse, GetSakStatusData, GetSakStatusError, GetSakStatusResponse, GetUserInfoData, GetUserInfoError, GetUserInfoResponse, GjenapneSakData, GjenapneSakError, GjenopprettOppgaverData, GjenopprettOppgaverError, GjenopprettOppgaverResponse, HenleggSakData, HenleggSakError, HentBrevData, HentBrevError, HentBrevResponse, HentEllerOpprettBrevData, HentEllerOpprettBrevError, HentEllerOpprettBrevResponse, HentEndringsloggForSakData, HentEndringsloggForSakError, HentEndringsloggForSakResponse, HentFeileteUtbetalingerData, HentFeileteUtbetalingerError, HentFeileteUtbetalingerResponse, HentInfotrygdHistorikkForPersonData, HentInfotrygdHistorikkForPersonError, HentInfotrygdHistorikkForPersonResponse, HentJournalpostMetaDataData, HentJournalpostMetaDataError, HentJournalpostMetaDataResponse, HentOppgaverForPersonData, HentOppgaverForPersonError, HentOppgaverForPersonResponse, HentOppgaverForSaksbehandlerData, HentOppgaverForSaksbehandlerError, HentOppgaverForSaksbehandlerResponse, HentVedtakForSakData, HentVedtakForSakError, HentVedtakForSakResponse, HtmlBrevData, HtmlBrevError, HtmlBrevResponse, JournalforKnyttTilEksisterendeSakData, JournalforKnyttTilEksisterendeSakError, JournalforKnyttTilEksisterendeSakResponse, JournalforNySakData, JournalforNySakError, JournalforNySakResponse, LastnedDokumentFraJournalpostData, LastnedDokumentFraJournalpostError, LastnedDokumentFraJournalpostResponse, OppdaterBrevData, OppdaterBrevError, OppdaterBrevResponse, OppdaterSakData, OppdaterSakError, OppdaterSakResponse, RekjorFeileteUtbetalingerData, RekjorFeileteUtbetalingerError, RekjorFeileteUtbetalingerResponse, RetryFeiletUtbetalingData, RetryFeiletUtbetalingError, SendBrevData, SendBrevError, SendKlageTilKabalData, SendKlageTilKabalError, SendTilAttesteringData, SendTilAttesteringError, TilbakestillGjenapningData, TilbakestillGjenapningError } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -346,6 +346,23 @@ export const rekjorFeileteUtbetalingerMutation = (options?: Partial<Options<Rekj
     return mutationOptions;
 };
 
+/**
+ * Gjenopprett manglende oppgaver for saker
+ */
+export const gjenopprettOppgaverMutation = (options?: Partial<Options<GjenopprettOppgaverData>>): UseMutationOptions<GjenopprettOppgaverResponse, GjenopprettOppgaverError, Options<GjenopprettOppgaverData>> => {
+    const mutationOptions: UseMutationOptions<GjenopprettOppgaverResponse, GjenopprettOppgaverError, Options<GjenopprettOppgaverData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await gjenopprettOppgaver({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const getUserInfoQueryKey = (options?: Options<GetUserInfoData>) => createQueryKey('getUserInfo', options);
 
 export const getUserInfoOptions = (options?: Options<GetUserInfoData>) => queryOptions<GetUserInfoResponse, GetUserInfoError, GetUserInfoResponse, ReturnType<typeof getUserInfoQueryKey>>({
@@ -545,36 +562,6 @@ export const hentOppgaverForPersonOptions = (options: Options<HentOppgaverForPer
         return data;
     },
     queryKey: hentOppgaverForPersonQueryKey(options)
-});
-
-export const getKodeverkOppgaveTypeQueryKey = (options?: Options<GetKodeverkOppgaveTypeData>) => createQueryKey('getKodeverkOppgaveType', options);
-
-export const getKodeverkOppgaveTypeOptions = (options?: Options<GetKodeverkOppgaveTypeData>) => queryOptions<GetKodeverkOppgaveTypeResponse, GetKodeverkOppgaveTypeError, GetKodeverkOppgaveTypeResponse, ReturnType<typeof getKodeverkOppgaveTypeQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getKodeverkOppgaveType({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getKodeverkOppgaveTypeQueryKey(options)
-});
-
-export const getKodeverkOppgaveGjelderQueryKey = (options?: Options<GetKodeverkOppgaveGjelderData>) => createQueryKey('getKodeverkOppgaveGjelder', options);
-
-export const getKodeverkOppgaveGjelderOptions = (options?: Options<GetKodeverkOppgaveGjelderData>) => queryOptions<GetKodeverkOppgaveGjelderResponse, GetKodeverkOppgaveGjelderError, GetKodeverkOppgaveGjelderResponse, ReturnType<typeof getKodeverkOppgaveGjelderQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getKodeverkOppgaveGjelder({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getKodeverkOppgaveGjelderQueryKey(options)
 });
 
 export const getKodeverkHjemlerQueryKey = (options?: Options<GetKodeverkHjemlerData>) => createQueryKey('getKodeverkHjemler', options);
