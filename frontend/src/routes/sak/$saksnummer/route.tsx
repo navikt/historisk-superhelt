@@ -93,7 +93,7 @@ function SakLayout() {
                             disabled={calculateStepType(sak?.tilstand.opplysninger) !== StepType.success}
                         />
                         <ProcessMenu.Item
-                            label={"Oppsummering"}
+                            label={"Godkjenning"}
                             stepType={calculateStepType(sak?.tilstand.oppsummering)}
                             to={"/sak/$saksnummer/oppsummering"}
                             disabled={

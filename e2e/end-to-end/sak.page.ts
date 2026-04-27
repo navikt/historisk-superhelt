@@ -11,7 +11,7 @@ export class SakPage {
     }
 
     async selectMenuItem(
-        item: "Oppsummering" | "Opplysninger" | "Brev til bruker",
+        item: "Godkjenning" | "Opplysninger" | "Brev til bruker",
     ) {
         const menuItem = this.page.getByRole("link", {name: item});
         await expect(menuItem).toBeEnabled();
