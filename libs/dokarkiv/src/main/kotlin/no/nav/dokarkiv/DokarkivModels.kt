@@ -1,5 +1,6 @@
 package no.nav.dokarkiv
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.common.types.Saksnummer
 
 data class DokarkivBruker(
@@ -10,8 +11,7 @@ data class DokarkivBruker(
 data class DokArkivSak(
     val sakstype: Sakstype = Sakstype.FAGSAK,
     val fagsakId: Saksnummer,
-    // TODO Få inn superhelt eller lage noe mer generisk her
-    val fagsaksystem: String = "HELT"
+    val fagsaksystem: String = APP_NAVN
 )
 
 data class AvsenderMottaker(

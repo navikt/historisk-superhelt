@@ -86,8 +86,7 @@ class DokarkivService(
             sak = DokArkivSak(
                 sakstype = Sakstype.FAGSAK,
                 fagsakId = sak.saksnummer,
-                // TODO bruker SUPERHELT fra APP_NAVN
-                fagsaksystem = "HELT",
+                fagsaksystem = APP_NAVN,
             ),
             journalfoerendeEnhet = defaultEnhetsnummer
         )

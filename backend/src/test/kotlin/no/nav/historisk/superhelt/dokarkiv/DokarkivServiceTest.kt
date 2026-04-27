@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.dokarkiv
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
@@ -89,7 +90,7 @@ class DokarkivServiceTest {
         assertEquals(Kanal.NAV_NO, capturedRequest.kanal)
         assertEquals(sak.saksnummer, capturedRequest.sak.fagsakId)
         assertEquals(Sakstype.FAGSAK, capturedRequest.sak.sakstype)
-        assertEquals("HELT", capturedRequest.sak.fagsaksystem)
+        assertEquals(APP_NAVN, capturedRequest.sak.fagsaksystem)
         assertEquals(Enhetsnummer("4485"), capturedRequest.journalfoerendeEnhet)
         assertEquals(1, capturedRequest.dokumenter.size)
         assertEquals(brev.tittel, capturedRequest.dokumenter[0].tittel)
