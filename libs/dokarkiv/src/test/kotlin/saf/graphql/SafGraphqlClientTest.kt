@@ -1,11 +1,17 @@
 package saf.graphql
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.saf.graphql.*
+import no.nav.saf.graphql.ErrorExtensions
+import no.nav.saf.graphql.GraphqlError
+import no.nav.saf.graphql.HentJournalpostData
+import no.nav.saf.graphql.HentJournalpostGraphqlResponse
+import no.nav.saf.graphql.JournalStatus
+import no.nav.saf.graphql.SafGraphqlClient
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -13,7 +19,9 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers.*
+import org.springframework.test.web.client.match.MockRestRequestMatchers.content
+import org.springframework.test.web.client.match.MockRestRequestMatchers.method
+import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.HttpClientErrorException
@@ -346,7 +354,7 @@ class SafGraphqlClientTest {
                    "journalstatus": "JOURNALFOERT",
                    "sak": {
                      "fagsakId": "$saksnummer",
-                     "fagsaksystem": "HELT"
+                     "fagsaksystem": "SUPERHELT"
                    },
                    "bruker": {
                      "id": "987654321",
@@ -419,7 +427,7 @@ class SafGraphqlClientTest {
             val sak = journalpost.sak
             assertNotNull(sak)
             assertEquals(saksnummer.value, sak.fagsakId)
-            assertEquals("HELT", sak.fagsaksystem)
+            assertEquals(APP_NAVN, sak.fagsaksystem)
 
             // Verify dokumenter
             val dokumenter = journalpost.dokumenter
