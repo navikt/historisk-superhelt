@@ -87,7 +87,7 @@ Playwright har et verktøy som kan ta opp brukerinteraksjoner og generere testko
     ```
 * **Spill inn mot en annen URL:**
     ```bash
-    pnpm playwright:codegen [https://www.eksempel.no](https://www.eksempel.no)
+    pnpm playwright:codegen https://www.eksempel.no
     ```
 
 ### Playwright Inspector
