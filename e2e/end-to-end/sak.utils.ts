@@ -66,7 +66,7 @@ export async function attesterSakGodkjenn({ page, auth, sok, sak }: AtleFixtures
         await expect(page.getByRole("heading", { name: "Godkjenne sak" })).toBeVisible();
         await page.getByRole("radio", { name: "Godkjenn vedtak" }).check();
         await page.getByRole("button", { name: "Attester sak" }).click();
-        await expect(page.getByRole("heading", { name: "Saken er innvilget og ferdigstilt" })).toBeVisible({
+        await expect(page.getByRole("heading", { name: "Saken er godkjent" })).toBeVisible({
             timeout: 20_000,
         });
     });

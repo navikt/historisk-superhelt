@@ -35,7 +35,7 @@ test.describe("Feilregistrer sak", () => {
 
         await test.step("Sjekk at sak er feilregistrert", async () => {
             await sak.selectMenuItem("Godkjenning");
-            await expect(page.getByText("Sak feilregistrert")).toBeVisible();
+            await expect(page.getByRole("heading", { name: "Saken er feilregistert" })).toBeVisible();
         });
     });
 });

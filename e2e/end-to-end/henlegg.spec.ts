@@ -36,7 +36,7 @@ test.describe("Henlegg sak", () => {
 
         await test.step("Sjekk at sak er henlagt", async () => {
             await sak.selectMenuItem("Godkjenning");
-            await expect(page.getByText("Sak henlagt")).toBeVisible();
+            await expect(page.getByRole("heading", { name: "Saken er henlagt" })).toBeVisible();
         });
     });
 });
