@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -64,14 +65,20 @@ class JournalpostController(
         return journalpost
     }
 
-    @Operation(operationId = "finnJournalposterForSak")
+    @Operation(operationId = "finnJournalposterForSakEllerBruker")
     @GetMapping("/sak/{saksnummer}")
     fun finnJournalposterForSak(
-        @PathVariable saksnummer: Saksnummer,
+        @PathVariable saksnummer: Saksnummer, @RequestParam(required = false, defaultValue = "false") inkluderAndreSaker: Boolean
+
     ): List<Journalpost> {
         val sak = sakRepository.getSak(saksnummer)
-        return journalpostService.finnJournalposter(saksnummer, sak.type.tema)
+        val tema = sak.type.tema
+        if (inkluderAndreSaker) {
+            return journalpostService.finnJournalposterForBruker(sak.fnr, tema)
+        }
+        return journalpostService.finnJournalposter(saksnummer, tema)
     }
+
 
 
 }
