@@ -1,7 +1,27 @@
 package no.nav.historisk.superhelt.dokarkiv
 
-import no.nav.common.types.*
-import no.nav.dokarkiv.*
+import no.nav.common.consts.APP_NAVN
+import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.Enhetsnummer
+import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.Saksnummer
+import no.nav.common.types.defaultEnhetsnummer
+import no.nav.dokarkiv.AvsenderMottaker
+import no.nav.dokarkiv.AvsenderMottakerIdType
+import no.nav.dokarkiv.BrukerIdType
+import no.nav.dokarkiv.DokArkivSak
+import no.nav.dokarkiv.DokarkivBruker
+import no.nav.dokarkiv.DokarkivClient
+import no.nav.dokarkiv.Dokument
+import no.nav.dokarkiv.DokumentMedTittel
+import no.nav.dokarkiv.DokumentVariant
+import no.nav.dokarkiv.Filtype
+import no.nav.dokarkiv.JournalpostRequest
+import no.nav.dokarkiv.JournalpostResponse
+import no.nav.dokarkiv.JournalpostType
+import no.nav.dokarkiv.Kanal
+import no.nav.dokarkiv.Sakstype
+import no.nav.dokarkiv.Variantformat
 import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DokdistClient
 import no.nav.dokdist.DokdistRespons
@@ -34,7 +54,7 @@ class DokarkivService(
         val req = JournalpostRequest(
             tittel = brev.tittel!!,
             journalpostType = JournalpostType.UTGAAENDE,
-            tema = EksternFellesKodeverkTema.HEL,
+            tema = sak.type.tema,
             avsenderMottaker = when (brev.mottakerType) {
                 BrevMottaker.BRUKER ->
                     AvsenderMottaker(
@@ -66,7 +86,7 @@ class DokarkivService(
             sak = DokArkivSak(
                 sakstype = Sakstype.FAGSAK,
                 fagsakId = sak.saksnummer,
-                fagsaksystem = "HELT",
+                fagsaksystem = APP_NAVN,
             ),
             journalfoerendeEnhet = defaultEnhetsnummer
         )
@@ -81,12 +101,12 @@ class DokarkivService(
         return dokdistClient.distribuerJournalpost(
             request = DistribuerJournalpostRequest(
                 journalpostId = journalPostId,
-                bestillendeFagsystem = "SUPERHELT",
+                bestillendeFagsystem = APP_NAVN,
                 distribusjonstype = when (brev.type) {
                     BrevType.VEDTAKSBREV -> DistribuerJournalpostRequest.Distribusjonstype.VEDTAK
                     else -> DistribuerJournalpostRequest.Distribusjonstype.ANNET
                 },
-                dokumentProdApp = "SUPERHELT",
+                dokumentProdApp = APP_NAVN,
                 distribusjonstidspunkt = DistribuerJournalpostRequest.Distribusjonstidspunkt.UMIDDELBART
             )
         )

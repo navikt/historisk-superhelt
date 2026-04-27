@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.sak.db
 
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.StonadsType
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

@@ -1,6 +1,7 @@
 package no.nav.oppgave
 
-import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.consts.APP_NAVN
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.FinnOppgaverParams
@@ -13,7 +14,7 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestClient
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 @Disabled
 class OppgaveClientForUtvikler {
@@ -38,7 +39,7 @@ class OppgaveClientForUtvikler {
             FinnOppgaverParams(
                 statuskategori = "AAPEN",
                 tilordnetRessurs = NavIdent("Z990749"),
-                tema = listOf("HEL"),
+                tema = listOf(FellesKodeverkTema.HEL),
             )
         )
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))
@@ -50,7 +51,7 @@ class OppgaveClientForUtvikler {
             FinnOppgaverParams(
                 statuskategori = "AAPEN",
                 saksreferanse = listOf("Test-123"),
-                tema = listOf("HEL"),
+                tema = listOf(FellesKodeverkTema.HEL),
             )
         )
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))
@@ -62,10 +63,10 @@ class OppgaveClientForUtvikler {
             client.opprettOppgave(
                 OpprettOppgaveRequest(
                     personident = "28497016101",
-                    tema = EksternFellesKodeverkTema.HEL.name,
+                    tema = FellesKodeverkTema.HEL.name,
                     oppgavetype = OppgaveType.BEH_SAK.oppgavetype,
-                    behandlingstema = OppgaveGjelder.REISEUTGIFTER.behandlingstema,
-                    behandlingstype = OppgaveGjelder.REISEUTGIFTER.behandlingstype,
+                    behandlingstema = Behandlingstema.REISEUTGIFTER.kode,
+                    behandlingstype = null,
                     beskrivelse = "Test oppgave fra utvikler",
                     uuid = UUID.randomUUID(),
                 )
@@ -85,7 +86,7 @@ class OppgaveClientForUtvikler {
             hentet.id, PatchOppgaveRequest(
                 versjon = hentet.versjon,
                 tilordnetRessurs = NavIdent("Z990749"),
-                behandlesAvApplikasjon = "HELT",
+                behandlesAvApplikasjon = APP_NAVN,
                 saksreferanse = "Test-123",
                 fristFerdigstillelse = LocalDate.now().plusDays(5),
             )

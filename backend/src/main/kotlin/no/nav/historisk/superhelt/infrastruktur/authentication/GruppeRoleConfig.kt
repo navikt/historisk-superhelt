@@ -26,10 +26,7 @@ class GruppeRoleConfig {
 
 enum class Permission {
     READ,
-    WRITE,
-
-    /** Brukes for å omgå tilgangssjekk i Tilgangsmaskin for interne kall Skal bare gis midlertidig */
-    IGNORE_TILGANGSMASKIN
+    WRITE
 }
 
 enum class Role(private vararg val _permissions: Permission) {

@@ -6,48 +6,10 @@ import {finnPersonQuery} from "~/common/person/person.query";
 import {hentJournalpostMetadataQuery} from "~/routes/oppgave/$oppgaveid/-api/journalpost.query";
 import {FerdigJournalfort} from "~/routes/oppgave/$oppgaveid/-components/FerdigJournalfort";
 import {JournalforForm} from "~/routes/oppgave/$oppgaveid/-components/JournalforForm";
-import type {OppgaveGjelder} from "~/common/oppgave/oppgave.types";
-import type {StonadType} from "~/common/sak/sak.types";
 
 export const Route = createFileRoute("/oppgave/$oppgaveid/journalfor")({
     component: JournalforPage,
 });
-
-function guessStonadsType(oppgaveGjelder: OppgaveGjelder): StonadType | undefined {
-    switch (oppgaveGjelder) {
-        case "ANSIKTSDEFEKTSPROTESE":
-            return "ANSIKT_PROTESE";
-
-        case "BRYSTPROTESE_PROTESEBH":
-            return "BRYSTPROTESE";
-
-        case "OYEPROTESE":
-            return "OYE_PROTESE";
-
-        case "PARYKK_HODEPLAGG":
-            return "PARYKK";
-
-        case "REISEUTGIFTER":
-        case "REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER":
-            return "REISEUTGIFTER";
-
-        case "FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER":
-        case "ORTOPEDISKE_HJELPEMIDLER_SOKNAD":
-        case "ORTOPEDISKE_HJELPEMIDLER_UTLAND":
-        case "ORTOPEDISKE_HJELPEMIDLER":
-            return "FOTSENG";
-
-        case "BIDRAG_EKSKL_FARSKAP":
-        case "ANKE":
-        case "KLAGE":
-        case "TIDLIGERE_HJEMSENDT_SAK":
-        case "HJEMSENDT_TIL_NY_BEHANDLING":
-        case "PARTSINNSYN":
-        case "MEDLEMSKAP":
-        case "UKJENT":
-            return undefined;
-    }
-}
 
 function JournalforPage() {
     const oppgaveId = Route.useParams().oppgaveid;
@@ -75,7 +37,7 @@ function JournalforPage() {
                     oppgaveMedSak={oppgave}
                     journalPost={journalPost}
                     readOnly={!harSkriveTilgang}
-                    defaultStonadstype={guessStonadsType(oppgave.oppgaveGjelder)}
+                    defaultStonadstype={oppgave.stonadsType}
                     onBrukerUpdate={oppdaterBruker}
                 />
             )}
