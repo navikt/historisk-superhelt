@@ -1,4 +1,4 @@
-package no.nav.historisk.superhelt.enhet
+package no.nav.historisk.superhelt.ansatt.config
 
 import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor

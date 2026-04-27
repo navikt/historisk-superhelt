@@ -7,6 +7,7 @@ import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.test.withMockedUser
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData

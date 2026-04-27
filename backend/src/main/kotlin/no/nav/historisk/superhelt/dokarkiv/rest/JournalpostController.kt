@@ -8,6 +8,7 @@ import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
+import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.saf.graphql.Journalpost
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -22,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/journalpost")
 @Tag(name = "Journalpost")
 class JournalpostController(
-    private val journalpostService: JournalpostService
+    private val journalpostService: JournalpostService,
+    private val sakRepository: SakRepository
 
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -67,7 +69,8 @@ class JournalpostController(
     fun finnJournalposterForSak(
         @PathVariable saksnummer: Saksnummer,
     ): List<Journalpost> {
-        return journalpostService.finnJournalposter(saksnummer)
+        val sak = sakRepository.getSak(saksnummer)
+        return journalpostService.finnJournalposter(saksnummer, sak.type.tema)
     }
 
 

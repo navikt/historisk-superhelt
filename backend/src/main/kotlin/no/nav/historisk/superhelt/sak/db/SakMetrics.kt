@@ -2,8 +2,8 @@ package no.nav.historisk.superhelt.sak.db
 
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.sak.SakStatus
-import no.nav.historisk.superhelt.sak.StonadsType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 

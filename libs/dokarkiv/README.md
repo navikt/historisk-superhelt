@@ -6,7 +6,7 @@ Gjør det mulig å laste ned dokumenter som ligger i arkivet
 ## Dokarkiv rest API
 Oppdaterer og oppretter journalposter og dokumenter i arkivet
 
-https://dokarkiv.dev.intern.nav.no/swagger-ui
+https://dokarkiv.dev.intern.nav.no/swagger-ui/index.html
 
 https://confluence.adeo.no/spaces/BOA/pages/387098101/Arkivering+i+fagarkivet
 
