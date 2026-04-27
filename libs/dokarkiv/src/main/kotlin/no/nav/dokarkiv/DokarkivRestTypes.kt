@@ -1,13 +1,13 @@
 package no.nav.dokarkiv
 
-import no.nav.common.types.EksternFellesKodeverkTema
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Enhetsnummer
 
 data class JournalpostRequest(
     val tittel: String,
     val journalpostType: JournalpostType,
-    val tema: EksternFellesKodeverkTema,
+    val tema: FellesKodeverkTema,
     val avsenderMottaker: AvsenderMottaker?,
     val eksternReferanseId: String?,
     val dokumenter: List<Dokument>,
@@ -28,7 +28,7 @@ data class OppdaterJournalpostRequest(
     val tittel: String,
     val bruker: DokarkivBruker,
     val avsenderMottaker: AvsenderMottaker,
-    val tema: EksternFellesKodeverkTema,
+    val tema: FellesKodeverkTema,
     val dokumenter: List<DokumentMedTittel>?,
 )
 
