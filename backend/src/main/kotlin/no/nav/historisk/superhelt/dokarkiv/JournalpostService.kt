@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.dokarkiv
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
@@ -45,9 +46,9 @@ class JournalpostService(
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    fun finnJournalposter(saksnummer: Saksnummer): List<Journalpost> {
+    fun finnJournalposter(saksnummer: Saksnummer, tema: FellesKodeverkTema): List<Journalpost> {
         val journalposter =
-            safGraphqlClient.dokumentoversiktFagsak(saksnummer).data?.dokumentoversiktFagsak?.journalposter
+            safGraphqlClient.dokumentoversiktFagsak(saksnummer, listOf(tema)).data?.dokumentoversiktFagsak?.journalposter
                 ?: emptyList()
         return journalposter
     }

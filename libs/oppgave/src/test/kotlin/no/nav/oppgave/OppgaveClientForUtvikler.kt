@@ -1,5 +1,6 @@
 package no.nav.oppgave
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.NavIdent
@@ -85,7 +86,7 @@ class OppgaveClientForUtvikler {
             hentet.id, PatchOppgaveRequest(
                 versjon = hentet.versjon,
                 tilordnetRessurs = NavIdent("Z990749"),
-                behandlesAvApplikasjon = "HELT",
+                behandlesAvApplikasjon = APP_NAVN,
                 saksreferanse = "Test-123",
                 fristFerdigstillelse = LocalDate.now().plusDays(5),
             )

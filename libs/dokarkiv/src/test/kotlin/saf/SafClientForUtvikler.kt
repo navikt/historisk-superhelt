@@ -1,5 +1,6 @@
 package saf
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
@@ -12,7 +13,7 @@ import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestClient
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 @Disabled
 class SafClientForUtvikler {
@@ -64,7 +65,7 @@ class SafClientForUtvikler {
 
     @Test
     fun `journalposter for sak`() {
-        val journalPoster = graphqlClient.dokumentoversiktFagsak(Saksnummer(1))
+        val journalPoster = graphqlClient.dokumentoversiktFagsak(Saksnummer(1), listOf(FellesKodeverkTema.HEL))
         println(journalPoster)
     }
 
