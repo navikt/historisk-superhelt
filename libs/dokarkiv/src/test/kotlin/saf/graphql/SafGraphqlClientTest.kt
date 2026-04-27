@@ -1,6 +1,7 @@
 package saf.graphql
 
 import no.nav.common.consts.APP_NAVN
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.AvsenderMottakerIdType
@@ -396,7 +397,7 @@ class SafGraphqlClientTest {
                         .body(jsonResponse),
                 )
 
-            val result = safClient.dokumentoversiktFagsak(saksnummer)
+            val result = safClient.dokumentoversiktFagsak(saksnummer, listOf(FellesKodeverkTema.HEL))
 
             // Verify response structure
             assertNotNull(result)

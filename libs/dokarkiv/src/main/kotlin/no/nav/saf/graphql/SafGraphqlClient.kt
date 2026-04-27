@@ -28,7 +28,7 @@ class SafGraphqlClient(
 
     fun dokumentoversiktFagsak(
         saksnummer: Saksnummer,
-        tema: List<FellesKodeverkTema> = listOf(FellesKodeverkTema.HEL),
+        tema: List<FellesKodeverkTema> ,
         fagsakSystem: String = APP_NAVN
     ): DokumentoversiktGraphqlResponse {
 
