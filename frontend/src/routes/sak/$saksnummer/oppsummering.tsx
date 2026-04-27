@@ -17,7 +17,7 @@ function OppsummeringPage() {
     function renderAction() {
         switch (sak.status) {
             case "FEILREGISTRERT":
-                return <Heading size={"medium"}>Saken er feilregistert</Heading>;
+                return <Heading size={"medium"}>Saken er feilregistrert</Heading>;
             case "UNDER_BEHANDLING":
                 return <TotrinnkontrollAction sak={sak} />;
             case "TIL_ATTESTERING":
