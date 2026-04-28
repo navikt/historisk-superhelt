@@ -1,33 +1,33 @@
-import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
-import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { Box, HStack, Tabs } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useEffect } from "react";
+import {ClockDashedIcon, FilePdfIcon, TasklistIcon} from "@navikt/aksel-icons";
+import {Box, HStack, Tabs} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {createFileRoute, Outlet} from "@tanstack/react-router";
+import {useEffect} from "react";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
-import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
-import { PersonHeader } from "~/common/person/PersonHeader";
-import { finnPersonQuery } from "~/common/person/person.query";
-import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
-import { StepType } from "~/common/process-menu/StepType";
-import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
-import type { TilstandStatusType } from "~/common/sak/sak.types";
-import { isSakFerdig } from "~/common/sak/sak.utils";
-import { kortNavn, kortSaksnummer } from "~/common/string.utils";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {RfcErrorBoundary} from "~/common/error/RfcErrorBoundary";
+import {PersonHeader} from "~/common/person/PersonHeader";
+import {finnPersonQuery} from "~/common/person/person.query";
+import {ProcessMenu} from "~/common/process-menu/ProcessMenu";
+import {StepType} from "~/common/process-menu/StepType";
+import {useSakshistorikkAntall} from "~/common/sak/historikk/useSakshistorikkAntall";
+import type {TilstandStatusType} from "~/common/sak/sak.types";
+import {isSakFerdig} from "~/common/sak/sak.utils";
+import {kortNavn, kortSaksnummer} from "~/common/string.utils";
+import {apiFinnJournalposterOptions} from "~/routes/sak/$saksnummer/-api/journalpost.query";
 import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
-import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
-import { getSakOptions } from "./-api/sak.query";
+import {SakshistorikkSakTabell} from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
+import {getSakOptions} from "./-api/sak.query";
 import BehandlingsMeny from "./-components/BehandlingsMeny";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
     loader: ({ params: { saksnummer }, context }) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer));
-        context.queryClient.ensureQueryData(finnJournalposterForSakOptions({ path: { saksnummer } }));
+        context.queryClient.ensureQueryData(apiFinnJournalposterOptions( saksnummer , false));
     },
     errorComponent: ({ error }) => {
         return <ErrorAlert error={error} />;
@@ -38,7 +38,7 @@ function SakLayout() {
     const { saksnummer } = Route.useParams();
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
-    const { data: journalposter } = useSuspenseQuery(finnJournalposterForSakOptions({ path: { saksnummer } }));
+    const { data: journalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, false));
 
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
