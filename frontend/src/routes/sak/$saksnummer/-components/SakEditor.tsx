@@ -17,12 +17,12 @@ import {
 import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {useNavigate} from "@tanstack/react-router";
 import {useEffect, useState} from "react";
+import {Card} from "~/common/card/Card";
 import {dateTilIsoDato} from "~/common/dato.utils";
 import {NumericInput} from "~/common/NumericInput";
-import useDebounce from "~/common/useDebounce";
 import type {SakVedtakType, StonadType, UtbetalingsType} from "~/common/sak/sak.types";
+import useDebounce from "~/common/useDebounce";
 import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
-import { Card } from "~/common/card/Card";
 
 interface Props {
     sak: Sak;
@@ -141,7 +141,7 @@ export default function SakEditor({ sak }: Props) {
                         label="Tildelingsår"
                         autoComplete="on"
                         error={getErrorMessage("tildelingsAar")}
-                        value={updateSakData.tildelingsAar}
+                        value={updateSakData.tildelingsAar ?? undefined}
                         onChange={(value) => patchSak({ tildelingsAar: value })}
                     />
                 </HStack>
@@ -178,7 +178,7 @@ export default function SakEditor({ sak }: Props) {
                                     <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
                                 </RadioGroup>
                                 <NumericInput
-                                    value={updateSakData.belop}
+                                    value={updateSakData.belop ?? undefined}
                                     error={getErrorMessage("utbetaling.belop")}
                                     onChange={(belop) => patchSak({ belop: belop })}
                                     label="Beløp som skal utbetales (kr)"

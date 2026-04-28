@@ -1,11 +1,11 @@
-import { hentJournalpostMetaDataOptions } from "@generated/@tanstack/react-query.gen";
-import { Box, InlineMessage, Select } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import {hentJournalpostMetaDataOptions} from "@generated/@tanstack/react-query.gen";
+import {Box, InlineMessage, Select} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useEffect, useState} from "react";
 import styles from "./PdfViewer.module.css";
 
 interface Props {
-    journalpostId?: string;
+    journalpostId?: string | null;
 }
 
 export function PdfViewer({ journalpostId }: Props) {

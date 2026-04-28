@@ -1,4 +1,4 @@
-export function isoTilLokal(isoDato?: string): string {
+export function isoTilLokal(isoDato?: string | null): string {
     if (!isoDato) {
         return "";
     }
