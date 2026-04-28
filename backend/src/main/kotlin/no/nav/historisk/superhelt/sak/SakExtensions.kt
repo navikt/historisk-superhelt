@@ -21,7 +21,7 @@ object SakExtensions {
             beskrivelse = sak.beskrivelse!!,
             resultat = sak.vedtaksResultat!!,
             begrunnelse = sak.begrunnelse,
-            utbetalingsType = sak.utbetalingsType,
+            utbetalingsType = sak.utbetalingsType ?: throw IllegalStateException("Forventer at saken har satt en utbetalingstype"),
             belop = sak.belop,
             saksbehandler = sak.saksbehandler,
             attestant = sak.attestant!!,
@@ -39,11 +39,11 @@ object SakExtensions {
         )
     }
 
-    fun Sak.utbetalingInfo(): String{
-        return when(this.utbetalingsType){
+    fun Sak.utbetalingInfo(): String {
+        return when (this.utbetalingsType) {
             UtbetalingsType.BRUKER -> "Utbetaling til bruker på ${this.belop?.value ?: "ukjent beløp"}"
             UtbetalingsType.FORHANDSTILSAGN -> "Forhåndstilsagn"
-            UtbetalingsType.INGEN -> ""
+            else -> ""
         }
     }
 

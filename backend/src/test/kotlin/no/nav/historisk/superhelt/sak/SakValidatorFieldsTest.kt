@@ -173,7 +173,7 @@ class SakValidatorFieldsTest {
         fun `should fail when vedtaksResultat is INNVILGET and neither utbetaling nor forhandstilsagn is set`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.INNVILGET,
-                utbetalingsType = UtbetalingsType.INGEN,
+                utbetalingsType = null,
                 belop = null,
             )
             val validator = SakValidator(sak)
@@ -189,7 +189,7 @@ class SakValidatorFieldsTest {
         fun `should fail when vedtaksResultat is DELVIS_INNVILGET and neither utbetaling nor forhandstilsagn is set`() {
             val sak = okSak().copy(
                 vedtaksResultat = VedtaksResultat.DELVIS_INNVILGET,
-                utbetalingsType = UtbetalingsType.INGEN,
+                utbetalingsType = null,
                 belop = null,
             )
             val validator = SakValidator(sak)

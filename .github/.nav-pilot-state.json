@@ -1,8 +1,8 @@
 {
   "collection": "fullstack",
-  "version": "2026.04.26-184804-fa7e104",
+  "version": "2026.04.18-211516-38e1d47",
   "scope": "repo",
-  "source_sha": "fa7e104",
+  "source_sha": "38e1d47",
   "installed_at": "2026-04-16T11:42:15Z",
   "files": [
     {
@@ -31,7 +31,7 @@
     },
     {
       "path": ".github/agents/code-review.agent.md",
-      "hash": "83d872eba6edd7e6"
+      "hash": "b289c0ddf131ea19"
     },
     {
       "path": ".github/agents/code-review.metadata.json",
@@ -39,7 +39,7 @@
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "13a58d6edf244114"
+      "hash": "f638bd5c234f329b"
     },
     {
       "path": ".github/agents/forfatter.metadata.json",
@@ -55,7 +55,7 @@
     },
     {
       "path": ".github/agents/nais.agent.md",
-      "hash": "fa07ad8cfdf54a4a"
+      "hash": "396a51def78b3f38"
     },
     {
       "path": ".github/agents/nais.metadata.json",
@@ -79,7 +79,7 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "75c6d1771bdce25c"
+      "hash": "becdb418816be1e0"
     },
     {
       "path": ".github/agents/nav-pilot.metadata.json",
@@ -158,7 +158,7 @@
     },
     {
       "path": ".github/instructions/kotlin-spring.instructions.md",
-      "hash": "bdf9d1bfd4121803"
+      "hash": "0a6fca898f27e2d6"
     },
     {
       "path": ".github/instructions/golang.instructions.md",

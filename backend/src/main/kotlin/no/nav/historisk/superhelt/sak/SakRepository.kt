@@ -62,11 +62,11 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.vedtaksResultat?.let { entity.vedtaksResultat = it }
         dto.saksbehandler?.let { entity.saksbehandler = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
-        dto.utbetalingsType?.let { entity.utbetalingsType = it }
-        dto.belop?.let { entity.belop = it.value }
-        if (dto.utbetalingsType == UtbetalingsType.INGEN) {
-            entity.belop = null
+        dto.utbetalingsType?.let {
+            entity.utbetalingsType =  it
+            if (it != UtbetalingsType.BRUKER) entity.belop = null
         }
+        dto.belop?.let { entity.belop = it.value }
         return entity
     }
 
