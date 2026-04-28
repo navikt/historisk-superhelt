@@ -50,7 +50,7 @@ test.describe("Fritekstbrev", () => {
         });
 
         await test.step("Sjekk brevet", async () => {
-            await page.getByLabel("Dokumenter i saken").selectOption("Brev 1", { timeout: 15000 });
+            await page.getByLabel("Dokumenter i saken").selectOption("Brev 1");
 
             // TODO sjekk innhold i pdf
         });
