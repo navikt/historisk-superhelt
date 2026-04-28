@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Behandlingsnummer
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

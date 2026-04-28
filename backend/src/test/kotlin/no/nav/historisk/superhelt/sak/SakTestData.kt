@@ -1,7 +1,13 @@
 package no.nav.historisk.superhelt.sak
 
 import net.datafaker.Faker
-import no.nav.common.types.*
+import no.nav.common.types.Aar
+import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Belop
+import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
+import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.test.withMockedUser
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
@@ -19,7 +25,7 @@ object SakTestData {
         SakStatus.UNDER_BEHANDLING -> sakMedUtbetaling().copy(status = sakStatus)
         SakStatus.TIL_ATTESTERING -> sakMedUtbetaling().copy(status = sakStatus)
         SakStatus.FERDIG -> sakMedUtbetaling().copy(status = sakStatus, attestant = navUser())
-        SakStatus.FERDIG_ATTESTERT ->  sakMedUtbetaling().copy(status = sakStatus, attestant = navUser())
+        SakStatus.FERDIG_ATTESTERT -> sakMedUtbetaling().copy(status = sakStatus, attestant = navUser())
         SakStatus.FEILREGISTRERT -> sakUtenUtbetaling().copy(status = sakStatus)
     }
 
@@ -35,7 +41,7 @@ object SakTestData {
         val saksnummer = Saksnummer(faker.numerify("Mock-#####"))
         return Sak(
             saksnummer = saksnummer,
-            behandlingsnummer = Behandlingsnummer( 1),
+            behandlingsnummer = Behandlingsnummer(1),
             type = faker.options().option(StonadsType::class.java),
             fnr = FolkeregisterIdent(faker.numerify("###########")),
             beskrivelse = faker.greekPhilosopher().quote(),
@@ -97,5 +103,26 @@ object SakTestData {
         }
     }
 
-
+    fun lagreSak(repository: SakRepository, sak: Sak = sakMedUtbetaling()): Sak {
+        return withMockedUser {
+            repository.opprettNySak(
+                OpprettSakDto(
+                    type = sak.type,
+                    fnr = sak.fnr,
+                    properties = UpdateSakDto(
+                        beskrivelse = sak.beskrivelse,
+                        soknadsDato = sak.soknadsDato,
+                        begrunnelse = sak.begrunnelse,
+                        status = sak.status,
+                        vedtaksResultat = sak.vedtaksResultat,
+                        saksbehandler = sak.saksbehandler,
+                        attestant = sak.attestant,
+                        utbetalingsType = sak.utbetalingsType,
+                        belop = sak.belop,
+                        tildelingsAar = sak.tildelingsAar
+                    )
+                )
+            )
+        }
+    }
 }

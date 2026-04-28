@@ -39,3 +39,13 @@ fun getAuthenticatedUser(): AuthenticatedUser {
         else -> throw IllegalStateException("Unknown Authenticated user $authentication")
     }
 }
+
+private fun getAuthenticatedUserNullable(): AuthenticatedUser? {
+    return when (val authentication = SecurityContextHolder.getContext().authentication) {
+        is JwtAuthenticationToken -> authentication.authenticatedUser
+        is SystemUserAuthenticationToken -> authentication.authenticatedUser
+        else -> null
+    }
+}
+
+fun isAuthenticated(): Boolean = getAuthenticatedUserNullable() != null

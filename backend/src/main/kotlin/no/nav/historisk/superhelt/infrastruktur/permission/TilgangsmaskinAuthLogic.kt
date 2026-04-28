@@ -1,8 +1,8 @@
 package no.nav.historisk.superhelt.infrastruktur.permission
 
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
-import no.nav.historisk.superhelt.infrastruktur.authentication.hasPermission
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.isAuthenticated
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import org.slf4j.LoggerFactory
 import org.springframework.security.authorization.AuthorizationDecision
@@ -19,13 +19,17 @@ class TilgangsmaskinAuthLogic(private val tilgangsmaskinService: TilgangsmaskinS
             logger.debug("Fnr er null eller blank, hopper over tilgangssjekk i tilgangsmaskin")
             return null
         }
-        if (hasPermission(Permission.IGNORE_TILGANGSMASKIN)) {
-            logger.debug("Bruker har IGNORE_TILGANGSMASKIN permission, hopper over tilgangssjekk i tilgangsmaskin")
+        if (!isAuthenticated()){
+            logger.debug("Bruker er ikke autentisert, hopper over tilgangssjekk i tilgangsmaskin")
+            return null
+        }
+
+        if (getAuthenticatedUser().systemUser) {
+            logger.trace("Dropper sjekk i tilgangsmaskin for systembruker")
             return true
         }
         val (granted, response) = tilgangsmaskinService.sjekkKomplettTilgang(FolkeregisterIdent(fnr))
 
-//         return TilgangsmaskinAuthorizationDecision(granted, response?.begrunnelse)
         if (!granted) {
             throw AuthorizationDeniedException(
                 "Mangler tilgang til bruker",

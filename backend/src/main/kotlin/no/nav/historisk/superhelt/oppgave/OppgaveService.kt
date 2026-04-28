@@ -1,11 +1,13 @@
 package no.nav.historisk.superhelt.oppgave
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.common.types.defaultEnhetsnummer
+import no.nav.historisk.superhelt.ansatt.NavAnsattService
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
@@ -22,14 +24,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-private const val TEMA_HEL = "HEL"
-private const val APP_NAVN = "SUPERHELT"
-
 @Service
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val oppgaveRepository: OppgaveRepository,
-    private val personService: PersonService
+    private val personService: PersonService,
+    private  val navAnsattService: NavAnsattService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -42,11 +42,13 @@ class OppgaveService(
     @PreAuthorize("hasAuthority('READ')")
     fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
 
+        val temaForSaksbehandler = navAnsattService.hentNavAnsatt().tema
+
         val oppgaver = oppgaveClient.finnOppgaver(
             FinnOppgaverParams(
                 tilordnetRessurs = navident,
                 statuskategori = "AAPEN",
-                tema = listOf(TEMA_HEL),
+                tema = temaForSaksbehandler,
                 limit = 50L
             )
         ).oppgaver ?: emptyList()
@@ -66,11 +68,13 @@ class OppgaveService(
         val person = personService.hentPerson(fnr)
             ?: throw IllegalStateException("Fant ikke persondata for person")
 
+        val temaForSaksbehandler = navAnsattService.hentNavAnsatt().tema
+
         val oppgaver = oppgaveClient.finnOppgaver(
             FinnOppgaverParams(
                 aktoerId = listOf(person.aktorId),
                 statuskategori = "AAPEN",
-                tema = listOf(TEMA_HEL),
+                tema = temaForSaksbehandler,
                 limit = 50L
             )
         ).oppgaver ?: emptyList()
@@ -161,7 +165,7 @@ class OppgaveService(
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(
-                tema = TEMA_HEL,
+                tema = sak.type.tema.kode,
                 oppgavetype = type.oppgavetype,
                 opprettetAvEnhetsnr = defaultEnhetsnummer.value,
                 journalpostId = journalpostId,

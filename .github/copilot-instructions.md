@@ -36,11 +36,11 @@ Krever `docker compose up` for Postgres, Kafka, mock-oidc og Wonderwall.
 ### Frontend
 ```bash
 # i /frontend
-npm start           # dev-server på :3000 (hot reload)
-npm run test        # Vitest
-npm run biome       # lint + format (Biome)
-npm run biome:write # lint + format, skriv endringer
-npm run openapi-ts  # generer typer fra backend-API (backend må kjøre)
+pnpm start           # dev-server på :3000 (hot reload)
+pnpm run test        # Vitest
+pnpm run biome       # lint + format (Biome)
+pnpm run biome:write # lint + format, skriv endringer
+pnpm run openapi-ts  # generer typer fra backend-API (backend må kjøre)
 ```
 
 Når Biome kjøres for å validere endringer: kjør kun på filer som er endret i sesjonen (`npx biome check <fil>`), ikke hele prosjektet.
@@ -48,9 +48,9 @@ Når Biome kjøres for å validere endringer: kjør kun på filer som er endret 
 ### E2E
 ```bash
 # i /e2e
-npx playwright test       # headless
-npx playwright test --ui  # med UI
-npx playwright test -u    # oppdater snapshots
+pnpm playwright:test              # headless
+pnpm playwright:test:ui           # med UI
+pnpm playwright:snapshot-update   # oppdater snapshots
 ```
 
 ## Backend-konvensjoner
@@ -72,6 +72,7 @@ npx playwright test -u    # oppdater snapshots
 - **Aldri endre eksisterende migrasjonsfiler**
 - Repository-klasser returnerer alltid domenemodell (ikke JPA-entity) utad
 - `@Transactional` settes på service-metoder, ikke repository
+- JPA-entity skal aldri eksponeres utenfor repository-laget
 
 ### Kafka
 - Producer: `UtbetalingKafkaProducer` sender `UtbetalingMelding` til Helved
@@ -87,7 +88,7 @@ npx playwright test -u    # oppdater snapshots
 ## Frontend-konvensjoner
 
 ### Typing
-- Typer genereres automatisk fra backend OpenAPI-spec med `npm run openapi-ts` → `generated/`
+- Typer genereres automatisk fra backend OpenAPI-spec med `pnpm run openapi-ts` → `generated/`
 - Importer genererte typer via `@generated`-alias (eks. `import type { Sak } from "@generated"`)
 - Lokale utility-typer utledes fra genererte typer: `type SakStatusType = Sak['status']`
 
@@ -106,7 +107,7 @@ npx playwright test -u    # oppdater snapshots
 ```bash
 docker compose up          # Postgres, Kafka, Wonderwall, texas, mock-oidc
 # Start DevApplication.kt i IDE (spring profile: dev)
-cd frontend && npm start   # :3000 med hot reload
+cd frontend && pnpm start   # :3000 med hot reload
 # Appen tilgjengelig på :4000 (gjennom Wonderwall med mock-auth)
 ```
 

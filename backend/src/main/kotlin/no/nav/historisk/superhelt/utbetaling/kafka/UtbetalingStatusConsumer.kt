@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Service
 import tools.jackson.databind.ObjectMapper
-import java.util.*
+import java.util.UUID
 
 
 @Service
@@ -46,7 +46,6 @@ class UtbetalingStatusConsumer(
             permissions = listOf(
                 Permission.READ,
                 Permission.WRITE,
-                Permission.IGNORE_TILGANGSMASKIN
             )
         ) {
             val statusMessage = objectMapper.readValue(record.value(), UtbetalingStatusMelding::class.java)

@@ -69,7 +69,6 @@ class DokarkivJournalforController(
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
 
         val sak = sakRepository.getSak(saksnummer)
-        // TODO Sjekke om det er åpen oppgave
         runCatching {
             oppgaveService.opprettOppgave(
                 type = OppgaveType.BEH_SAK,

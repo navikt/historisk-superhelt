@@ -1,7 +1,12 @@
 package no.nav.historisk.superhelt.sak
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import no.nav.common.types.*
+import no.nav.common.types.Aar
+import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Belop
+import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError

@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.klage
 
-import no.nav.historisk.superhelt.enhet.NavEnhetService
+import no.nav.historisk.superhelt.ansatt.NavAnsattService
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.klage.rest.SendKlageRequestDto
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service
 @Service
 class KlageService(
     private val kabalClient: KabalClient,
-    private val navEnhetService: NavEnhetService,
+    private val navAnsattService: NavAnsattService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -37,7 +37,8 @@ class KlageService(
                 validationErrors = listOf(ValidationFieldError("hjemmelId", "Ukjent hjemmelId: ${request.hjemmelId}")),
             )
         }
-        val enhet = navEnhetService.hentNavEnhet()
+        val enhet = navAnsattService.hentNavAnsatt().enheter.firstOrNull()
+            ?: throw IllegalArgumentException("Bruker må være tilknyttet minst én enhet for å sende klage")
 
         val kabalRequest = SendSakV4Request(
             type = SakType.KLAGE,
@@ -47,14 +48,14 @@ class KlageService(
             kildeReferanse = sak.saksnummer.value,
             dvhReferanse = sak.saksnummer.value,
             hjemler = listOf(hjemmel.id),
-            forrigeBehandlendeEnhet = enhet.value,
+            forrigeBehandlendeEnhet = enhet.enhetnummer.value,
             tilknyttedeJournalposter = emptyList(),
             brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
             ytelse = "HEL_HEL",
             kommentar = request.kommentar,
         )
 
-        logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.value}")
+        logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet.enhetnummer}")
         kabalClient.sendSakV4(kabalRequest)
         logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}")
     }

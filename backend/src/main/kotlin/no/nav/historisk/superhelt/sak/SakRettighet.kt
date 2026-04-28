@@ -1,6 +1,10 @@
 package no.nav.historisk.superhelt.sak
 
-import no.nav.historisk.superhelt.infrastruktur.authentication.*
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.infrastruktur.authentication.hasPermission
+import no.nav.historisk.superhelt.infrastruktur.authentication.hasRole
 
 enum class SakRettighet {
     LES,
@@ -21,7 +25,9 @@ enum class SakRettighet {
     TILBAKESTILL_GJENAPNING,
 
     /** Gir rettighet til å sende klage til Kabal for en ferdigstilt sak */
-    SEND_KLAGE
+    SEND_KLAGE,
+    /** Sende fritekstbrev på en sak */
+    FRITEKSTBREV
 
 
 }
@@ -38,6 +44,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             SakStatus.UNDER_BEHANDLING -> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
+                    rettigheter.add(SakRettighet.FRITEKSTBREV)
 
                     if (gjenapnet) {
                         rettigheter.add(SakRettighet.TILBAKESTILL_GJENAPNING)
@@ -63,6 +70,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
                 if (hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.GJENAPNE)
                     rettigheter.add(SakRettighet.SEND_KLAGE)
+                    rettigheter.add(SakRettighet.FRITEKSTBREV)
                 }
             }
 

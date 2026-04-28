@@ -1,5 +1,7 @@
 package no.nav.saf.graphql
 
+import no.nav.common.consts.APP_NAVN
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
 import org.springframework.http.MediaType
@@ -26,9 +28,10 @@ class SafGraphqlClient(
 
     fun dokumentoversiktFagsak(
         saksnummer: Saksnummer,
-        tema: List<DokarkivTema> = listOf(DokarkivTema.HEL),
-        fagsakSystem: String = "HELT"
+        tema: List<FellesKodeverkTema>,
+        fagsakSystem: String = APP_NAVN
     ): DokumentoversiktGraphqlResponse {
+
         val req =
             createGraphqlQuery(
                 gqlFile = "/saf/dokumentoversiktFagsak.graphql",
