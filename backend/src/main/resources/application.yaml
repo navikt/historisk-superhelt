@@ -9,6 +9,8 @@ app:
   ereg:
     url: ${EREG_URL}
     audience: ${EREG_AUDIENCE}
+  kabal:
+    behandling-event-topic: klage.behandling-events.v1
 
 
 info:

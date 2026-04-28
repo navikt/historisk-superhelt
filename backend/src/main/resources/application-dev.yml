@@ -62,6 +62,7 @@ app:
   kabal:
     url: http://localhost:9080/kabal-mock
     audience: api://mock.kabal/.default
+    behandling-event-topic: klage.behandling-events.v1
   ereg:
     url: http://localhost:9080/ereg-mock
     audience: api://mock.ereg-services/.default
