@@ -145,7 +145,7 @@ function SendKlagePage() {
                         variant="primary"
                         onClick={() => navigate({ to: "/sak/$saksnummer/oppsummering", params: { saksnummer } })}
                     >
-                        Gå til oppsummering
+                        Gå til Godkjenning
                     </Button>
                 </HStack>
             </VStack>

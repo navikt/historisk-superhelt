@@ -1,6 +1,6 @@
+import { faker } from "@faker-js/faker";
 import { expect } from "@playwright/test";
 import { test } from "./test.fixtures";
-import { faker } from "@faker-js/faker";
 
 test.describe("Feilregistrer sak", () => {
     test.describe.configure({ mode: "serial" });
@@ -35,7 +35,7 @@ test.describe("Feilregistrer sak", () => {
 
         await test.step("Sjekk at sak er feilregistrert", async () => {
             await sak.selectMenuItem("Godkjenning");
-            await expect(page.getByText("Sak feilregistrert")).toBeVisible();
+            await expect(page.getByRole("heading", { name: "Saken er feilregistrert" })).toBeVisible();
         });
     });
 });

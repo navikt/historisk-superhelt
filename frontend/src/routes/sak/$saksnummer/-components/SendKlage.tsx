@@ -179,7 +179,7 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
                                         });
                                     }}
                                 >
-                                    Gå til oppsummering
+                                    Gå til Godkjenning
                                 </Button>
                             </HStack>
                         </VStack>

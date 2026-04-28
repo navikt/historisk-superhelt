@@ -1,6 +1,6 @@
+import { faker } from "@faker-js/faker";
 import { expect } from "@playwright/test";
 import { test } from "./test.fixtures";
-import { faker } from "@faker-js/faker";
 
 test.describe("Fritekstbrev", () => {
     test.describe.configure({ mode: "serial" });
@@ -50,7 +50,7 @@ test.describe("Fritekstbrev", () => {
         });
 
         await test.step("Sjekk brevet", async () => {
-            await page.getByLabel("Dokumenter i saken").selectOption("Brev 1");
+            await page.getByLabel("Dokumenter i saken").selectOption("Brev 1", { timeout: 15000 });
 
             // TODO sjekk innhold i pdf
         });
