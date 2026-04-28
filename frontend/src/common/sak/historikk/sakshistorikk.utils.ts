@@ -6,9 +6,9 @@ export function sakTilHistorikkRad(sak: Sak, kategoriNavn: string): HistorikkRad
         kilde: "SAK",
         id: sak.saksnummer,
         kategori: kategoriNavn,
-        beskrivelse: sak.beskrivelse,
-        dato: sak.soknadsDato,
-        belop: sak.belop,
+        beskrivelse: sak.beskrivelse ?? undefined,
+        dato: sak.soknadsDato ?? undefined,
+        belop: sak.belop ?? undefined,
         sak,
         strekedGjennom: sak.status === "FEILREGISTRERT",
     };
@@ -19,8 +19,8 @@ export function infotrygdTilHistorikkRad(h: InfotrygdHistorikk, index: number): 
         kilde: "INFOTRYGD",
         id: `infotrygd-${index}`,
         kategori: h.kontonavn,
-        beskrivelse: h.tekst,
-        dato: h.dato ?? h.fom,
+        beskrivelse: h.tekst ?? undefined,
+        dato: h.dato ?? h.fom?? undefined,
         belop: h.belop != null ? Number(h.belop) : undefined,
         strekedGjennom: false,
     };

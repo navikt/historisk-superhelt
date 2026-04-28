@@ -17,25 +17,25 @@ export type ProblemDetail = {
 
 export type SakUpdateRequestDto = {
     type?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    beskrivelse?: string;
-    begrunnelse?: string;
-    soknadsDato?: string;
-    tildelingsAar?: number;
+    beskrivelse?: string | null;
+    begrunnelse?: string | null;
+    soknadsDato?: string | null;
+    tildelingsAar?: number | null;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
+    belop?: number | null;
 };
 
 export type Brev = {
     saksnummer: string;
     uuid: string;
     opprettetTidspunkt: string;
-    tittel?: string;
-    innhold?: string;
+    tittel?: string | null;
+    innhold?: string | null;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
-    journalpostId?: string;
+    journalpostId?: string | null;
     readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
@@ -50,28 +50,28 @@ export type Sak = {
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    beskrivelse?: string;
-    soknadsDato?: string;
-    tildelingsAar?: number;
-    begrunnelse?: string;
+    beskrivelse?: string | null;
+    soknadsDato?: string | null;
+    tildelingsAar?: number | null;
+    begrunnelse?: string | null;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     opprettetDato: string;
     saksbehandler: NavUser;
-    attestant?: NavUser;
+    attestant?: NavUser | null;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
-    vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
-    readonly tilstand: SakTilstand;
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
+    belop?: number | null;
+    vedtaksbrevBruker?: Brev | null;
     readonly gjenapnet: boolean;
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
@@ -98,18 +98,18 @@ export type FeilregisterRequestDto = {
 
 export type AttesterSakRequestDto = {
     godkjent: boolean;
-    kommentar?: string;
+    kommentar?: string | null;
 };
 
 export type OppdaterBrevRequest = {
-    tittel?: string;
-    innhold?: string;
+    tittel?: string | null;
+    innhold?: string | null;
 };
 
 export type JournalforDokument = {
     tittel: string;
     dokumentInfoId: string;
-    logiskeVedlegg?: Array<string>;
+    logiskeVedlegg?: Array<string> | null;
 };
 
 export type JournalforNySakRequest = {
@@ -131,7 +131,7 @@ export type JournalforEksisterendeSakRequest = {
 export type SendKlageRequestDto = {
     hjemmelId: string;
     datoKlageMottatt: string;
-    kommentar?: string;
+    kommentar?: string | null;
 };
 
 export type OpprettBrevRequest = {
@@ -148,14 +148,14 @@ export type Person = {
     fnr: string;
     maskertPersonident: string;
     doed: boolean;
-    doedsfall?: string;
+    doedsfall?: string | null;
     adressebeskyttelseGradering?: 'FORTROLIG' | 'STRENGT_FORTROLIG' | 'STRENGT_FORTROLIG_UTLAND' | 'UGRADERT';
     harVerge: boolean;
-    vergeInfo?: VergeInfo;
+    vergeInfo?: VergeInfo | null;
     avvisningsKode?: 'AVVIST_STRENGT_FORTROLIG_ADRESSE' | 'AVVIST_STRENGT_FORTROLIG_UTLAND' | 'AVVIST_AVDØD' | 'AVVIST_PERSON_UTLAND' | 'AVVIST_SKJERMING' | 'AVVIST_FORTROLIG_ADRESSE' | 'AVVIST_UKJENT_BOSTED' | 'AVVIST_GEOGRAFISK' | 'AVVIST_HABILITET' | 'UKJENT_PERSON';
-    avvisningsBegrunnelse?: string;
-    foedselsdato?: string;
-    alder?: number;
+    avvisningsBegrunnelse?: string | null;
+    foedselsdato?: string | null;
+    alder?: number | null;
 };
 
 export type VergeInfo = {
@@ -175,9 +175,9 @@ export type Utbetaling = {
     transaksjonsId: string;
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
-    utbetalingTidspunkt?: string;
-    loggId$superhelt_backend: string;
+    utbetalingTidspunkt?: string | null;
     annulleres: boolean;
+    loggId$superhelt_backend: string;
 };
 
 export type Enhet = {
@@ -200,14 +200,14 @@ export type Vedtak = {
     fnr: string;
     beskrivelse: string;
     soknadsDato: string;
-    tildelingsAar?: number;
-    begrunnelse?: string;
+    tildelingsAar?: number | null;
+    begrunnelse?: string | null;
     resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     vedtaksTidspunkt: string;
     saksbehandler: NavUser;
     attestant: NavUser;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
+    belop?: number | null;
 };
 
 export type SakStatusDto = {
@@ -222,7 +222,7 @@ export type EndringsloggLinje = {
     endretTidspunkt: string;
     type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK' | 'KLAGE_SENDT_KABAL';
     endring: string;
-    beskrivelse?: string;
+    beskrivelse?: string | null;
     endretAv: string;
 };
 
@@ -234,7 +234,7 @@ export type VedtaksResultatDto = {
 export type StonadsTypeDto = {
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     navn: string;
-    beskrivelse?: string;
+    beskrivelse?: string | null;
 };
 
 export type SakStatusKodeDto = {
@@ -248,20 +248,20 @@ export type OppgaveMedSak = {
     oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
     oppgavetype: 'BEH_SED' | 'BEH_SAK' | 'BEH_SAK_MK' | 'BEH_UND_VED' | 'FDR' | 'GOD_VED' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_BREV' | 'VURD_HENV' | 'VURD_NOTAT' | 'FLY' | 'HJELP_UTPROV' | 'MOTK' | 'ROB_BEH' | 'UKJENT';
     oppgaveGjelderTekst: string;
-    journalpostId?: string;
-    tilordnetRessurs?: string;
-    beskrivelse?: string;
-    fristFerdigstillelse?: string;
-    opprettetTidspunkt?: string;
-    behandlesAvApplikasjon?: string;
-    tildeltEnhetsnr?: string;
-    opprettetAv?: string;
-    saksnummer?: string;
+    journalpostId?: string | null;
+    tilordnetRessurs?: string | null;
+    beskrivelse?: string | null;
+    fristFerdigstillelse?: string | null;
+    opprettetTidspunkt?: string | null;
+    behandlesAvApplikasjon?: string | null;
+    tildeltEnhetsnr?: string | null;
+    opprettetAv?: string | null;
+    saksnummer?: string | null;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    sakBeskrivelse?: string;
-    readonly oppgaveTypeTekst: string;
+    sakBeskrivelse?: string | null;
     readonly maskertPersonIdent: string;
+    readonly oppgaveTypeTekst: string;
 };
 
 export type HjemmelDto = {
@@ -275,61 +275,61 @@ export type HjemmelDto = {
 export type Journalpost = {
     journalpostId: string;
     journalstatus: 'MOTTATT' | 'JOURNALFOERT' | 'FERDIGSTILT' | 'EKSPEDERT' | 'UNDER_ARBEID' | 'FEILREGISTRERT' | 'UTGAAR' | 'AVBRUTT' | 'UKJENT_BRUKER' | 'RESERVERT' | 'OPPLASTING_DOKUMENT' | 'UKJENT';
-    tittel?: string;
-    sak?: JournalpostSak;
-    bruker?: JournalpostBruker;
-    avsenderMottaker?: JournalpostAvsenderMottaker;
-    dokumenter?: Array<JournalpostDokumentInfo>;
+    tittel?: string | null;
+    sak?: JournalpostSak | null;
+    bruker?: JournalpostBruker | null;
+    avsenderMottaker?: JournalpostAvsenderMottaker | null;
+    dokumenter?: Array<JournalpostDokumentInfo> | null;
 };
 
 export type JournalpostAvsenderMottaker = {
-    id?: string;
+    id?: string | null;
     type?: 'FNR' | 'ORGNR' | 'HPRNR' | 'UTL_ORG' | 'NULL' | 'UKJENT';
-    navn?: string;
+    navn?: string | null;
 };
 
 export type JournalpostBruker = {
-    id?: string;
+    id?: string | null;
     type?: 'FNR' | 'ORGNR' | 'AKTOERID';
 };
 
 export type JournalpostDokumentInfo = {
-    tittel?: string;
+    tittel?: string | null;
     dokumentInfoId: string;
-    dokumentvarianter?: Array<JournalpostDokumentVariant>;
+    dokumentvarianter?: Array<JournalpostDokumentVariant> | null;
 };
 
 export type JournalpostDokumentVariant = {
-    filtype?: string;
-    filnavn?: string;
+    filtype?: string | null;
+    filnavn?: string | null;
     saksbehandlerHarTilgang: boolean;
 };
 
 export type JournalpostSak = {
-    fagsaksystem?: string;
-    fagsakId?: string;
+    fagsaksystem?: string | null;
+    fagsakId?: string | null;
 };
 
 export type InfotrygdHistorikk = {
-    dato?: string;
-    fom?: string;
-    tom?: string;
-    tekst?: string;
+    dato?: string | null;
+    fom?: string | null;
+    tom?: string | null;
+    tekst?: string | null;
     kontonummer: string;
     kontonavn: string;
-    belop?: string;
+    belop?: string | null;
 };
 
 export type BrevWritable = {
     saksnummer: string;
     uuid: string;
     opprettetTidspunkt: string;
-    tittel?: string;
-    innhold?: string;
+    tittel?: string | null;
+    innhold?: string | null;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
-    journalpostId?: string;
+    journalpostId?: string | null;
 };
 
 export type SakWritable = {
@@ -338,24 +338,24 @@ export type SakWritable = {
     type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    beskrivelse?: string;
-    soknadsDato?: string;
-    tildelingsAar?: number;
-    begrunnelse?: string;
+    beskrivelse?: string | null;
+    soknadsDato?: string | null;
+    tildelingsAar?: number | null;
+    begrunnelse?: string | null;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     opprettetDato: string;
     saksbehandler: NavUser;
-    attestant?: NavUser;
+    attestant?: NavUser | null;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
-    vedtaksbrevBruker?: BrevWritable;
+    belop?: number | null;
+    vedtaksbrevBruker?: BrevWritable | null;
 };
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -364,18 +364,18 @@ export type OppgaveMedSakWritable = {
     oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
     oppgavetype: 'BEH_SED' | 'BEH_SAK' | 'BEH_SAK_MK' | 'BEH_UND_VED' | 'FDR' | 'GOD_VED' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_BREV' | 'VURD_HENV' | 'VURD_NOTAT' | 'FLY' | 'HJELP_UTPROV' | 'MOTK' | 'ROB_BEH' | 'UKJENT';
     oppgaveGjelderTekst: string;
-    journalpostId?: string;
-    tilordnetRessurs?: string;
-    beskrivelse?: string;
-    fristFerdigstillelse?: string;
-    opprettetTidspunkt?: string;
-    behandlesAvApplikasjon?: string;
-    tildeltEnhetsnr?: string;
-    opprettetAv?: string;
-    saksnummer?: string;
+    journalpostId?: string | null;
+    tilordnetRessurs?: string | null;
+    beskrivelse?: string | null;
+    fristFerdigstillelse?: string | null;
+    opprettetTidspunkt?: string | null;
+    behandlesAvApplikasjon?: string | null;
+    tildeltEnhetsnr?: string | null;
+    opprettetAv?: string | null;
+    saksnummer?: string | null;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    sakBeskrivelse?: string;
+    sakBeskrivelse?: string | null;
 };
 
 export type GetSakBySaksnummerData = {
