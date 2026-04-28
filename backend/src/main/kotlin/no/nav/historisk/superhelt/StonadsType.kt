@@ -18,6 +18,8 @@ enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskriv
     ORTOSE(navn = "Ortopedisk ortose", klassekode = KlasseKode.ORTOSE, tema = HEL),
     SPESIALSKO(navn = "Ortopediske spesialsko", klassekode = KlasseKode.SPESIALSKO, tema = HEL),
 
+//    ARBEID_UTDANNING(navn = "Arbeid og utdanningsreiser", tema = HJE, klassekode = KlasseKode.ANSIKTSDEFEKTPROTESE)
+
     /* Hjelpemidler */
 //    FOLKEHOYSKOLE("Folkehøyskole/tilpassningskurs"),
 //    GRUNNMONSTER("Grunnmønster"),
@@ -28,4 +30,7 @@ enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskriv
 //    BIL("Bil"),
 //    REP_SPES_UTSTYR("Reparasjon spesialutstyr"),
 //    TOLK("Tolk"),
+    ;
+
+
 }

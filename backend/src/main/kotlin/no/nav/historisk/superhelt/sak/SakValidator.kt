@@ -63,11 +63,7 @@ class SakValidator(private val sak: Sak): Validator() {
             check(vedtaksResultat == null, "vedtaksResultat", "Vedtak må være satt")
 
             if (listOf(VedtaksResultat.INNVILGET, VedtaksResultat.DELVIS_INNVILGET).contains(vedtaksResultat)) {
-                check(
-                    utbetalingsType == UtbetalingsType.INGEN,
-                    "utbetaling",
-                    "Det må velges enten utbetaling eller forhandstilsagn"
-                )
+
 
                 when (utbetalingsType) {
                     UtbetalingsType.BRUKER -> {
@@ -80,6 +76,13 @@ class SakValidator(private val sak: Sak): Validator() {
 
                     UtbetalingsType.FORHANDSTILSAGN -> {}
                     UtbetalingsType.INGEN -> {}
+                    null -> {
+                        check(
+                           true,
+                            "utbetaling",
+                            "Det må velges enten utbetaling eller forhandstilsagn"
+                        )
+                    }
                 }
             }
         }

@@ -49,7 +49,7 @@ data class Sak(
     val saksbehandler: NavUser,
     val attestant: NavUser? = null,
 
-    val utbetalingsType: UtbetalingsType = UtbetalingsType.INGEN,
+    val utbetalingsType: UtbetalingsType? = null,
     val belop: Belop? = null,
 
     val vedtaksbrevBruker: Brev? = null,

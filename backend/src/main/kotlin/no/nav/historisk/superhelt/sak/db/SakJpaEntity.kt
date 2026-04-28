@@ -127,7 +127,7 @@ class SakJpaEntity(
             opprettetDato = this.opprettet,
             soknadsDato = this.soknadsDato,
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
-            utbetalingsType = this.utbetalingsType ?: UtbetalingsType.INGEN,
+            utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },
             vedtaksbrevBruker = this.getVedtaksbrevBrev()
         )

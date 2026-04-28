@@ -56,8 +56,7 @@ object SakTestData {
             tildelingsAar = Aar(faker.number().numberBetween(2020, 2026)),
             begrunnelse = faker.lebowski().quote(),
             attestant = null,
-            utbetalingsType = UtbetalingsType.INGEN,
-            belop = null
+            utbetalingsType = null,
         )
     }
 
