@@ -5,7 +5,6 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
-import no.nav.common.types.defaultEnhetsnummer
 import no.nav.dokarkiv.AvsenderMottaker
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
@@ -88,7 +87,7 @@ class DokarkivService(
                 fagsakId = sak.saksnummer,
                 fagsaksystem = APP_NAVN,
             ),
-            journalfoerendeEnhet = defaultEnhetsnummer
+            journalfoerendeEnhet = sak.type.enhet
         )
         return dokarkivClient.opprett(req, forsokFerdigstill = true)
     }
