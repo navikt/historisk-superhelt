@@ -28,7 +28,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
-     fun opprettNySak(req: OpprettSakDto): Sak {
+    fun opprettNySak(req: OpprettSakDto): Sak {
         val properties = req.properties
         val saksbehandler = properties?.saksbehandler ?: getAuthenticatedUser().navUser
         val sakEntity = patchEntity(
@@ -54,7 +54,10 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     }
 
     private fun patchEntity(dto: UpdateSakDto, entity: SakJpaEntity): SakJpaEntity {
-        dto.type?.let { entity.type = it }
+        dto.type?.let {
+            entity.type = it
+            entity.klassekode = null
+        }
         dto.status?.let { entity.status = it }
         dto.beskrivelse?.let { entity.beskrivelse = it }
         dto.begrunnelse?.let { entity.begrunnelse = it }
@@ -64,7 +67,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.saksbehandler?.let { entity.saksbehandler = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
         dto.utbetalingsType?.let {
-            entity.utbetalingsType =  it
+            entity.utbetalingsType = it
             if (it != UtbetalingsType.BRUKER) {
                 entity.belop = null
                 entity.klassekode = null
@@ -101,8 +104,6 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         sakEntity.belop = vedtak.belop?.value
         return jpaRepository.save(sakEntity).toDomain()
     }
-
-
 
 
     private fun getSakEntity(saksnummer: Saksnummer): SakJpaEntity? {

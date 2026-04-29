@@ -109,7 +109,9 @@ class SakValidator(private val sak: Sak): Validator() {
     fun checkUpdate(updateSakDto: UpdateSakDto): SakValidator {
        if (sak.gjenapnet){
            check(updateSakDto.type != null && updateSakDto.type != sak.type, "type", "Kan ikke endre type på en gjenåpnet sak")
+           check(updateSakDto.klasseKode != null && updateSakDto.klasseKode != sak.klasseKode, "klassekode", "Kan ikke endre klassekode på en gjenåpnet sak")
        }
+        check(updateSakDto.klasseKode != null && !sak.type.klassekoder.contains(updateSakDto.klasseKode), "klassekode", "Klassekode ${updateSakDto.klasseKode} er ikke gyldig for sakstype ${sak.type}")
         return this
     }
 }

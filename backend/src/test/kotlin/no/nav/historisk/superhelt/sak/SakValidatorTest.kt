@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Behandlingsnummer
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import org.assertj.core.api.Assertions.assertThat
@@ -62,16 +63,17 @@ class SakValidatorTest {
 
         @Test
         fun `skal kunne oppdatere type på første versjon av sak`() {
-            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO,behandlingsnummer = Behandlingsnummer(1))
+            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO, behandlingsnummer = Behandlingsnummer(1))
             val validator = SakValidator(sak)
             assertThat(sak.gjenapnet).isFalse()
 
             validator.checkUpdate(UpdateSakDto(type = StonadsType.BRYSTPROTESE)).validate()
             // No exception thrown
         }
+
         @Test
         fun `skal kunne oppdatere til samme type på en gjenåpnet sak`() {
-            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO,behandlingsnummer = Behandlingsnummer(2))
+            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO, behandlingsnummer = Behandlingsnummer(2))
             val validator = SakValidator(sak)
             assertThat(sak.gjenapnet).isTrue()
 
@@ -80,7 +82,7 @@ class SakValidatorTest {
 
         @Test
         fun `skal kunne oppdatere andre ting enn type på gjenåpnet sak`() {
-            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO,behandlingsnummer = Behandlingsnummer(2))
+            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO, behandlingsnummer = Behandlingsnummer(2))
             val validator = SakValidator(sak)
             assertThat(sak.gjenapnet).isTrue()
 
@@ -90,7 +92,7 @@ class SakValidatorTest {
 
         @Test
         fun `skal ikke kunne oppdatere type på en gjenåpnet sak`() {
-            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO,behandlingsnummer = Behandlingsnummer(2))
+            val sak = SakTestData.sakMedUtbetaling().copy(type = StonadsType.SPESIALSKO, behandlingsnummer = Behandlingsnummer(2))
             val validator = SakValidator(sak)
             assertThat(sak.gjenapnet).isTrue()
 
@@ -99,9 +101,33 @@ class SakValidatorTest {
             assertThatThrownBy { validator.validate() }
                 .isInstanceOf(ValideringException::class.java)
                 .hasMessageContaining("Validering av sak feilet")
-            // No exception thrown
+        }
+
+        @Test
+        fun `skal ikke kunne oppdatere klassekode på en gjenåpnet sak`() {
+            val sak = SakTestData.sakMedUtbetaling()
+                .copy(type = StonadsType.SPESIALSKO, behandlingsnummer = Behandlingsnummer(2), lagretKlassekode = KlasseKode.REISEUTGIFTER)
+            val validator = SakValidator(sak)
+            assertThat(sak.gjenapnet).isTrue()
+
+            validator.checkUpdate(UpdateSakDto(klasseKode = KlasseKode.BRYSTPROTESE))
+
+            assertThatThrownBy { validator.validate() }
+                .isInstanceOf(ValideringException::class.java)
+                .hasMessageContaining("Validering av sak feilet")
+        }
+
+        @Test
+        fun `skal ikke kunne oppdatere klassekode på en sak til en ugyldig verdi`() {
+            val sak = SakTestData.sakMedUtbetaling()
+                .copy(type = StonadsType.SPESIALSKO)
+            val validator = SakValidator(sak)
+
+            validator.checkUpdate(UpdateSakDto(klasseKode = KlasseKode.BRYSTPROTESE))
+
+            assertThatThrownBy { validator.validate() }
+                .isInstanceOf(ValideringException::class.java)
+                .hasMessageContaining("Validering av sak feilet")
         }
     }
-
-
 }
