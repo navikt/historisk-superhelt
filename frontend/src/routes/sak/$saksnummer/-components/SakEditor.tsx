@@ -174,7 +174,9 @@ export default function SakEditor({ sak }: Props) {
                                     onChange={(value) => patchSak({ utbetalingsType: value as UtbetalingsType })}
                                     error={getErrorMessage("utbetaling")}
                                 >
-                                    <Radio value="BRUKER">Direkte til bruker</Radio>
+                                    <Radio value="BRUKER" disabled={!sak.kanUtbetales}>
+                                        Direkte til bruker
+                                    </Radio>
                                     <Radio value="FORHANDSTILSAGN">
                                         Forhåndstilsagn <small>(Ingen utbetaling)</small>
                                     </Radio>
