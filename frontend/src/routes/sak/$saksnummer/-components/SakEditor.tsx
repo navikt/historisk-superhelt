@@ -1,5 +1,5 @@
-import type {Sak, SakUpdateRequestDto} from "@generated";
-import {oppdaterSakMutation} from "@generated/@tanstack/react-query.gen";
+import type { Sak, SakUpdateRequestDto } from "@generated";
+import { oppdaterSakMutation } from "@generated/@tanstack/react-query.gen";
 import {
     Box,
     Button,
@@ -14,15 +14,15 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
-import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
-import {useNavigate} from "@tanstack/react-router";
-import {useEffect, useState} from "react";
-import {Card} from "~/common/card/Card";
-import {dateTilIsoDato} from "~/common/dato.utils";
-import {NumericInput} from "~/common/NumericInput";
-import type {SakVedtakType, StonadType, UtbetalingsType} from "~/common/sak/sak.types";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Card } from "~/common/card/Card";
+import { dateTilIsoDato } from "~/common/dato.utils";
+import { NumericInput } from "~/common/NumericInput";
+import type { SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
 import useDebounce from "~/common/useDebounce";
-import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
+import { getKodeverkStonadsTypeOptions, sakQueryKey } from "../-api/sak.query";
 
 interface Props {
     sak: Sak;
@@ -175,7 +175,9 @@ export default function SakEditor({ sak }: Props) {
                                     error={getErrorMessage("utbetaling")}
                                 >
                                     <Radio value="BRUKER">Direkte til bruker</Radio>
-                                    <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
+                                    <Radio value="FORHANDSTILSAGN">
+                                        Forhåndstilsagn <small>(Ingen utbetaling)</small>
+                                    </Radio>
                                 </RadioGroup>
                                 <NumericInput
                                     value={updateSakData.belop ?? undefined}
