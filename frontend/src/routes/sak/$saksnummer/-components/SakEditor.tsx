@@ -179,12 +179,15 @@ export default function SakEditor({ sak }: Props) {
                                         Forhåndstilsagn <small>(Ingen utbetaling)</small>
                                     </Radio>
                                 </RadioGroup>
-                                <NumericInput
-                                    value={updateSakData.belop ?? undefined}
-                                    error={getErrorMessage("utbetaling.belop")}
-                                    onChange={(belop) => patchSak({ belop: belop })}
-                                    label="Beløp som skal utbetales (kr)"
-                                />
+
+                                {updateSakData.utbetalingsType === "BRUKER" && (
+                                    <NumericInput
+                                        value={updateSakData.belop ?? undefined}
+                                        error={getErrorMessage("utbetaling.belop")}
+                                        onChange={(belop) => patchSak({ belop: belop })}
+                                        label="Beløp som skal utbetales (kr)"
+                                    />
+                                )}
                             </>
                         )}
 
