@@ -19,6 +19,7 @@ import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
@@ -87,6 +88,10 @@ class SakJpaEntity(
     @Column(name = "belop")
     var belop: Int? = null,
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "klassekode")
+    var klassekode: KlasseKode? = null,
+
     @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     private var brev: MutableList<BrevJpaEntity> = mutableListOf()
 ) {
@@ -129,6 +134,7 @@ class SakJpaEntity(
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },
+            lagretKlassekode = this.klassekode,
             vedtaksbrevBruker = this.getVedtaksbrevBrev()
         )
     }

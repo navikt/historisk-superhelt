@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.utbetaling.kafka
 
+import no.nav.helved.KlasseKode
 import no.nav.helved.UtbetalingMelding
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -82,7 +83,7 @@ class UtbetalingKafkaProducerTest {
             fun `skal sende melding med korrekte felter fra sak og utbetaling`() {
                 mockKafkaSuccess()
                 val sak = SakTestData.sakMedUtbetaling()
-                val utbetaling = UtbetalingTestData.utbetalingMinimum().copy(klasseKode = sak.type.defaultKlasseKode )
+                val utbetaling = UtbetalingTestData.utbetalingMinimum().copy(klasseKode = KlasseKode.BRYSTPROTESE  )
 
                 producer.sendTilUtbetaling(sak, utbetaling)
 
@@ -91,7 +92,7 @@ class UtbetalingKafkaProducerTest {
                         melding.sakId == sak.saksnummer.value &&
                         melding.behandlingId == sak.behandlingsnummer.toString() &&
                         melding.personident == sak.fnr.value &&
-                        melding.stønad == sak.type.defaultKlasseKode &&
+                        melding.stønad == KlasseKode.BRYSTPROTESE &&
                         melding.saksbehandler == sak.saksbehandler.navIdent.value
                 })
             }

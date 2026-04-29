@@ -72,6 +72,11 @@ class SakValidator(private val sak: Sak): Validator() {
                             "utbetaling.belop",
                             "Beløpet må settes og være positivt"
                         )
+                        check(
+                            klasseKode == null ,
+                            "utbetaling.klassekode",
+                            "Det er ikke mulig å utbetale på en sak uten klassekode"
+                        )
                     }
 
                     UtbetalingsType.FORHANDSTILSAGN -> {}
