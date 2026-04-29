@@ -1,12 +1,12 @@
-import type { Sak } from "@generated";
-import { attersterSakMutation } from "@generated/@tanstack/react-query.gen";
-import { BodyLong, Button, Dialog, Heading, Radio, RadioGroup, Textarea, VStack } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Card } from "~/common/card/Card";
-import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import type {Sak} from "@generated";
+import {attersterSakMutation} from "@generated/@tanstack/react-query.gen";
+import {BodyLong, Button, Dialog, Heading, Radio, RadioGroup, Textarea} from "@navikt/ds-react";
+import {useMutation} from "@tanstack/react-query";
+import {Link} from "@tanstack/react-router";
+import {useState} from "react";
+import {Card} from "~/common/card/Card";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
 interface Props {
     sak: Sak;
