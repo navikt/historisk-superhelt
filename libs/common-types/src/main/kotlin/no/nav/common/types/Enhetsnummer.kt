@@ -9,6 +9,3 @@ value class Enhetsnummer(val value: String) {
         return value
     }
 }
-
-// TODO hente fra sak eller saksbehandler eller kanskje pr tema?
-val defaultEnhetsnummer = Enhetsnummer("4485")
