@@ -4,6 +4,7 @@ import { BodyLong, Button, Dialog, Heading, Radio, RadioGroup, Textarea, VStack 
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { Card } from "~/common/card/Card";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
@@ -82,7 +83,7 @@ export default function AttesterSakAction({ sak }: Props) {
     const hasError = !!attesterSak.error;
 
     return (
-        <VStack gap={"space-16"}>
+        <Card>
             <Heading size="medium">Godkjenne sak</Heading>
             <BodyLong>Saken må attesteres for å bli fullført </BodyLong>
             <RadioGroup
@@ -133,6 +134,6 @@ export default function AttesterSakAction({ sak }: Props) {
                     </Dialog.Footer>
                 </Dialog.Popup>
             </Dialog>
-        </VStack>
+        </Card>
     );
 }
