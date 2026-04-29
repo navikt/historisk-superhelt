@@ -5,6 +5,7 @@ import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.oppgave.Behandlingstema.ANSIKTSDEFEKTSPROTESE
+import no.nav.oppgave.Behandlingstema.ARBEIDS_OG_UTDANNINGSREISER
 import no.nav.oppgave.Behandlingstema.BRYSTPROTESE_PROTESEBH
 import no.nav.oppgave.Behandlingstema.FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER
 import no.nav.oppgave.Behandlingstema.ORTOPEDISKE_HJELPEMIDLER
@@ -56,6 +57,8 @@ private fun OppgaveDto.guessStonadsType(): StonadsType? {
         PARYKK_HODEPLAGG -> StonadsType.PARYKK
         REISEPENGER_UTPROVING_ORT_TEKNISKE_HJELPEMIDLER -> StonadsType.REISEUTGIFTER
         REISEUTGIFTER -> StonadsType.REISEUTGIFTER // Litt usikker på denne
+
+        ARBEIDS_OG_UTDANNINGSREISER -> StonadsType.ARBEID_UTDANNING
         else -> null
     }
 

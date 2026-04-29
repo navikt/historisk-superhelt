@@ -73,9 +73,9 @@ class SakValidator(private val sak: Sak): Validator() {
                             "Beløpet må settes og være positivt"
                         )
                         check(
-                            klasseKode == null ,
-                            "utbetaling.klassekode",
-                            "Det er ikke mulig å utbetale på en sak uten klassekode"
+                            !kanUtbetales ,
+                            "utbetaling",
+                            "Det er ikke mulig å utbetale på sakstype ${type.name}"
                         )
                     }
 
