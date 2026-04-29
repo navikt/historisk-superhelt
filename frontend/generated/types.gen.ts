@@ -58,14 +58,14 @@ export type Sak = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser | null;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number | null;
     vedtaksbrevBruker?: Brev | null;
-    readonly gjenapnet: boolean;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
+    readonly gjenapnet: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
     readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
@@ -176,8 +176,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string | null;
-    annulleres: boolean;
     loggId$superhelt_backend: string;
+    annulleres: boolean;
 };
 
 export type Enhet = {
@@ -260,8 +260,8 @@ export type OppgaveMedSak = {
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
     sakBeskrivelse?: string | null;
-    readonly maskertPersonIdent: string;
     readonly oppgaveTypeTekst: string;
+    readonly maskertPersonIdent: string;
 };
 
 export type HjemmelDto = {
@@ -346,7 +346,7 @@ export type SakWritable = {
     opprettetDato: string;
     saksbehandler: NavUser;
     attestant?: NavUser | null;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
     belop?: number | null;
     vedtaksbrevBruker?: BrevWritable | null;
 };
