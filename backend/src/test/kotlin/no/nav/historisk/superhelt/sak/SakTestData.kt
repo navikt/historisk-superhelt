@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 object SakTestData {
 
     private val faker: Faker = Faker()
+    private val stonadstyperMedUtbetaling = StonadsType.entries.filter { it.kanUtbetales }
 
     fun sakMedStatus(sakStatus: SakStatus) = when (sakStatus) {
         SakStatus.UNDER_BEHANDLING -> sakMedUtbetaling().copy(status = sakStatus)
@@ -31,7 +32,9 @@ object SakTestData {
 
     fun sakMedUtbetaling(): Sak {
         val sakUtenUtbetaling = sakUtenUtbetaling()
+
         return sakUtenUtbetaling.copy(
+            type = stonadstyperMedUtbetaling.random(),
             utbetalingsType = UtbetalingsType.BRUKER,
             belop = UtbetalingTestData.utbetalingMinimum().belop,
         )
@@ -92,7 +95,7 @@ object SakTestData {
             belop = Belop(faker.number().numberBetween(10, 99999)),
         )
         return nySakMinimum(fnr)
-            .copy(properties = properties)
+            .copy(type = stonadstyperMedUtbetaling.random(), properties = properties)
     }
 
 

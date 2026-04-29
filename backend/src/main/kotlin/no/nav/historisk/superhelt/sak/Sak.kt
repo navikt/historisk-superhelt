@@ -82,6 +82,8 @@ data class Sak(
     val klasseKode: KlasseKode?
         get() = this.lagretKlassekode ?: this.type.defaultKlasseKode
 
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val kanUtbetales: Boolean get() = this.type.kanUtbetales
 
 }
 
