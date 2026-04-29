@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.utbetaling
 
 import no.nav.common.types.Belop
 import no.nav.common.types.Saksnummer
+import no.nav.helved.KlasseKode
 import no.nav.helved.UtbetalingUuid
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
-import java.util.*
+import java.util.UUID
 
 @Repository
 class UtbetalingRepository(
@@ -44,6 +45,7 @@ class UtbetalingRepository(
         utbetalingUuid: UtbetalingUuid? = null,
         utbetalingStatus: UtbetalingStatus = UtbetalingStatus.UTKAST,
         utbetalingTidspunkt: Instant,
+        klassekode: KlasseKode,
     ): Utbetaling {
         val sakEntity = sakRepository.getSakEntityOrThrow(saksnummer)
 
@@ -54,7 +56,8 @@ class UtbetalingRepository(
             utbetalingsUuid = utbetalingUuid ?: UtbetalingUuid.random(),
             utbetalingStatus = utbetalingStatus,
             transaksjonsId = UUID.randomUUID(),
-            utbetalingTidspunkt = utbetalingTidspunkt
+            utbetalingTidspunkt = utbetalingTidspunkt,
+            klassekode = klassekode
         )
         val utbetaling = utbetalingJpaRepository.save(entity).toDomain()
         logger.info("Oppretter utbetaling med ${utbetaling.loggId} med beløp $belop")
@@ -66,7 +69,8 @@ class UtbetalingRepository(
             saksnummer = sak.saksnummer,
             belop = Belop.ZeroBelop,
             utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
-            utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now()
+            utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now(),
+            klassekode = tidligereUtbetaling?.klasseKode ?: sak.type.klassekode
         )
     }
 
@@ -76,7 +80,8 @@ class UtbetalingRepository(
             belop = sak.belop
                 ?: throw IllegalStateException("Sak ${sak.saksnummer} har ingen beløp, kan ikke opprette utbetaling"),
             utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
-            utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now()
+            utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now(),
+            klassekode = tidligereUtbetaling?.klasseKode ?: sak.type.klassekode
         )
     }
 

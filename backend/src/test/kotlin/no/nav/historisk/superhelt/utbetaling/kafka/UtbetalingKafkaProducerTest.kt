@@ -13,7 +13,13 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
 import java.time.Instant
@@ -76,7 +82,7 @@ class UtbetalingKafkaProducerTest {
             fun `skal sende melding med korrekte felter fra sak og utbetaling`() {
                 mockKafkaSuccess()
                 val sak = SakTestData.sakMedUtbetaling()
-                val utbetaling = UtbetalingTestData.utbetalingMinimum()
+                val utbetaling = UtbetalingTestData.utbetalingMinimum().copy(klasseKode = sak.type.defaultKlasseKode )
 
                 producer.sendTilUtbetaling(sak, utbetaling)
 
@@ -85,7 +91,7 @@ class UtbetalingKafkaProducerTest {
                         melding.sakId == sak.saksnummer.value &&
                         melding.behandlingId == sak.behandlingsnummer.toString() &&
                         melding.personident == sak.fnr.value &&
-                        melding.stønad == sak.type.klassekode &&
+                        melding.stønad == sak.type.defaultKlasseKode &&
                         melding.saksbehandler == sak.saksbehandler.navIdent.value
                 })
             }
