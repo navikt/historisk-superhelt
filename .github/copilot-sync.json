@@ -1,0 +1,6 @@
+{
+  "overrides": [
+    ".github/instructions/nextjs-aksel.instructions.md",
+    ".github/prompts/nextjs-api-route.prompt.md"
+  ]
+}
