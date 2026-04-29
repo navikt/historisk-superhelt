@@ -32,7 +32,7 @@ enum class StonadsType(val navn: String, val klassekode: KlasseKode, val beskriv
 //    TOLK("Tolk"),
     ;
 
-    val defaultKlasseKode: KlasseKode get() = klassekode
+    val defaultKlasseKode: KlasseKode? get() = klassekode
 
 
 }

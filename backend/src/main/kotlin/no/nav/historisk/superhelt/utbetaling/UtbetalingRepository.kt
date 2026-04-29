@@ -70,7 +70,7 @@ class UtbetalingRepository(
             belop = Belop.ZeroBelop,
             utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
             utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now(),
-            klassekode = tidligereUtbetaling?.klasseKode ?: sak.type.klassekode
+            klassekode = tidligereUtbetaling?.klasseKode ?: sak.klasseKode ?: throw IllegalStateException("Sak ${sak.saksnummer} har ingen klassekode, kan ikke opprette annullering")
         )
     }
 
@@ -81,7 +81,7 @@ class UtbetalingRepository(
                 ?: throw IllegalStateException("Sak ${sak.saksnummer} har ingen beløp, kan ikke opprette utbetaling"),
             utbetalingUuid = tidligereUtbetaling?.utbetalingsUuid,
             utbetalingTidspunkt = tidligereUtbetaling?.utbetalingTidspunkt ?: Instant.now(),
-            klassekode = tidligereUtbetaling?.klasseKode ?: sak.type.klassekode
+            klassekode = tidligereUtbetaling?.klasseKode ?: sak.klasseKode ?: throw IllegalStateException("Sak ${sak.saksnummer} har ingen klassekode, kan ikke opprette utbetaling")
         )
     }
 
