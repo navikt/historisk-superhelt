@@ -47,7 +47,7 @@ class UtbetalingKafkaProducer(
             sakId = sak.saksnummer.value,
             behandlingId = sak.behandlingsnummer.toString(),
             personident = sak.fnr.value,
-            stønad = sak.type.klassekode,
+            stønad = utbetaling.klasseKode,
 
             vedtakstidspunkt = vedtaksTidspunkt,
             periodetype = Periodetype.EN_GANG,

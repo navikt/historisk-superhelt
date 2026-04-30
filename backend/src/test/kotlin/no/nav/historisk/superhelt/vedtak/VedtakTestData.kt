@@ -4,6 +4,7 @@ import net.datafaker.Faker
 import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import java.time.Instant
 import java.time.LocalDate
 
@@ -25,7 +26,7 @@ object VedtakTestData {
             vedtaksTidspunkt = Instant.now(),
             saksbehandler = sak.saksbehandler,
             attestant = sak.attestant ?: NavUser(NavIdent(faker.bothify("A??###")), faker.name().name()),
-            utbetalingsType = sak.utbetalingsType,
+            utbetalingsType = sak.utbetalingsType ?: UtbetalingsType.INGEN,
             belop = sak.belop,
         )
     }
