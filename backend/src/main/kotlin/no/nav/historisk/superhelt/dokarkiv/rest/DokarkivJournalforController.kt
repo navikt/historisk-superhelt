@@ -60,6 +60,7 @@ class DokarkivJournalforController(
                 fagsaksnummer = saksnummer,
                 journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.type.enhet,
                 request = request,
+                tema = sak.type.tema
             )
         } else {
             logger.info("Journalpost {} er allerede journalført", journalpostId)
@@ -112,6 +113,7 @@ class DokarkivJournalforController(
                 journalPostId = journalpost.journalpostId,
                 fagsaksnummer = saksnummer,
                 journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.type.enhet,
+                tema = sak.type.tema,
                 request = request,
             )
             endringsloggService.logChange(

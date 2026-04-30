@@ -224,7 +224,7 @@ class DokarkivServiceTest {
         doNothing().`when`(dokarkivClient).setLogiskeVedlegg(any(), any())
         doNothing().`when`(dokarkivClient).ferdigstill(any(), any())
 
-        dokarkivService.journalførIArkivet(journalPostId, fagsaksnummer, journalfoerendeEnhet, request)
+        dokarkivService.journalførIArkivet(journalPostId, fagsaksnummer, journalfoerendeEnhet, FellesKodeverkTema.HEL, request)
 
         val dokumenterCaptor = argumentCaptor<List<DokumentMedTittel>>()
         verify(dokarkivClient).oppdaterJournalpost(
@@ -280,7 +280,7 @@ class DokarkivServiceTest {
         doNothing().`when`(dokarkivClient).setLogiskeVedlegg(any(), any())
         doNothing().`when`(dokarkivClient).ferdigstill(any(), any())
 
-        dokarkivService.journalførIArkivet(journalPostId, fagsaksnummer, journalfoerendeEnhet, request)
+        dokarkivService.journalførIArkivet(journalPostId, fagsaksnummer, journalfoerendeEnhet, FellesKodeverkTema.HEL, request)
 
         verify(dokarkivClient).setLogiskeVedlegg(
             eq(EksternDokumentInfoId("DOK123")),
