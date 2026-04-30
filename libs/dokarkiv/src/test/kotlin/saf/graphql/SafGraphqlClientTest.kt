@@ -3,6 +3,7 @@ package saf.graphql
 import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
@@ -12,6 +13,7 @@ import no.nav.saf.graphql.GraphqlError
 import no.nav.saf.graphql.HentJournalpostData
 import no.nav.saf.graphql.HentJournalpostGraphqlResponse
 import no.nav.saf.graphql.JournalStatus
+import no.nav.saf.graphql.Journalpost
 import no.nav.saf.graphql.SafGraphqlClient
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -336,8 +338,9 @@ class SafGraphqlClientTest {
         }
     }
 
+
     @Nested
-    inner class DokumentOversiktFagsak {
+    inner class DokumentOversikt {
 
         @Test
         fun `dokumentoversiktBruker skal returnere vellykket respons`() {
@@ -347,44 +350,50 @@ class SafGraphqlClientTest {
                 """
          {
            "data": {
-             "dokumentoversiktFagsak": {
-               "journalposter": [
-                 {
-                   "journalpostId": "$journalpostId",
-                   "tittel": "Test journalpost",
-                   "journalstatus": "JOURNALFOERT",
-                   "sak": {
-                     "fagsakId": "$saksnummer",
-                     "fagsaksystem": "$APP_NAVN"
-                   },
-                   "bruker": {
-                     "id": "987654321",
-                     "type": "FNR"
-                   },
-                   "avsenderMottaker": {
-                     "id": "123456789",
-                     "type": "FNR",
-                     "navn": "Ola Nordmann"
-                   },
-                   "dokumenter": [
-                     {
-                       "dokumentInfoId": "doc123",
-                       "tittel": "Hoveddokument",
-                       "dokumentvarianter": [
-                         {
-                           "filnavn": "dokument.pdf",
-                           "filtype": "PDF",
-                           "saksbehandlerHarTilgang": true
-                         }
-                       ]
-                     }
-                   ]
-                 }
-               ]
-             }
+             "dokumentoversiktBruker":
+             ${jsonJournalposter(journalpostId, saksnummer)}
+          
            }
          }
+         """.trimIndent()
 
+            mockServer
+                .expect(requestTo("/graphql"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andRespond(
+                    withSuccess()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(jsonResponse),
+                )
+
+            val result = safClient.dokumentoversiktBruker(FolkeregisterIdent("12345678901"), listOf(FellesKodeverkTema.HEL))
+
+            // Verify response structure
+            assertNotNull(result)
+            assertNotNull(result.data)
+            assertEquals(null, result.errors)
+
+            // Verify journalpost
+            val journalpost = result.data.dokumentoversiktBruker.journalposter.first()
+            assertJournalpost(journalpost, journalpostId, saksnummer)
+
+            mockServer.verify()
+        }
+
+        @Test
+        fun `dokumentoversiktFagsak skal returnere vellykket respons`() {
+            val journalpostId = EksternJournalpostId("123456789")
+            val saksnummer = Saksnummer(1234)
+            val jsonResponse =
+                """
+         {
+           "data": {
+             "dokumentoversiktFagsak": 
+             ${jsonJournalposter(journalpostId, saksnummer)}
+          
+           }
+         }
          """.trimIndent()
 
             mockServer
@@ -406,6 +415,15 @@ class SafGraphqlClientTest {
 
             // Verify journalpost
             val journalpost = result.data.dokumentoversiktFagsak.journalposter.first()
+            assertJournalpost(journalpost, journalpostId, saksnummer)
+
+            mockServer.verify()
+        }
+
+        private fun assertJournalpost(
+            journalpost: Journalpost,
+            journalpostId: EksternJournalpostId,
+            saksnummer: Saksnummer) {
             assertNotNull(journalpost)
             assertEquals(journalpostId, journalpost.journalpostId)
             assertEquals("Test journalpost", journalpost.tittel)
@@ -448,10 +466,46 @@ class SafGraphqlClientTest {
             assertEquals("dokument.pdf", variant.filnavn)
             assertEquals("PDF", variant.filtype)
             assertEquals(true, variant.saksbehandlerHarTilgang)
-
-            mockServer.verify()
         }
 
-
+        private fun jsonJournalposter(journalpostId: EksternJournalpostId, saksnummer: Saksnummer) = """
+         {
+               "journalposter": [
+                 {
+                   "journalpostId": "$journalpostId",
+                   "tittel": "Test journalpost",
+                   "journalstatus": "JOURNALFOERT",
+                   "sak": {
+                     "fagsakId": "$saksnummer",
+                     "fagsaksystem": "$APP_NAVN"
+                   },
+                   "bruker": {
+                     "id": "987654321",
+                     "type": "FNR"
+                   },
+                   "avsenderMottaker": {
+                     "id": "123456789",
+                     "type": "FNR",
+                     "navn": "Ola Nordmann"
+                   },
+                   "dokumenter": [
+                     {
+                       "dokumentInfoId": "doc123",
+                       "tittel": "Hoveddokument",
+                       "dokumentvarianter": [
+                         {
+                           "filnavn": "dokument.pdf",
+                           "filtype": "PDF",
+                           "saksbehandlerHarTilgang": true
+                         }
+                       ]
+                     }
+                   ]
+                 }
+               ]
+             }
+    """.trimIndent()
     }
+
+
 }

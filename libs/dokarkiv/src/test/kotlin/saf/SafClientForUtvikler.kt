@@ -2,6 +2,7 @@ package saf
 
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.saf.graphql.SafGraphqlClient
@@ -20,14 +21,16 @@ class SafClientForUtvikler {
 
     /**
      * Genereres i Ida  auth token med client id dev-fss.teamdokumenthandtering.saf
+     *
+     * https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-fss.teamdokumenthandtering.saf
      */
 
     val accessToken =
         """
       """.trimIndent()
 
-    private val baseUrl = "https://saf.dev.intern.nav.no"
-    //    private val baseUrl = "http://localhost:9080/pdl-mock"
+//    private val baseUrl = "https://saf.dev.intern.nav.no"
+        private val baseUrl = "http://localhost:9080/saf-mock"
 
     private val graphqlClient = SafGraphqlClient(getRestClient())
     private val restClient = SafRestClient(getRestClient())
@@ -65,8 +68,22 @@ class SafClientForUtvikler {
 
     @Test
     fun `journalposter for sak`() {
-        val journalPoster = graphqlClient.dokumentoversiktFagsak(Saksnummer(1), listOf(FellesKodeverkTema.HEL))
-        println(journalPoster)
+        val result = graphqlClient.dokumentoversiktFagsak(saksnummer = Saksnummer(id = 48), tema = listOf(FellesKodeverkTema.HEL))
+        println(result)
+        println()
+        result.data?.dokumentoversiktFagsak?.journalposter?.forEach {
+            println(it)
+        }
+    }
+
+    @Test
+    fun `journalposter for bruker`() {
+        val result = graphqlClient.dokumentoversiktBruker(fnr = FolkeregisterIdent("26418823428"), tema = listOf(FellesKodeverkTema.HEL))
+        println(result)
+        println()
+        result.data?.dokumentoversiktBruker?.journalposter?.forEach {
+            println(it)
+        }
     }
 
     private fun getRestClient(): RestClient =

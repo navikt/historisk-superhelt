@@ -1,5 +1,6 @@
-import { finnJournalposterForSakQueryKey, hentEndringsloggForSakQueryKey } from "@generated/@tanstack/react-query.gen";
+import { hentEndringsloggForSakQueryKey } from "@generated/@tanstack/react-query.gen";
 import { useQueryClient } from "@tanstack/react-query";
+import { apiFinnJournalpostForSakQueryKey } from "~/routes/sak/$saksnummer/-api/journalpost.query";
 import { sakQueryKey } from "~/routes/sak/$saksnummer/-api/sak.query";
 
 /** Invaliderer cachen for en sak og tilhørende endringslogg */
@@ -15,7 +16,7 @@ export function useInvalidateSakQuery() {
         });
         // dokumenter knyttet til saken
         queryClient.invalidateQueries({
-            queryKey: finnJournalposterForSakQueryKey({ path: { saksnummer: saksnummer } }),
+            queryKey: apiFinnJournalpostForSakQueryKey(saksnummer),
         });
     }
 

@@ -1,0 +1,31 @@
+query fagsakBrukerQuery($fnr: String!, $tema: [Tema]!, $foerste: Int = 50) {
+    dokumentoversiktBruker(brukerId: { id: $fnr, type: FNR }, tema: $tema, foerste: $foerste) {
+        journalposter {
+            journalpostId
+            tittel
+            journalstatus
+            sak {
+                fagsaksystem
+                fagsakId
+            }
+            bruker {
+                id
+                type
+            }
+            avsenderMottaker {
+                id
+                type
+                navn
+            }
+            dokumenter {
+                tittel
+                dokumentInfoId
+                dokumentvarianter {
+                    filtype
+                    filnavn
+                    saksbehandlerHarTilgang
+                }
+            }
+        }
+    }
+}
