@@ -4,7 +4,7 @@ Saksbehandling og engangsutbetaling på enkle helseytelser. Erstatter InfoTrygd-
 
 > Alle trenger hjelp av en superhelt en gang i blant
 
-## For fagpersoner
+## Hva er Superhelt?
 
 Superhelt er saksbehandlingssystemet for saksbehandlere og attestanter som behandler søknader om engangsutbetalinger på enkle helseytelser.
 
