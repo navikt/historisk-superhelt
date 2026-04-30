@@ -98,7 +98,7 @@ object SakTestData {
             .copy(type = stonadstyperMedUtbetaling.random(), properties = properties)
     }
 
-
+    @Deprecated("Bruk lagreSak f")
     fun lagreNySak(repository: SakRepository, sak: OpprettSakDto = nySakMinimum()): Sak {
         return withMockedUser {
             repository.opprettNySak(sak)
