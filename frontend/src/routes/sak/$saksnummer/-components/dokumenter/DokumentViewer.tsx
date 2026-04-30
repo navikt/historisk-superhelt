@@ -1,16 +1,14 @@
-import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
-import { HStack } from "@navikt/ds-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { MultiPdfViewer } from "~/routes/sak/$saksnummer/-components/dokumenter/MultiPdfViewer";
+import {HStack} from "@navikt/ds-react";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {apiFinnJournalposterOptions} from "~/routes/sak/$saksnummer/-api/journalpost.query";
+import {MultiPdfViewer} from "~/routes/sak/$saksnummer/-components/dokumenter/MultiPdfViewer";
 
 interface DokumentViewerProps {
     saksnummer: string;
 }
 
 export default function DokumentViewer({ saksnummer }: DokumentViewerProps) {
-    const { data: journalposter } = useSuspenseQuery({
-        ...finnJournalposterForSakOptions({ path: { saksnummer: saksnummer } }),
-    });
+    const { data: journalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, false));
 
     return (
         <HStack gap="space-32">
