@@ -1,7 +1,7 @@
-import type {Journalpost} from "@generated";
-import {Box, InlineMessage, Select} from "@navikt/ds-react";
-import {useState} from "react";
-import {EmbeddedPdf} from "~/routes/sak/$saksnummer/-components/dokumenter/EmbeddedPdf";
+import type { Journalpost } from "@generated";
+import { Box, InlineMessage, Select } from "@navikt/ds-react";
+import { useState } from "react";
+import { EmbeddedPdf } from "~/common/pdf/EmbeddedPdf";
 
 interface Props {
     journalPoster: Array<Journalpost>;

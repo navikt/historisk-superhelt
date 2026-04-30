@@ -1,7 +1,7 @@
 import { finnJournalposterForSakOptions } from "@generated/@tanstack/react-query.gen";
 import { HStack } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { MultiPdfViewer } from "~/routes/sak/$saksnummer/-components/dokumenter/MultiPdfViewer";
+import { MultiPdfViewer } from "~/common/pdf/MultiPdfViewer";
 
 interface DokumentViewerProps {
     saksnummer: string;
