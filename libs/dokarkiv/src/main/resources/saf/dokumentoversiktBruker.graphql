@@ -1,10 +1,10 @@
-query fagsakQuery($fnr: String!,  $tema: [Tema]!, $foerste: Int = 50) {
-    dokumentoversiktBruker(brukerId: {id: $fnr, type: FNR}, tema: $tema, foerste: $foerste) {
+query fagsakBrukerQuery($fnr: String!, $tema: [Tema]!, $foerste: Int = 50) {
+    dokumentoversiktBruker(brukerId: { id: $fnr, type: FNR }, tema: $tema, foerste: $foerste) {
         journalposter {
             journalpostId
             tittel
             journalstatus
-            sak{
+            sak {
                 fagsaksystem
                 fagsakId
             }
@@ -17,10 +17,10 @@ query fagsakQuery($fnr: String!,  $tema: [Tema]!, $foerste: Int = 50) {
                 type
                 navn
             }
-            dokumenter{
+            dokumenter {
                 tittel
                 dokumentInfoId
-                dokumentvarianter{
+                dokumentvarianter {
                     filtype
                     filnavn
                     saksbehandlerHarTilgang
