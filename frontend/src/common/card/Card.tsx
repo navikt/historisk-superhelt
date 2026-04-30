@@ -1,11 +1,11 @@
 import { Box, type BoxProps, Heading, VStack } from "@navikt/ds-react";
 
 type CardProps = BoxProps & {
-    title?: string;
+    tittel?: string;
 };
 
 export function Card(props: CardProps) {
-    const { title, children } = props;
+    const { tittel, children, ...boxProps } = props;
     return (
         <Box
             padding="space-24"
@@ -13,12 +13,12 @@ export function Card(props: CardProps) {
             borderWidth="1"
             borderRadius="8"
             borderColor="neutral-subtle"
-            {...props}
+            {...boxProps}
         >
             <VStack gap="space-16">
-                {title && (
+                {tittel && (
                     <Heading textColor="subtle" size="xsmall" level="3">
-                        {title}
+                        {tittel}
                     </Heading>
                 )}
                 {children}

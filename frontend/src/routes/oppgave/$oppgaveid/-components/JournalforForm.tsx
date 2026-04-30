@@ -2,8 +2,8 @@ import type {JournalforDokument, Journalpost, OppgaveMedSak, Person} from "@gene
 import {Radio, RadioGroup, VStack} from "@navikt/ds-react";
 import {useRef, useState} from "react";
 import {Card} from "~/common/card/Card";
-import {hasSize, isValidFnr} from "~/common/validation.utils";
 import type {StonadType} from "~/common/sak/sak.types";
+import {hasSize, isValidFnr} from "~/common/validation.utils";
 import {AnnetInnholdCombobox} from "./AnnetInnholdCombobox";
 import {DokumentTittelFelt} from "./DokumentTittelFelt";
 import {EksisterendeSakAction} from "./EksisterendeSakAction";
@@ -92,7 +92,7 @@ export function JournalforForm({
     return (
         <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
             <VStack gap="space-24">
-                <Card title="Bruker og avsender">
+                <Card tittel="Bruker og avsender">
                     <PersonVelger
                         label="Bruker"
                         name="bruker"
@@ -119,7 +119,7 @@ export function JournalforForm({
                         }}
                     />
                 </Card>
-                <Card title="Dokumenter">
+                <Card tittel="Dokumenter">
                     {journalPost?.dokumenter?.map((dok, index) => (
                         <VStack key={dok.dokumentInfoId} gap={"space-8"}>
                             <DokumentTittelFelt
@@ -139,7 +139,7 @@ export function JournalforForm({
                         </VStack>
                     ))}
                 </Card>
-                <Card title="Sak">
+                <Card tittel="Sak">
                     <RadioGroup
                         legend="Knytt journalpost til"
                         value={modus}

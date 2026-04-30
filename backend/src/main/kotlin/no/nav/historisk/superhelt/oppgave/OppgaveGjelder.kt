@@ -19,7 +19,7 @@ enum class OppgaveGjelder(
     PARYKK_HODEPLAGG(Behandlingstema.PARYKK_HODEPLAGG, null),
     REISEUTGIFTER(Behandlingstema.REISEUTGIFTER, null),
 
-    ARBEID_UTDANNING(Behandlingstema.ARBEIDS_OG_UTDANNINGSREISER, null);
+    ARBEID_UTDANNING(Behandlingstema.ARBEIDS_OG_UTDANNINGSREISER, null)
     ;
 
     val behandlingstema: String? get() = tema?.kode

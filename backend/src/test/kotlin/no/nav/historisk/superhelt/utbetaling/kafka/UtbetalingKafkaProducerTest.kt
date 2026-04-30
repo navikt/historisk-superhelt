@@ -83,7 +83,7 @@ class UtbetalingKafkaProducerTest {
             fun `skal sende melding med korrekte felter fra sak og utbetaling`() {
                 mockKafkaSuccess()
                 val sak = SakTestData.sakMedUtbetaling()
-                val utbetaling = UtbetalingTestData.utbetalingMinimum().copy(klasseKode = KlasseKode.BRYSTPROTESE  )
+                val utbetaling = UtbetalingTestData.utbetalingMinimum().copy(klasseKode = KlasseKode.BRYSTPROTESE)
 
                 producer.sendTilUtbetaling(sak, utbetaling)
 
