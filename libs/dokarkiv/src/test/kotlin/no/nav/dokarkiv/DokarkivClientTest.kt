@@ -114,6 +114,7 @@ class DokarkivClientTest {
             .andExpect(method(HttpMethod.PUT))
             .andExpect(content().string(Matchers.containsString("Tittel")))
             .andExpect(content().string(Matchers.containsString("sak123")))
+            .andExpect(content().string(Matchers.containsString("HEL")))
             .andRespond(withSuccess())
 
         // When
