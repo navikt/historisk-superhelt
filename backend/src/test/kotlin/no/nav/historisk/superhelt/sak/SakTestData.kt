@@ -33,10 +33,12 @@ object SakTestData {
     fun sakMedUtbetaling(): Sak {
         val sakUtenUtbetaling = sakUtenUtbetaling()
 
+        val type = stonadstyperMedUtbetaling.random()
         return sakUtenUtbetaling.copy(
-            type = stonadstyperMedUtbetaling.random(),
+            type = type,
             utbetalingsType = UtbetalingsType.BRUKER,
             belop = UtbetalingTestData.utbetalingMinimum().belop,
+            klasseKode = type.defaultKlasseKode
         )
     }
 
