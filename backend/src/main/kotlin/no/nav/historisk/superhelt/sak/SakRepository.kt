@@ -55,8 +55,11 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
 
     private fun patchEntity(dto: UpdateSakDto, entity: SakJpaEntity): SakJpaEntity {
         dto.type?.let {
-            entity.type = it
-            entity.klassekode = null
+            if (it != entity.type) {
+                entity.type = it
+                // nullstiller for å unngå å få ugyldige klassekoder
+                entity.klassekode = null
+            }
         }
         dto.status?.let { entity.status = it }
         dto.beskrivelse?.let { entity.beskrivelse = it }
@@ -66,15 +69,18 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.vedtaksResultat?.let { entity.vedtaksResultat = it }
         dto.saksbehandler?.let { entity.saksbehandler = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
-        dto.utbetalingsType?.let {
-            entity.utbetalingsType = it
-            if (it != UtbetalingsType.BRUKER) {
-                entity.belop = null
-                entity.klassekode = null
-            }
+
+        dto.utbetalingsType?.let { entity.utbetalingsType = it }
+        val utbetalingsType = dto.utbetalingsType ?: entity.utbetalingsType
+        val isUtbetalTilBruker = utbetalingsType == UtbetalingsType.BRUKER
+        if (isUtbetalTilBruker) {
+            dto.belop?.let { entity.belop = it.value }
+            dto.klasseKode?.let { entity.klassekode = it }
+        } else {
+            entity.belop = null
+            entity.klassekode = null
         }
-        dto.belop?.let { entity.belop = it.value }
-        dto.klasseKode?.let { entity.klassekode = it }
+
         return entity
     }
 

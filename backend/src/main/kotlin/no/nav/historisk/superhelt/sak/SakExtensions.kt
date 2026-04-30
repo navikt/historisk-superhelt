@@ -21,7 +21,7 @@ object SakExtensions {
             beskrivelse = sak.beskrivelse!!,
             resultat = sak.vedtaksResultat!!,
             begrunnelse = sak.begrunnelse,
-            utbetalingsType = sak.utbetalingsType ?: throw IllegalStateException("Forventer at saken har satt en utbetalingstype"),
+            utbetalingsType = sak.utbetalingsType ?: UtbetalingsType.INGEN,
             belop = sak.belop,
             saksbehandler = sak.saksbehandler,
             attestant = sak.attestant!!,
