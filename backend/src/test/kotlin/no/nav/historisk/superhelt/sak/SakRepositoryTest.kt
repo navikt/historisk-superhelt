@@ -126,7 +126,7 @@ class SakRepositoryTest {
 
 
             @Test
-            fun `skal nullstille belop og klassekode når utbetalingsType er INGEN`() {
+            fun `skal nullstille belop når utbetalingsType er INGEN`() {
                 val sak = SakTestData.lagreSak(
                     sakRepository,
                     SakTestData.sakMedUtbetaling()

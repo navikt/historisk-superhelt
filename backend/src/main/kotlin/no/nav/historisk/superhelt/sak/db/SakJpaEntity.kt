@@ -134,6 +134,7 @@ class SakJpaEntity(
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },
+            //TODO Finne ut om dette kanskje skal mappes ett annet sted
             klasseKode = this.klassekode ?: this.type.defaultKlasseKode,
             vedtaksbrevBruker = this.getVedtaksbrevBrev()
         )
