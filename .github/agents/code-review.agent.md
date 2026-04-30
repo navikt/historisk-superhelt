@@ -95,7 +95,7 @@ Flag changes where the diff is disproportionate to the stated goal. Fixing a bug
 - Restructured working code (reordered functions, extracted helpers) without justification
 - Changed formatting or style in lines not otherwise modified
 
-Research shows over-editing is invisible to test suites — tests pass but diffs become unreviable, and codebase quality quietly degrades.
+Research shows over-editing is invisible to test suites — tests pass but diffs become unreviewable, and codebase quality quietly degrades.
 
 ### Security (🔴)
 
