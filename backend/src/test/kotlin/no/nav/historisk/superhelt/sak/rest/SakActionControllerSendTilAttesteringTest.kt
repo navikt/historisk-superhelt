@@ -10,7 +10,11 @@ import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.Test
 
@@ -88,7 +92,7 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
 
     @Test
     fun `skal feile validering når saken ikke er komplett`() {
-        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling().copy(vedtaksResultat = null))
 
         assertThatThrownBy {
             sakActionController.tilAttestering(sak.saksnummer)
