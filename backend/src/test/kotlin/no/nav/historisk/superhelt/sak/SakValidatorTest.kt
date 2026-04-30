@@ -106,7 +106,7 @@ class SakValidatorTest {
         @Test
         fun `skal ikke kunne oppdatere klassekode på en gjenåpnet sak`() {
             val sak = SakTestData.sakMedUtbetaling()
-                .copy(type = StonadsType.SPESIALSKO, behandlingsnummer = Behandlingsnummer(2), lagretKlassekode = KlasseKode.REISEUTGIFTER)
+                .copy(type = StonadsType.SPESIALSKO, behandlingsnummer = Behandlingsnummer(2), klasseKode = KlasseKode.REISEUTGIFTER)
             val validator = SakValidator(sak)
             assertThat(sak.gjenapnet).isTrue()
 

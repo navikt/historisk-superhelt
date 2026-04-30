@@ -134,7 +134,7 @@ class SakJpaEntity(
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },
-            lagretKlassekode = this.klassekode,
+            klasseKode = this.klassekode ?: this.type.defaultKlasseKode,
             vedtaksbrevBruker = this.getVedtaksbrevBrev()
         )
     }

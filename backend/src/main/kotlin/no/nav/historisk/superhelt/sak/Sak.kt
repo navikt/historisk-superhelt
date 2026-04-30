@@ -52,8 +52,7 @@ data class Sak(
 
     val utbetalingsType: UtbetalingsType? = null,
     val belop: Belop? = null,
-
-    private val lagretKlassekode: KlasseKode? = null,
+    val klasseKode: KlasseKode? = null,
 
     val vedtaksbrevBruker: Brev? = null,
 ) {
@@ -77,10 +76,6 @@ data class Sak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val gjenapnet: Boolean
         get() = this.behandlingsnummer.value > 1
-
-    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val klasseKode: KlasseKode?
-        get() = this.lagretKlassekode ?: this.type.defaultKlasseKode
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val kanUtbetales: Boolean get() = this.type.kanUtbetales

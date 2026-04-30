@@ -140,7 +140,7 @@ class SakRepositoryTest {
 
                 val oppdatert = sakRepository.getSak(sak.saksnummer)
                 assertThat(oppdatert.belop).isNull()
-                assertThat(oppdatert.lagretKlassekodeForTest()).isNull()
+                assertThat(oppdatert.klasseKode).isEqualTo(KlasseKode.PARYKK)
             }
         }
 
@@ -159,7 +159,7 @@ class SakRepositoryTest {
 
                 val oppdatert = sakRepository.getSak(sak.saksnummer)
                 assertThat(oppdatert.type).isEqualTo(StonadsType.FOTTOY)
-                assertThat(oppdatert.lagretKlassekodeForTest()).isNull()
+                assertThat(oppdatert.klasseKode).isEqualTo(KlasseKode.VANLIGE_SKO)
             }
 
             @Test
@@ -177,11 +177,4 @@ class SakRepositoryTest {
             }
         }
     }
-}
-
-/** Eksponerer lagretKlassekode for testformål uten å endre produksjonsmodellen. */
-private fun Sak.lagretKlassekodeForTest(): KlasseKode? {
-    val field = Sak::class.java.getDeclaredField("lagretKlassekode")
-    field.isAccessible = true
-    return field.get(this) as KlasseKode?
 }
