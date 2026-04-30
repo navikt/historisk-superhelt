@@ -38,7 +38,7 @@ class UtbetalingControllerTest {
     @WithSaksbehandler
     @Test
     fun `Retry utbetaling for saksbehandler`() {
-        val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         withMockedUser {
             val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)

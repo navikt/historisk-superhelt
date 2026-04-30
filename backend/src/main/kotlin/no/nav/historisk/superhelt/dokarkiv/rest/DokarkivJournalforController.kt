@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
-import no.nav.common.types.defaultEnhetsnummer
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.JournalforService
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
@@ -53,12 +52,13 @@ class DokarkivJournalforController(
 
         // Henter opprettet sak eller lager en ny
         val saksnummer = jfrOppgave.saksnummer ?: journalforService.lagNySakOgKnyttDenTilOppgave(request, jfrOppgave)
+        val sak = sakRepository.getSak(saksnummer)
 
         if (journalpost.journalstatus != JournalStatus.JOURNALFOERT) {
             dokArkivService.journalførIArkivet(
                 journalPostId = journalpost.journalpostId,
                 fagsaksnummer = saksnummer,
-                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: defaultEnhetsnummer,
+                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.type.enhet,
                 request = request,
             )
         } else {
@@ -68,7 +68,6 @@ class DokarkivJournalforController(
         // Denne er allerede idempotent og vil ikke ferdigstille oppgaven hvis den er ferdigstilt fra før
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
 
-        val sak = sakRepository.getSak(saksnummer)
         runCatching {
             oppgaveService.opprettOppgave(
                 type = OppgaveType.BEH_SAK,
@@ -112,7 +111,7 @@ class DokarkivJournalforController(
             dokArkivService.journalførIArkivet(
                 journalPostId = journalpost.journalpostId,
                 fagsaksnummer = saksnummer,
-                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: defaultEnhetsnummer,
+                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.type.enhet,
                 request = request,
             )
             endringsloggService.logChange(

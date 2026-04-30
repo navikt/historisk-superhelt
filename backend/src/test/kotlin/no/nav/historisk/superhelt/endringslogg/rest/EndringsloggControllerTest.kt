@@ -32,7 +32,7 @@ class EndringsloggControllerTest {
     @WithSaksbehandler(navIdent = "s12345")
     @Test
     fun `hent endringslogg for sak`() {
-        val sak = SakTestData.lagreNySak(repository)
+        val sak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling())
         endringsloggService.logChange(
             saksnummer = sak.saksnummer,
             endringsType = OPPRETTET_SAK,

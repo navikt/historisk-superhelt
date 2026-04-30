@@ -4,8 +4,9 @@ import net.datafaker.Faker
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
 import no.nav.common.types.Saksnummer
+import no.nav.helved.KlasseKode
 import no.nav.helved.UtbetalingUuid
-import java.util.*
+import java.util.UUID
 
 object UtbetalingTestData {
     private val faker = Faker()
@@ -18,6 +19,7 @@ object UtbetalingTestData {
         utbetalingTidspunkt = null,
         saksnummer = Saksnummer(faker.number().positive().toLong()),
         behandlingsnummer = Behandlingsnummer(1),
+        klasseKode = faker.options().option(KlasseKode::class.java)
     )
 
 }

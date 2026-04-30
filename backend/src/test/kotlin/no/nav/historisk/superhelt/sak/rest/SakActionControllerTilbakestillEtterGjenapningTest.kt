@@ -38,9 +38,9 @@ class SakActionControllerTilbakestillEtterGjenapningTest : AbstractSakActionTest
     private lateinit var sakActionController: SakActionController
 
     private fun lagreFerdigSakMedVedtak(): Pair<Sak, Vedtak> {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
         )
         val vedtak = VedtakTestData.vedtakForSak(sak)
         withMockedUser { vedtakRepository.save(vedtak) }
@@ -115,9 +115,9 @@ class SakActionControllerTilbakestillEtterGjenapningTest : AbstractSakActionTest
 
     @Test
     fun `sak uten gjenåpning kan ikke tilbakestilles`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         assertThatThrownBy {

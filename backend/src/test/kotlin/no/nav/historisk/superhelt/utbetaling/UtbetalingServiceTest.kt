@@ -62,7 +62,7 @@ class UtbetalingServiceTest {
         sakStatus: SakStatus = SakStatus.FERDIG
     ): Sak {
         val savedSak = withMockedUser {
-            val sak = SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
             sakRepository.updateSak(
                 sak.saksnummer, UpdateSakDto(
                     status = sakStatus,

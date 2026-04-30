@@ -23,9 +23,9 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
 
     @Test
     fun `skal sende sak til attestering`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         sakActionController.tilAttestering(sak.saksnummer)
@@ -58,9 +58,9 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
     @WithAttestant
     @Test
     fun `attestant skal ikke få sende til attestering`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         assertThatThrownBy {
@@ -75,7 +75,7 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
     @Test
     fun `skal feile validering når saken ikke er under behandling`() {
         val sak =
-            SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG))
+            SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG))
 
         assertThatThrownBy {
             sakActionController.tilAttestering(sak.saksnummer)
@@ -88,7 +88,7 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
 
     @Test
     fun `skal feile validering når saken ikke er komplett`() {
-        val sak = SakTestData.lagreNySak(sakRepository)
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
 
         assertThatThrownBy {
             sakActionController.tilAttestering(sak.saksnummer)

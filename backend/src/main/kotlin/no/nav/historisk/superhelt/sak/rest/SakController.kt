@@ -5,13 +5,23 @@ import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
-import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakExtensions.auditLog
+import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakRettighet
+import no.nav.historisk.superhelt.sak.SakValidator
+import no.nav.historisk.superhelt.sak.UpdateSakDto
 import no.nav.historisk.superhelt.utbetaling.UtbetalingRepository
 import no.nav.historisk.superhelt.utbetaling.UtbetalingStatus
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/sak")
@@ -49,6 +59,7 @@ class SakController(
             saksbehandler = getAuthenticatedUser().navUser,
             utbetalingsType = req.utbetalingsType,
             belop = req.belop,
+            klasseKode = req.klasseKode,
         )
 
         SakValidator(sak)

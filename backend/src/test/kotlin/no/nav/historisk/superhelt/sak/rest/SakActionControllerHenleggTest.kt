@@ -25,9 +25,9 @@ class SakActionControllerHenleggTest : AbstractSakActionTest() {
 
     @Test
     fun `henlegg sak under behandling`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
         val brev = BrevTestdata.lagreBrev(
             brevRepository,
@@ -61,9 +61,9 @@ class SakActionControllerHenleggTest : AbstractSakActionTest() {
 
     @Test
     fun `henlegg ferdig sak skal feile`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
         )
         val brev = BrevTestdata.lagreBrev(
             brevRepository,
