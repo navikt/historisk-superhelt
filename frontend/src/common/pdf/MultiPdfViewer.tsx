@@ -1,6 +1,6 @@
 import type { Journalpost } from "@generated";
 import { Box, InlineMessage, Select } from "@navikt/ds-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EmbeddedPdf } from "~/common/pdf/EmbeddedPdf";
 
 interface Props {
@@ -42,6 +42,13 @@ export function MultiPdfViewer({ journalPoster }: Props) {
     const firstDokument = dokumenter.at(0);
 
     const [selected, setSelected] = useState<string | undefined>(generateDokId(firstDokument));
+
+    useEffect(() => {
+        const first = journalPoster
+            .flatMap((jp) => (jp.dokumenter || []).map((d) => `${jp.journalpostId}@${d.dokumentInfoId}`))
+            .at(0);
+        setSelected(first);
+    }, [journalPoster]);
     const [journalpostId, dokId] = selected ? selected.split("@") : [undefined, undefined];
 
     if (journalPoster.length === 0 || dokumenter.length === 0) {
