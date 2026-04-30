@@ -158,7 +158,7 @@ class JournalpostControllerTest {
 
         @Test
         fun `returnerer journalposter for sak uten inkluderAndreSaker`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository)
             val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
 
             whenever(safGraphqlClient.dokumentoversiktFagsak(any(), any(), any()))
@@ -180,7 +180,7 @@ class JournalpostControllerTest {
 
         @Test
         fun `returnerer tom liste når ingen journalposter finnes for sak`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository)
 
             whenever(safGraphqlClient.dokumentoversiktFagsak(any(), any(), any()))
                 .thenReturn(DokumentoversiktFagsakGraphqlResponse(
@@ -198,7 +198,7 @@ class JournalpostControllerTest {
 
         @Test
         fun `inkluderAndreSaker=true henter journalposter for bruker på tvers av saker`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository)
             val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
 
             whenever(safGraphqlClient.dokumentoversiktBruker(any(), any()))
