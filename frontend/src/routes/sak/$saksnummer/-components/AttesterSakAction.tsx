@@ -1,11 +1,12 @@
-import type { Sak } from "@generated";
-import { attersterSakMutation } from "@generated/@tanstack/react-query.gen";
-import { BodyLong, Button, Dialog, Heading, Radio, RadioGroup, Textarea, VStack } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import type {Sak} from "@generated";
+import {attersterSakMutation} from "@generated/@tanstack/react-query.gen";
+import {BodyLong, Button, Dialog, Heading, Radio, RadioGroup, Textarea} from "@navikt/ds-react";
+import {useMutation} from "@tanstack/react-query";
+import {Link} from "@tanstack/react-router";
+import {useState} from "react";
+import {Card} from "~/common/card/Card";
+import {ErrorAlert} from "~/common/error/ErrorAlert";
+import {useInvalidateSakQuery} from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 
 interface Props {
     sak: Sak;
@@ -82,7 +83,7 @@ export default function AttesterSakAction({ sak }: Props) {
     const hasError = !!attesterSak.error;
 
     return (
-        <VStack gap={"space-16"}>
+        <Card>
             <Heading size="medium">Godkjenne sak</Heading>
             <BodyLong>Saken må attesteres for å bli fullført </BodyLong>
             <RadioGroup
@@ -133,6 +134,6 @@ export default function AttesterSakAction({ sak }: Props) {
                     </Dialog.Footer>
                 </Dialog.Popup>
             </Dialog>
-        </VStack>
+        </Card>
     );
 }

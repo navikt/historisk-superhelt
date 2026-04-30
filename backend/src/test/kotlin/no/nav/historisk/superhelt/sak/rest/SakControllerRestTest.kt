@@ -63,7 +63,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `oppdater sak ok`() {
-            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val opprettetSak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling())
             val saksnummer = opprettetSak.saksnummer
             val oppdatertTittel = "Ny tittel"
             val oppdatertBegrunnelse = "Ny begrunnelse"
@@ -91,7 +91,7 @@ class SakControllerRestTest() {
         @WithLeseBruker
         @Test
         fun `oppdater sak uten skrivetilgang skal gi feil`() {
-            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum()).saksnummer
+            val opprettetSak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling()).saksnummer
             assertThat(
                 oppdaterSak(
                     opprettetSak, SakUpdateRequestDto(
@@ -141,7 +141,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `hent sak ok sjekk json`() {
-            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val opprettetSak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling())
 
             assertThat(hentSak(opprettetSak.saksnummer))
                 .hasStatus(HttpStatus.OK)
@@ -171,7 +171,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `hent sak uten tilgang til person skal gi feil`() {
-            val opprettetSak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val opprettetSak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling())
             whenever(tilgangsmaskinService.sjekkKomplettTilgang(opprettetSak.fnr)) doReturn TilgangsmaskinClient.TilgangResult(
                 harTilgang = false,
                 TilgangsmaskinTestData.problemDetailResponse,
@@ -194,9 +194,9 @@ class SakControllerRestTest() {
         @Test
         fun `finn saker for person ok`() {
             val fnr = FolkeregisterIdent("12345678901")
-            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
-            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
-            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(FolkeregisterIdent("98765432101")))
+            SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr))
+            SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr))
+            SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = FolkeregisterIdent("98765432101")))
 
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.OK)
@@ -213,7 +213,7 @@ class SakControllerRestTest() {
         @Test
         fun `finn saker for saksbehandler uten lesetilgang skal gi feil`() {
             val fnr = FolkeregisterIdent("22345678901")
-            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
+            SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr))
             assertThat(finnSakerForPerson(fnr))
                 .hasStatus(HttpStatus.FORBIDDEN)
 
@@ -222,7 +222,7 @@ class SakControllerRestTest() {
         @Test
         fun `finn saker for saksbehandler uten rettighet for person skal gi feil`() {
             val fnr = FolkeregisterIdent("32345678901")
-            SakTestData.lagreNySak(repository, SakTestData.nySakMinimum(fnr))
+            SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr))
             whenever(tilgangsmaskinService.sjekkKomplettTilgang(fnr)) doReturn TilgangsmaskinClient.TilgangResult(
                 harTilgang = false,
                 TilgangsmaskinTestData.problemDetailResponse,
@@ -243,7 +243,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `sett utbetalingstype BRUKER og belop`() {
-            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val sak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling())
             val belop = Belop(5000)
 
             assertThat(
@@ -260,7 +260,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `sett utbetalingstype INGEN fjerner belop`() {
-            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(repository, SakTestData.sakMedUtbetaling())
 
             assertThat(
                 oppdaterSak(sak.saksnummer, SakUpdateRequestDto(utbetalingsType = UtbetalingsType.INGEN))
@@ -276,7 +276,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `oppdater belop uten å endre andre felt`() {
-            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(repository, SakTestData.sakMedUtbetaling())
             val nyttBelop = Belop(12345)
 
             assertThat(
@@ -306,7 +306,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `sak uten utbetaling gir OK aggregert status`() {
-            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val sak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling())
 
             assertThat(hentSakStatus(sak.saksnummer))
                 .hasStatus(HttpStatus.OK)
@@ -319,7 +319,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `sak med utbetaling under behandling gir OK aggregert status`() {
-            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(repository, SakTestData.sakMedUtbetaling())
             utbetalingRepository.opprettUtbetaling(sak)
 
             assertThat(hentSakStatus(sak.saksnummer))
@@ -331,7 +331,7 @@ class SakControllerRestTest() {
 
         @Test
         fun `sak med feilet utbetaling gir FEILET aggregert status`() {
-            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(repository, SakTestData.sakMedUtbetaling())
             val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.FEILET)
 
@@ -351,7 +351,7 @@ class SakControllerRestTest() {
         @WithLeseBruker
         @Test
         fun `lesebruker kan hente sak status`() {
-            val sak = SakTestData.lagreNySak(repository, SakTestData.nySakMinimum())
+            val sak = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling())
 
             assertThat(hentSakStatus(sak.saksnummer))
                 .hasStatus(HttpStatus.OK)

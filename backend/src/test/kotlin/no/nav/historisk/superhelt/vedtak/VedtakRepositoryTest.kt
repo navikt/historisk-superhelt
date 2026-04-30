@@ -21,7 +21,7 @@ class VedtakRepositoryTest {
 
     @Test
     fun `findBySak returnerer tomt resultat når ingen vedtak er lagret for saken`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
 
         val vedtak = vedtakRepository.findBySak(sak.saksnummer)
 
@@ -30,7 +30,7 @@ class VedtakRepositoryTest {
 
     @Test
     fun `save og findBySak lagrer og henter korrekte felter`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         val vedtak = VedtakTestData.vedtakForSak(sak)
 
         withMockedUser { vedtakRepository.save(vedtak) }
@@ -52,8 +52,8 @@ class VedtakRepositoryTest {
 
     @Test
     fun `findBySak returnerer alle vedtak for saken ved flere behandlinger`() {
-        val sak1 = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
-        val sak2 = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak1 = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
+        val sak2 = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         withMockedUser { vedtakRepository.save(VedtakTestData.vedtakForSak(sak1)) }
         withMockedUser { vedtakRepository.save(VedtakTestData.vedtakForSak(sak2)) }
 
@@ -63,8 +63,8 @@ class VedtakRepositoryTest {
 
     @Test
     fun `findBySak returnerer kun vedtak for riktig sak`() {
-        val sak1 = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
-        val sak2 = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak1 = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
+        val sak2 = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         withMockedUser { vedtakRepository.save(VedtakTestData.vedtakForSak(sak1)) }
 
         val vedtakSak2 = vedtakRepository.findBySak(sak2.saksnummer)

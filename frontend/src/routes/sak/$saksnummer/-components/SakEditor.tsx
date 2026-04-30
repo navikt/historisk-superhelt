@@ -1,7 +1,6 @@
-import type {Sak, SakUpdateRequestDto} from "@generated";
-import {oppdaterSakMutation} from "@generated/@tanstack/react-query.gen";
+import type { Sak, SakUpdateRequestDto } from "@generated";
+import { oppdaterSakMutation } from "@generated/@tanstack/react-query.gen";
 import {
-    Box,
     Button,
     DatePicker,
     ErrorSummary,
@@ -14,15 +13,15 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
-import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
-import {useNavigate} from "@tanstack/react-router";
-import {useEffect, useState} from "react";
-import {Card} from "~/common/card/Card";
-import {dateTilIsoDato} from "~/common/dato.utils";
-import {NumericInput} from "~/common/NumericInput";
-import type {SakVedtakType, StonadType, UtbetalingsType} from "~/common/sak/sak.types";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Card } from "~/common/card/Card";
+import { dateTilIsoDato } from "~/common/dato.utils";
+import { NumericInput } from "~/common/NumericInput";
+import type { SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
 import useDebounce from "~/common/useDebounce";
-import {getKodeverkStonadsTypeOptions, sakQueryKey} from "../-api/sak.query";
+import { getKodeverkStonadsTypeOptions, sakQueryKey } from "../-api/sak.query";
 
 interface Props {
     sak: Sak;
@@ -118,8 +117,8 @@ export default function SakEditor({ sak }: Props) {
     }
 
     return (
-        <Card>
-            <VStack gap="space-24">
+        <VStack gap="space-24">
+            <Card>
                 <Select
                     label="Stønad"
                     value={updateSakData.type}
@@ -152,65 +151,67 @@ export default function SakEditor({ sak }: Props) {
                     value={updateSakData.beskrivelse ?? ""}
                     onChange={(e) => patchSak({ beskrivelse: e.target.value })}
                 />
+            </Card>
 
-                <Box background={"default"} padding={"space-16"}>
-                    <VStack gap="space-16">
-                        <RadioGroup
-                            legend="Vedtak"
-                            value={updateSakData.vedtaksResultat}
-                            onChange={(value) => patchSak({ vedtaksResultat: value as SakVedtakType })}
-                            error={getErrorMessage("vedtaksResultat")}
-                        >
-                            <Radio value="INNVILGET">Innvilget</Radio>
-                            <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
-                            <Radio value="AVSLATT">Avslått</Radio>
-                        </RadioGroup>
+            <Card>
+                <RadioGroup
+                    legend="Vedtak"
+                    value={updateSakData.vedtaksResultat}
+                    onChange={(value) => patchSak({ vedtaksResultat: value as SakVedtakType })}
+                    error={getErrorMessage("vedtaksResultat")}
+                >
+                    <Radio value="INNVILGET">Innvilget</Radio>
+                    <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
+                    <Radio value="AVSLATT">Avslått</Radio>
+                </RadioGroup>
+                <Textarea
+                    label="Begrunnelse for vedtak"
+                    error={getErrorMessage("begrunnelse")}
+                    value={updateSakData.begrunnelse ?? ""}
+                    onChange={(e) => patchSak({ begrunnelse: e.target.value })}
+                    description="Beskriv kort hva som ligger til grunn for vedtaket"
+                    minRows={4}
+                />
+            </Card>
 
-                        {["INNVILGET", "DELVIS_INNVILGET"].includes(updateSakData.vedtaksResultat ?? "") && (
-                            <>
-                                <RadioGroup
-                                    legend="Utbetaling"
-                                    value={updateSakData.utbetalingsType}
-                                    onChange={(value) => patchSak({ utbetalingsType: value as UtbetalingsType })}
-                                    error={getErrorMessage("utbetaling")}
-                                >
-                                    <Radio value="BRUKER">Direkte til bruker</Radio>
-                                    <Radio value="FORHANDSTILSAGN">Forhåndstilsagn (faktura kommer)</Radio>
-                                </RadioGroup>
-                                <NumericInput
-                                    value={updateSakData.belop ?? undefined}
-                                    error={getErrorMessage("utbetaling.belop")}
-                                    onChange={(belop) => patchSak({ belop: belop })}
-                                    label="Beløp som skal utbetales (kr)"
-                                />
-                            </>
-                        )}
+            {["INNVILGET", "DELVIS_INNVILGET"].includes(updateSakData.vedtaksResultat ?? "") && (
+                <Card>
+                    <RadioGroup
+                        legend="Utbetaling"
+                        value={updateSakData.utbetalingsType}
+                        onChange={(value) => patchSak({ utbetalingsType: value as UtbetalingsType })}
+                        error={getErrorMessage("utbetaling")}
+                    >
+                        <Radio value="BRUKER" disabled={!sak.kanUtbetales}>
+                            Direkte til bruker
+                        </Radio>
+                        <Radio value="INGEN">Ingen utbetaling</Radio>
+                    </RadioGroup>
 
-                        <Textarea
-                            label="Begrunnelse for vedtak"
-                            error={getErrorMessage("begrunnelse")}
-                            value={updateSakData.begrunnelse ?? ""}
-                            onChange={(e) => patchSak({ begrunnelse: e.target.value })}
-                            description="Beskriv kort hva som ligger til grunn for vedtaket"
-                            minRows={4}
+                    {updateSakData.utbetalingsType === "BRUKER" && (
+                        <NumericInput
+                            value={updateSakData.belop ?? undefined}
+                            error={getErrorMessage("utbetaling.belop")}
+                            onChange={(belop) => patchSak({ belop: belop })}
+                            label="Beløp som skal utbetales (kr)"
                         />
-                    </VStack>
-                </Box>
+                    )}
+                </Card>
+            )}
 
-                <HStack gap="space-32" align="start">
-                    <Button type="submit" variant="primary" onClick={completedSoknad}>
-                        Lagre og gå videre
-                    </Button>
-                </HStack>
-                {hasError && (
-                    <ErrorSummary>
-                        {oppdaterSak.error && <ErrorSummary.Item>{oppdaterSak?.error?.detail}</ErrorSummary.Item>}
-                        {validationErrors.map((feil) => (
-                            <ErrorSummary.Item key={feil.field}>{feil.message}</ErrorSummary.Item>
-                        ))}
-                    </ErrorSummary>
-                )}
-            </VStack>
-        </Card>
+            <HStack gap="space-32" align="start">
+                <Button type="submit" variant="primary" onClick={completedSoknad}>
+                    Lagre og gå videre
+                </Button>
+            </HStack>
+            {hasError && (
+                <ErrorSummary>
+                    {oppdaterSak.error && <ErrorSummary.Item>{oppdaterSak?.error?.detail}</ErrorSummary.Item>}
+                    {validationErrors.map((feil) => (
+                        <ErrorSummary.Item key={feil.field}>{feil.message}</ErrorSummary.Item>
+                    ))}
+                </ErrorSummary>
+            )}
+        </VStack>
     );
 }

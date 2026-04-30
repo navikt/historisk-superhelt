@@ -17,7 +17,7 @@ data class Vedtak(
     val behandlingsnummer: Behandlingsnummer,
     val stonadstype: StonadsType,
     val fnr: FolkeregisterIdent,
-    val beskrivelse: String, //?? Usikker på om denne skal være med
+    val beskrivelse: String,
     val soknadsDato: LocalDate,
     val tildelingsAar: Aar?,
     val begrunnelse: String? = null,
@@ -27,5 +27,4 @@ data class Vedtak(
     val attestant: NavUser,
     val utbetalingsType: UtbetalingsType,
     val belop: Belop?,
-//    val vedtaksBrevBruker: JournalpostId,
 )
