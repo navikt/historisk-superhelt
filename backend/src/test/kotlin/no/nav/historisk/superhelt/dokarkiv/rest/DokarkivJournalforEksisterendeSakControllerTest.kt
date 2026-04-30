@@ -118,7 +118,7 @@ class DokarkivJournalforEksisterendeSakControllerTest {
             journalPostId = eq(journalpostId),
             fagsaksnummer = eq(saksnummer),
             journalfoerendeEnhet = any(),
-            tema = any(),
+            tema = eq(sak.type.tema),
             request = any()
         )
         verify(endringsloggService).logChange(
