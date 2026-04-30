@@ -23,9 +23,9 @@ class SakActionControllerFeilregistrerTest : AbstractSakActionTest() {
 
     @Test
     fun `feilregister sak under behandling`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         sakActionController.feilregister(
@@ -59,9 +59,9 @@ class SakActionControllerFeilregistrerTest : AbstractSakActionTest() {
 
     @Test
     fun `feilregister ferdig sak`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
         )
 
         assertThatThrownBy {

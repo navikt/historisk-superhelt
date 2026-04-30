@@ -3,7 +3,6 @@ package no.nav.historisk.superhelt.sak
 import net.datafaker.Faker
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
-import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
@@ -66,46 +65,6 @@ object SakTestData {
     }
 
     private fun navUser(): NavUser = NavUser(NavIdent(faker.bothify("???###")), faker.name().name())
-
-    fun nySakMinimum(fnr: FolkeregisterIdent = FolkeregisterIdent(faker.numerify("###########"))): OpprettSakDto {
-        return OpprettSakDto(
-            type = faker.options().option(StonadsType::class.java),
-            fnr = fnr,
-            properties = UpdateSakDto(
-                status = SakStatus.UNDER_BEHANDLING,
-                saksbehandler = navUser()
-            )
-        )
-    }
-
-    fun nySakCompleteUtbetaling(
-        fnr: FolkeregisterIdent = FolkeregisterIdent(faker.numerify("###########")),
-        sakStatus: SakStatus = SakStatus.UNDER_BEHANDLING,
-        saksbehandlerIdent: String = faker.bothify("s??###")
-    ): OpprettSakDto {
-        val properties = UpdateSakDto(
-            beskrivelse = faker.harryPotter().spell(),
-            soknadsDato = LocalDate.ofInstant(
-                faker.timeAndDate().past(30, TimeUnit.DAYS),
-                ZoneId.systemDefault()
-            ),
-            begrunnelse = faker.yoda().quote().take(250),
-            status = sakStatus,
-            vedtaksResultat = faker.options().option(VedtaksResultat::class.java),
-            saksbehandler = NavUser(NavIdent(saksbehandlerIdent), faker.name().name()),
-            utbetalingsType = UtbetalingsType.BRUKER,
-            belop = Belop(faker.number().numberBetween(10, 99999)),
-        )
-        return nySakMinimum(fnr)
-            .copy(type = stonadstyperMedUtbetaling.random(), properties = properties)
-    }
-
-    @Deprecated("Bruk lagreSak f")
-    fun lagreNySak(repository: SakRepository, sak: OpprettSakDto = nySakMinimum()): Sak {
-        return withMockedUser {
-            repository.opprettNySak(sak)
-        }
-    }
 
     fun lagreSak(repository: SakRepository, sak: Sak = sakMedUtbetaling()): Sak {
         return withMockedUser {

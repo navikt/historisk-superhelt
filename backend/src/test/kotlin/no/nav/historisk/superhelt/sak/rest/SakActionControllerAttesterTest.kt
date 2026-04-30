@@ -1,8 +1,10 @@
 package no.nav.historisk.superhelt.sak.rest
 
+import no.nav.common.types.NavIdent
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
@@ -29,9 +31,9 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
 
     @Test
     fun `skal attestere sak med godkjent`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.TIL_ATTESTERING)
         )
         BrevTestdata.lagreBrev(
             brevRepository,
@@ -74,9 +76,9 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
 
     @Test
     fun `skal attestere sak med avslag`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.TIL_ATTESTERING)
         )
 
         sakActionController.attesterSak(
@@ -113,9 +115,9 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
     @WithSaksbehandler
     @Test
     fun `saksbehandler skal ikke få attestere`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.TIL_ATTESTERING)
         )
 
         assertThatThrownBy {
@@ -129,11 +131,11 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
 
     @Test
     fun `attestant skal ikke få attestere sin egen sak`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(
-                sakStatus = SakStatus.TIL_ATTESTERING,
-                saksbehandlerIdent = "a12345"
+            SakTestData.sakMedUtbetaling().copy(
+                status = SakStatus.TIL_ATTESTERING,
+                saksbehandler = NavUser(NavIdent("a12345"), "Test Saksbehandler")
             )
         )
 
@@ -148,9 +150,9 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
 
     @Test
     fun `skal feile validering når kommentar mangler ved avslag`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.TIL_ATTESTERING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.TIL_ATTESTERING)
         )
 
         assertThatThrownBy {
@@ -169,9 +171,9 @@ class SakActionControllerAttesterTest : AbstractSakActionTest() {
 
     @Test
     fun `skal feile validering når saken ikke er til attestering`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         assertThatThrownBy {

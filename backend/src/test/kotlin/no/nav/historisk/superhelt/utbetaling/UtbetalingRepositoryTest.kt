@@ -24,7 +24,7 @@ class UtbetalingRepositoryTest {
 
     @Test
     fun `opprettUtbetaling lagrer korrekt behandlingsnummer og beløp`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
 
         val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
 
@@ -47,7 +47,7 @@ class UtbetalingRepositoryTest {
 
     @Test
     fun `utbetaling skal være unik for sak og behandlingsnummer `() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         val utbetaling1 = utbetalingRepository.opprettUtbetaling(sak)
         utbetalingRepository.setUtbetalingStatus(utbetaling1.transaksjonsId, UtbetalingStatus.UTBETALT)
         assertThrows<DataIntegrityViolationException> { utbetalingRepository.opprettUtbetaling(sak) }
@@ -55,7 +55,7 @@ class UtbetalingRepositoryTest {
 
     @Test
     fun `findActiveByBehandling returnerer aktiv utbetaling for gjeldende behandlingsnummer`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         utbetalingRepository.opprettUtbetaling(sak)
 
         val funnet = utbetalingRepository.findActiveByBehandling(sak)
@@ -67,7 +67,7 @@ class UtbetalingRepositoryTest {
 
     @Test
     fun `findActiveByBehandling returnerer null for annet behandlingsnummer`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         utbetalingRepository.opprettUtbetaling(sak)
 
         // Simuler gjenåpnet sak med nytt behandlingsnummer
@@ -81,7 +81,7 @@ class UtbetalingRepositoryTest {
 
     @Test
     fun `findActiveByBehandling returnerer siste final utbetaling når alle er ferdige`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
         utbetalingRepository.setUtbetalingStatus(utbetaling.transaksjonsId, UtbetalingStatus.UTBETALT)
 
