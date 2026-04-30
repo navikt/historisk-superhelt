@@ -63,11 +63,7 @@ class SakValidator(private val sak: Sak): Validator() {
             check(vedtaksResultat == null, "vedtaksResultat", "Vedtak må være satt")
 
             if (listOf(VedtaksResultat.INNVILGET, VedtaksResultat.DELVIS_INNVILGET).contains(vedtaksResultat)) {
-                check(
-                    utbetalingsType == UtbetalingsType.INGEN,
-                    "utbetaling",
-                    "Det må velges enten utbetaling eller forhandstilsagn"
-                )
+
 
                 when (utbetalingsType) {
                     UtbetalingsType.BRUKER -> {
@@ -76,10 +72,22 @@ class SakValidator(private val sak: Sak): Validator() {
                             "utbetaling.belop",
                             "Beløpet må settes og være positivt"
                         )
+                        check(
+                            !kanUtbetales ,
+                            "utbetaling",
+                            "Det er ikke mulig å utbetale på sakstype ${type.navn}"
+                        )
                     }
 
                     UtbetalingsType.FORHANDSTILSAGN -> {}
                     UtbetalingsType.INGEN -> {}
+                    null -> {
+                        check(
+                           true,
+                            "utbetaling",
+                            "Det må velges enten utbetaling eller forhandstilsagn"
+                        )
+                    }
                 }
             }
         }
@@ -101,7 +109,10 @@ class SakValidator(private val sak: Sak): Validator() {
     fun checkUpdate(updateSakDto: UpdateSakDto): SakValidator {
        if (sak.gjenapnet){
            check(updateSakDto.type != null && updateSakDto.type != sak.type, "type", "Kan ikke endre type på en gjenåpnet sak")
+           check(updateSakDto.klasseKode != null && updateSakDto.klasseKode != sak.klasseKode, "klassekode", "Kan ikke endre klassekode på en gjenåpnet sak")
        }
+        val stonadstype= updateSakDto.type ?: sak.type
+        check(updateSakDto.klasseKode != null && !stonadstype.klassekoder.contains(updateSakDto.klasseKode), "klassekode", "Klassekode ${updateSakDto.klasseKode} er ikke gyldig for sakstype ${sak.type}")
         return this
     }
 }

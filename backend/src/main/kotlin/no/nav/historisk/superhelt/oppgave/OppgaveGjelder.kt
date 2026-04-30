@@ -17,7 +17,10 @@ enum class OppgaveGjelder(
     ORTOPEDISKE_HJELPEMIDLER(Behandlingstema.ORTOPEDISKE_HJELPEMIDLER, null),
     OYEPROTESE(Behandlingstema.OYEPROTESE, null),
     PARYKK_HODEPLAGG(Behandlingstema.PARYKK_HODEPLAGG, null),
-    REISEUTGIFTER(Behandlingstema.REISEUTGIFTER, null);
+    REISEUTGIFTER(Behandlingstema.REISEUTGIFTER, null),
+
+    ARBEID_UTDANNING(Behandlingstema.ARBEIDS_OG_UTDANNINGSREISER, null)
+    ;
 
     val behandlingstema: String? get() = tema?.kode
     val behandlingstype: String? get() = type?.kode
@@ -34,4 +37,6 @@ fun StonadsType.tilOppgaveGjelder(): OppgaveGjelder =
         StonadsType.BRYSTPROTESE -> OppgaveGjelder.BRYSTPROTESE_PROTESEBH
         StonadsType.FOTTOY -> OppgaveGjelder.ORTOPEDISKE_HJELPEMIDLER
         StonadsType.REISEUTGIFTER -> OppgaveGjelder.REISEUTGIFTER
+
+        StonadsType.ARBEID_UTDANNING -> OppgaveGjelder.ARBEID_UTDANNING
     }

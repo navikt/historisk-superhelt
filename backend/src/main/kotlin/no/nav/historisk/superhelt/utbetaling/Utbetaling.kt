@@ -3,13 +3,15 @@ package no.nav.historisk.superhelt.utbetaling
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
 import no.nav.common.types.Saksnummer
+import no.nav.helved.KlasseKode
 import no.nav.helved.UtbetalingUuid
 import java.time.Instant
-import java.util.*
+import java.util.UUID
 
 data class Utbetaling(
     val saksnummer: Saksnummer,
     val behandlingsnummer: Behandlingsnummer,
+    val klasseKode: KlasseKode,
     val belop: Belop,
     val transaksjonsId: UUID,
     val utbetalingsUuid: UtbetalingUuid,

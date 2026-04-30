@@ -93,7 +93,7 @@ class BrevSendingServiceTest {
         mottakerType: BrevMottaker = BrevMottaker.BRUKER,
         journalpostId: EksternJournalpostId? = null
     ): Pair<Sak, Brev> {
-        val sak = SakTestData.lagreNySak(sakRepository)
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
         val brev = BrevTestdata.lagreBrev(
             brevRepository = brevRepository,
             saksnummer = sak.saksnummer,

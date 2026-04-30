@@ -1,0 +1,5 @@
+{
+  "overrides": [
+    ".github/instructions/nextjs-aksel.instructions.md"
+  ]
+}

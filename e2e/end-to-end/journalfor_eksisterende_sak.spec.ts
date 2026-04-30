@@ -1,21 +1,21 @@
-import {faker} from "@faker-js/faker";
-import {expect} from "@playwright/test";
-import {test} from "./test.fixtures";
+import { faker } from "@faker-js/faker";
+import { expect } from "@playwright/test";
+import { test } from "./test.fixtures";
 
 test.describe("Journalfør på eksisterende åpen sak", () => {
-    test.describe.configure({mode: "serial"});
+    test.describe.configure({ mode: "serial" });
 
-    const brukerFnr = `5${faker.string.numeric({length: 10})}`;
+    const brukerFnr = `5${faker.string.numeric({ length: 10 })}`;
 
     test.beforeAll(async () => {
         console.debug(`Generert fødselsnummer for "journalfør på eksisternde sak" testene: ${brukerFnr}`);
     });
 
-    test.beforeEach(async ({page}) => {
+    test.beforeEach(async ({ page }) => {
         await page.goto("/");
     });
 
-    test("Opprett sak", async ({auth, sak, journalforing}) => {
+    test("Opprett sak", async ({ auth, sak, journalforing }) => {
         await test.step("Logg in Sara", async () => {
             await auth.loginSara();
         });
@@ -32,7 +32,7 @@ test.describe("Journalfør på eksisterende åpen sak", () => {
             });
         });
     });
-    test("Journalfør klage og knytt til sak", async ({page, auth, journalforing}) => {
+    test("Journalfør klage og knytt til sak", async ({ page, auth, journalforing }) => {
         await test.step("Logg in Sara", async () => {
             await auth.loginSara();
         });
@@ -46,8 +46,8 @@ test.describe("Journalfør på eksisterende åpen sak", () => {
             );
         });
         await test.step("Verifiser at dokumentet er lagt til", async () => {
-            await expect(page.getByRole("combobox", {name: "Dokumenter i saken"})).toContainText("Vedlegget mitt");
-            await expect(page.getByRole("combobox", {name: "Dokumenter i saken"})).toContainText("Søknaden min");
+            await expect(page.getByRole("combobox", { name: "Dokumenter i saken" })).toContainText("Vedlegget mitt");
+            await expect(page.getByRole("combobox", { name: "Dokumenter i saken" })).toContainText("Søknaden min");
         });
     });
 });

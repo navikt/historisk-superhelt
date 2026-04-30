@@ -1,4 +1,3 @@
-
 ## Kom i Gang
 
 Før du kan kjøre testene, må applikasjonen være i gang og alle avhengigheter installert.
@@ -10,8 +9,8 @@ fullstendige instruksjoner. Deretter bygg og kjør docker images:
     ```
     Alternativt må du starte tjenestene lokalt på annen måte.
 
-2.  **Installer prosjektets avhengigheter:** Sørg for at du har installert alle prosjektets avhengigheter ved å kjøre `pnpm install` fra `/e2e`-mappen.
-3.  **Installer nettlesere:** Første gang du kjører Playwright, må du installere nettleserne som skal brukes til testing. Kjør denne kommandoen fra mappen `/tests`:
+2.  **Installer avhengigheter:** Installer avhengigheter for e2e-prosjektet ved å kjøre `pnpm install` fra `/e2e`-mappen.
+3.  **Installer nettlesere:** Første gang du kjører Playwright, må du installere nettleserne som skal brukes til testing. Kjør denne kommandoen fra mappen `/e2e`:
     ```bash
     pnpm playwright:install
     ```
@@ -105,19 +104,19 @@ Prosjektet bruker **Biome** for formattering og linting i `/e2e`.
 
 - Kjør lint-sjekk:
     ```bash
-    pnpm run lint
+    pnpm lint
     ```
 - Forsøk automatisk fiksing av lint-regler:
     ```bash
-    pnpm run lint:fix
+    pnpm lint:fix
     ```
 - Formater filer uten å skrive endringer:
     ```bash
-    pnpm run format
+    pnpm format
     ```
 - Formater og skriv endringer til disk:
     ```bash
-    pnpm run format:write
+    pnpm format:write
     ```
 
 Konfigurasjonen finnes i `biome.json`. Scriptene er definert i `package.json` i denne mappen.

@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController
 class SakKodeverkController {
 
 
-    @Operation(operationId = "getKodeverkStonadType",)
+    @Operation(operationId = "getKodeverkStonadType")
     @GetMapping("stonadtyper")
     fun stonadstypeKodeverk(): List<StonadsTypeDto> {
-       return StonadsType.entries.map { StonadsTypeDto(it) }
+        return StonadsType.entries.map { StonadsTypeDto(it) }
     }
 
     @Operation(operationId = "getKodeverkSakStatus")
@@ -34,7 +35,11 @@ class SakKodeverkController {
     data class StonadsTypeDto(val type: StonadsType) {
         val navn: String = type.navn
         val beskrivelse: String? = type.beskrivelse
+        val klasseKoder: List<KlasseKodeDto> = type.klassekoder.map { KlasseKodeDto(it, it.navn) }
     }
+
+    data class KlasseKodeDto(val klasseKode: KlasseKode, val navn: String)
+
 
     data class SakStatusKodeDto(val status: SakStatus) {
         val navn: String = status.navn

@@ -1,31 +1,31 @@
 {
-  "name": "e2e-tests",
-  "version": "1.0.0",
-  "scripts": {
-    "lint": "biome check .",
-    "format": "biome format .",
-    "format:write": "biome format --write .",
-    "lint:fix": "biome check --write .",
-    "playwright:test": "playwright test",
-    "playwright:install": "playwright install chromium --with-deps",
-    "playwright:test:ui": "playwright test --ui",
-    "playwright:snapshot-update": "playwright test -u",
-    "playwright:show-report": "playwright show-report",
-    "playwright:codegen": "playwright codegen"
-  },
-  "packageManager": "pnpm@10.33.0",
-  "engines": {
-    "node": ">=24",
-    "pnpm": ">=10"
-  },
-  "license": "ISC",
-  "devDependencies": {
-    "@axe-core/playwright": "^4.11.1",
-    "@biomejs/biome": "2.4.12",
-    "@faker-js/faker": "^10.4.0",
-    "@playwright/test": "^1.59.1",
-    "date-fns": "^4.1.0",
-    "dotenv": "^17.4.2",
-    "uuid": "^14.0.0"
-  }
+    "name": "e2e-tests",
+    "version": "1.0.0",
+    "scripts": {
+        "lint": "biome check .",
+        "format": "biome format .",
+        "format:write": "biome format --write .",
+        "lint:fix": "biome check --write .",
+        "playwright:install": "playwright install chromium --with-deps",
+        "playwright:snapshot-update": "playwright test -u",
+        "playwright:test": "playwright test",
+        "playwright:test:ui": "playwright test --ui",
+        "playwright:show-report": "playwright show-report",
+        "playwright:codegen": "playwright codegen"
+    },
+    "packageManager": "pnpm@10.33.0",
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=10"
+    },
+    "license": "ISC",
+    "devDependencies": {
+        "@axe-core/playwright": "^4.11.1",
+        "@biomejs/biome": "2.4.12",
+        "@faker-js/faker": "^10.4.0",
+        "@playwright/test": "^1.59.1",
+        "date-fns": "^4.1.0",
+        "dotenv": "^17.4.2",
+        "uuid": "^14.0.0"
+    }
 }
