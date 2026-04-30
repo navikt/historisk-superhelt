@@ -117,7 +117,7 @@ class DokarkivClientTest {
             .andRespond(withSuccess())
 
         // When
-        dokarkivClient.oppdaterJournalpost(journalPostId, fagsaksnummer, tittel, bruker, avsender)
+        dokarkivClient.oppdaterJournalpost(journalPostId, fagsaksnummer, tittel, bruker, avsender, FellesKodeverkTema.HEL)
 
         mockServer.verify()
     }

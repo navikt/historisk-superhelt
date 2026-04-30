@@ -110,6 +110,7 @@ class DokarkivJournalforNysakControllerTest {
             journalPostId = eq(journalpostId),
             fagsaksnummer = eq(saksnummer),
             journalfoerendeEnhet = any(),
+            tema = any(),
             request = any()
         )
         verify(oppgaveService).ferdigstillOppgave(eq(jfrOppgaveId))
@@ -213,6 +214,7 @@ class DokarkivJournalforNysakControllerTest {
             journalPostId = eq(journalpostId),
             fagsaksnummer = eq(saksnummer),
             journalfoerendeEnhet = any(),
+            tema = any(),
             request = any()
         )
     }

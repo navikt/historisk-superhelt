@@ -1,5 +1,6 @@
 package no.nav.dokarkiv
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
@@ -50,6 +51,7 @@ class DokarkivForUtvikler {
             tittel = "Test tittel " + LocalDateTime.now(),
             bruker = FolkeregisterIdent("28497016101"),
             avsender = FolkeregisterIdent("28497016101"),
+            tema = FellesKodeverkTema.HEL,
             dokumenter = listOf(DokumentMedTittel(dokumentInfoId = mainDokumentID, tittel = "Oppdatert tittel")),
         )
         println("Journalpost oppdatert:" + journalPostId)

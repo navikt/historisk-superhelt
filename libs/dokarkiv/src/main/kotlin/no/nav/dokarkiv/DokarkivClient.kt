@@ -78,7 +78,7 @@ class DokarkivClient(
         tittel: String,
         bruker: FolkeregisterIdent,
         avsender: FolkeregisterIdent,
-        tema: FellesKodeverkTema = FellesKodeverkTema.HEL,
+        tema: FellesKodeverkTema,
         dokumenter: List<DokumentMedTittel>? = null,
     ) {
         val req =
