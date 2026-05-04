@@ -1,5 +1,5 @@
-import type {Sak, SakUpdateRequestDto} from "@generated";
-import {oppdaterSakMutation} from "@generated/@tanstack/react-query.gen";
+import type { Sak, SakUpdateRequestDto } from "@generated";
+import { oppdaterSakMutation } from "@generated/@tanstack/react-query.gen";
 import {
     Button,
     DatePicker,
@@ -13,15 +13,15 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
-import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
-import {useNavigate} from "@tanstack/react-router";
-import {useEffect, useState} from "react";
-import {Card} from "~/common/card/Card";
-import {dateTilIsoDato} from "~/common/dato.utils";
-import {NumericInput} from "~/common/NumericInput";
-import {getKodeverkStonadsTypeOptions, sakQueryKey} from "~/common/sak/sak.query";
-import type {KlassekodeType, SakVedtakType, StonadType, UtbetalingsType} from "~/common/sak/sak.types";
-import {useStonadsType} from "~/common/sak/useStonadsType";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Card } from "~/common/card/Card";
+import { dateTilIsoDato } from "~/common/dato.utils";
+import { NumericInput } from "~/common/NumericInput";
+import { getKodeverkStonadsTypeOptions, sakQueryKey } from "~/common/sak/sak.query";
+import type { KlassekodeType, SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
+import { useStonadsType } from "~/common/sak/useStonadsType";
 import useDebounce from "~/common/useDebounce";
 
 interface Props {

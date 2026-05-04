@@ -1,11 +1,11 @@
-import type {Sak} from "@generated";
-import {FormSummary} from "@navikt/ds-react";
-import {isoTilLokal} from "~/common/dato.utils";
-import {utbetalingText} from "~/common/sak/sak.utils";
-import {useSakStatusNavn} from "~/common/sak/useSakStatusNavn";
-import {useSakVedtakNavn} from "~/common/sak/useSakVedtakNavn";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
-import {useKlassekodeTypeNavn} from "~/routes/sak/$saksnummer/-api/useKlassekodeNavn";
+import type { Sak } from "@generated";
+import { FormSummary } from "@navikt/ds-react";
+import { isoTilLokal } from "~/common/dato.utils";
+import { utbetalingText } from "~/common/sak/sak.utils";
+import { useSakStatusNavn } from "~/common/sak/useSakStatusNavn";
+import { useSakVedtakNavn } from "~/common/sak/useSakVedtakNavn";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import { useKlassekodeTypeNavn } from "~/routes/sak/$saksnummer/-api/useKlassekodeNavn";
 
 interface SakSummaryProps {
     sak: Sak;
