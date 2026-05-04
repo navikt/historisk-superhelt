@@ -91,7 +91,7 @@ class DokarkivServiceTest {
         assertEquals(sak.saksnummer, capturedRequest.sak.fagsakId)
         assertEquals(Sakstype.FAGSAK, capturedRequest.sak.sakstype)
         assertEquals(APP_NAVN, capturedRequest.sak.fagsaksystem)
-        assertEquals(StonadsType.PARYKK.enhet, capturedRequest.journalfoerendeEnhet)
+        assertEquals(sak.type.enhet, capturedRequest.journalfoerendeEnhet)
         assertEquals(1, capturedRequest.dokumenter.size)
         assertEquals(brev.tittel, capturedRequest.dokumenter[0].tittel)
         assertEquals(brev.type.name, capturedRequest.dokumenter[0].brevkode)
