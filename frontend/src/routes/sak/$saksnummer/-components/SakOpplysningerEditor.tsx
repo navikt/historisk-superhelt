@@ -112,6 +112,7 @@ export default function SakOpplysningerEditor({ sak }: Props) {
             | "soknadsDato"
             | "begrunnelse"
             | "utbetaling.belop"
+            | "klassekode"
             | "utbetaling"
             | "tildelingsAar",
     ): string | undefined {
@@ -121,6 +122,12 @@ export default function SakOpplysningerEditor({ sak }: Props) {
         return validationErrors.find((feil) => feil.field === field)?.message || undefined;
     }
 
+    function changeStonad(stonadsType: StonadType) {
+        if (updateSakData.type !== stonadsType) {
+            patchSak({ type: stonadsType, klasseKode: undefined });
+        }
+    }
+
     return (
         <VStack gap="space-24">
             <Card>
@@ -128,7 +135,7 @@ export default function SakOpplysningerEditor({ sak }: Props) {
                     label="Stønad"
                     value={updateSakData.type}
                     disabled={sak.gjenapnet}
-                    onChange={(e) => patchSak({ type: e.target.value as StonadType })}
+                    onChange={(e) => changeStonad(e.target.value as StonadType)}
                 >
                     {saksTyper.map((st) => (
                         <option key={st.type} value={st.type}>
@@ -206,6 +213,7 @@ export default function SakOpplysningerEditor({ sak }: Props) {
                             label="Regnskapskonto"
                             value={updateSakData.klasseKode}
                             disabled={sak.gjenapnet}
+                            error={getErrorMessage("klassekode")}
                             onChange={(e) => patchSak({ klasseKode: e.target.value as KlassekodeType })}
                         >
                             {klasseKoder?.map((st) => (
