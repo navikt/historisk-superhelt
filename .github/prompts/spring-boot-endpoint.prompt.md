@@ -166,7 +166,7 @@ class {{Ressurs}}ControllerTest {
 
 ## Etter scaffolding
 
-- Kjør `./gradlew test` for å verifisere
+- Kjør `mvn test` for å verifisere
 - Legg til endepunktet i `accessPolicy.inbound.rules` i Nais-manifestet hvis det skal kalles av andre apper
 
 ## Forstå koden
