@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.dokarkiv
 
 import no.nav.common.consts.APP_NAVN
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
@@ -116,6 +117,7 @@ class DokarkivService(
         journalPostId: EksternJournalpostId,
         fagsaksnummer: Saksnummer,
         journalfoerendeEnhet: Enhetsnummer,
+        tema: FellesKodeverkTema,
         request: JournalforData,
     ) {
         dokarkivClient.oppdaterJournalpost(
@@ -124,6 +126,7 @@ class DokarkivService(
             tittel = request.dokumenter.firstOrNull()?.tittel ?: "Ukjent innhold",
             bruker = request.bruker,
             avsender = request.avsender,
+            tema = tema,
             dokumenter =
                 request.dokumenter.map {
                     DokumentMedTittel(
