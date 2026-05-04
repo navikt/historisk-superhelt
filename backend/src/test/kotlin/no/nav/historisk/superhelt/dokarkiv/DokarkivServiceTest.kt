@@ -81,7 +81,7 @@ class DokarkivServiceTest {
         val capturedRequest = journalpostRequestCaptor.firstValue
         assertEquals(brev.tittel, capturedRequest.tittel)
         assertEquals(JournalpostType.UTGAAENDE, capturedRequest.journalpostType)
-        assertEquals(FellesKodeverkTema.HEL, capturedRequest.tema)
+        assertEquals(sak.type.tema, capturedRequest.tema)
         assertEquals(sak.fnr.value, capturedRequest.avsenderMottaker?.id)
         assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)
         assertEquals(brev.uuid.toString(), capturedRequest.eksternReferanseId)
@@ -91,7 +91,7 @@ class DokarkivServiceTest {
         assertEquals(sak.saksnummer, capturedRequest.sak.fagsakId)
         assertEquals(Sakstype.FAGSAK, capturedRequest.sak.sakstype)
         assertEquals(APP_NAVN, capturedRequest.sak.fagsaksystem)
-        assertEquals(Enhetsnummer("4485"), capturedRequest.journalfoerendeEnhet)
+        assertEquals(StonadsType.PARYKK.enhet, capturedRequest.journalfoerendeEnhet)
         assertEquals(1, capturedRequest.dokumenter.size)
         assertEquals(brev.tittel, capturedRequest.dokumenter[0].tittel)
         assertEquals(brev.type.name, capturedRequest.dokumenter[0].brevkode)
@@ -174,9 +174,9 @@ class DokarkivServiceTest {
 
         val capturedRequest = distribuerRequestCaptor.firstValue
         assertEquals(journalpostId, capturedRequest.journalpostId)
-        assertEquals("SUPERHELT", capturedRequest.bestillendeFagsystem)
+        assertEquals(APP_NAVN, capturedRequest.bestillendeFagsystem)
         assertEquals(DistribuerJournalpostRequest.Distribusjonstype.VEDTAK, capturedRequest.distribusjonstype)
-        assertEquals("SUPERHELT", capturedRequest.dokumentProdApp)
+        assertEquals(APP_NAVN, capturedRequest.dokumentProdApp)
         assertEquals(
             DistribuerJournalpostRequest.Distribusjonstidspunkt.UMIDDELBART,
             capturedRequest.distribusjonstidspunkt
