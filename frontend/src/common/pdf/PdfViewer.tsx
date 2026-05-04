@@ -1,8 +1,9 @@
-import {hentJournalpostMetaDataOptions} from "@generated/@tanstack/react-query.gen";
-import {Box, InlineMessage, Select} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useEffect, useState} from "react";
+import { hentJournalpostMetaDataOptions } from "@generated/@tanstack/react-query.gen";
+import { Box, InlineMessage } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import styles from "./PdfViewer.module.css";
+import { DokumentTabell } from "./DokumentTabell";
 
 interface Props {
     journalpostId?: string | null;
@@ -35,13 +36,11 @@ function PdfViewer2({ journalpostId }: { journalpostId: string }) {
 
     return (
         <Box className={styles.pdfViewer}>
-            <Select label="Velg dokument" value={dokId} hideLabel onChange={(e) => setDokId(e.target.value)}>
-                {(journalpost?.dokumenter || []).map((d, index) => (
-                    <option key={d.dokumentInfoId} value={d.dokumentInfoId}>
-                        Dokument {index + 1} av {(journalpost?.dokumenter || []).length} - {d.tittel}
-                    </option>
-                ))}
-            </Select>
+            <DokumentTabell
+                dokumenter={[journalpost]}
+                selected={`${journalpostId}@${dokId}`}
+                onSelect={(value) => setDokId(value.split("@")[1])}
+            />
             <embed
                 src={`/api/journalpost/${encodeURIComponent(journalpostId)}/${encodeURIComponent(dokId)}`}
                 width="100%"

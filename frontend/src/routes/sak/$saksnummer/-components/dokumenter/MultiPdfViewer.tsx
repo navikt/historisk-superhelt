@@ -1,7 +1,8 @@
-import type {Journalpost} from "@generated";
-import {Box, InlineMessage, Select} from "@navikt/ds-react";
-import {useState} from "react";
-import {EmbeddedPdf} from "~/routes/sak/$saksnummer/-components/dokumenter/EmbeddedPdf";
+import type { Journalpost } from "@generated";
+import { Box, InlineMessage } from "@navikt/ds-react";
+import { useState } from "react";
+import { DokumentTabell } from "~/common/pdf/DokumentTabell";
+import { EmbeddedPdf } from "~/routes/sak/$saksnummer/-components/dokumenter/EmbeddedPdf";
 
 interface Props {
     journalPoster: Array<Journalpost>;
@@ -17,17 +18,6 @@ interface JournalpostDokument {
 const generateDokId = (dok?: JournalpostDokument): string | undefined => {
     if (!dok) return undefined;
     return `${dok.journalpostId}@${dok.dokumentInfoId}`;
-};
-
-const getTitle = (d: JournalpostDokument, index: number) => {
-    const { dokumentTittel, journalpostTittel } = d;
-    if (!dokumentTittel) {
-        return `Dokument ${index + 1}`;
-    }
-    if (dokumentTittel === journalpostTittel) {
-        return `${dokumentTittel}`;
-    }
-    return `${d.journalpostTittel} - ${d.dokumentTittel}`;
 };
 
 export function MultiPdfViewer({ journalPoster }: Props) {
@@ -50,13 +40,7 @@ export function MultiPdfViewer({ journalPoster }: Props) {
 
     return (
         <Box width={"100%"}>
-            <Select label="Dokumenter i saken" hideLabel value={selected} onChange={(e) => setSelected(e.target.value)}>
-                {dokumenter.map((d, index) => (
-                    <option key={generateDokId(d)} value={generateDokId(d) ?? ""}>
-                        {getTitle(d, index)}
-                    </option>
-                ))}
-            </Select>
+            <DokumentTabell dokumenter={journalPoster} selected={selected} onSelect={(value) => setSelected(value)} />
             <EmbeddedPdf journalpostId={journalpostId} dokumentInfoId={dokId} />
         </Box>
     );

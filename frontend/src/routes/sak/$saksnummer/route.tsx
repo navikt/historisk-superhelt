@@ -1,4 +1,4 @@
-import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { ClockDashedIcon, EnvelopeClosedIcon, FilePdfIcon, FileTextIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -22,6 +22,7 @@ import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummerin
 import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
 import { getSakOptions } from "./-api/sak.query";
 import BehandlingsMeny from "./-components/BehandlingsMeny";
+import { DokumentTabell } from "~/common/pdf/DokumentTabell";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
@@ -39,8 +40,10 @@ function SakLayout() {
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
     const { data: journalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, false));
+    const { data: andreJournalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, true));
 
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
+    const antallAndreDokumenter = andreJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
     const { sakshistorikkLabel } = useSakshistorikkAntall(sak.maskertPersonIdent, "ferdig");
 
@@ -131,6 +134,12 @@ function SakLayout() {
                                     label="Endringslogg"
                                     icon={<ClockDashedIcon aria-hidden />}
                                 />
+                                <Tabs.Tab
+                                    value="andre-dokumenter"
+                                    label={`Andre dokumenter (${antallAndreDokumenter})`}
+                                    icon={<FileTextIcon aria-hidden />}
+                                    disabled
+                                />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
                                 <Box width="100%" height="100%" paddingBlock="space-16 space-0">
@@ -145,6 +154,11 @@ function SakLayout() {
                             <Tabs.Panel value="endringslogg">
                                 <Box width="100%" paddingBlock="space-16 space-0">
                                     <SakEndringer sak={sak} />
+                                </Box>
+                            </Tabs.Panel>
+                            <Tabs.Panel value="andre-dokumenter">
+                                <Box width="100%" paddingBlock="space-16 space-0">
+                                    <DokumentTabell dokumenter={andreJournalposter} åpneEksternt />
                                 </Box>
                             </Tabs.Panel>
                         </Tabs>
