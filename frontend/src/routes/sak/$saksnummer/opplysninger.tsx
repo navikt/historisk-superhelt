@@ -1,9 +1,9 @@
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {createFileRoute} from "@tanstack/react-router";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { getSakOptions } from "~/common/sak/sak.query";
 import SakEditor from "~/routes/sak/$saksnummer/-components/SakEditor";
 import SakOpplysningerSummary from "~/routes/sak/$saksnummer/-components/SakOpplysningerSummary";
-import {getSakOptions} from "./-api/sak.query";
 
 export const Route = createFileRoute("/sak/$saksnummer/opplysninger")({
     component: OpplysningerPage,

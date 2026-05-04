@@ -21,9 +21,9 @@ import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { dateTilIsoDato, isoTilLokal } from "~/common/dato.utils";
+import { getSakOptions } from "~/common/sak/sak.query";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
-import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
 
 interface SendKlageProps {
     readonly open: boolean;
@@ -349,4 +349,3 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
         </Dialog>
     );
 }
-

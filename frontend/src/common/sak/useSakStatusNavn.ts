@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { SakStatusType } from "~/common/sak/sak.types";
-import { getKodeverkSakStatusOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
+import { getKodeverkSakStatusOptions } from "./sak.query";
 
 export function useSakStatusNavn() {
     const { data } = useSuspenseQuery(getKodeverkSakStatusOptions());

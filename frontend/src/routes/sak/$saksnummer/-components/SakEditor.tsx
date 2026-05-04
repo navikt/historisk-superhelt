@@ -19,9 +19,9 @@ import { useEffect, useState } from "react";
 import { Card } from "~/common/card/Card";
 import { dateTilIsoDato } from "~/common/dato.utils";
 import { NumericInput } from "~/common/NumericInput";
+import { getKodeverkStonadsTypeOptions, sakQueryKey } from "~/common/sak/sak.query";
 import type { SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
 import useDebounce from "~/common/useDebounce";
-import { getKodeverkStonadsTypeOptions, sakQueryKey } from "../-api/sak.query";
 
 interface Props {
     sak: Sak;

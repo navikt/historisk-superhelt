@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { getSakOptions } from "./-api/sak.query";
+import { getSakOptions } from "~/common/sak/sak.query";
 
 export const Route = createFileRoute("/sak/$saksnummer/")({
     loader: async ({ params: { saksnummer }, context }) => {
@@ -20,4 +20,3 @@ export const Route = createFileRoute("/sak/$saksnummer/")({
         throw redirect({ to: "/sak/$saksnummer/oppsummering", params: { saksnummer }, replace: true });
     },
 });
-
