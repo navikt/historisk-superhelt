@@ -25,5 +25,6 @@ query hentJournalpost($journalpostId: String!) {
                 saksbehandlerHarTilgang
             }
         }
+        datoSortering
     }
 }

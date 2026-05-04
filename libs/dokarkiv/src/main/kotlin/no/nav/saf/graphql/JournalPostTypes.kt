@@ -13,6 +13,7 @@ data class Journalpost(
     val bruker: JournalpostBruker? = null,
     val avsenderMottaker: JournalpostAvsenderMottaker? = null,
     val dokumenter: List<JournalpostDokumentInfo>? = emptyList(),
+    val datoSortering: String
 )
 
 data class JournalpostSak(
