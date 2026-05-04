@@ -95,7 +95,7 @@ Flag changes where the diff is disproportionate to the stated goal. Fixing a bug
 - Restructured working code (reordered functions, extracted helpers) without justification
 - Changed formatting or style in lines not otherwise modified
 
-Research shows over-editing is invisible to test suites — tests pass but diffs become unreviewable, and codebase quality quietly degrades.
+Research shows over-editing is invisible to test suites — tests pass but diffs become unreviable, and codebase quality quietly degrades.
 
 ### Security (🔴)
 
@@ -130,6 +130,17 @@ logger.info("Processing user id=$userId")
 - New logic has corresponding tests
 - Tests are deterministic (no time-dependent, no random-dependent)
 - Test names describe the behavior being tested
+
+### AI-generert kode (🟡)
+
+If the PR contains substantial AI-generated code:
+
+- Can the author explain the design decisions and tradeoffs?
+- Are there patterns copied without adaptation to the specific context?
+- Is error handling thorough, or does it have the "looks right but isn't" quality typical of AI output?
+- Has the author tested edge cases that AI tends to miss (concurrency, null paths, error recovery)?
+
+Only 34% of Nav developers agree that AI code passes review without extra work — look carefully.
 
 ### Nais Compliance (🟡)
 
@@ -235,6 +246,7 @@ if err != nil {
 - Prioritize findings (🔴 before 🟡 before 💭)
 - Delegate to specialist agents for deep domain reviews
 - Read the actual code before reviewing — don't guess
+- For AI-generated code: verify the author understands the design decisions
 
 ### ⚠️ Ask First
 
