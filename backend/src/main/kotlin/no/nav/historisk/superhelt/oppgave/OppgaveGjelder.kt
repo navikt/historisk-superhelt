@@ -20,7 +20,7 @@ enum class OppgaveGjelder(
     REISEUTGIFTER(Behandlingstema.REISEUTGIFTER, null),
 
     ARBEID_UTDANNING(Behandlingstema.ARBEIDS_OG_UTDANNINGSREISER, null),
-    HOREAPPARAT(tema = Behandlingstema.HOREAPPARAT, null)
+    HOREAPPARAT( Behandlingstema.HOREAPPARAT, null)
     ;
 
     val behandlingstema: String? get() = tema?.kode
