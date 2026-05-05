@@ -9,29 +9,26 @@ import no.nav.historisk.superhelt.brev.BrevTestdata
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.springframework.security.test.context.support.WithMockUser
 
-@ExtendWith(MockitoExtension::class)
+
 class DokdistServiceTest {
+    private var dokdistClient = Mockito.mock(DokdistClient::class.java)
+    private var dokdistService: DokdistService = DokdistService(dokdistClient)
 
-    @Mock
-    private lateinit var dokdistClient: DokdistClient
-
-    @InjectMocks
-    private lateinit var dokdistService: DokdistService
+    @BeforeEach
+    fun reset() {
+        Mockito.clearInvocations(dokdistClient)
+    }
 
     @Test
-    @WithMockUser(authorities = ["WRITE"])
     fun `distribuer skal kalle dokdistClient med riktige parametere for vedtaksbrev`() {
         val journalpostId = EksternJournalpostId("JP123")
         val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = journalpostId)
@@ -55,7 +52,6 @@ class DokdistServiceTest {
     }
 
     @Test
-    @WithMockUser(authorities = ["WRITE"])
     fun `distribuer skal kaste exception når journalpostId mangler`() {
         val brev = BrevTestdata.vedtaksbrevBruker()
 
@@ -68,7 +64,6 @@ class DokdistServiceTest {
     }
 
     @Test
-    @WithMockUser(authorities = ["WRITE"])
     fun `distribuer skal bruke distribusjonstype ANNET for ikke-vedtaksbrev`() {
         val journalpostId = EksternJournalpostId("JP456")
         val brev = BrevTestdata.fritekstbrevBruker().copy(journalpostId = journalpostId)
