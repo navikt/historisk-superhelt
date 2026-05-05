@@ -15,7 +15,6 @@ import type { TilstandStatusType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn, kortSaksnummer } from "~/common/string.utils";
 import { apiFinnJournalposterOptions } from "~/routes/sak/$saksnummer/-api/journalpost.query";
-import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
@@ -23,6 +22,7 @@ import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/Sak
 import { getSakOptions } from "./-api/sak.query";
 import BehandlingsMeny from "./-components/BehandlingsMeny";
 import { DokumentTabell } from "~/common/pdf/DokumentTabell";
+import { MultiPdfViewer } from "~/common/pdf/MultiPdfViewer";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
@@ -120,7 +120,7 @@ function SakLayout() {
                     </DeltVisning.Kolonne>
                     <DeltVisning.Kolonne justerbar>
                         <SakOppsummering sak={sak} />
-                        <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
+                        <Tabs defaultValue="dokumenter" style={{ marginTop: "1.5rem", height: "100%" }}>
                             <Tabs.List>
                                 <Tabs.Tab
                                     value="dokumenter"
@@ -144,24 +144,20 @@ function SakLayout() {
                                 />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
-                                <Box width="100%" height="100%" paddingBlock="space-16 space-0">
-                                    <DokumentViewer saksnummer={saksnummer} />
+                                <Box paddingBlock="space-8 space-0">
+                                    <MultiPdfViewer journalPoster={journalposter} />
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <Box width="100%" height="6rem" paddingBlock="space-16 space-0">
-                                    <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
-                                </Box>
+                                <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
                             </Tabs.Panel>
                             <Tabs.Panel value="endringslogg">
-                                <Box width="100%" paddingBlock="space-16 space-0">
+                                <Box paddingBlock="space-16 space-0">
                                     <SakEndringer sak={sak} />
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="andre-dokumenter">
-                                <Box width="100%" paddingBlock="space-16 space-0">
-                                    <DokumentTabell dokumenter={andreJournalposter} åpneEksternt />
-                                </Box>
+                                <DokumentTabell dokumenter={andreJournalposter} />
                             </Tabs.Panel>
                         </Tabs>
                     </DeltVisning.Kolonne>

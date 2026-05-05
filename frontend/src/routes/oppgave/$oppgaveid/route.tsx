@@ -1,10 +1,10 @@
 import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { Tabs } from "@navikt/ds-react";
+import { Box, Tabs } from "@navikt/ds-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
-import { PdfViewer } from "~/common/pdf/PdfViewer";
+import { MultiPdfViewer } from "~/common/pdf/MultiPdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
 import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
 import { SakshistorikkJournalTabell } from "~/routes/oppgave/$oppgaveid/-components/SakshistorikkJournalTabell";
@@ -46,7 +46,9 @@ function OppgaveLayout() {
                             />
                         </Tabs.List>
                         <Tabs.Panel value="dokumenter">
-                            <PdfViewer journalpostId={journalpostId} />
+                            <Box paddingBlock="space-8 space-0">
+                                <MultiPdfViewer journalPoster={erJournalpostLastet ? [journalpost] : []} />
+                            </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
                             <SakshistorikkJournalTabell maskertPersonIdent={oppgave.maskertPersonIdent} />

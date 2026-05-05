@@ -1,8 +1,7 @@
 import type { Journalpost } from "@generated";
-import { Box, InlineMessage } from "@navikt/ds-react";
+import { InlineMessage, Select, VStack } from "@navikt/ds-react";
 import { useState } from "react";
-import { DokumentTabell } from "~/common/pdf/DokumentTabell";
-import { EmbeddedPdf } from "~/routes/sak/$saksnummer/-components/dokumenter/EmbeddedPdf";
+import { EmbeddedPdf } from "~/common/pdf/EmbeddedPdf";
 
 interface Props {
     journalPoster: Array<Journalpost>;
@@ -20,6 +19,17 @@ const generateDokId = (dok?: JournalpostDokument): string | undefined => {
     return `${dok.journalpostId}@${dok.dokumentInfoId}`;
 };
 
+const getTitle = (d: JournalpostDokument, index: number) => {
+    const { dokumentTittel, journalpostTittel } = d;
+    if (!dokumentTittel) {
+        return `Dokument ${index + 1}`;
+    }
+    if (dokumentTittel === journalpostTittel) {
+        return `${dokumentTittel}`;
+    }
+    return `${d.journalpostTittel} - ${d.dokumentTittel}`;
+};
+
 export function MultiPdfViewer({ journalPoster }: Props) {
     const dokumenter: Array<JournalpostDokument> = journalPoster.flatMap((jp) =>
         (jp.dokumenter || []).map((d) => ({
@@ -29,9 +39,8 @@ export function MultiPdfViewer({ journalPoster }: Props) {
             dokumentTittel: d.tittel,
         })),
     );
-    const firstDokument = dokumenter.at(0);
 
-    const [selected, setSelected] = useState<string | undefined>(generateDokId(firstDokument));
+    const [selected, setSelected] = useState<string | undefined>(generateDokId(dokumenter.at(0)));
     const [journalpostId, dokId] = selected ? selected.split("@") : [undefined, undefined];
 
     if (journalPoster.length === 0 || dokumenter.length === 0) {
@@ -39,9 +48,15 @@ export function MultiPdfViewer({ journalPoster }: Props) {
     }
 
     return (
-        <Box width={"100%"}>
-            <DokumentTabell dokumenter={journalPoster} selected={selected} onSelect={(value) => setSelected(value)} />
+        <VStack gap="space-8" align="stretch">
+            <Select label="Dokumenter i saken" hideLabel value={selected} onChange={(e) => setSelected(e.target.value)}>
+                {dokumenter.map((d, index) => (
+                    <option key={generateDokId(d)} value={generateDokId(d) ?? ""}>
+                        {getTitle(d, index)}
+                    </option>
+                ))}
+            </Select>
             <EmbeddedPdf journalpostId={journalpostId} dokumentInfoId={dokId} />
-        </Box>
+        </VStack>
     );
 }

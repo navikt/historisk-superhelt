@@ -1,28 +1,18 @@
 import type { Journalpost } from "@generated/types.gen";
-import {
-    ArrowDownRightIcon,
-    ChevronDownIcon,
-    EnvelopeClosedIcon,
-    EnvelopeOpenIcon,
-    ExternalLinkIcon,
-} from "@navikt/aksel-icons";
-import { BodyShort, Button, HStack, Link, type SortState, Table, Tooltip } from "@navikt/ds-react";
+import { ArrowDownRightIcon, ExternalLinkIcon } from "@navikt/aksel-icons";
+import { Button, HStack, Link, type SortState, Table, Tooltip } from "@navikt/ds-react";
 import { useState } from "react";
 import { isoTilLokalTid } from "../dato.utils";
 
 interface DokumentTabellProps {
     dokumenter: Journalpost[];
-    åpneEksternt?: boolean;
-    selected?: string | undefined;
-    onSelect?: (value: string) => void;
 }
 
 interface ScopedSortState extends SortState {
     orderBy: "tittel" | "datoSortering";
 }
 
-export function DokumentTabell({ dokumenter, åpneEksternt, selected, onSelect }: DokumentTabellProps) {
-    const [collapsed, setCollapsed] = useState(false);
+export function DokumentTabell({ dokumenter }: DokumentTabellProps) {
     const [sort, setSort] = useState<ScopedSortState>({ orderBy: "datoSortering", direction: "descending" });
 
     function handleSort(sortKey: ScopedSortState["orderBy"]) {
@@ -49,7 +39,6 @@ export function DokumentTabell({ dokumenter, åpneEksternt, selected, onSelect }
 
     return (
         <Table
-            size="small"
             sort={sort}
             onSortChange={(sortKey) => {
                 handleSort(sortKey as ScopedSortState["orderBy"]);
@@ -58,28 +47,7 @@ export function DokumentTabell({ dokumenter, åpneEksternt, selected, onSelect }
         >
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell>
-                        {!åpneEksternt && (
-                            <Button
-                                size="small"
-                                variant="tertiary"
-                                data-color="neutral"
-                                icon={
-                                    <Tooltip content={collapsed ? "Vis alle dokumenter" : "Skjul dokumenter"}>
-                                        <ChevronDownIcon
-                                            style={{
-                                                transform: collapsed ? "rotate(-180deg)" : undefined,
-                                                transition: "transform 0.2s",
-                                            }}
-                                        />
-                                    </Tooltip>
-                                }
-                                onClick={() => setCollapsed((c) => !c)}
-                                aria-label="Vis/skjul dokumenter"
-                                aria-expanded={!collapsed}
-                            />
-                        )}
-                    </Table.HeaderCell>
+                    <Table.HeaderCell></Table.HeaderCell>
                     <Table.ColumnHeader scope="col" sortKey="tittel" sortable>
                         Tittel
                     </Table.ColumnHeader>
@@ -92,18 +60,12 @@ export function DokumentTabell({ dokumenter, åpneEksternt, selected, onSelect }
                 {sorterteDokumenter.map((jp) =>
                     (jp.dokumenter || []).map((d) => {
                         const dokId = `${jp.journalpostId}@${d.dokumentInfoId}`;
-                        const isSelected = selected === dokId;
-                        if (collapsed && !isSelected) return null;
                         return (
-                            <Table.Row
-                                key={dokId}
-                                onClick={() => onSelect?.(dokId)}
-                                style={åpneEksternt ? undefined : { cursor: "pointer" }}
-                            >
+                            <Table.Row key={dokId}>
                                 <Table.DataCell width={48}>
-                                    {åpneEksternt ? (
+                                    <Tooltip content="Åpne dokument i nytt vindu">
                                         <Button
-                                            icon={<ExternalLinkIcon title="Åpne i nytt vindu" />}
+                                            icon={<ExternalLinkIcon aria-hidden />}
                                             variant="tertiary"
                                             data-color="info"
                                             size="small"
@@ -113,29 +75,18 @@ export function DokumentTabell({ dokumenter, åpneEksternt, selected, onSelect }
                                             aria-label="Åpne dokument i nytt vindu"
                                             rel="noopener noreferrer"
                                         />
-                                    ) : (
-                                        <Button
-                                            size="small"
-                                            variant={isSelected ? "primary" : "tertiary"}
-                                            data-color="info"
-                                            icon={isSelected ? <EnvelopeOpenIcon /> : <EnvelopeClosedIcon />}
-                                        />
-                                    )}
+                                    </Tooltip>
                                 </Table.DataCell>
                                 <Table.DataCell>
-                                    <BodyShort size="small" weight={isSelected ? "semibold" : "regular"}>
-                                        {d.tittel?.toLocaleLowerCase()?.includes("vedlegg") ? (
-                                            <HStack>
-                                                <ArrowDownRightIcon fontSize="1.5rem" aria-hidden /> {d.tittel}
-                                            </HStack>
-                                        ) : (
-                                            d.tittel
-                                        )}
-                                    </BodyShort>
+                                    {d.tittel?.toLocaleLowerCase()?.includes("vedlegg") ? (
+                                        <HStack>
+                                            <ArrowDownRightIcon fontSize="1.5rem" aria-hidden /> {d.tittel}
+                                        </HStack>
+                                    ) : (
+                                        d.tittel
+                                    )}
                                 </Table.DataCell>
-                                <Table.DataCell width={201}>
-                                    <BodyShort size="small">{isoTilLokalTid(jp.datoSortering)}</BodyShort>
-                                </Table.DataCell>
+                                <Table.DataCell width={201}>{isoTilLokalTid(jp.datoSortering)}</Table.DataCell>
                             </Table.Row>
                         );
                     }),
