@@ -27,6 +27,7 @@ query fagsakQuery($fagsakId: String!, $fagsaksystem: String!, $tema: [Tema]!, $f
                 }
             }
             datoSortering
+            journalposttype
         }
     }
 }

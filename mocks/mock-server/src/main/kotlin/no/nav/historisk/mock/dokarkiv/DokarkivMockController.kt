@@ -63,6 +63,14 @@ class DokarkivController(
                             dokumentvarianter = emptyList(),
                         )
                     },
+                    journalpostType = req.journalpostType,
+                    avsenderMottaker = req.avsenderMottaker?.let {
+                        JournalpostAvsenderMottaker(
+                            id = it.id,
+                            type = it.idType,
+                            navn = it.navn,
+                        )
+                    },
                 )
         val pdf = req.dokumenter.firstOrNull()?.dokumentvarianter?.firstOrNull()?.fysiskDokument
         repository.lagre(id, journalpost, pdf)

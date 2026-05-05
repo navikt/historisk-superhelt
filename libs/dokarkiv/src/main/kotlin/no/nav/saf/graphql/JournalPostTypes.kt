@@ -1,9 +1,11 @@
 package no.nav.saf.graphql
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.dokarkiv.JournalpostType
 
 data class Journalpost(
     val journalpostId: EksternJournalpostId,
@@ -13,7 +15,9 @@ data class Journalpost(
     val bruker: JournalpostBruker? = null,
     val avsenderMottaker: JournalpostAvsenderMottaker? = null,
     val dokumenter: List<JournalpostDokumentInfo>? = emptyList(),
-    val datoSortering: String
+    val datoSortering: String? = null,
+    @JsonProperty("journalposttype")
+    val journalpostType: JournalpostType? = null,
 )
 
 data class JournalpostSak(

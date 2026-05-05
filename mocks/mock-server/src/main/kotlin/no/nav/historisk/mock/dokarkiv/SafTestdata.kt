@@ -4,6 +4,7 @@ import net.datafaker.Faker
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.dokarkiv.JournalpostType
 import no.nav.historisk.mock.classpathAsStream
 import no.nav.saf.graphql.*
 import java.util.concurrent.TimeUnit
@@ -31,7 +32,13 @@ fun generateJournalpost(
         )
     }
     val datoSortering = faker.timeAndDate().past(10, TimeUnit.DAYS).toString()
-    return journalpost.copy(journalpostId = journalpostId, tittel = tittel, dokumenter = dokumenter, datoSortering = datoSortering)
+    return journalpost.copy(
+        journalpostId = journalpostId,
+        tittel = tittel,
+        dokumenter = dokumenter,
+        datoSortering = datoSortering,
+        journalpostType = JournalpostType.INNGAAENDE,
+    )
 }
 
 val dokumentInfo =
@@ -59,6 +66,7 @@ private val journalpost =
             ),
         dokumenter = emptyList(),
         datoSortering = "1970-01-01T00:00:00Z",
+        journalpostType = JournalpostType.INNGAAENDE,
     )
 
 val pdfdoc = classpathAsStream("/saf/saf_doc.pdf").readBytes()

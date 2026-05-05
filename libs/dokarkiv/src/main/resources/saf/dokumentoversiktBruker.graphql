@@ -27,6 +27,7 @@ query fagsakBrukerQuery($fnr: String!, $tema: [Tema]!, $foerste: Int = 50) {
                 }
             }
             datoSortering
+            journalposttype
         }
     }
 }

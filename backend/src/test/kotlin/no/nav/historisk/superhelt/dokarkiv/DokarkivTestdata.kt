@@ -5,6 +5,7 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.dokarkiv.JournalpostType
 import no.nav.saf.graphql.*
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +31,8 @@ object DokarkivTestdata {
                 navn = faker.name().fullName()
             ),
             dokumenter = List(faker.number().numberBetween(1, 4)) { journalpostDokumentInfo() },
-            datoSortering = faker.timeAndDate().past(10, TimeUnit.DAYS).toString()
+            datoSortering = faker.timeAndDate().past(10, TimeUnit.DAYS).toString(),
+            journalpostType = JournalpostType.entries.random()
         )
 
     private fun journalpostDokumentInfo() = JournalpostDokumentInfo(
