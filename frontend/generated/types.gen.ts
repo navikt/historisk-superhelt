@@ -16,7 +16,7 @@ export type ProblemDetail = {
 };
 
 export type SakUpdateRequestDto = {
-    type?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    type?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     beskrivelse?: string | null;
     begrunnelse?: string | null;
     soknadsDato?: string | null;
@@ -48,7 +48,7 @@ export type NavUser = {
 export type Sak = {
     saksnummer: string;
     behandlingsnummer: number;
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     beskrivelse?: string | null;
@@ -63,12 +63,12 @@ export type Sak = {
     belop?: number | null;
     klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     vedtaksbrevBruker?: Brev | null;
+    readonly maskertPersonIdent: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
     readonly gjenapnet: boolean;
     readonly kanUtbetales: boolean;
-    readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly tilstand: SakTilstand;
 };
 
 export type SakTilstand = {
@@ -116,7 +116,7 @@ export type JournalforDokument = {
 };
 
 export type JournalforNySakRequest = {
-    stonadsType: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    stonadsType: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     jfrOppgaveId: number;
     bruker: string;
     avsender: string;
@@ -180,8 +180,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string | null;
-    annulleres: boolean;
     loggId$superhelt_backend: string;
+    annulleres: boolean;
 };
 
 export type Enhet = {
@@ -200,7 +200,7 @@ export type NavAnsatt = {
 export type Vedtak = {
     saksnummer: string;
     behandlingsnummer: number;
-    stonadstype: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    stonadstype: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     fnr: string;
     beskrivelse: string;
     soknadsDato: string;
@@ -241,7 +241,7 @@ export type KlasseKodeDto = {
 };
 
 export type StonadsTypeDto = {
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     navn: string;
     beskrivelse?: string | null;
     klasseKoder: Array<KlasseKodeDto>;
@@ -268,10 +268,10 @@ export type OppgaveMedSak = {
     opprettetAv?: string | null;
     saksnummer?: string | null;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
-    readonly maskertPersonIdent: string;
     readonly oppgaveTypeTekst: string;
+    readonly maskertPersonIdent: string;
 };
 
 export type HjemmelDto = {
@@ -345,7 +345,7 @@ export type BrevWritable = {
 export type SakWritable = {
     saksnummer: string;
     behandlingsnummer: number;
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     beskrivelse?: string | null;
@@ -385,7 +385,7 @@ export type OppgaveMedSakWritable = {
     opprettetAv?: string | null;
     saksnummer?: string | null;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING';
+    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
 };
 

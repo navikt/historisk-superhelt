@@ -1,7 +1,7 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { getSakOptions } from "~/common/sak/sak.query";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
-import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
 import { BrevEditor } from "~/routes/sak/$saksnummer/-components/BrevEditor";
 
 export const Route = createFileRoute("/sak/$saksnummer/vedtaksbrevbruker")({

@@ -1,10 +1,11 @@
-import type {Sak} from "@generated";
-import {FormSummary} from "@navikt/ds-react";
-import {isoTilLokal} from "~/common/dato.utils";
-import {utbetalingText} from "~/common/sak/sak.utils";
-import {useSakStatusNavn} from "~/common/sak/useSakStatusNavn";
-import {useSakVedtakNavn} from "~/common/sak/useSakVedtakNavn";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import type { Sak } from "@generated";
+import { FormSummary } from "@navikt/ds-react";
+import { isoTilLokal } from "~/common/dato.utils";
+import { utbetalingText } from "~/common/sak/sak.utils";
+import { useSakStatusNavn } from "~/common/sak/useSakStatusNavn";
+import { useSakVedtakNavn } from "~/common/sak/useSakVedtakNavn";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import { useKlassekodeTypeNavn } from "~/routes/sak/$saksnummer/-api/useKlassekodeNavn";
 
 interface SakSummaryProps {
     sak: Sak;
@@ -14,6 +15,7 @@ export default function SakOpplysningerSummary({ sak }: SakSummaryProps) {
     const getStonadsTypeNavn = useStonadsTypeNavn();
     const getSakStatusNavn = useSakStatusNavn();
     const getSakVedtakNavn = useSakVedtakNavn();
+    const getKlassekodeNavn = useKlassekodeTypeNavn(sak.type);
 
     return (
         <FormSummary>
@@ -74,10 +76,16 @@ export default function SakOpplysningerSummary({ sak }: SakSummaryProps) {
                             </FormSummary.Answer>
 
                             {sak.utbetalingsType === "BRUKER" && (
-                                <FormSummary.Answer>
-                                    <FormSummary.Label>Utbetalingsbeløp</FormSummary.Label>
-                                    <FormSummary.Value>{sak.belop} kr</FormSummary.Value>
-                                </FormSummary.Answer>
+                                <>
+                                    <FormSummary.Answer>
+                                        <FormSummary.Label>Utbetalingsbeløp</FormSummary.Label>
+                                        <FormSummary.Value>{sak.belop} kr</FormSummary.Value>
+                                    </FormSummary.Answer>
+                                    <FormSummary.Answer>
+                                        <FormSummary.Label>Regnskapskonto</FormSummary.Label>
+                                        <FormSummary.Value>{getKlassekodeNavn(sak.klasseKode)}</FormSummary.Value>
+                                    </FormSummary.Answer>
+                                </>
                             )}
                         </FormSummary.Answers>
                     </FormSummary.Value>

@@ -4,7 +4,11 @@ import no.nav.common.types.Belop
 import no.nav.helved.UtbetalingMelding
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
-import no.nav.historisk.superhelt.sak.*
+import no.nav.historisk.superhelt.sak.Sak
+import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakStatus
+import no.nav.historisk.superhelt.sak.SakTestData
+import no.nav.historisk.superhelt.sak.UpdateSakDto
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.withMockedUser
@@ -15,7 +19,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.clearInvocations
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.kafka.KafkaException
 import org.springframework.kafka.core.KafkaTemplate
@@ -136,11 +148,12 @@ class UtbetalingServiceTest {
                 eq(utbetaling.transaksjonsId.toString()),
                 argThat { melding ->
                     melding.id == utbetaling.utbetalingsUuid &&
-                            melding.sakId == sak.saksnummer.value &&
-                            melding.behandlingId == sak.behandlingsnummer.toString() &&
-                            melding.personident == sak.fnr.value &&
-                            melding.perioder.first().beløp == sak.belop!!.value &&
-                            melding.saksbehandler == sak.saksbehandler.navIdent.value
+                        melding.sakId == sak.saksnummer.value &&
+                        melding.behandlingId == sak.behandlingsnummer.toString() &&
+                        melding.personident == sak.fnr.value &&
+                        melding.stønad == sak.klasseKode &&
+                        melding.perioder.first().beløp == sak.belop!!.value &&
+                        melding.saksbehandler == sak.saksbehandler.navIdent.value
                 }
             )
             val oppdatertUtbetaling = utbetalingRepository.findByTransaksjonsId(utbetaling.transaksjonsId)

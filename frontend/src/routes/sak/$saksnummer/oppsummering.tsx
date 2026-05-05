@@ -1,7 +1,7 @@
 import { BodyShort, Heading, InfoCard, VStack } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
+import { getSakOptions } from "~/common/sak/sak.query";
 import AttesterSakAction from "~/routes/sak/$saksnummer/-components/AttesterSakAction";
 import SakErrorSummary from "~/routes/sak/$saksnummer/-components/SakErrorSummary";
 import TotrinnkontrollAction from "~/routes/sak/$saksnummer/-components/TotrinnkontrollAction";
