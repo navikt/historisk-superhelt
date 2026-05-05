@@ -4,7 +4,7 @@ applyTo: "**/*.test.{ts,tsx,kt,kts}"
 
 # Testing Standards
 
-Felles testprinsipper for Nav. Språkspesifikke eksempler finnes i egne instruksjoner for [Kotlin](testing-kotlin.instructions.md) og [TypeScript](testing-typescript.instructions.md).
+Felles testprinsipper for Nav. Språkspesifikke eksempler finnes i egne instruksjoner for [TypeScript](testing-typescript.instructions.md).
 
 ## Test Coverage
 

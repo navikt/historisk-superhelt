@@ -1,5 +1,8 @@
 {
   "overrides": [
-    ".github/instructions/nextjs-aksel.instructions.md"
+    ".github/instructions/nextjs-aksel.instructions.md",
+    ".github/instructions/testing-kotlin.instructions.md",
+    ".github/prompts/aksel-component.prompt.md",
+    ".github/instructions/accessibility.instructions.md"
   ]
 }

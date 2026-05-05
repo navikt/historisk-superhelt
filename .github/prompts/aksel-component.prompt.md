@@ -9,8 +9,7 @@ Du lager en ny React-komponent med Navs Aksel Design System.
 
 1. **Aldri bruk Tailwind padding/margin** (`p-*`, `m-*`, `px-*`, `py-*`)
 2. **Alltid bruk Aksel spacing-tokens** med `space-`-prefiks
-3. **Mobil først**, responsivt design med breakpoints: `xs`, `sm`, `md`, `lg`, `xl`
-4. **Bruk Aksel-komponenter**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
+3**Bruk Aksel-komponenter**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
 
 ## Spør brukeren
 
@@ -239,10 +238,8 @@ After generating the component, verify:
 
 After generating the component, explain:
 
-1. **Spacing-tokens vs Tailwind** — Why Aksel uses semantic tokens (`space-16`) instead of utility classes (`p-4`). What happens to consistency when teams mix approaches?
-2. **Responsive design** — Why mobile-first (`xs` as base, overrides at `md`/`lg`)? What's the cognitive difference between mobile-first and desktop-first?
-3. **Komponentvalg** — Why `Box`/`VStack`/`HGrid` instead of raw `<div>` with CSS. What accessibility and maintainability benefits do these provide?
-4. **Heading-nivåer** — Why `level` matters for accessibility (screen readers use heading hierarchy for navigation). What breaks with wrong heading levels?
+1**Komponentvalg** — Why `Box`/`VStack`/`HGrid` instead of raw `<div>` with CSS. What accessibility and maintainability benefits do these provide?
+2**Heading-nivåer** — Why `level` matters for accessibility (screen readers use heading hierarchy for navigation). What breaks with wrong heading levels?
 
 🔴 **Rød sone**: Accessibility markup (heading levels, ARIA attributes, labels) is worth understanding deeply — automated tools only catch ~30% of accessibility issues.
 
