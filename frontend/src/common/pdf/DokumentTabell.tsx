@@ -75,6 +75,8 @@ export function DokumentTabell({ dokumenter, åpneEksternt, selected, onSelect }
                                     </Tooltip>
                                 }
                                 onClick={() => setCollapsed((c) => !c)}
+                                aria-label="Vis/skjul dokumenter"
+                                aria-expanded={!collapsed}
                             />
                         )}
                     </Table.HeaderCell>
@@ -108,13 +110,14 @@ export function DokumentTabell({ dokumenter, åpneEksternt, selected, onSelect }
                                             as={Link}
                                             href={`/api/journalpost/${encodeURIComponent(jp.journalpostId)}/${encodeURIComponent(d.dokumentInfoId)}`}
                                             target="_blank"
+                                            aria-label="Åpne dokument i nytt vindu"
+                                            rel="noopener noreferrer"
                                         />
                                     ) : (
                                         <Button
                                             size="small"
                                             variant={isSelected ? "primary" : "tertiary"}
                                             data-color="info"
-                                            onClick={() => onSelect?.(dokId)}
                                             icon={isSelected ? <EnvelopeOpenIcon /> : <EnvelopeClosedIcon />}
                                         />
                                     )}

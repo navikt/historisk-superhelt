@@ -11,6 +11,9 @@ export const apiFinnJournalposterOptions = (saksnummer: string, inkluderAndreSak
     queryKey: apiFinnJournalpostForSakQueryKey(saksnummer, inkluderAndreSaker),
 });
 
-export function apiFinnJournalpostForSakQueryKey(saksnummer: string, inkluderAndreSaker?: boolean) {
-    return finnJournalposterForSakEllerBrukerQueryKey({ path: { saksnummer: saksnummer }, query: { inkluderAndreSaker } });
+export function apiFinnJournalpostForSakQueryKey(saksnummer: string, inkluderAndreSaker: boolean) {
+    return finnJournalposterForSakEllerBrukerQueryKey({
+        path: { saksnummer: saksnummer },
+        query: { inkluderAndreSaker },
+    });
 }

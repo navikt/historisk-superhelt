@@ -1,4 +1,4 @@
-import { ClockDashedIcon, EnvelopeClosedIcon, FilePdfIcon, FileTextIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { ClockDashedIcon, FilePdfIcon, FileTextIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -40,8 +40,11 @@ function SakLayout() {
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
     const { data: journalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, false));
-    const { data: andreJournalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, true));
-
+    const { data: brukerJournalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, true));
+    
+    const andreJournalposter = brukerJournalposter.filter(
+        (jp) => !journalposter.some((jp2) => jp2.journalpostId === jp.journalpostId),
+    );
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
     const antallAndreDokumenter = andreJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
@@ -138,7 +141,6 @@ function SakLayout() {
                                     value="andre-dokumenter"
                                     label={`Andre dokumenter (${antallAndreDokumenter})`}
                                     icon={<FileTextIcon aria-hidden />}
-                                    disabled
                                 />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>

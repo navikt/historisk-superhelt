@@ -16,7 +16,7 @@ export function useInvalidateSakQuery() {
         });
         // dokumenter knyttet til saken
         queryClient.invalidateQueries({
-            queryKey: apiFinnJournalpostForSakQueryKey(saksnummer),
+            queryKey: apiFinnJournalpostForSakQueryKey(saksnummer, false),
         });
     }
 
