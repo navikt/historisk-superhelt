@@ -73,10 +73,10 @@ class JournalpostController(
     ): List<Journalpost> {
         val sak = sakRepository.getSak(saksnummer)
         val tema = sak.type.tema
-        val journalposter = journalpostService.finnJournalposter(saksnummer, tema)
-        return if (inkluderAndreSaker) {
-            journalpostService.finnJournalposterForBruker(sak.fnr, tema) - journalposter.toSet()
-        } else { journalposter }
+        if (inkluderAndreSaker) {
+            return journalpostService.finnJournalposterForBruker(sak.fnr, tema)
+        }
+        return journalpostService.finnJournalposter(saksnummer, tema)
     }
 
 

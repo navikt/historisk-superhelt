@@ -62,5 +62,4 @@ class JournalpostService(
         return journalposter
     }
 
-
 }

@@ -26,6 +26,7 @@ query fagsakQuery($fagsakId: String!, $fagsaksystem: String!, $tema: [Tema]!, $f
                     saksbehandlerHarTilgang
                 }
             }
+            datoSortering
         }
     }
 }
