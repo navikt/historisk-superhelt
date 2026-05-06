@@ -8,7 +8,6 @@ import no.nav.dokarkiv.JournalpostType
 import no.nav.historisk.mock.classpathAsStream
 import no.nav.saf.graphql.*
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
 
 val faker = Faker()
 
@@ -32,7 +31,7 @@ fun generateJournalpost(
             ),
         )
     }
-    val datoOpprettet: LocalDateTime = faker.timeAndDate().past(10, TimeUnit.DAYS).let { LocalDateTime.parse(it.toString()) }
+    val datoOpprettet = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 10).toLong())
     return journalpost.copy(
         journalpostId = journalpostId,
         tittel = tittel,
