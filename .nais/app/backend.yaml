@@ -39,6 +39,8 @@ spec:
           - id: {{gruppe.attestant}}
           - id: {{gruppe.les}}
           - id: {{gruppe.drift}}
+          - id: {{gruppe.tema-hel}}
+          - id: {{gruppe.tema-hje}}
 
   startup:
     path: /actuator/health/liveness
