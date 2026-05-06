@@ -88,10 +88,10 @@ class OppgaveControllerTest {
 
     }
 
-    @WithSaksbehandler(navIdent = "Z123456")
+    @WithSaksbehandler(navIdent = "Z123456", tema = [HEL])
     @Test
     fun `Hent oppgaver for person henter oppgaver for andre applikasjoner også`() {
-        whenever(entraProxyClient.hentTema()) doReturn setOf("HEL")
+//        whenever(entraProxyClient.hentTema()) doReturn setOf("HEL")
         val fnr = FolkeregisterIdent("12345678901")
         whenever(personService.hentPerson(fnr)) doReturn PersonTestData.testPerson.copy(fnr = fnr)
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(

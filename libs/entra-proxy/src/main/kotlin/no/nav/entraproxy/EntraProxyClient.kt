@@ -11,7 +11,7 @@ class EntraProxyClient(private val restClient: RestClient) {
             .retrieve()
             .body<List<Enhet>>() ?: emptyList()
     }
-
+@Deprecated("Bruk heller authenticatedUser.tema")
     fun hentTema(): Set<String> {
         return restClient.get()
             .uri("/api/v1/tema")
