@@ -19,16 +19,18 @@ import { useEffect, useState } from "react";
 import { Card } from "~/common/card/Card";
 import { dateTilIsoDato } from "~/common/dato.utils";
 import { NumericInput } from "~/common/NumericInput";
-import type { SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
+import { getKodeverkStonadsTypeOptions, sakQueryKey } from "~/common/sak/sak.query";
+import type { KlassekodeType, SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
+import { useStonadsType } from "~/common/sak/useStonadsType";
 import useDebounce from "~/common/useDebounce";
-import { getKodeverkStonadsTypeOptions, sakQueryKey } from "../-api/sak.query";
 
 interface Props {
     sak: Sak;
 }
 
-export default function SakEditor({ sak }: Props) {
+export default function SakOpplysningerEditor({ sak }: Props) {
     const { data: saksTyper } = useSuspenseQuery(getKodeverkStonadsTypeOptions());
+    const stonadstype = useStonadsType();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const [showValidation, setShowValidation] = useState(false);
@@ -54,6 +56,7 @@ export default function SakEditor({ sak }: Props) {
         soknadsDato: sak.soknadsDato,
         begrunnelse: sak.begrunnelse,
         utbetalingsType: sak.utbetalingsType,
+        klasseKode: sak.klasseKode,
         belop: sak.belop,
     });
     const debouncedSak = useDebounce(updateSakData, 2000);
@@ -63,6 +66,8 @@ export default function SakEditor({ sak }: Props) {
         onDateChange: (day) => patchSak({ soknadsDato: dateTilIsoDato(day) }),
         defaultSelected: sak.soknadsDato ? new Date(sak.soknadsDato) : new Date(),
     });
+
+    const klasseKoder = stonadstype(updateSakData.type)?.klasseKoder ?? [];
 
     useEffect(() => {
         // Lagrer etter siste endring
@@ -107,6 +112,7 @@ export default function SakEditor({ sak }: Props) {
             | "soknadsDato"
             | "begrunnelse"
             | "utbetaling.belop"
+            | "klassekode"
             | "utbetaling"
             | "tildelingsAar",
     ): string | undefined {
@@ -116,6 +122,12 @@ export default function SakEditor({ sak }: Props) {
         return validationErrors.find((feil) => feil.field === field)?.message || undefined;
     }
 
+    function changeStonad(stonadsType: StonadType) {
+        if (updateSakData.type !== stonadsType) {
+            patchSak({ type: stonadsType, klasseKode: undefined });
+        }
+    }
+
     return (
         <VStack gap="space-24">
             <Card>
@@ -123,7 +135,7 @@ export default function SakEditor({ sak }: Props) {
                     label="Stønad"
                     value={updateSakData.type}
                     disabled={sak.gjenapnet}
-                    onChange={(e) => patchSak({ type: e.target.value as StonadType })}
+                    onChange={(e) => changeStonad(e.target.value as StonadType)}
                 >
                     {saksTyper.map((st) => (
                         <option key={st.type} value={st.type}>
@@ -195,6 +207,21 @@ export default function SakEditor({ sak }: Props) {
                             onChange={(belop) => patchSak({ belop: belop })}
                             label="Beløp som skal utbetales (kr)"
                         />
+                    )}
+                    {updateSakData.utbetalingsType === "BRUKER" && klasseKoder.length > 1 && (
+                        <Select
+                            label="Regnskapskonto"
+                            value={updateSakData.klasseKode}
+                            disabled={sak.gjenapnet}
+                            error={getErrorMessage("klassekode")}
+                            onChange={(e) => patchSak({ klasseKode: e.target.value as KlassekodeType })}
+                        >
+                            {klasseKoder?.map((st) => (
+                                <option key={st.klasseKode} value={st.klasseKode}>
+                                    {st.navn}
+                                </option>
+                            ))}
+                        </Select>
                     )}
                 </Card>
             )}

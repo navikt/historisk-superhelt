@@ -75,7 +75,7 @@ class SakValidator(private val sak: Sak): Validator() {
                         check(
                             !kanUtbetales ,
                             "utbetaling",
-                            "Det er ikke mulig å utbetale på sakstype ${type.navn}"
+                            "Det er ikke mulig å utbetale på stønadstype ${type.navn}"
                         )
                     }
 
@@ -112,7 +112,7 @@ class SakValidator(private val sak: Sak): Validator() {
            check(updateSakDto.klasseKode != null && updateSakDto.klasseKode != sak.klasseKode, "klassekode", "Kan ikke endre klassekode på en gjenåpnet sak")
        }
         val stonadstype= updateSakDto.type ?: sak.type
-        check(updateSakDto.klasseKode != null && !stonadstype.klassekoder.contains(updateSakDto.klasseKode), "klassekode", "Klassekode ${updateSakDto.klasseKode} er ikke gyldig for sakstype ${sak.type}")
+        check(updateSakDto.klasseKode != null && !stonadstype.klassekoder.contains(updateSakDto.klasseKode), "klassekode", "Klassekode ${updateSakDto.klasseKode} er ikke gyldig for sakstype ${stonadstype}")
         return this
     }
 }

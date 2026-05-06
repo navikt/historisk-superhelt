@@ -31,6 +31,7 @@ class UtbetalingRepositoryTest {
         assertThat(utbetaling.behandlingsnummer).isEqualTo(sak.behandlingsnummer)
         assertThat(utbetaling.belop).isEqualTo(sak.belop!!)
         assertThat(utbetaling.saksnummer).isEqualTo(sak.saksnummer)
+        assertThat(utbetaling.klasseKode).isEqualTo(sak.klasseKode)
         assertThat(utbetaling.utbetalingsUuid).isNotNull
         assertThat(utbetaling.utbetalingStatus).isEqualTo(UtbetalingStatus.UTKAST)
         assertThat(utbetaling.utbetalingTidspunkt).isNotNull

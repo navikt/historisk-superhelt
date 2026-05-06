@@ -1,8 +1,8 @@
 {
   "collection": "fullstack",
-  "version": "2026.04.27-201649-b3cecb8",
+  "version": "2026.04.30-090824-bb25c0e",
   "scope": "repo",
-  "source_sha": "b3cecb8",
+  "source_sha": "bb25c0e",
   "installed_at": "2026-04-16T11:42:15Z",
   "files": [
     {
@@ -31,7 +31,7 @@
     },
     {
       "path": ".github/agents/code-review.agent.md",
-      "hash": "83d872eba6edd7e6"
+      "hash": "452bf7eb43ff1205"
     },
     {
       "path": ".github/agents/code-review.metadata.json",
@@ -39,7 +39,7 @@
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "13a58d6edf244114"
+      "hash": "4e55f4d189619dcb"
     },
     {
       "path": ".github/agents/forfatter.metadata.json",
@@ -63,7 +63,7 @@
     },
     {
       "path": ".github/agents/observability.agent.md",
-      "hash": "ba87267d1d23aee2"
+      "hash": "5ba4036f431e3cfb"
     },
     {
       "path": ".github/agents/observability.metadata.json",
@@ -79,7 +79,7 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "75c6d1771bdce25c"
+      "hash": "8384742b958b4b84"
     },
     {
       "path": ".github/agents/nav-pilot.metadata.json",
@@ -113,7 +113,7 @@
     },
     {
       "path": ".github/skills/observability-setup/",
-      "hash": "533cfb6d1dd88af3"
+      "hash": "78181a920d929a23"
     },
     {
       "path": ".github/skills/playwright-testing/",
@@ -214,19 +214,19 @@
     },
     {
       "path": ".github/prompts/spring-boot-endpoint.prompt.md",
-      "hash": "3b5f6099fe5f457b"
+      "hash": "5b79c3b867419f3c"
     },
     {
       "path": ".github/prompts/kafka-topic.prompt.md",
-      "hash": "42b1991baee572a6"
+      "hash": "3204fac1321522bc"
     },
     {
       "path": ".github/prompts/nais-manifest.prompt.md",
-      "hash": "7b1e6ac5b4115c3f"
+      "hash": "a7564098ae008cce"
     },
     {
       "path": ".github/prompts/aksel-component.prompt.md",
-      "hash": "9da00ddfc10aefc4"
+      "hash": "9119d15db318622d"
     },
     {
       "path": ".github/prompts/nextjs-api-route.prompt.md",

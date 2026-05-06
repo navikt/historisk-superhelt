@@ -4,8 +4,8 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import { getSakOptions } from "~/common/sak/sak.query";
+import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
 
 interface FeilregistrerProps {
     open: boolean;

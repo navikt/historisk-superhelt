@@ -2,7 +2,7 @@ import type { Sak } from "@generated";
 import { sendTilAttesteringMutation } from "@generated/@tanstack/react-query.gen";
 import { BodyLong, Button, ErrorSummary, Heading, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
 
 interface Props {
     sak: Sak;

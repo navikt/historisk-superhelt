@@ -19,7 +19,8 @@ enum class OppgaveGjelder(
     PARYKK_HODEPLAGG(Behandlingstema.PARYKK_HODEPLAGG, null),
     REISEUTGIFTER(Behandlingstema.REISEUTGIFTER, null),
 
-    ARBEID_UTDANNING(Behandlingstema.ARBEIDS_OG_UTDANNINGSREISER, null)
+    ARBEID_UTDANNING(Behandlingstema.ARBEIDS_OG_UTDANNINGSREISER, null),
+    HOREAPPARAT( Behandlingstema.HOREAPPARAT, null)
     ;
 
     val behandlingstema: String? get() = tema?.kode
@@ -39,4 +40,7 @@ fun StonadsType.tilOppgaveGjelder(): OppgaveGjelder =
         StonadsType.REISEUTGIFTER -> OppgaveGjelder.REISEUTGIFTER
 
         StonadsType.ARBEID_UTDANNING -> OppgaveGjelder.ARBEID_UTDANNING
+
+        /* Hjelpemidler */
+        StonadsType.HOREAPPARAT -> OppgaveGjelder.HOREAPPARAT
     }

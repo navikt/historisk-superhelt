@@ -82,7 +82,15 @@ enum class StonadsType(
         tema = HJE,
         klassekoder = emptyList(),
         enhet = Enheter.navTiltakInnlandet
-    )
+    ),
+
+    /* Hjelpemidler */
+    HOREAPPARAT(
+        navn = "Høreapparat",
+        klassekoder = listOf(KlasseKode.HØREAPPARAT_ANSKAFFELSE, KlasseKode.HØREAPPARAT_EGENBETALING, KlasseKode.HØREAPPARAT_REPARASJON),
+        tema = HJE,
+        enhet = Enheter.dummyEnhet
+    ),
 
     /* Hjelpemidler */
 //    FOLKEHOYSKOLE("Folkehøyskole/tilpassningskurs"),

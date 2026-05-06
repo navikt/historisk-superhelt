@@ -5,10 +5,10 @@ import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { getSakOptions } from "~/common/sak/sak.query";
 import { getOrCreateBrevOptions } from "~/routes/sak/$saksnummer/-api/brev.query";
-import { getSakOptions } from "~/routes/sak/$saksnummer/-api/sak.query";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
 import { BrevEditor } from "~/routes/sak/$saksnummer/-components/BrevEditor";
+import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
 
 interface HenleggProps {
     open: boolean;
