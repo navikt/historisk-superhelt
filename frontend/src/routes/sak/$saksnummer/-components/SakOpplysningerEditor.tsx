@@ -1,0 +1,244 @@
+import type { Sak, SakUpdateRequestDto } from "@generated";
+import { oppdaterSakMutation } from "@generated/@tanstack/react-query.gen";
+import {
+    Button,
+    DatePicker,
+    ErrorSummary,
+    HStack,
+    Radio,
+    RadioGroup,
+    Select,
+    Textarea,
+    TextField,
+    useDatepicker,
+    VStack,
+} from "@navikt/ds-react";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Card } from "~/common/card/Card";
+import { dateTilIsoDato } from "~/common/dato.utils";
+import { NumericInput } from "~/common/NumericInput";
+import { getKodeverkStonadsTypeOptions, sakQueryKey } from "~/common/sak/sak.query";
+import type { KlassekodeType, SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
+import { useStonadsType } from "~/common/sak/useStonadsType";
+import useDebounce from "~/common/useDebounce";
+
+interface Props {
+    sak: Sak;
+}
+
+export default function SakOpplysningerEditor({ sak }: Props) {
+    const { data: saksTyper } = useSuspenseQuery(getKodeverkStonadsTypeOptions());
+    const stonadstype = useStonadsType();
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const [showValidation, setShowValidation] = useState(false);
+    const [hasChanged, setHasChanged] = useState(false);
+
+    const saksnummer = sak.saksnummer;
+
+    const validationErrors = sak.valideringsfeil || [];
+    const hasValidationErrors = validationErrors.length > 0;
+
+    const oppdaterSak = useMutation({
+        ...oppdaterSakMutation(),
+        onSuccess: (data) => {
+            queryClient.setQueryData(sakQueryKey(saksnummer), data);
+        },
+    });
+
+    const [updateSakData, setUpdateSakData] = useState<SakUpdateRequestDto>({
+        type: sak.type,
+        tildelingsAar: sak.tildelingsAar,
+        beskrivelse: sak.beskrivelse,
+        vedtaksResultat: sak.vedtaksResultat,
+        soknadsDato: sak.soknadsDato,
+        begrunnelse: sak.begrunnelse,
+        utbetalingsType: sak.utbetalingsType,
+        klasseKode: sak.klasseKode,
+        belop: sak.belop,
+    });
+    const debouncedSak = useDebounce(updateSakData, 2000);
+
+    const { datepickerProps, inputProps } = useDatepicker({
+        toDate: new Date(),
+        onDateChange: (day) => patchSak({ soknadsDato: dateTilIsoDato(day) }),
+        defaultSelected: sak.soknadsDato ? new Date(sak.soknadsDato) : new Date(),
+    });
+
+    const klasseKoder = stonadstype(updateSakData.type)?.klasseKoder ?? [];
+
+    useEffect(() => {
+        // Lagrer etter siste endring
+        if (debouncedSak && hasChanged) {
+            lagreSak();
+        }
+    }, [debouncedSak]);
+
+    const patchSak = (s: Partial<SakUpdateRequestDto>) => {
+        setUpdateSakData((prev) => ({ ...prev, ...s }));
+        setHasChanged(true);
+    };
+
+    function lagreSak() {
+        if (!hasChanged) {
+            return Promise.resolve(sak);
+        }
+        const response = oppdaterSak.mutateAsync({
+            path: {
+                saksnummer: saksnummer,
+            },
+            body: updateSakData,
+        });
+        setHasChanged(false);
+        return response;
+    }
+
+    async function completedSoknad() {
+        const lagretSak = await lagreSak();
+        setShowValidation(true);
+        if (lagretSak.valideringsfeil.length === 0) {
+            navigate({ to: "/sak/$saksnummer/vedtaksbrevbruker", params: { saksnummer } });
+        }
+    }
+
+    const hasError: boolean = showValidation && (!!oppdaterSak?.error || hasValidationErrors);
+
+    function getErrorMessage(
+        field:
+            | "beskrivelse"
+            | "vedtaksResultat"
+            | "soknadsDato"
+            | "begrunnelse"
+            | "utbetaling.belop"
+            | "klassekode"
+            | "utbetaling"
+            | "tildelingsAar",
+    ): string | undefined {
+        if (!showValidation || !hasValidationErrors) {
+            return undefined;
+        }
+        return validationErrors.find((feil) => feil.field === field)?.message || undefined;
+    }
+
+    function changeStonad(stonadsType: StonadType) {
+        if (updateSakData.type !== stonadsType) {
+            patchSak({ type: stonadsType, klasseKode: undefined });
+        }
+    }
+
+    return (
+        <VStack gap="space-24">
+            <Card>
+                <Select
+                    label="Stønad"
+                    value={updateSakData.type}
+                    disabled={sak.gjenapnet}
+                    onChange={(e) => changeStonad(e.target.value as StonadType)}
+                >
+                    {saksTyper.map((st) => (
+                        <option key={st.type} value={st.type}>
+                            {st.navn}
+                        </option>
+                    ))}
+                </Select>
+
+                <HStack gap="space-24">
+                    <DatePicker {...datepickerProps}>
+                        <DatePicker.Input {...inputProps} label="Søknadsdato" error={getErrorMessage("soknadsDato")} />
+                    </DatePicker>
+                    <NumericInput
+                        label="Tildelingsår"
+                        autoComplete="on"
+                        error={getErrorMessage("tildelingsAar")}
+                        value={updateSakData.tildelingsAar ?? undefined}
+                        onChange={(value) => patchSak({ tildelingsAar: value })}
+                    />
+                </HStack>
+
+                <TextField
+                    label="Kort beskrivelse av stønad"
+                    error={getErrorMessage("beskrivelse")}
+                    value={updateSakData.beskrivelse ?? ""}
+                    onChange={(e) => patchSak({ beskrivelse: e.target.value })}
+                />
+            </Card>
+
+            <Card>
+                <RadioGroup
+                    legend="Vedtak"
+                    value={updateSakData.vedtaksResultat}
+                    onChange={(value) => patchSak({ vedtaksResultat: value as SakVedtakType })}
+                    error={getErrorMessage("vedtaksResultat")}
+                >
+                    <Radio value="INNVILGET">Innvilget</Radio>
+                    <Radio value="DELVIS_INNVILGET">Delvis innvilget</Radio>
+                    <Radio value="AVSLATT">Avslått</Radio>
+                </RadioGroup>
+                <Textarea
+                    label="Begrunnelse for vedtak"
+                    error={getErrorMessage("begrunnelse")}
+                    value={updateSakData.begrunnelse ?? ""}
+                    onChange={(e) => patchSak({ begrunnelse: e.target.value })}
+                    description="Beskriv kort hva som ligger til grunn for vedtaket"
+                    minRows={4}
+                />
+            </Card>
+
+            {["INNVILGET", "DELVIS_INNVILGET"].includes(updateSakData.vedtaksResultat ?? "") && (
+                <Card>
+                    <RadioGroup
+                        legend="Utbetaling"
+                        value={updateSakData.utbetalingsType}
+                        onChange={(value) => patchSak({ utbetalingsType: value as UtbetalingsType })}
+                        error={getErrorMessage("utbetaling")}
+                    >
+                        <Radio value="BRUKER" disabled={!sak.kanUtbetales}>
+                            Direkte til bruker
+                        </Radio>
+                        <Radio value="INGEN">Ingen utbetaling</Radio>
+                    </RadioGroup>
+
+                    {updateSakData.utbetalingsType === "BRUKER" && (
+                        <NumericInput
+                            value={updateSakData.belop ?? undefined}
+                            error={getErrorMessage("utbetaling.belop")}
+                            onChange={(belop) => patchSak({ belop: belop })}
+                            label="Beløp som skal utbetales (kr)"
+                        />
+                    )}
+                    {updateSakData.utbetalingsType === "BRUKER" && klasseKoder.length > 1 && (
+                        <Select
+                            label="Regnskapskonto"
+                            value={updateSakData.klasseKode}
+                            disabled={sak.gjenapnet}
+                            error={getErrorMessage("klassekode")}
+                            onChange={(e) => patchSak({ klasseKode: e.target.value as KlassekodeType })}
+                        >
+                            {klasseKoder?.map((st) => (
+                                <option key={st.klasseKode} value={st.klasseKode}>
+                                    {st.navn}
+                                </option>
+                            ))}
+                        </Select>
+                    )}
+                </Card>
+            )}
+
+            <HStack gap="space-32" align="start">
+                <Button type="submit" variant="primary" onClick={completedSoknad}>
+                    Lagre og gå videre
+                </Button>
+            </HStack>
+            {hasError && (
+                <ErrorSummary>
+                    {oppdaterSak.error && <ErrorSummary.Item>{oppdaterSak?.error?.detail}</ErrorSummary.Item>}
+                    {validationErrors.map((feil) => (
+                        <ErrorSummary.Item key={feil.field}>{feil.message}</ErrorSummary.Item>
+                    ))}
+                </ErrorSummary>
+            )}
+        </VStack>
+    );
+}

@@ -5,8 +5,10 @@
 ## Build & Test Commands
 
 ```bash
-./gradlew test      # Run tests
-./gradlew build     # Build
+mvn test              # Run tests
+mvn clean package     # Build
+make test             # Run tests (via Makefile)
+make build            # Build application and Docker images
 ```
 
 ## Project Structure

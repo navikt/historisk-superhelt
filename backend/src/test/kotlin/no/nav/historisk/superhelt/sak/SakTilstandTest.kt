@@ -2,7 +2,6 @@ package no.nav.historisk.superhelt.sak
 
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.infrastruktur.validation.TilstandStatus
-import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class SakTilstandTest {
             val sak = SakTestData.sakUtenUtbetaling().copy(
                 beskrivelse = null,
                 begrunnelse = null,
-                utbetalingsType = UtbetalingsType.INGEN,
+                utbetalingsType = null,
                 vedtaksResultat = null
             )
             val tilstand = SakTilstand(sak)

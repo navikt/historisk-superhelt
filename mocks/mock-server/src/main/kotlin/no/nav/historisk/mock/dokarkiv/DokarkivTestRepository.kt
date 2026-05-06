@@ -49,6 +49,10 @@ class DokarkivTestRepository {
         return response
     }
 
+    fun finnJournalposterForFnr(fnr: String) =
+        repository.values.map { it.journalpost }.filter { it.bruker?.id == fnr }
+
+
     data class JournalpostMedPdf(val journalpost: Journalpost, val pdf: ByteArray? = null) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

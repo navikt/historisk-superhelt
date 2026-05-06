@@ -6,6 +6,7 @@ import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
@@ -49,8 +50,9 @@ data class Sak(
     val saksbehandler: NavUser,
     val attestant: NavUser? = null,
 
-    val utbetalingsType: UtbetalingsType = UtbetalingsType.INGEN,
+    val utbetalingsType: UtbetalingsType? = null,
     val belop: Belop? = null,
+    val klasseKode: KlasseKode? = null,
 
     val vedtaksbrevBruker: Brev? = null,
 ) {
@@ -74,6 +76,9 @@ data class Sak(
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val gjenapnet: Boolean
         get() = this.behandlingsnummer.value > 1
+
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val kanUtbetales: Boolean get() = this.type.kanUtbetales
 
 }
 

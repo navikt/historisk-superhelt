@@ -4,6 +4,7 @@ import no.nav.common.types.Aar
 import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
@@ -27,7 +28,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
-     fun opprettNySak(req: OpprettSakDto): Sak {
+    fun opprettNySak(req: OpprettSakDto): Sak {
         val properties = req.properties
         val saksbehandler = properties?.saksbehandler ?: getAuthenticatedUser().navUser
         val sakEntity = patchEntity(
@@ -53,7 +54,13 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     }
 
     private fun patchEntity(dto: UpdateSakDto, entity: SakJpaEntity): SakJpaEntity {
-        dto.type?.let { entity.type = it }
+        dto.type?.let {
+            if (it != entity.type) {
+                entity.type = it
+                // nullstiller for å unngå å få ugyldige klassekoder
+                entity.klassekode = null
+            }
+        }
         dto.status?.let { entity.status = it }
         dto.beskrivelse?.let { entity.beskrivelse = it }
         dto.begrunnelse?.let { entity.begrunnelse = it }
@@ -62,11 +69,18 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.vedtaksResultat?.let { entity.vedtaksResultat = it }
         dto.saksbehandler?.let { entity.saksbehandler = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
+
         dto.utbetalingsType?.let { entity.utbetalingsType = it }
-        dto.belop?.let { entity.belop = it.value }
-        if (dto.utbetalingsType == UtbetalingsType.INGEN) {
+        val utbetalingsType = dto.utbetalingsType ?: entity.utbetalingsType
+        val isUtbetalTilBruker = utbetalingsType == UtbetalingsType.BRUKER
+        if (isUtbetalTilBruker) {
+            dto.belop?.let { entity.belop = it.value }
+            dto.klasseKode?.let { entity.klassekode = it }
+        } else {
             entity.belop = null
+            entity.klassekode = null
         }
+
         return entity
     }
 
@@ -96,8 +110,6 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         sakEntity.belop = vedtak.belop?.value
         return jpaRepository.save(sakEntity).toDomain()
     }
-
-
 
 
     private fun getSakEntity(saksnummer: Saksnummer): SakJpaEntity? {
@@ -147,5 +159,6 @@ data class UpdateSakDto(
     val attestant: NavUser? = null,
     val utbetalingsType: UtbetalingsType? = null,
     val belop: Belop? = null,
+    val klasseKode: KlasseKode? = null,
 )
 

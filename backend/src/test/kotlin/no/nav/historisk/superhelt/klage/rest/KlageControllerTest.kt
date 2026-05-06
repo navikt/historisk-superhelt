@@ -72,9 +72,9 @@ class KlageControllerTest {
 
         @Test
         fun `sender klage til Kabal og returnerer 204 når sak er ferdig`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             val request = gyldigKlageRequest()
 
@@ -93,9 +93,9 @@ class KlageControllerTest {
         @Test
         fun `sender korrekt payload til Kabal`() {
             val datoKlageMottatt = LocalDate.now().minusDays(10)
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
 
             assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest(datoKlageMottatt)))
@@ -119,9 +119,9 @@ class KlageControllerTest {
 
         @Test
         fun `kommentar inkluderes i payload til Kabal og i endringslogg`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             val kommentar = "Klager er uenig i vedtaket"
             val request = mapOf(
@@ -146,9 +146,9 @@ class KlageControllerTest {
 
         @Test
         fun `skriver ikke endringslogg når Kabal-kallet feiler`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
                 HttpStatus.SERVICE_UNAVAILABLE,
@@ -169,9 +169,9 @@ class KlageControllerTest {
 
         @Test
         fun `returnerer 400 når sak ikke har SEND_KLAGE-rettighet (sak er under behandling)`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
             )
 
             assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))
@@ -184,9 +184,9 @@ class KlageControllerTest {
 
         @Test
         fun `returnerer 400 ved ugyldig hjemmelId`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             val request = mapOf(
                 "hjemmelId" to "UKJENT_HJEMMEL_XYZ",
@@ -203,9 +203,9 @@ class KlageControllerTest {
 
         @Test
         fun `returnerer 400 når hjemmelId mangler i request`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             val request = mapOf(
                 "datoKlageMottatt" to "2026-01-15",
@@ -219,9 +219,9 @@ class KlageControllerTest {
 
         @Test
         fun `returnerer 400 når datoKlageMottatt mangler i request`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             val request = mapOf(
                 "hjemmelId" to "FTRL_10_7I",
@@ -243,9 +243,9 @@ class KlageControllerTest {
 
         @Test
         fun `returnerer 502 når Kabal-kallet feiler`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
                 HttpStatus.SERVICE_UNAVAILABLE,
@@ -271,9 +271,9 @@ class KlageControllerTest {
 
         @Test
         fun `returnerer 403 ved forsøk på sending uten WRITE-tilgang`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
 
             assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))
@@ -291,9 +291,9 @@ class KlageControllerTest {
 
         @Test
         fun `returnerer 400 når attestant forsøker å sende klage (mangler SEND_KLAGE-rettighet)`() {
-            val sak = SakTestData.lagreNySak(
+            val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
 
             assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest()))

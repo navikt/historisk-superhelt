@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.sak.rest
 import jakarta.validation.constraints.Size
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.BrevId
 import no.nav.historisk.superhelt.brev.BrevStatus
@@ -24,6 +25,7 @@ data class SakUpdateRequestDto(
     val vedtaksResultat: VedtaksResultat? = null,
     val utbetalingsType: UtbetalingsType? = null,
     val belop: Belop? = null,
+    val klasseKode: KlasseKode? = null,
 )
 
 data class AttesterSakRequestDto(

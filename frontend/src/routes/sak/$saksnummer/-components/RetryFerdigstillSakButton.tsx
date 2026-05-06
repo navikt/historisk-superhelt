@@ -4,7 +4,7 @@ import { ArrowCirclepathReverseIcon } from "@navikt/aksel-icons";
 import { Button, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
-import { useInvalidateSakQuery } from "~/routes/sak/$saksnummer/-api/useInvalidateSakQuery";
+import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
 
 interface Props {
     sak: Sak;
