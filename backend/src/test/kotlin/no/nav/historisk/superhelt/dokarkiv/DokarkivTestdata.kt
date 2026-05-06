@@ -32,7 +32,7 @@ object DokarkivTestdata {
             ),
             dokumenter = List(faker.number().numberBetween(1, 4)) { journalpostDokumentInfo() },
             datoSortering = faker.timeAndDate().past(10, TimeUnit.DAYS).toString(),
-            journalpostType = JournalpostType.entries.random()
+            journalposttype = JournalpostType.entries.random()
         )
 
     private fun journalpostDokumentInfo() = JournalpostDokumentInfo(

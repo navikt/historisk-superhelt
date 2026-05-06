@@ -18,6 +18,10 @@ export function useInvalidateSakQuery() {
         queryClient.invalidateQueries({
             queryKey: apiFinnJournalpostForSakQueryKey(saksnummer, false),
         });
+        // andre dokumenter på brukeren
+        queryClient.invalidateQueries({
+            queryKey: apiFinnJournalpostForSakQueryKey(saksnummer, true),
+        });
     }
 
     return invalidateSakQuery;

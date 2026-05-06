@@ -37,7 +37,7 @@ fun generateJournalpost(
         tittel = tittel,
         dokumenter = dokumenter,
         datoSortering = datoSortering,
-        journalpostType = JournalpostType.INNGAAENDE,
+        journalposttype = JournalpostType.INNGAAENDE,
     )
 }
 
@@ -66,7 +66,7 @@ private val journalpost =
             ),
         dokumenter = emptyList(),
         datoSortering = "1970-01-01T00:00:00Z",
-        journalpostType = JournalpostType.INNGAAENDE,
+        journalposttype = JournalpostType.INNGAAENDE,
     )
 
 val pdfdoc = classpathAsStream("/saf/saf_doc.pdf").readBytes()

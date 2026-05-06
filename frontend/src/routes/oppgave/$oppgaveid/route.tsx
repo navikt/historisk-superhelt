@@ -1,6 +1,6 @@
 import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { Box, Tabs } from "@navikt/ds-react";
+import { Box, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
@@ -22,7 +22,11 @@ function OppgaveLayout() {
     const { data: oppgave } = useSuspenseQuery(getOppgaveOptions({ path: { oppgaveId: Number(oppgaveId) } }));
     const journalpostId = oppgave.journalpostId;
 
-    const { data: journalpost, isSuccess: erJournalpostLastet } = useQuery(hentJournalpostMetadataQuery(journalpostId));
+    const {
+        data: journalpost,
+        isSuccess: erJournalpostLastet,
+        isPending: lasterJournalpost,
+    } = useQuery(hentJournalpostMetadataQuery(journalpostId));
     const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
@@ -47,7 +51,14 @@ function OppgaveLayout() {
                         </Tabs.List>
                         <Tabs.Panel value="dokumenter">
                             <Box paddingBlock="space-8 space-0">
-                                <MultiPdfViewer journalPoster={erJournalpostLastet ? [journalpost] : []} />
+                                {lasterJournalpost ? (
+                                    <VStack gap="space-8">
+                                        <Skeleton variant="rounded" height={50} />
+                                        <Skeleton variant="rectangle" height={800} />
+                                    </VStack>
+                                ) : (
+                                    <MultiPdfViewer journalPoster={erJournalpostLastet ? [journalpost] : []} />
+                                )}
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">

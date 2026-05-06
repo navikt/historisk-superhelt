@@ -63,7 +63,7 @@ class DokarkivController(
                             dokumentvarianter = emptyList(),
                         )
                     },
-                    journalpostType = req.journalpostType,
+                    journalposttype = req.journalpostType,
                     avsenderMottaker = req.avsenderMottaker?.let {
                         JournalpostAvsenderMottaker(
                             id = it.id,

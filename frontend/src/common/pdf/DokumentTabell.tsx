@@ -36,12 +36,13 @@ function tilDokumentRader(dokumenter: Journalpost[]): DokumentRad[] {
             datoSortering: jp.datoSortering,
             saksnummer: jp.sak?.fagsakId,
             erVedlegg: d.tittel?.toLocaleLowerCase().includes("vedlegg") ?? false,
-            journalpostType: jp.journalpostType,
+            journalpostType: jp.journalposttype,
         })),
     );
 }
 
 function comparator(a: DokumentRad, b: DokumentRad, orderBy: DokumentSortKey): number {
+    // sorterer på journalpost-tittel for å holde vedlegg sammen med hoveddokument
     const aVal = orderBy === "tittel" ? (a.journalpostTittel ?? "") : (a[orderBy] ?? "");
     const bVal = orderBy === "tittel" ? (b.journalpostTittel ?? "") : (b[orderBy] ?? "");
     if (bVal < aVal) return -1;
@@ -89,27 +90,23 @@ function journalpostTypeLabel(journalpostType?: string) {
 }
 
 export function DokumentTabell({ dokumenter }: DokumentTabellProps) {
-    const [sort, setSort] = useState<ScopedSortState | undefined>();
+    const [sort, setSort] = useState<ScopedSortState>(defaultSort);
     const [page, setPage] = useState(1);
     const raderPerSide = 12;
 
     const handleSort = (sortKey: string) => {
-        const sortering = sort ?? defaultSort;
         const direction: SortState["direction"] =
-            sortKey === sortering.orderBy && sortering.direction === "descending" ? "ascending" : "descending";
+            sortKey === sort.orderBy && sort.direction === "descending" ? "ascending" : "descending";
         setSort({ orderBy: sortKey as DokumentSortKey, direction });
         setPage(1);
     };
 
     const rader = tilDokumentRader(dokumenter);
-    const sortering = sort ?? defaultSort;
     const sorterteRader = rader
         .slice()
         .sort((a, b) => {
             const primary =
-                sortering.direction === "ascending"
-                    ? comparator(b, a, sortering.orderBy)
-                    : comparator(a, b, sortering.orderBy);
+                sort.direction === "ascending" ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy);
             return primary !== 0 ? primary : tieBreaker(a, b);
         })
         .slice((page - 1) * raderPerSide, page * raderPerSide);
@@ -148,7 +145,7 @@ export function DokumentTabell({ dokumenter }: DokumentTabellProps) {
                                         rel="noopener noreferrer"
                                     >
                                         {rad.tittel}
-                                        <ExternalLinkIcon title="Åpne i nytt vindu" />
+                                        <ExternalLinkIcon aria-hidden />
                                     </Link>
                                 </HStack>
                             </Table.DataCell>

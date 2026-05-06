@@ -16,8 +16,7 @@ data class Journalpost(
     val avsenderMottaker: JournalpostAvsenderMottaker? = null,
     val dokumenter: List<JournalpostDokumentInfo>? = emptyList(),
     val datoSortering: String? = null,
-    @JsonProperty("journalposttype")
-    val journalpostType: JournalpostType? = null,
+    val journalposttype: JournalpostType? = null,
 )
 
 data class JournalpostSak(
