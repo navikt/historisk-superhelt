@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/infotrygd")
 class InfotrygdController(private val infotrygdService: InfotrygdService) {
 
+    //TODO flytte inn under sak
     @Operation(operationId = "hentInfotrygdHistorikkForPerson")
     @GetMapping("historikk/{maskertPersonIdent}")
     fun hentHistorikkForPerson(@PathVariable maskertPersonIdent: MaskertPersonIdent): List<InfotrygdHistorikk> {

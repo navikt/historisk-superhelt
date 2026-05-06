@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+const val rolePrefix = "ROLE_"
+
 @Configuration
 @EnableConfigurationProperties(GruppeConfigProperties::class)
 class GruppeRoleConfig {
@@ -47,5 +49,4 @@ class GruppeConfigProperties(
     val attestant: String,
     val drift: String,
 
-
-    ) {}
+    )
