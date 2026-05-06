@@ -1,10 +1,11 @@
 import type { Journalpost } from "@generated";
-import { InlineMessage, Select, VStack } from "@navikt/ds-react";
+import { InlineMessage, Select, Skeleton, VStack } from "@navikt/ds-react";
 import { useState } from "react";
 import { EmbeddedPdf } from "~/common/pdf/EmbeddedPdf";
 
 interface Props {
     journalPoster: Array<Journalpost>;
+    laster?: boolean;
 }
 
 interface JournalpostDokument {
@@ -30,7 +31,7 @@ const getTitle = (d: JournalpostDokument, index: number) => {
     return `${d.journalpostTittel} - ${d.dokumentTittel}`;
 };
 
-export function MultiPdfViewer({ journalPoster }: Props) {
+export function MultiPdfViewer({ journalPoster, laster }: Props) {
     const dokumenter: Array<JournalpostDokument> = journalPoster.flatMap((jp) =>
         (jp.dokumenter || []).map((d) => ({
             journalpostId: jp.journalpostId,
@@ -45,6 +46,15 @@ export function MultiPdfViewer({ journalPoster }: Props) {
 
     if (journalPoster.length === 0 || dokumenter.length === 0) {
         return <InlineMessage status="warning">Det er ikke noe dokument å vise frem</InlineMessage>;
+    }
+
+    if (laster) {
+        return (
+            <VStack gap="space-8">
+                <Skeleton variant="rounded" height={50} />
+                <Skeleton variant="rectangle" height={800} />
+            </VStack>
+        );
     }
 
     return (

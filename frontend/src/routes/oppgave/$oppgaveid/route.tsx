@@ -51,14 +51,10 @@ function OppgaveLayout() {
                         </Tabs.List>
                         <Tabs.Panel value="dokumenter">
                             <Box paddingBlock="space-8 space-0">
-                                {lasterJournalpost ? (
-                                    <VStack gap="space-8">
-                                        <Skeleton variant="rounded" height={50} />
-                                        <Skeleton variant="rectangle" height={800} />
-                                    </VStack>
-                                ) : (
-                                    <MultiPdfViewer journalPoster={erJournalpostLastet ? [journalpost] : []} />
-                                )}
+                                <MultiPdfViewer
+                                    journalPoster={erJournalpostLastet ? [journalpost] : []}
+                                    laster={lasterJournalpost}
+                                />
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
