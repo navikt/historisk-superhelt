@@ -7,6 +7,7 @@ import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
+import no.nav.dokarkiv.AvsenderMottaker
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.DokarkivClient
@@ -17,24 +18,16 @@ import no.nav.dokarkiv.JournalpostResponse
 import no.nav.dokarkiv.JournalpostType
 import no.nav.dokarkiv.Kanal
 import no.nav.dokarkiv.Sakstype
-import no.nav.dokdist.DistribuerJournalpostRequest
-import no.nav.dokdist.DokdistClient
-import no.nav.dokdist.DokdistRespons
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
-import no.nav.historisk.superhelt.person.PersonService
-import no.nav.historisk.superhelt.person.PersonTestData
 import no.nav.historisk.superhelt.sak.SakTestData
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.doNothing
-import org.mockito.Mockito.never
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -50,10 +43,7 @@ class DokarkivServiceTest {
     private lateinit var dokarkivClient: DokarkivClient
 
     @Mock
-    private lateinit var dokdistClient: DokdistClient
-
-    @Mock
-    private lateinit var personService: PersonService
+    private lateinit var avsenderMottakerResolver: AvsenderMottakerResolver
 
     @InjectMocks
     private lateinit var dokarkivService: DokarkivService
@@ -64,6 +54,7 @@ class DokarkivServiceTest {
         val sak = SakTestData.sakUtenUtbetaling()
         val brev = BrevTestdata.vedtaksbrevBruker()
         val pdf = "test pdf".toByteArray()
+        val forventetMottaker = AvsenderMottaker(id = sak.fnr.value, idType = AvsenderMottakerIdType.FNR)
 
         val expectedResponse = JournalpostResponse(
             journalpostId = EksternJournalpostId("JP123"),
@@ -71,6 +62,7 @@ class DokarkivServiceTest {
             dokumenter = emptyList()
         )
 
+        whenever(avsenderMottakerResolver.resolve(brev.mottakerType, sak)).thenReturn(forventetMottaker)
         whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
 
         val result = dokarkivService.arkiver(sak, brev, pdf)
@@ -95,106 +87,6 @@ class DokarkivServiceTest {
         assertEquals(1, capturedRequest.dokumenter.size)
         assertEquals(brev.tittel, capturedRequest.dokumenter[0].tittel)
         assertEquals(brev.type.name, capturedRequest.dokumenter[0].brevkode)
-    }
-
-    @Test
-    @WithMockUser(authorities = ["WRITE"])
-    fun `arkiver skal bruke verges FNR som mottaker når verge finnes`() {
-        val verge = PersonTestData.testPersonMedAdressebeskyttelse
-        val bruker = PersonTestData.testPersonMedVerge
-        val sak = SakTestData.sakUtenUtbetaling().copy(fnr = bruker.fnr)
-        val brev = BrevTestdata.vedtaksbrevBruker()
-        val pdf = "test pdf".toByteArray()
-
-        val expectedResponse = JournalpostResponse(
-            journalpostId = EksternJournalpostId("JP123"),
-            journalpostferdigstilt = true,
-            dokumenter = emptyList()
-        )
-
-        whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
-        whenever(personService.hentVerge(bruker.fnr)).thenReturn(verge)
-
-        dokarkivService.arkiver(sak, brev, pdf)
-
-        val journalpostRequestCaptor = argumentCaptor<JournalpostRequest>()
-        verify(dokarkivClient).opprett(journalpostRequestCaptor.capture(), eq(true))
-
-        val capturedRequest = journalpostRequestCaptor.firstValue
-        // Verifiser at vergens FNR brukes som mottaker
-        assertEquals(verge.fnr.value, capturedRequest.avsenderMottaker?.id)
-        assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)
-        // Bruker (ikke vergen) er fortsatt sakseieren
-        assertEquals(sak.fnr.value, capturedRequest.bruker.id)
-        assertEquals(BrukerIdType.FNR, capturedRequest.bruker.idType)
-    }
-
-    @Test
-    @WithMockUser(authorities = ["WRITE"])
-    fun `arkiver skal bruke brukers FNR når verge mangler`() {
-        val sak = SakTestData.sakUtenUtbetaling()
-        val brev = BrevTestdata.vedtaksbrevBruker()
-        val pdf = "test pdf".toByteArray()
-
-        val expectedResponse = JournalpostResponse(
-            journalpostId = EksternJournalpostId("JP123"),
-            journalpostferdigstilt = true,
-            dokumenter = emptyList()
-        )
-
-        whenever(dokarkivClient.opprett(any(), any())).thenReturn(expectedResponse)
-        whenever(personService.hentVerge(sak.fnr)).thenReturn(null)
-
-        dokarkivService.arkiver(sak, brev, pdf)
-
-        val journalpostRequestCaptor = argumentCaptor<JournalpostRequest>()
-        verify(dokarkivClient).opprett(journalpostRequestCaptor.capture(), eq(true))
-
-        val capturedRequest = journalpostRequestCaptor.firstValue
-        assertEquals(sak.fnr.value, capturedRequest.avsenderMottaker?.id)
-        assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)
-    }
-
-    @Test
-    @WithMockUser(authorities = ["WRITE"])
-    fun `distribuerBrev skal kalle dokdistClient med riktige parametere for vedtaksbrev`() {
-        val sak = SakTestData.sakUtenUtbetaling()
-        val journalpostId = EksternJournalpostId("JP123")
-        val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = journalpostId)
-        val expectedResponse = DokdistRespons(bestillingsId = "BEST123", sendtOk = true)
-
-        whenever(dokdistClient.distribuerJournalpost(any())).thenReturn(expectedResponse)
-
-        val result = dokarkivService.distribuerBrev(sak, brev)
-
-        assertEquals(expectedResponse, result)
-
-        val distribuerRequestCaptor = argumentCaptor<DistribuerJournalpostRequest>()
-        verify(dokdistClient).distribuerJournalpost(distribuerRequestCaptor.capture())
-
-        val capturedRequest = distribuerRequestCaptor.firstValue
-        assertEquals(journalpostId, capturedRequest.journalpostId)
-        assertEquals(APP_NAVN, capturedRequest.bestillendeFagsystem)
-        assertEquals(DistribuerJournalpostRequest.Distribusjonstype.VEDTAK, capturedRequest.distribusjonstype)
-        assertEquals(APP_NAVN, capturedRequest.dokumentProdApp)
-        assertEquals(
-            DistribuerJournalpostRequest.Distribusjonstidspunkt.UMIDDELBART,
-            capturedRequest.distribusjonstidspunkt
-        )
-    }
-
-    @Test
-    @WithMockUser(authorities = ["WRITE"])
-    fun `distribuerBrev skal kaste exception når journalpostId mangler`() {
-        val sak = SakTestData.sakUtenUtbetaling()
-        val brev = BrevTestdata.vedtaksbrevBruker()
-
-        val exception = assertThrows(IllegalStateException::class.java) {
-            dokarkivService.distribuerBrev(sak, brev)
-        }
-
-        assertTrue(exception.message!!.contains("Kan ikke distribuere brev uten journalpostId"))
-        verify(dokdistClient, never()).distribuerJournalpost(any())
     }
 
     @Test
