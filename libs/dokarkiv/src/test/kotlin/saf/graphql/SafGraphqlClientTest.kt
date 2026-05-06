@@ -87,8 +87,8 @@ class SafGraphqlClientTest {
                              ]
                          }
                      ],
-                     "datoSortering": "2024-01-01T00:00:00Z",
-                     "journalposttype": "INNGAAENDE"
+                     "datoOpprettet": "2024-01-01T00:00:00Z",
+                     "journalposttype": "I"
                  }
              },
              "errors": null
@@ -503,8 +503,8 @@ class SafGraphqlClientTest {
                        ]
                      }
                    ],
-                   "datoSortering": "2024-01-01T00:00:00Z",
-                   "journalposttype": "INNGAAENDE"
+                   "datoOpprettet": "2024-01-01T00:00:00Z",
+                   "journalposttype": "I"
                  }
                ]
              }

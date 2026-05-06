@@ -7,7 +7,7 @@ import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.dokarkiv.JournalpostType
 import no.nav.saf.graphql.*
-import java.util.concurrent.TimeUnit
+import java.time.LocalDateTime
 
 object DokarkivTestdata {
     private val faker: Faker = Faker()
@@ -31,7 +31,7 @@ object DokarkivTestdata {
                 navn = faker.name().fullName()
             ),
             dokumenter = List(faker.number().numberBetween(1, 4)) { journalpostDokumentInfo() },
-            datoSortering = faker.timeAndDate().past(10, TimeUnit.DAYS).toString(),
+            datoOpprettet = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 10).toLong()),
             journalposttype = JournalpostType.entries.random()
         )
 

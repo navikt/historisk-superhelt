@@ -72,7 +72,7 @@ class DokarkivServiceTest {
 
         val capturedRequest = journalpostRequestCaptor.firstValue
         assertEquals(brev.tittel, capturedRequest.tittel)
-        assertEquals(JournalpostType.UTGAAENDE, capturedRequest.journalpostType)
+        assertEquals(JournalpostType.U, capturedRequest.journalpostType)
         assertEquals(sak.type.tema, capturedRequest.tema)
         assertEquals(sak.fnr.value, capturedRequest.avsenderMottaker?.id)
         assertEquals(AvsenderMottakerIdType.FNR, capturedRequest.avsenderMottaker?.idType)

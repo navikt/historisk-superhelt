@@ -8,7 +8,7 @@ interface DokumentTabellProps {
     dokumenter: Journalpost[];
 }
 
-type DokumentSortKey = "tittel" | "datoSortering" | "saksnummer" | "journalpostType";
+type DokumentSortKey = "tittel" | "datoOpprettet" | "saksnummer" | "journalpostType";
 type ScopedSortState = { orderBy?: DokumentSortKey } & SortState;
 
 type DokumentRad = {
@@ -17,13 +17,13 @@ type DokumentRad = {
     dokumentInfoId: string;
     tittel?: string | null;
     journalpostTittel?: string | null;
-    datoSortering?: string | null;
+    datoOpprettet?: string | null;
     saksnummer?: string | null;
     erVedlegg: boolean;
     journalpostType?: string;
 };
 
-const defaultSort: ScopedSortState = { orderBy: "datoSortering", direction: "descending" };
+const defaultSort: ScopedSortState = { orderBy: "datoOpprettet", direction: "descending" };
 
 function tilDokumentRader(dokumenter: Journalpost[]): DokumentRad[] {
     return dokumenter.flatMap((jp) =>
@@ -33,7 +33,7 @@ function tilDokumentRader(dokumenter: Journalpost[]): DokumentRad[] {
             dokumentInfoId: d.dokumentInfoId,
             tittel: d.tittel,
             journalpostTittel: jp.tittel,
-            datoSortering: jp.datoSortering,
+            datoOpprettet: jp.datoOpprettet,
             saksnummer: jp.sak?.fagsakId,
             erVedlegg: d.tittel?.toLocaleLowerCase().includes("vedlegg") ?? false,
             journalpostType: jp.journalposttype,
@@ -62,19 +62,19 @@ function tieBreaker(a: DokumentRad, b: DokumentRad): number {
 
 function journalpostTypeLabel(journalpostType?: string) {
     switch (journalpostType) {
-        case "INNGAAENDE":
+        case "I":
             return (
                 <Tag variant="strong" data-color="brand-blue" size="small">
                     Inngående
                 </Tag>
             );
-        case "UTGAAENDE":
+        case "U":
             return (
                 <Tag variant="strong" data-color="brand-beige" size="small">
                     Utgående
                 </Tag>
             );
-        case "NOTAT":
+        case "N":
             return (
                 <Tag variant="strong" data-color="brand-magenta" size="small">
                     Notat
@@ -125,7 +125,7 @@ export function DokumentTabell({ dokumenter }: DokumentTabellProps) {
                         <Table.ColumnHeader scope="col" sortKey="tittel" sortable>
                             Tittel
                         </Table.ColumnHeader>
-                        <Table.ColumnHeader scope="col" sortKey="datoSortering" sortable>
+                        <Table.ColumnHeader scope="col" sortKey="datoOpprettet" sortable>
                             Tidspunkt
                         </Table.ColumnHeader>
                     </Table.Row>
@@ -149,7 +149,7 @@ export function DokumentTabell({ dokumenter }: DokumentTabellProps) {
                                     </Link>
                                 </HStack>
                             </Table.DataCell>
-                            <Table.DataCell>{isoTilLokalTid(rad.datoSortering)}</Table.DataCell>
+                            <Table.DataCell>{isoTilLokalTid(rad.datoOpprettet)}</Table.DataCell>
                         </Table.Row>
                     ))}
                 </Table.Body>
