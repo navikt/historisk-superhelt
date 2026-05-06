@@ -98,17 +98,21 @@ export function DokumentTabell({ dokumenter }: DokumentTabellProps) {
         const direction: SortState["direction"] =
             sortKey === sortering.orderBy && sortering.direction === "descending" ? "ascending" : "descending";
         setSort({ orderBy: sortKey as DokumentSortKey, direction });
+        setPage(1);
     };
 
     const rader = tilDokumentRader(dokumenter);
     const sortering = sort ?? defaultSort;
-    const sorterteRader = rader.slice((page - 1) * raderPerSide, page * raderPerSide).sort((a, b) => {
-        const primary =
-            sortering.direction === "ascending"
-                ? comparator(b, a, sortering.orderBy)
-                : comparator(a, b, sortering.orderBy);
-        return primary !== 0 ? primary : tieBreaker(a, b);
-    });
+    const sorterteRader = rader
+        .slice()
+        .sort((a, b) => {
+            const primary =
+                sortering.direction === "ascending"
+                    ? comparator(b, a, sortering.orderBy)
+                    : comparator(a, b, sortering.orderBy);
+            return primary !== 0 ? primary : tieBreaker(a, b);
+        })
+        .slice((page - 1) * raderPerSide, page * raderPerSide);
 
     return (
         <VStack gap="space-16">
