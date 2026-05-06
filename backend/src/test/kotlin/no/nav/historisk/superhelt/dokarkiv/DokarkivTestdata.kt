@@ -5,7 +5,9 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.dokarkiv.JournalpostType
 import no.nav.saf.graphql.*
+import java.time.LocalDateTime
 
 object DokarkivTestdata {
     private val faker: Faker = Faker()
@@ -28,7 +30,9 @@ object DokarkivTestdata {
                 type = AvsenderMottakerIdType.entries.random(),
                 navn = faker.name().fullName()
             ),
-            dokumenter = List(faker.number().numberBetween(1, 4)) { journalpostDokumentInfo() }
+            dokumenter = List(faker.number().numberBetween(1, 4)) { journalpostDokumentInfo() },
+            datoOpprettet = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 10).toLong()),
+            journalposttype = JournalpostType.entries.random()
         )
 
     private fun journalpostDokumentInfo() = JournalpostDokumentInfo(

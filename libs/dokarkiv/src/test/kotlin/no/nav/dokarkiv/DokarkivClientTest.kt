@@ -200,7 +200,7 @@ class DokarkivClientTest {
         JournalpostRequest(
             tittel = "Test tittel",
             tema = FellesKodeverkTema.HEL,
-            journalpostType = JournalpostType.INNGAAENDE,
+            journalpostType = JournalpostType.I,
             avsenderMottaker =
                 AvsenderMottaker(
                     id = "12345678901",
