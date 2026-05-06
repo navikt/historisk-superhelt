@@ -1,19 +1,16 @@
 import {
-    finnJournalposterForSakEllerBrukerOptions,
-    finnJournalposterForSakEllerBrukerQueryKey,
+    finnJournalposterForBrukerOptions,
+    finnJournalposterForBrukerQueryKey,
+    finnJournalposterForSakOptions,
+    finnJournalposterForSakQueryKey,
 } from "@generated/@tanstack/react-query.gen";
 
-export const apiFinnJournalposterOptions = (saksnummer: string, inkluderAndreSaker: boolean) => ({
-    ...finnJournalposterForSakEllerBrukerOptions({
-        path: { saksnummer: saksnummer },
-        query: { inkluderAndreSaker: inkluderAndreSaker },
-    }),
-    queryKey: apiFinnJournalpostForSakQueryKey(saksnummer, inkluderAndreSaker),
+export const apiFinnJournalposterForSakOptions = (saksnummer: string) => ({
+    ...finnJournalposterForSakOptions({ path: { saksnummer } }),
+    queryKey: finnJournalposterForSakQueryKey({ path: { saksnummer } }),
 });
 
-export function apiFinnJournalpostForSakQueryKey(saksnummer: string, inkluderAndreSaker: boolean) {
-    return finnJournalposterForSakEllerBrukerQueryKey({
-        path: { saksnummer: saksnummer },
-        query: { inkluderAndreSaker },
-    });
-}
+export const apiFinnJournalposterForBrukerOptions = (saksnummer: string) => ({
+    ...finnJournalposterForBrukerOptions({ path: { saksnummer } }),
+    queryKey: finnJournalposterForBrukerQueryKey({ path: { saksnummer } }),
+});

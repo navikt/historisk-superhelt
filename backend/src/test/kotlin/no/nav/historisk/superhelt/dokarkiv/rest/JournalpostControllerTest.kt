@@ -197,7 +197,7 @@ class JournalpostControllerTest {
         }
 
         @Test
-        fun `inkluderAndreSaker=true henter journalposter for bruker på tvers av saker`() {
+        fun `henter journalposter for bruker på tvers av saker`() {
             val sak = SakTestData.lagreSak(sakRepository)
             val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
 
@@ -208,7 +208,7 @@ class JournalpostControllerTest {
 
             assertThat(
                 mockMvc.get()
-                    .uri("/api/journalpost/sak/{saksnummer}?inkluderAndreSaker=true", sak.saksnummer)
+                    .uri("/api/journalpost/bruker/{saksnummer}", sak.saksnummer)
             )
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
