@@ -5,6 +5,7 @@ import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.withMockedUser
 import no.nav.kabal.model.BehandlingDetaljer
 import no.nav.kabal.model.BehandlingEvent
 import no.nav.kabal.model.BehandlingEventType
@@ -16,6 +17,7 @@ import no.nav.oppgave.OppgaveType
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.after
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
@@ -81,7 +83,7 @@ class KabalBehandlingEventConsumerTest {
     }
 
     @Test
-    fun `oppretter oppgave ved BEHANDLING_FEILREGISTRERT`() {
+    fun `markerer sak som feilregistrert ved BEHANDLING_FEILREGISTRERT uten å opprette oppgave`() {
         val sak = SakTestData.lagreSak(
             repository = sakRepository,
             sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
@@ -102,16 +104,12 @@ class KabalBehandlingEventConsumerTest {
 
         sendEvent(event)
 
-        val beskrivelseCaptor = argumentCaptor<String>()
-        verify(oppgaveService, timeout(2000)).opprettOppgave(
-            type = eq(OppgaveType.VUR_KONS_YTE),
-            sak = any(),
-            beskrivelse = beskrivelseCaptor.capture(),
-            behandlesAvApplikasjon = any(),
-        )
-        assertThat(beskrivelseCaptor.firstValue)
-            .contains("feilregistrert")
-            .contains("Feil sak")
+        // Vent og verifiser at ingen oppgave ble opprettet
+        verify(oppgaveService, after(2000).never()).opprettOppgave(any(), any(), any(), any())
+
+        // Etter at konsumenten er ferdig, skal saken være markert som feilregistrert
+        val oppdatertSak = withMockedUser { sakRepository.getSak(sak.saksnummer) }
+        assertThat(oppdatertSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
     }
 
     @Test
@@ -136,9 +134,7 @@ class KabalBehandlingEventConsumerTest {
 
         sendEvent(event)
 
-        // Gir konsumenten litt tid til å evt. prosessere (den skal ignorere)
-        Thread.sleep(500)
-        verify(oppgaveService, never()).opprettOppgave(any(), any(), any(), any())
+        verify(oppgaveService, after(2000).never()).opprettOppgave(any(), any(), any(), any())
     }
 
     @Test
@@ -157,8 +153,7 @@ class KabalBehandlingEventConsumerTest {
 
         sendEvent(event)
 
-        Thread.sleep(500)
-        verify(oppgaveService, never()).opprettOppgave(any(), any(), any(), any())
+        verify(oppgaveService, after(2000).never()).opprettOppgave(any(), any(), any(), any())
     }
 
     // ── helpers ───────────────────────────────────────────────────────────────
@@ -187,4 +182,3 @@ class KabalBehandlingEventConsumerTest {
         kafkaTemplate.send(record)
     }
 }
-
