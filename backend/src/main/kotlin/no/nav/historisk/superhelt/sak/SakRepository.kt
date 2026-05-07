@@ -17,7 +17,6 @@ import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -134,8 +133,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
     }
 
-    @PreAuthorize("hasAuthority('READ')")
-    @PostFilter("@tilgangsmaskin.harTilgang(filterObject.fnr)")
+    @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
     fun feilregistrerSak(saksnummer: Saksnummer) {
         val entity = getSakEntityOrThrow(saksnummer)
