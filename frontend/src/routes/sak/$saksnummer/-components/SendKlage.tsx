@@ -11,10 +11,11 @@ import {
     VStack,
 } from "@navikt/ds-react";
 import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { dateTilIsoDato } from "~/common/dato.utils";
+import { getSakOptions } from "~/common/sak/sak.query";
 import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
 
 const MAX_KOMMENTAR_LENGDE = 2000;
@@ -26,6 +27,7 @@ interface SendKlageProps {
 
 export function SendKlage({ open, onOpenChange }: SendKlageProps) {
     const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
+    const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: hjemler } = useQuery({
         ...getKodeverkHjemlerOptions(),
         staleTime: Number.POSITIVE_INFINITY,
@@ -38,7 +40,6 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
     const [hjemmelError, setHjemmelError] = useState<string | undefined>();
     const [datoError, setDatoError] = useState<string | undefined>();
     const [valgtDato, setValgtDato] = useState<Date | undefined>();
-    const [klageSendt, setKlageSendt] = useState(false);
 
     const { datepickerProps, inputProps } = useDatepicker({
         toDate: new Date(),
@@ -51,7 +52,6 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
     const sendKlage = useMutation({
         ...sendKlageTilKabalMutation(),
         onSuccess: () => {
-            setKlageSendt(true);
             invalidateSakQuery(saksnummer);
         },
     });
@@ -62,7 +62,6 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
         setHjemmelError(undefined);
         setDatoError(undefined);
         setValgtDato(undefined);
-        setKlageSendt(false);
         sendKlage.reset();
     };
 
@@ -110,12 +109,23 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
 
                 <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-16" align="stretch" justify="space-between" height="100%">
-                        {klageSendt && (
+                        {sendKlage.isSuccess && (
                             <LocalAlert status="success">
                                 <LocalAlert.Header>
                                     <LocalAlert.Title>Klage sendt</LocalAlert.Title>
                                 </LocalAlert.Header>
                                 <LocalAlert.Content>Klagen ble oversendt til Kabal og er mottatt.</LocalAlert.Content>
+                            </LocalAlert>
+                        )}
+                        {sendKlage.isError && (
+                            <LocalAlert status="error">
+                                <LocalAlert.Header>
+                                    <LocalAlert.Title>Sending til Kabal feilet</LocalAlert.Title>
+                                </LocalAlert.Header>
+                                <LocalAlert.Content>
+                                    {sendKlage.error?.detail ??
+                                        "En ukjent feil oppstod. Prøv igjen eller kontakt support."}
+                                </LocalAlert.Content>
                             </LocalAlert>
                         )}
                         <VStack gap="space-16">
@@ -155,16 +165,18 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
                                 rows={4}
                             />
                         </VStack>
+
                         <HStack gap="space-8" justify="end">
                             <Button type="button" variant="tertiary" onClick={() => handleOpenChange(false)}>
-                                {klageSendt ? "Lukk" : "Avbryt"}
+                                {sendKlage.isSuccess ? "Lukk" : "Avbryt"}
                             </Button>
-                            {!klageSendt && (
+                            {!sendKlage.isSuccess && (
                                 <Button
                                     type="button"
                                     variant="primary"
                                     onClick={handleBekreftOgSend}
                                     loading={sendKlage.isPending}
+                                    disabled={!sak.rettigheter.includes("SEND_KLAGE")}
                                 >
                                     Send klage til Kabal
                                 </Button>
