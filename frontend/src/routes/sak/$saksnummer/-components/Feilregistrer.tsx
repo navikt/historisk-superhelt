@@ -1,5 +1,6 @@
 import { feilregisterSakMutation } from "@generated/@tanstack/react-query.gen";
 import { BodyLong, Button, Dialog, Textarea, VStack } from "@navikt/ds-react";
+import { BreakpointMd } from "@navikt/ds-tokens/dist/tokens";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
@@ -52,11 +53,11 @@ export function Feilregistrer({ open, onOpenChange }: FeilregistrerProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointMd, resize: "both", overflow: "auto" }}>
                 <Dialog.Header>
                     <Dialog.Title>Feilregistrer sak</Dialog.Title>
                 </Dialog.Header>
-                <Dialog.Body>
+                <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-32">
                         <BodyLong>
                             Saken feilregisteres og lukkes. Det er ikke mulig å åpne saken igjen etterpå. Det blir laget
