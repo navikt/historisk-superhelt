@@ -49,9 +49,9 @@ class KabalBehandlingEventConsumerTest {
 
     @Test
     fun `oppretter VUR_KONS_YTE-oppgave ved KLAGEBEHANDLING_AVSLUTTET for vår sak`() {
-        val sak = SakTestData.lagreNySak(
-            sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+        val sak = SakTestData.lagreSak(
+            repository = sakRepository,
+            sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
         )
 
         val event = lagBehandlingEvent(
@@ -82,9 +82,9 @@ class KabalBehandlingEventConsumerTest {
 
     @Test
     fun `oppretter oppgave ved BEHANDLING_FEILREGISTRERT`() {
-        val sak = SakTestData.lagreNySak(
-            sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+        val sak = SakTestData.lagreSak(
+            repository = sakRepository,
+            sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
         )
 
         val event = lagBehandlingEvent(
@@ -116,9 +116,9 @@ class KabalBehandlingEventConsumerTest {
 
     @Test
     fun `ignorerer event med annen kilde enn SUPERHELT`() {
-        val sak = SakTestData.lagreNySak(
-            sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+        val sak = SakTestData.lagreSak(
+            repository = sakRepository,
+            sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
         )
 
         val event = lagBehandlingEvent(
