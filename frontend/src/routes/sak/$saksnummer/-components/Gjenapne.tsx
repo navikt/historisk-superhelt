@@ -57,7 +57,7 @@ export function Gjenapne({ open, onOpenChange }: GjenapneProps) {
                 <Dialog.Header>
                     <Dialog.Title>Gjenåpne sak</Dialog.Title>
                 </Dialog.Header>
-                <Dialog.Body>
+                <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-32">
                         <BodyLong>
                             Saken er i dag lukket, og ved å gjenåpne saken vil den bli aktiv igjen og kunne behandles

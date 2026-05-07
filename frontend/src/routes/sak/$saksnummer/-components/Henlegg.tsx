@@ -65,7 +65,7 @@ export function Henlegg({ open, onOpenChange }: HenleggProps) {
                 <Dialog.Header>
                     <Dialog.Title>Henlegg sak</Dialog.Title>
                 </Dialog.Header>
-                <Dialog.Body>
+                <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-16">
                         <Textarea
                             label="Årsak til henleggelse"

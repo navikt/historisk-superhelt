@@ -57,7 +57,7 @@ export function Feilregistrer({ open, onOpenChange }: FeilregistrerProps) {
                 <Dialog.Header>
                     <Dialog.Title>Feilregistrer sak</Dialog.Title>
                 </Dialog.Header>
-                <Dialog.Body>
+                <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-32">
                         <BodyLong>
                             Saken feilregisteres og lukkes. Det er ikke mulig å åpne saken igjen etterpå. Det blir laget

@@ -44,7 +44,7 @@ export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
                 <Dialog.Header>
                     <Dialog.Title>Skriv brev til bruker</Dialog.Title>
                 </Dialog.Header>
-                <Dialog.Body>
+                <Dialog.Body style={{ height: "100%" }}>
                     <BrevEditor
                         sak={sak}
                         brevId={brev?.uuid}

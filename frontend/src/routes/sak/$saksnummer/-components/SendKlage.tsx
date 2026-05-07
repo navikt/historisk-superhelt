@@ -3,7 +3,6 @@ import {
     Button,
     DatePicker,
     Dialog,
-    HStack,
     LocalAlert,
     Textarea,
     UNSAFE_Combobox,
@@ -107,84 +106,82 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
                     <Dialog.Title>Send klage til Kabal</Dialog.Title>
                 </Dialog.Header>
 
+
                 <Dialog.Body style={{ height: "100%" }}>
-                    <VStack gap="space-16" align="stretch" justify="space-between" height="100%">
-                        <VStack gap="space-16">
-                            {sendKlage.isSuccess && (
-                                <LocalAlert status="success">
-                                    <LocalAlert.Header>
-                                        <LocalAlert.Title>Klage sendt</LocalAlert.Title>
-                                    </LocalAlert.Header>
-                                    <LocalAlert.Content>
-                                        Klagen ble oversendt til Kabal og er mottatt.
-                                    </LocalAlert.Content>
-                                </LocalAlert>
-                            )}
-                            {sendKlage.isError && (
-                                <LocalAlert status="error">
-                                    <LocalAlert.Header>
-                                        <LocalAlert.Title>Sending til Kabal feilet</LocalAlert.Title>
-                                    </LocalAlert.Header>
-                                    <LocalAlert.Content>
-                                        {sendKlage.error?.detail ??
-                                            "En ukjent feil oppstod. Prøv igjen eller kontakt support."}
-                                    </LocalAlert.Content>
-                                </LocalAlert>
-                            )}
-                            <DatePicker {...datepickerProps}>
-                                <DatePicker.Input {...inputProps} label="Dato klage mottatt" error={datoError} />
-                            </DatePicker>
+                    <VStack gap="space-16">
+                        {sendKlage.isSuccess && (
+                            <LocalAlert status="success">
+                                <LocalAlert.Header>
+                                    <LocalAlert.Title>Klage sendt</LocalAlert.Title>
+                                </LocalAlert.Header>
+                                <LocalAlert.Content>
+                                    Klagen ble oversendt til Kabal og er mottatt.
+                                </LocalAlert.Content>
+                            </LocalAlert>
+                        )}
+                        {sendKlage.isError && (
+                            <LocalAlert status="error">
+                                <LocalAlert.Header>
+                                    <LocalAlert.Title>Sending til Kabal feilet</LocalAlert.Title>
+                                </LocalAlert.Header>
+                                <LocalAlert.Content>
+                                    {sendKlage.error?.detail ??
+                                        "En ukjent feil oppstod. Prøv igjen eller kontakt support."}
+                                </LocalAlert.Content>
+                            </LocalAlert>
+                        )}
+                        <DatePicker {...datepickerProps}>
+                            <DatePicker.Input {...inputProps} label="Dato klage mottatt" error={datoError} />
+                        </DatePicker>
 
-                            <UNSAFE_Combobox
-                                label="Hjemmel"
-                                description="Velg den lovhjemmelen klagen gjelder"
-                                options={
-                                    hjemler?.map((hjemmel) => ({
-                                        label: hjemmel.visningsnavn,
-                                        value: hjemmel.id,
-                                    })) ?? []
-                                }
-                                selectedOptions={
-                                    hjemler
-                                        ?.filter((h) => h.id === valgtHjemmelId)
-                                        .map((h) => ({ label: h.visningsnavn, value: h.id })) ?? []
-                                }
-                                onToggleSelected={(option, isSelected) => {
-                                    setValgtHjemmelId(isSelected ? option : "");
-                                    setHjemmelError(undefined);
-                                }}
-                                shouldAutocomplete
-                                error={hjemmelError}
-                            />
+                        <UNSAFE_Combobox
+                            label="Hjemmel"
+                            description="Velg den lovhjemmelen klagen gjelder"
+                            options={
+                                hjemler?.map((hjemmel) => ({
+                                    label: hjemmel.visningsnavn,
+                                    value: hjemmel.id,
+                                })) ?? []
+                            }
+                            selectedOptions={
+                                hjemler
+                                    ?.filter((h) => h.id === valgtHjemmelId)
+                                    .map((h) => ({ label: h.visningsnavn, value: h.id })) ?? []
+                            }
+                            onToggleSelected={(option, isSelected) => {
+                                setValgtHjemmelId(isSelected ? option : "");
+                                setHjemmelError(undefined);
+                            }}
+                            shouldAutocomplete
+                            error={hjemmelError}
+                        />
 
-                            <Textarea
-                                label="Kommentar (valgfri)"
-                                description="Eventuell tilleggsinformasjon til Kabal"
-                                value={kommentar}
-                                onChange={(e) => setKommentar(e.target.value)}
-                                maxLength={MAX_KOMMENTAR_LENGDE}
-                                rows={4}
-                            />
-                        </VStack>
-
-                        <HStack gap="space-8" justify="end">
-                            <Button type="button" variant="tertiary" onClick={() => handleOpenChange(false)}>
-                                {sendKlage.isSuccess ? "Lukk" : "Avbryt"}
-                            </Button>
-                            {!sendKlage.isSuccess && (
-                                <Button
-                                    type="button"
-                                    variant="primary"
-                                    onClick={handleBekreftOgSend}
-                                    loading={sendKlage.isPending}
-                                    disabled={!sak.rettigheter.includes("SEND_KLAGE")}
-                                >
-                                    Send klage til Kabal
-                                </Button>
-                            )}
-                        </HStack>
+                        <Textarea
+                            label="Kommentar (valgfri)"
+                            description="Eventuell tilleggsinformasjon til Kabal"
+                            value={kommentar}
+                            onChange={(e) => setKommentar(e.target.value)}
+                            maxLength={MAX_KOMMENTAR_LENGDE}
+                            rows={4}
+                        />
                     </VStack>
                 </Dialog.Body>
+                <Dialog.Footer>
+                    {!sendKlage.isSuccess && (
+                        <Button
+                            type="button"
+                            variant="primary"
+                            onClick={handleBekreftOgSend}
+                            loading={sendKlage.isPending}
+                            disabled={!sak.rettigheter.includes("SEND_KLAGE")}
+                        >
+                            Send klage til Kabal
+                        </Button>
+                    )}
+                    <Button type="button" variant="secondary" onClick={() => handleOpenChange(false)}>
+                        {sendKlage.isSuccess ? "Lukk" : "Avbryt"}
+                    </Button>
+                </Dialog.Footer>
             </Dialog.Popup>
         </Dialog>
     );
