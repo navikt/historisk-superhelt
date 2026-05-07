@@ -1,4 +1,4 @@
-// vite.config.ts
+/// <reference types="vitest/config" />
 
 import path from "node:path";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
@@ -20,6 +20,10 @@ export default defineConfig({
             "~": path.resolve(__dirname, "src"),
             "@generated": path.resolve(__dirname, "generated"),
         },
+    },
+    test: {
+        globals: true,
+        environment: "jsdom",
     },
     server: {
         // Proxy til wonderwall
