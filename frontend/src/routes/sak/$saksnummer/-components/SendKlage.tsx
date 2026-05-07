@@ -5,8 +5,8 @@ import {
     Dialog,
     HStack,
     LocalAlert,
-    Select,
     Textarea,
+    UNSAFE_Combobox,
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
@@ -109,52 +109,53 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
 
                 <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-16" align="stretch" justify="space-between" height="100%">
-                        {sendKlage.isSuccess && (
-                            <LocalAlert status="success">
-                                <LocalAlert.Header>
-                                    <LocalAlert.Title>Klage sendt</LocalAlert.Title>
-                                </LocalAlert.Header>
-                                <LocalAlert.Content>Klagen ble oversendt til Kabal og er mottatt.</LocalAlert.Content>
-                            </LocalAlert>
-                        )}
-                        {sendKlage.isError && (
-                            <LocalAlert status="error">
-                                <LocalAlert.Header>
-                                    <LocalAlert.Title>Sending til Kabal feilet</LocalAlert.Title>
-                                </LocalAlert.Header>
-                                <LocalAlert.Content>
-                                    {sendKlage.error?.detail ??
-                                        "En ukjent feil oppstod. Prøv igjen eller kontakt support."}
-                                </LocalAlert.Content>
-                            </LocalAlert>
-                        )}
                         <VStack gap="space-16">
+                            {sendKlage.isSuccess && (
+                                <LocalAlert status="success">
+                                    <LocalAlert.Header>
+                                        <LocalAlert.Title>Klage sendt</LocalAlert.Title>
+                                    </LocalAlert.Header>
+                                    <LocalAlert.Content>
+                                        Klagen ble oversendt til Kabal og er mottatt.
+                                    </LocalAlert.Content>
+                                </LocalAlert>
+                            )}
+                            {sendKlage.isError && (
+                                <LocalAlert status="error">
+                                    <LocalAlert.Header>
+                                        <LocalAlert.Title>Sending til Kabal feilet</LocalAlert.Title>
+                                    </LocalAlert.Header>
+                                    <LocalAlert.Content>
+                                        {sendKlage.error?.detail ??
+                                            "En ukjent feil oppstod. Prøv igjen eller kontakt support."}
+                                    </LocalAlert.Content>
+                                </LocalAlert>
+                            )}
                             <DatePicker {...datepickerProps}>
                                 <DatePicker.Input {...inputProps} label="Dato klage mottatt" error={datoError} />
                             </DatePicker>
 
-                            <VStack gap="space-8">
-                                <Select
-                                    label="Hjemmel"
-                                    description="Velg den lovhjemmelen klagen gjelder"
-                                    value={valgtHjemmelId}
-                                    onChange={(e) => {
-                                        setValgtHjemmelId(e.target.value);
-                                        setHjemmelError(undefined);
-                                    }}
-                                    error={hjemmelError}
-                                >
-                                    <option value="" disabled>
-                                        - Velg hjemmel -
-                                    </option>
-                                    {Array.isArray(hjemler) &&
-                                        hjemler.map((hjemmel) => (
-                                            <option key={hjemmel.id} value={hjemmel.id}>
-                                                {hjemmel.visningsnavn}
-                                            </option>
-                                        ))}
-                                </Select>
-                            </VStack>
+                            <UNSAFE_Combobox
+                                label="Hjemmel"
+                                description="Velg den lovhjemmelen klagen gjelder"
+                                options={
+                                    hjemler?.map((hjemmel) => ({
+                                        label: hjemmel.visningsnavn,
+                                        value: hjemmel.id,
+                                    })) ?? []
+                                }
+                                selectedOptions={
+                                    hjemler
+                                        ?.filter((h) => h.id === valgtHjemmelId)
+                                        .map((h) => ({ label: h.visningsnavn, value: h.id })) ?? []
+                                }
+                                onToggleSelected={(option, isSelected) => {
+                                    setValgtHjemmelId(isSelected ? option : "");
+                                    setHjemmelError(undefined);
+                                }}
+                                shouldAutocomplete
+                                error={hjemmelError}
+                            />
 
                             <Textarea
                                 label="Kommentar (valgfri)"
