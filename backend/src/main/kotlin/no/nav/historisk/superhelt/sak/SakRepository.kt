@@ -17,7 +17,6 @@ import no.nav.historisk.superhelt.vedtak.VedtaksResultat
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PostAuthorize
-import org.springframework.security.access.prepost.PostFilter
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -129,13 +128,16 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         return getSakEntityOrThrow(saksnummer).toDomain()
     }
 
+    /** Henter saker for en person og filterer på tema som personen har tilgang til  */
     @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
-    fun findSaker(fnr: FolkeregisterIdent): List<Sak> {
-        return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
+    fun finnSaker(fnr: FolkeregisterIdent): List<Sak> {
+        val authenticatedUser= getAuthenticatedUser()
+        return jpaRepository.findSakEntitiesByFnr(fnr)
+            .filter { authenticatedUser.hasTemaAccess(it.type.tema) }
+            .map { it.toDomain() }
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @PostFilter("@tilgangsmaskin.harTilgang(filterObject.fnr)")
     internal fun finnAapneSaker(): List<Sak> =
         jpaRepository.findByStatusNotIn(listOf(SakStatus.FERDIG, SakStatus.FEILREGISTRERT))
             .map { it.toDomain() }

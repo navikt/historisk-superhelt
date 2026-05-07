@@ -36,7 +36,7 @@ class SakController(
     @GetMapping()
     fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<Sak>> {
         val fnr = maskertPersonId.toFnr()
-        val saker = sakRepository.findSaker(fnr)
+        val saker = sakRepository.finnSaker(fnr)
         return ResponseEntity.ok(saker)
     }
 

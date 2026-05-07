@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.sak
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
@@ -259,6 +260,68 @@ class SakRepositoryTest {
 
             assertThatThrownBy { sakRepository.getSak(hjeSak.saksnummer) }.isInstanceOf(AuthorizationDeniedException::class.java)
                 .hasMessageContaining("Mangler tilgang til tema")
+        }
+    }
+
+    @WithLeseBruker
+    @Nested
+    inner class FinnSaker {
+
+        @Test
+        fun `skal returnere alle saker for en person`() {
+            val baseSak = SakTestData.sakUtenUtbetaling()
+            val fnr = baseSak.fnr
+            val sak1 = SakTestData.lagreSak(sakRepository, baseSak.copy(type = StonadsType.PARYKK))
+            val sak2 = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.PARYKK))
+
+            val saker = sakRepository.finnSaker(fnr)
+
+            assertThat(saker).hasSize(2)
+            assertThat(saker.map { it.saksnummer }).containsExactlyInAnyOrder(sak1.saksnummer, sak2.saksnummer)
+        }
+
+        @Test
+        fun `skal returnere tom liste for person uten saker`() {
+            val fnrUtenSaker = FolkeregisterIdent("99999999999")
+
+            val saker = sakRepository.finnSaker(fnrUtenSaker)
+
+            assertThat(saker).isEmpty()
+        }
+
+        @WithSaksbehandler(tema = [FellesKodeverkTema.HEL])
+        @Test
+        fun `skal filtrere bort saker med tema bruker ikke har tilgang til`() {
+            val baseSak = SakTestData.sakUtenUtbetaling()
+            val fnr = baseSak.fnr
+            val helSak = SakTestData.lagreSak(sakRepository, baseSak.copy(type = StonadsType.PARYKK))
+            SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.HOREAPPARAT))
+
+            val saker = sakRepository.finnSaker(fnr)
+
+            assertThat(saker).hasSize(1)
+            assertThat(saker.first().saksnummer).isEqualTo(helSak.saksnummer)
+        }
+
+        @WithMockJwtAuth(permissions = [])
+        @Test
+        fun `skal nekte tilgang uten READ-tillatelse`() {
+            val fnr = FolkeregisterIdent("12345678901")
+
+            assertThatThrownBy { sakRepository.finnSaker(fnr) }
+                .isInstanceOf(AuthorizationDeniedException::class.java)
+        }
+
+        @Test
+        fun `skal nekte tilgang når tilgangsmaskin avviser`() {
+            val fnr = FolkeregisterIdent("12345678901")
+            whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
+                harTilgang = false,
+                response = TilgangsmaskinTestData.problemDetailResponse
+            )
+
+            assertThatThrownBy { sakRepository.finnSaker(fnr) }
+                .isInstanceOf(AuthorizationDeniedException::class.java)
         }
     }
 }
