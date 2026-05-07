@@ -124,6 +124,14 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
 
     @PreAuthorize("hasAuthority('READ')")
     @PostFilter("@tilgangsmaskin.harTilgang(filterObject.fnr)")
+    @Transactional
+    fun feilregistrerSak(saksnummer: Saksnummer) {
+        val entity = getSakEntityOrThrow(saksnummer)
+        entity.status = SakStatus.FEILREGISTRERT
+        jpaRepository.save(entity)
+        logger.info("Sak {} er markert som feilregistrert via Kabal-event", saksnummer)
+    }
+
     internal fun finnAapneSaker(): List<Sak> =
         jpaRepository.findByStatusNotIn(listOf(SakStatus.FERDIG, SakStatus.FEILREGISTRERT))
             .map { it.toDomain() }
