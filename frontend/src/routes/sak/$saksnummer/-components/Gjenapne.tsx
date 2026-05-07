@@ -1,5 +1,6 @@
 import { gjenapneSakMutation } from "@generated/@tanstack/react-query.gen";
 import { BodyLong, Button, Dialog, Textarea, VStack } from "@navikt/ds-react";
+import { BreakpointMd } from "@navikt/ds-tokens/dist/tokens";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
@@ -52,7 +53,7 @@ export function Gjenapne({ open, onOpenChange }: GjenapneProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointMd, resize: "both", overflow: "auto" }}>
                 <Dialog.Header>
                     <Dialog.Title>Gjenåpne sak</Dialog.Title>
                 </Dialog.Header>
