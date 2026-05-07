@@ -67,19 +67,19 @@
                             <arguments>install --frozen-lockfile</arguments>
                         </configuration>
                     </execution>
-<!--                    <execution>-->
-<!--                        <id>npm test</id>-->
-<!--                        <goals>-->
-<!--                            <goal>npm</goal>-->
-<!--                        </goals>-->
-<!--                        <phase>test</phase>-->
-<!--                        <configuration>-->
-<!--                            <arguments>test</arguments>-->
-<!--                            <environmentVariables>-->
-<!--                                <CI>true</CI>-->
-<!--                            </environmentVariables>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
+                    <execution>
+                        <id>pnpm test</id>
+                        <goals>
+                            <goal>pnpm</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <arguments>test</arguments>
+                            <environmentVariables>
+                                <CI>true</CI>
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>pnpm build</id>
                         <goals>
