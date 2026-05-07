@@ -5,7 +5,10 @@ import no.nav.historisk.superhelt.klage.db.KabalEventEntity
 import no.nav.historisk.superhelt.klage.db.KabalEventJpaRepository
 import no.nav.kabal.model.BehandlingEvent
 import no.nav.kabal.model.BehandlingEventType
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.UUID
 
@@ -18,21 +21,30 @@ class KabalEventRepository(
 ) {
 
     /**
-     * Lagrer event atomisk med INSERT ... ON CONFLICT (event_id) DO NOTHING.
+     * Lagrer event i en egen transaksjon (REQUIRES_NEW).
      * Returnerer true hvis eventet ble lagret (nytt), false hvis det var et duplikat.
-     * Trådsikkert — race conditions ved parallell prosessering håndteres av databasen.
+     * Trådsikkert — race conditions håndteres av databasens UNIQUE-constraint på event_id.
+     * REQUIRES_NEW sikrer at en unik-konflikt ikke markerer den ytre transaksjonen som rollback-only.
      */
-    fun lagre(event: BehandlingEvent, saksnummer: String): Boolean =
-        jpaRepository.insertOnConflictDoNothing(
-            id = UUID.randomUUID(),
-            eventId = event.eventId,
-            saksnummer = saksnummer,
-            eventType = event.type.name,
-            utfall = event.utfall(),
-            tidspunkt = event.tidspunkt(),
-            aarsakFeilregistrert = event.detaljer.behandlingFeilregistrert?.reason,
-            journalpostReferanser = event.journalpostReferanser().joinToString(","),
-        ) > 0
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun lagre(event: BehandlingEvent, saksnummer: String): Boolean {
+        return try {
+            jpaRepository.save(
+                KabalEventEntity(
+                    eventId = event.eventId,
+                    saksnummer = saksnummer,
+                    eventType = event.type.name,
+                    utfall = event.utfall(),
+                    tidspunkt = event.tidspunkt(),
+                    aarsakFeilregistrert = event.detaljer.behandlingFeilregistrert?.reason,
+                    journalpostReferanser = event.journalpostReferanser().joinToString(","),
+                )
+            )
+            true
+        } catch (e: DataIntegrityViolationException) {
+            false
+        }
+    }
 
     /** Returnerer alle Kabal-events for en sak, nyeste først. */
     fun hentHistorikkForSak(saksnummer: Saksnummer): List<KabalEventHistorikk> =
@@ -136,4 +148,3 @@ internal fun BehandlingEvent.journalpostReferanser(): List<String> =
 
         else -> null
     } ?: emptyList()
-

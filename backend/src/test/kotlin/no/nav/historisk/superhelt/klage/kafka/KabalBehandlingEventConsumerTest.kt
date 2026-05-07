@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.klage.kafka
 
+import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
+import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
@@ -14,18 +16,16 @@ import no.nav.kabal.model.FeilregistrertBehandlingType
 import no.nav.kabal.model.KlageUtfall
 import no.nav.kabal.model.KlagebehandlingAvsluttetDetaljer
 import no.nav.oppgave.OppgaveType
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.after
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
-import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import tools.jackson.databind.ObjectMapper
 import java.time.LocalDateTime
@@ -35,19 +35,21 @@ import java.util.UUID
 class KabalBehandlingEventConsumerTest {
 
     @Autowired
-    private lateinit var kafkaTemplate: KafkaTemplate<String, String>
+    private lateinit var sakRepository: SakRepository
 
     @Autowired
-    private lateinit var kabalProperties: no.nav.historisk.superhelt.klage.config.KabalProperties
+    private lateinit var klageEventService: KlageEventService
+
+    @Autowired
+    private lateinit var kabalBehandlingEventConsumer: KabalBehandlingEventConsumer
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    @Autowired
-    private lateinit var sakRepository: SakRepository
-
     @MockitoBean
     private lateinit var oppgaveService: OppgaveService
+
+    private val systemPermissions = listOf(Permission.READ, Permission.WRITE)
 
     @Test
     fun `oppretter VUR_KONS_YTE-oppgave ved KLAGEBEHANDLING_AVSLUTTET for vår sak`() {
@@ -68,14 +70,18 @@ class KabalBehandlingEventConsumerTest {
             )
         )
 
-        sendEvent(event)
+        SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
+            klageEventService.behandleEvent(event)
+        }
 
         val beskrivelseCaptor = argumentCaptor<String>()
-        verify(oppgaveService, timeout(2000)).opprettOppgave(
+        verify(oppgaveService).opprettOppgave(
             type = eq(OppgaveType.VUR_KONS_YTE),
             sak = any(),
             beskrivelse = beskrivelseCaptor.capture(),
-            behandlesAvApplikasjon = any(),
+            tilordneTil = anyOrNull(),
+            behandlesAvApplikasjon = anyOrNull(),
+            journalpostId = anyOrNull(),
         )
         assertThat(beskrivelseCaptor.firstValue)
             .contains("MEDHOLD")
@@ -102,25 +108,20 @@ class KabalBehandlingEventConsumerTest {
             )
         )
 
-        sendEvent(event)
+        SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
+            klageEventService.behandleEvent(event)
+        }
 
-        // Vent og verifiser at ingen oppgave ble opprettet
-        verify(oppgaveService, after(2000).never()).opprettOppgave(any(), any(), any(), any())
+        verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
 
-        // Etter at konsumenten er ferdig, skal saken være markert som feilregistrert
         val oppdatertSak = withMockedUser { sakRepository.getSak(sak.saksnummer) }
         assertThat(oppdatertSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
     }
 
     @Test
     fun `ignorerer event med annen kilde enn SUPERHELT`() {
-        val sak = SakTestData.lagreSak(
-            repository = sakRepository,
-            sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
-        )
-
         val event = lagBehandlingEvent(
-            kildeReferanse = sak.saksnummer.value,
+            kildeReferanse = "SH-000001",
             kilde = "ANNET_FAGSYSTEM",
             type = BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
             detaljer = BehandlingDetaljer(
@@ -132,9 +133,11 @@ class KabalBehandlingEventConsumerTest {
             )
         )
 
-        sendEvent(event)
+        // Kilde-filtrering skjer i KabalBehandlingEventConsumer — kall consumer direkte
+        val record = ConsumerRecord("kabal.behandling-events-junit", 0, 0L, event.kildeReferanse, objectMapper.writeValueAsString(event))
+        kabalBehandlingEventConsumer.onBehandlingEvent(record)
 
-        verify(oppgaveService, after(2000).never()).opprettOppgave(any(), any(), any(), any())
+        verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
 
     @Test
@@ -151,9 +154,11 @@ class KabalBehandlingEventConsumerTest {
             )
         )
 
-        sendEvent(event)
+        SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
+            klageEventService.behandleEvent(event)
+        }
 
-        verify(oppgaveService, after(2000).never()).opprettOppgave(any(), any(), any(), any())
+        verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
 
     // ── helpers ───────────────────────────────────────────────────────────────
@@ -171,14 +176,4 @@ class KabalBehandlingEventConsumerTest {
         type = type,
         detaljer = detaljer,
     )
-
-    private fun sendEvent(event: BehandlingEvent) {
-        val json = objectMapper.writeValueAsString(event)
-        val record = ProducerRecord<String, String>(
-            kabalProperties.behandlingEventTopic,
-            event.kildeReferanse,
-            json,
-        )
-        kafkaTemplate.send(record)
-    }
 }
