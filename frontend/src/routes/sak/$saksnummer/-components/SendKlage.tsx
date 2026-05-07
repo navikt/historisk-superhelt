@@ -10,7 +10,7 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
-import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
+import { BreakpointMd } from "@navikt/ds-tokens/dist/tokens";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
@@ -102,7 +102,7 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg, resize: "both", overflow: "auto" }}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointMd, resize: "both", overflow: "auto" }}>
                 <Dialog.Header>
                     <Dialog.Title>Send klage til Kabal</Dialog.Title>
                 </Dialog.Header>
