@@ -7,5 +7,6 @@ import java.util.UUID
 @Repository
 interface KabalEventJpaRepository : CrudRepository<KabalEventEntity, UUID> {
     fun existsByEventId(eventId: UUID): Boolean
+    fun findBySaksnummerOrderByTidspunktDesc(saksnummer: String): List<KabalEventEntity>
 }
 
