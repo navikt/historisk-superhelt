@@ -5,6 +5,7 @@ import no.nav.dokarkiv.JournalpostResponse
 import no.nav.dokdist.DokdistRespons
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
+import no.nav.historisk.superhelt.dokarkiv.DokdistService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.sak.Sak
@@ -46,6 +47,9 @@ class BrevSendingServiceTest {
     @MockitoBean
     private lateinit var dokarkivService: DokarkivService
 
+    @MockitoBean
+    private lateinit var dokdistService: DokdistService
+
 
 
     private fun mockPdfgenSuccess(pdf: ByteArray = "test-pdf".toByteArray()) {
@@ -63,13 +67,13 @@ class BrevSendingServiceTest {
     }
 
     private fun mockDokdistSuccess(bestillingsId: String = "bestilling-123") {
-        whenever(dokarkivService.distribuerBrev(any(), any())).thenReturn(
+        whenever(dokdistService.distribuer(any())).thenReturn(
             DokdistRespons(bestillingsId = bestillingsId, sendtOk = true)
         )
     }
 
     private fun mockDokdistManglerAdresse(feilbegrunnelse: String = "Journalpost kan ikke distribueres: mangler adresse") {
-        whenever(dokarkivService.distribuerBrev(any(), any())).thenReturn(
+        whenever(dokdistService.distribuer(any())).thenReturn(
             DokdistRespons(sendtOk = false, feilbegrunnelse = feilbegrunnelse)
         )
     }
@@ -83,7 +87,7 @@ class BrevSendingServiceTest {
     }
 
     private fun mockDokdistFailure(exception: Exception = RuntimeException("Distribusjon failed")) {
-        whenever(dokarkivService.distribuerBrev(any(), any())).thenThrow(exception)
+        whenever(dokdistService.distribuer(any())).thenThrow(exception)
     }
 
     private fun lagreSakMedBrev(
@@ -93,7 +97,7 @@ class BrevSendingServiceTest {
         mottakerType: BrevMottaker = BrevMottaker.BRUKER,
         journalpostId: EksternJournalpostId? = null
     ): Pair<Sak, Brev> {
-        val sak = SakTestData.lagreNySak(sakRepository)
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
         val brev = BrevTestdata.lagreBrev(
             brevRepository = brevRepository,
             saksnummer = sak.saksnummer,
@@ -124,7 +128,7 @@ class BrevSendingServiceTest {
         assertThat(oppdatertBrev.journalpostId).isNotNull()
         verify(pdfgenService).genererPdf(any(), any())
         verify(dokarkivService).arkiver(any(), any(), any())
-        verify(dokarkivService).distribuerBrev(any(), any())
+        verify(dokdistService).distribuer(any())
     }
 
     @Test
@@ -136,7 +140,7 @@ class BrevSendingServiceTest {
 
         verify(pdfgenService, never()).genererPdf(any(), any())
         verify(dokarkivService, never()).arkiver(any(), any(), any())
-        verify(dokarkivService, never()).distribuerBrev(any(), any())
+        verify(dokdistService, never()).distribuer(any())
     }
 
     @Test
@@ -173,10 +177,10 @@ class BrevSendingServiceTest {
 
         brevSendingService.sendBrev(sak, brev)
 
-        val inOrder = inOrder(pdfgenService, dokarkivService)
+        val inOrder = inOrder(pdfgenService, dokarkivService, dokdistService)
         inOrder.verify(pdfgenService).genererPdf(any(), any())
         inOrder.verify(dokarkivService).arkiver(any(), any(), any())
-        inOrder.verify(dokarkivService).distribuerBrev(any(), any())
+        inOrder.verify(dokdistService).distribuer(any())
     }
 
     @Test
@@ -193,7 +197,7 @@ class BrevSendingServiceTest {
 
         verify(pdfgenService, never()).genererPdf(any(), any())
         verify(dokarkivService, never()).arkiver(any(), any(), any())
-        verify(dokarkivService).distribuerBrev(any(), any())
+        verify(dokdistService).distribuer(any())
     }
 
     @Test
@@ -221,7 +225,7 @@ class BrevSendingServiceTest {
         }
 
         verify(dokarkivService, never()).arkiver(any(), any(), any())
-        verify(dokarkivService, never()).distribuerBrev(any(), any())
+        verify(dokdistService, never()).distribuer(any())
     }
 
     @Test
@@ -235,7 +239,7 @@ class BrevSendingServiceTest {
             brevSendingService.sendBrev(sak, brev)
         }
 
-        verify(dokarkivService, never()).distribuerBrev(any(), any())
+        verify(dokdistService, never()).distribuer(any())
     }
 
     @Test

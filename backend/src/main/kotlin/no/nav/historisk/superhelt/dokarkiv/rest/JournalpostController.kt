@@ -73,5 +73,15 @@ class JournalpostController(
         return journalpostService.finnJournalposter(saksnummer, sak.type.tema)
     }
 
+    @Operation(operationId = "finnJournalposterForBruker")
+    @GetMapping("/bruker/{saksnummer}")
+    fun finnJournalposterForBruker(
+        @PathVariable saksnummer: Saksnummer,
+    ): List<Journalpost> {
+        val sak = sakRepository.getSak(saksnummer)
+        return journalpostService.finnJournalposterForBruker(sak.fnr, sak.type.tema)
+    }
+
+
 
 }

@@ -6,7 +6,6 @@ import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
-import no.nav.common.types.defaultEnhetsnummer
 import no.nav.historisk.superhelt.ansatt.NavAnsattService
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
@@ -167,7 +166,7 @@ class OppgaveService(
             OpprettOppgaveRequest(
                 tema = sak.type.tema.kode,
                 oppgavetype = type.oppgavetype,
-                opprettetAvEnhetsnr = defaultEnhetsnummer.value,
+                opprettetAvEnhetsnr = sak.type.enhet.value,
                 journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,

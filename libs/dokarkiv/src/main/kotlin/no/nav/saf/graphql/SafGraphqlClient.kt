@@ -3,6 +3,7 @@ package no.nav.saf.graphql
 import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestClient
@@ -30,7 +31,7 @@ class SafGraphqlClient(
         saksnummer: Saksnummer,
         tema: List<FellesKodeverkTema>,
         fagsakSystem: String = APP_NAVN
-    ): DokumentoversiktGraphqlResponse {
+    ): DokumentoversiktFagsakGraphqlResponse {
 
         val req =
             createGraphqlQuery(
@@ -48,7 +49,30 @@ class SafGraphqlClient(
             .body(req)
             .contentType(MediaType.APPLICATION_JSON)
             .retrieve()
-            .body(DokumentoversiktGraphqlResponse::class.java)!!
+            .body(DokumentoversiktFagsakGraphqlResponse::class.java)!!
+    }
+
+    fun dokumentoversiktBruker(
+        fnr: FolkeregisterIdent,
+        tema: List<FellesKodeverkTema>,
+    ): DokumentoversiktBrukerGraphqlResponse {
+
+        val req =
+            createGraphqlQuery(
+                gqlFile = "/saf/dokumentoversiktBruker.graphql",
+                variables = DokumentoversiktBrukerVariables(
+                    fnr = fnr.value,
+                    tema = tema,
+                    foerste = 50,
+                ),
+            )
+        return restClient
+            .post()
+            .uri("/graphql")
+            .body(req)
+            .contentType(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .body(DokumentoversiktBrukerGraphqlResponse::class.java)!!
     }
 
 

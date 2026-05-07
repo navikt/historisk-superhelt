@@ -1,26 +1,24 @@
-import { Box, Heading, VStack } from "@navikt/ds-react";
+import { Box, type BoxProps, Heading, VStack } from "@navikt/ds-react";
 
-interface CardProps {
-    title?: string;
-    children: React.ReactNode;
-    className?: string;
-}
+type CardProps = BoxProps & {
+    tittel?: string;
+};
 
-export function Card({ title, children, className }: CardProps) {
+export function Card(props: CardProps) {
+    const { tittel, children, ...boxProps } = props;
     return (
         <Box
-            className={className}
             padding="space-24"
             background="neutral-soft"
             borderWidth="1"
             borderRadius="8"
             borderColor="neutral-subtle"
-            asChild
+            {...boxProps}
         >
             <VStack gap="space-16">
-                {title && (
+                {tittel && (
                     <Heading textColor="subtle" size="xsmall" level="3">
-                        {title}
+                        {tittel}
                     </Heading>
                 )}
                 {children}

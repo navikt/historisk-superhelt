@@ -26,9 +26,9 @@ class SakActionControllerGjenapneTest : AbstractSakActionTest() {
 
     @Test
     fun `Saksbehandler kan gjenåpne ferdig sak `() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
         )
 
         sakActionController.gjenapneSak(sak.saksnummer, GjenapneSakRequestDto("Fordi jeg vil"))
@@ -56,9 +56,9 @@ class SakActionControllerGjenapneTest : AbstractSakActionTest() {
 
     @Test
     fun `Sak som ikke er ferdig kan ikke gjenåpnes `() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         assertThatThrownBy {

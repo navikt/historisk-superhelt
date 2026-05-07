@@ -52,7 +52,7 @@ class AdminUtbetalingControllerTest {
     @WithDriftbruker
     fun `Hent feilet utbetalinger er ok for drift`() {
         withMockedUser {
-            val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
             val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
         }
@@ -69,10 +69,10 @@ class AdminUtbetalingControllerTest {
     @WithDriftbruker
     fun `Rekjør alle feilete utbetalinger `() {
         withMockedUser {
-            val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
             val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
-            val sak2 = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
+            val sak2 = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
             val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2)
             utbetalingService.updateUtbetalingsStatus(utbetaling2, newStatus = UtbetalingStatus.FEILET)
         }
@@ -98,11 +98,11 @@ class AdminUtbetalingControllerTest {
     fun `Rekjør noen feilete utbetalinger `() {
         var utbetalingUuid: java.util.UUID? = null
         withMockedUser {
-            val sak = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
             val utbetaling = utbetalingRepository.opprettUtbetaling(sak)
             utbetalingService.updateUtbetalingsStatus(utbetaling, newStatus = UtbetalingStatus.FEILET)
             utbetalingUuid = utbetaling.transaksjonsId
-            val sak2 = sakRepository.opprettNySak(SakTestData.nySakCompleteUtbetaling())
+            val sak2 = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
             val utbetaling2 = utbetalingRepository.opprettUtbetaling(sak2)
             utbetalingService.updateUtbetalingsStatus(utbetaling2, newStatus = UtbetalingStatus.FEILET)
         }

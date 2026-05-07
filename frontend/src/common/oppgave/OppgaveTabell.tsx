@@ -64,7 +64,7 @@ export function OppgaveTabell({oppgaver, dineOppgaver}: Props) {
         })
         .slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
-    const renderSakLink = (saksnummer?: string) => {
+    const renderSakLink = (saksnummer?: string | null) => {
         if (!saksnummer) {
             return null;
         }

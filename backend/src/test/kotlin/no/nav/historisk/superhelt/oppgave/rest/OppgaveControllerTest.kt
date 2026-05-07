@@ -154,7 +154,7 @@ class OppgaveControllerTest {
     @Test
     fun `hent oppgave med sak`() {
         val oppgave = OppgaveTestdata.opprettOppgave()
-        val sak = SakTestData.lagreNySak(sakRepository)
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
         oppgaveService.knyttOppgaveTilSak(
             saksnummer = sak.saksnummer,
             oppgaveId = oppgave.id,

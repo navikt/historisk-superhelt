@@ -16,26 +16,27 @@ export type ProblemDetail = {
 };
 
 export type SakUpdateRequestDto = {
-    type?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    beskrivelse?: string;
-    begrunnelse?: string;
-    soknadsDato?: string;
-    tildelingsAar?: number;
+    type?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
+    beskrivelse?: string | null;
+    begrunnelse?: string | null;
+    soknadsDato?: string | null;
+    tildelingsAar?: number | null;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
+    belop?: number | null;
+    klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
 };
 
 export type Brev = {
     saksnummer: string;
     uuid: string;
     opprettetTidspunkt: string;
-    tittel?: string;
-    innhold?: string;
+    tittel?: string | null;
+    innhold?: string | null;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
-    journalpostId?: string;
+    journalpostId?: string | null;
     readonly valideringsfeil: Array<ValidationFieldError>;
 };
 
@@ -47,31 +48,33 @@ export type NavUser = {
 export type Sak = {
     saksnummer: string;
     behandlingsnummer: number;
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    beskrivelse?: string;
-    soknadsDato?: string;
-    tildelingsAar?: number;
-    begrunnelse?: string;
+    beskrivelse?: string | null;
+    soknadsDato?: string | null;
+    tildelingsAar?: number | null;
+    begrunnelse?: string | null;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     opprettetDato: string;
     saksbehandler: NavUser;
-    attestant?: NavUser;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
-    vedtaksbrevBruker?: Brev;
-    readonly maskertPersonIdent: string;
-    readonly tilstand: SakTilstand;
-    readonly valideringsfeil: Array<ValidationFieldError>;
+    attestant?: NavUser | null;
+    utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    belop?: number | null;
+    klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
+    vedtaksbrevBruker?: Brev | null;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
     readonly gjenapnet: boolean;
+    readonly kanUtbetales: boolean;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
@@ -98,22 +101,22 @@ export type FeilregisterRequestDto = {
 
 export type AttesterSakRequestDto = {
     godkjent: boolean;
-    kommentar?: string;
+    kommentar?: string | null;
 };
 
 export type OppdaterBrevRequest = {
-    tittel?: string;
-    innhold?: string;
+    tittel?: string | null;
+    innhold?: string | null;
 };
 
 export type JournalforDokument = {
     tittel: string;
     dokumentInfoId: string;
-    logiskeVedlegg?: Array<string>;
+    logiskeVedlegg?: Array<string> | null;
 };
 
 export type JournalforNySakRequest = {
-    stonadsType: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+    stonadsType: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     jfrOppgaveId: number;
     bruker: string;
     avsender: string;
@@ -131,7 +134,7 @@ export type JournalforEksisterendeSakRequest = {
 export type SendKlageRequestDto = {
     hjemmelId: string;
     datoKlageMottatt: string;
-    kommentar?: string;
+    kommentar?: string | null;
 };
 
 export type OpprettBrevRequest = {
@@ -148,14 +151,14 @@ export type Person = {
     fnr: string;
     maskertPersonident: string;
     doed: boolean;
-    doedsfall?: string;
+    doedsfall?: string | null;
     adressebeskyttelseGradering?: 'FORTROLIG' | 'STRENGT_FORTROLIG' | 'STRENGT_FORTROLIG_UTLAND' | 'UGRADERT';
     harVerge: boolean;
-    vergeInfo?: VergeInfo;
+    vergeInfo?: VergeInfo | null;
     avvisningsKode?: 'AVVIST_STRENGT_FORTROLIG_ADRESSE' | 'AVVIST_STRENGT_FORTROLIG_UTLAND' | 'AVVIST_AVDØD' | 'AVVIST_PERSON_UTLAND' | 'AVVIST_SKJERMING' | 'AVVIST_FORTROLIG_ADRESSE' | 'AVVIST_UKJENT_BOSTED' | 'AVVIST_GEOGRAFISK' | 'AVVIST_HABILITET' | 'UKJENT_PERSON';
-    avvisningsBegrunnelse?: string;
-    foedselsdato?: string;
-    alder?: number;
+    avvisningsBegrunnelse?: string | null;
+    foedselsdato?: string | null;
+    alder?: number | null;
 };
 
 export type VergeInfo = {
@@ -171,13 +174,14 @@ export type RetryUtbetalingRequestDto = {
 export type Utbetaling = {
     saksnummer: string;
     behandlingsnummer: number;
+    klasseKode: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     belop: number;
     transaksjonsId: string;
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
-    utbetalingTidspunkt?: string;
-    loggId$superhelt_backend: string;
+    utbetalingTidspunkt?: string | null;
     annulleres: boolean;
+    loggId$superhelt_backend: string;
 };
 
 export type Enhet = {
@@ -196,18 +200,18 @@ export type NavAnsatt = {
 export type Vedtak = {
     saksnummer: string;
     behandlingsnummer: number;
-    stonadstype: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+    stonadstype: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     fnr: string;
     beskrivelse: string;
     soknadsDato: string;
-    tildelingsAar?: number;
-    begrunnelse?: string;
+    tildelingsAar?: number | null;
+    begrunnelse?: string | null;
     resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     vedtaksTidspunkt: string;
     saksbehandler: NavUser;
     attestant: NavUser;
     utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
+    belop?: number | null;
 };
 
 export type SakStatusDto = {
@@ -222,7 +226,7 @@ export type EndringsloggLinje = {
     endretTidspunkt: string;
     type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK' | 'KLAGE_SENDT_KABAL';
     endring: string;
-    beskrivelse?: string;
+    beskrivelse?: string | null;
     endretAv: string;
 };
 
@@ -231,10 +235,16 @@ export type VedtaksResultatDto = {
     navn: string;
 };
 
-export type StonadsTypeDto = {
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+export type KlasseKodeDto = {
+    klasseKode: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     navn: string;
-    beskrivelse?: string;
+};
+
+export type StonadsTypeDto = {
+    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
+    navn: string;
+    beskrivelse?: string | null;
+    klasseKoder: Array<KlasseKodeDto>;
 };
 
 export type SakStatusKodeDto = {
@@ -248,20 +258,20 @@ export type OppgaveMedSak = {
     oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
     oppgavetype: 'BEH_SED' | 'BEH_SAK' | 'BEH_SAK_MK' | 'BEH_UND_VED' | 'FDR' | 'GOD_VED' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_BREV' | 'VURD_HENV' | 'VURD_NOTAT' | 'FLY' | 'HJELP_UTPROV' | 'MOTK' | 'ROB_BEH' | 'UKJENT';
     oppgaveGjelderTekst: string;
-    journalpostId?: string;
-    tilordnetRessurs?: string;
-    beskrivelse?: string;
-    fristFerdigstillelse?: string;
-    opprettetTidspunkt?: string;
-    behandlesAvApplikasjon?: string;
-    tildeltEnhetsnr?: string;
-    opprettetAv?: string;
-    saksnummer?: string;
+    journalpostId?: string | null;
+    tilordnetRessurs?: string | null;
+    beskrivelse?: string | null;
+    fristFerdigstillelse?: string | null;
+    opprettetTidspunkt?: string | null;
+    behandlesAvApplikasjon?: string | null;
+    tildeltEnhetsnr?: string | null;
+    opprettetAv?: string | null;
+    saksnummer?: string | null;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    sakBeskrivelse?: string;
-    readonly oppgaveTypeTekst: string;
+    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
+    sakBeskrivelse?: string | null;
     readonly maskertPersonIdent: string;
+    readonly oppgaveTypeTekst: string;
 };
 
 export type HjemmelDto = {
@@ -275,87 +285,90 @@ export type HjemmelDto = {
 export type Journalpost = {
     journalpostId: string;
     journalstatus: 'MOTTATT' | 'JOURNALFOERT' | 'FERDIGSTILT' | 'EKSPEDERT' | 'UNDER_ARBEID' | 'FEILREGISTRERT' | 'UTGAAR' | 'AVBRUTT' | 'UKJENT_BRUKER' | 'RESERVERT' | 'OPPLASTING_DOKUMENT' | 'UKJENT';
-    tittel?: string;
-    sak?: JournalpostSak;
-    bruker?: JournalpostBruker;
-    avsenderMottaker?: JournalpostAvsenderMottaker;
-    dokumenter?: Array<JournalpostDokumentInfo>;
+    tittel?: string | null;
+    sak?: JournalpostSak | null;
+    bruker?: JournalpostBruker | null;
+    avsenderMottaker?: JournalpostAvsenderMottaker | null;
+    dokumenter?: Array<JournalpostDokumentInfo> | null;
+    datoOpprettet: string;
+    journalposttype?: 'I' | 'U' | 'N';
 };
 
 export type JournalpostAvsenderMottaker = {
-    id?: string;
+    id?: string | null;
     type?: 'FNR' | 'ORGNR' | 'HPRNR' | 'UTL_ORG' | 'NULL' | 'UKJENT';
-    navn?: string;
+    navn?: string | null;
 };
 
 export type JournalpostBruker = {
-    id?: string;
+    id?: string | null;
     type?: 'FNR' | 'ORGNR' | 'AKTOERID';
 };
 
 export type JournalpostDokumentInfo = {
-    tittel?: string;
+    tittel?: string | null;
     dokumentInfoId: string;
-    dokumentvarianter?: Array<JournalpostDokumentVariant>;
+    dokumentvarianter?: Array<JournalpostDokumentVariant> | null;
 };
 
 export type JournalpostDokumentVariant = {
-    filtype?: string;
-    filnavn?: string;
+    filtype?: string | null;
+    filnavn?: string | null;
     saksbehandlerHarTilgang: boolean;
 };
 
 export type JournalpostSak = {
-    fagsaksystem?: string;
-    fagsakId?: string;
+    fagsaksystem?: string | null;
+    fagsakId?: string | null;
 };
 
 export type InfotrygdHistorikk = {
-    dato?: string;
-    fom?: string;
-    tom?: string;
-    tekst?: string;
+    dato?: string | null;
+    fom?: string | null;
+    tom?: string | null;
+    tekst?: string | null;
     kontonummer: string;
     kontonavn: string;
-    belop?: string;
+    belop?: string | null;
 };
 
 export type BrevWritable = {
     saksnummer: string;
     uuid: string;
     opprettetTidspunkt: string;
-    tittel?: string;
-    innhold?: string;
+    tittel?: string | null;
+    innhold?: string | null;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
     status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
-    journalpostId?: string;
+    journalpostId?: string | null;
 };
 
 export type SakWritable = {
     saksnummer: string;
     behandlingsnummer: number;
-    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
+    type: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     fnr: string;
     status: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    beskrivelse?: string;
-    soknadsDato?: string;
-    tildelingsAar?: number;
-    begrunnelse?: string;
+    beskrivelse?: string | null;
+    soknadsDato?: string | null;
+    tildelingsAar?: number | null;
+    begrunnelse?: string | null;
     vedtaksResultat?: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
     opprettetDato: string;
     saksbehandler: NavUser;
-    attestant?: NavUser;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number;
-    vedtaksbrevBruker?: BrevWritable;
+    attestant?: NavUser | null;
+    utbetalingsType?: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
+    belop?: number | null;
+    klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
+    vedtaksbrevBruker?: BrevWritable | null;
 };
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type OppgaveMedSakWritable = {
@@ -364,18 +377,18 @@ export type OppgaveMedSakWritable = {
     oppgavestatus: 'OPPRETTET' | 'AAPNET' | 'UNDER_BEHANDLING' | 'FERDIGSTILT' | 'FEILREGISTRERT';
     oppgavetype: 'BEH_SED' | 'BEH_SAK' | 'BEH_SAK_MK' | 'BEH_UND_VED' | 'FDR' | 'GOD_VED' | 'INNH_DOK' | 'JFR' | 'KON_UTG_SCA_DOK' | 'KONT_BRUK' | 'RETUR' | 'SVAR_IK_MOT' | 'VUR' | 'VUR_KONS_YTE' | 'VUR_SVAR' | 'VURD_BREV' | 'VURD_HENV' | 'VURD_NOTAT' | 'FLY' | 'HJELP_UTPROV' | 'MOTK' | 'ROB_BEH' | 'UKJENT';
     oppgaveGjelderTekst: string;
-    journalpostId?: string;
-    tilordnetRessurs?: string;
-    beskrivelse?: string;
-    fristFerdigstillelse?: string;
-    opprettetTidspunkt?: string;
-    behandlesAvApplikasjon?: string;
-    tildeltEnhetsnr?: string;
-    opprettetAv?: string;
-    saksnummer?: string;
+    journalpostId?: string | null;
+    tilordnetRessurs?: string | null;
+    beskrivelse?: string | null;
+    fristFerdigstillelse?: string | null;
+    opprettetTidspunkt?: string | null;
+    behandlesAvApplikasjon?: string | null;
+    tildeltEnhetsnr?: string | null;
+    opprettetAv?: string | null;
+    saksnummer?: string | null;
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
-    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO';
-    sakBeskrivelse?: string;
+    stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
+    sakBeskrivelse?: string | null;
 };
 
 export type GetSakBySaksnummerData = {
@@ -1571,7 +1584,7 @@ export type LastnedDokumentFraJournalpostData = {
     body?: never;
     path: {
         journalpostId: string;
-        dokumentId: number;
+        dokumentId: string;
     };
     query?: never;
     url: '/api/journalpost/{journalpostId}/{dokumentId}';
@@ -1672,6 +1685,41 @@ export type FinnJournalposterForSakResponses = {
 };
 
 export type FinnJournalposterForSakResponse = FinnJournalposterForSakResponses[keyof FinnJournalposterForSakResponses];
+
+export type FinnJournalposterForBrukerData = {
+    body?: never;
+    path: {
+        saksnummer: string;
+    };
+    query?: never;
+    url: '/api/journalpost/bruker/{saksnummer}';
+};
+
+export type FinnJournalposterForBrukerErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type FinnJournalposterForBrukerError = FinnJournalposterForBrukerErrors[keyof FinnJournalposterForBrukerErrors];
+
+export type FinnJournalposterForBrukerResponses = {
+    /**
+     * OK
+     */
+    200: Array<Journalpost>;
+};
+
+export type FinnJournalposterForBrukerResponse = FinnJournalposterForBrukerResponses[keyof FinnJournalposterForBrukerResponses];
 
 export type HentInfotrygdHistorikkForPersonData = {
     body?: never;

@@ -9,14 +9,31 @@ data class DokumentoversiktFagsakVariables(
     val foerste: Int = 10
 )
 
-data class DokumentoversiktGraphqlResponse(
-    val data: DokumentoversiktData?,
+data class DokumentoversiktBrukerVariables(
+    val fnr: String,
+    val tema: List<FellesKodeverkTema>,
+    val foerste: Int = 50
+)
+
+data class DokumentoversiktFagsakGraphqlResponse(
+    val data: DokumentoversiktFagsakData?,
     val errors: List<GraphqlError>? = null,
 )
 
-data class DokumentoversiktData(
-    val dokumentoversiktFagsak: DokumentoversiktFagsakResult
+data class DokumentoversiktFagsakData(
+    val dokumentoversiktFagsak: DokumentoversiktResult
 )
-data class DokumentoversiktFagsakResult(
+
+data class DokumentoversiktBrukerGraphqlResponse(
+    val data: DokumentoversiktBrukerData?,
+    val errors: List<GraphqlError>? = null,
+)
+
+data class DokumentoversiktBrukerData(
+    val dokumentoversiktBruker: DokumentoversiktResult
+)
+
+data class DokumentoversiktResult(
     val journalposter: List<Journalpost>
 )
+

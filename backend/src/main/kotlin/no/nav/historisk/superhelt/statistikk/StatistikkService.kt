@@ -1,6 +1,6 @@
 package no.nav.historisk.superhelt.statistikk
 
-import no.nav.common.types.defaultEnhetsnummer
+import no.nav.common.consts.APP_NAVN
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakStatus
@@ -49,8 +49,8 @@ class StatistikkService(
             sakYtelse = sak.type,
             behandlingType = BehandlingType.SØKNAD,
             saksbehandler = sak.saksbehandler.navIdent.value,
-            ansvarligEnhet = defaultEnhetsnummer.value,
-            fagsystemNavn = "SUPERHELT",
+            ansvarligEnhet = sak.type.enhet.value,
+            fagsystemNavn = APP_NAVN,
             fagsystemVersjon = appVersion
         )
         return when (endringsType) {

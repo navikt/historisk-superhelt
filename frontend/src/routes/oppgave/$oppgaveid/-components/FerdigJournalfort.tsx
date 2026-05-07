@@ -1,8 +1,8 @@
-import { Alert, BodyShort, Heading, HStack, Link } from "@navikt/ds-react";
-import { Link as RouterLink } from "@tanstack/react-router";
+import {Alert, BodyShort, Heading, HStack, Link} from "@navikt/ds-react";
+import {Link as RouterLink} from "@tanstack/react-router";
 
 interface Props {
-    saksnummer?: string;
+    saksnummer?: string | null;
 }
 
 export function FerdigJournalfort({ saksnummer }: Props) {

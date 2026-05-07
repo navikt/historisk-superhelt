@@ -10,7 +10,11 @@ import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
+import org.mockito.kotlin.verify
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.Test
 
@@ -23,9 +27,9 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
 
     @Test
     fun `skal sende sak til attestering`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         sakActionController.tilAttestering(sak.saksnummer)
@@ -58,9 +62,9 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
     @WithAttestant
     @Test
     fun `attestant skal ikke få sende til attestering`() {
-        val sak = SakTestData.lagreNySak(
+        val sak = SakTestData.lagreSak(
             sakRepository,
-            SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.UNDER_BEHANDLING)
+            SakTestData.sakMedUtbetaling().copy(status = SakStatus.UNDER_BEHANDLING)
         )
 
         assertThatThrownBy {
@@ -75,7 +79,7 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
     @Test
     fun `skal feile validering når saken ikke er under behandling`() {
         val sak =
-            SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling(sakStatus = SakStatus.FERDIG))
+            SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG))
 
         assertThatThrownBy {
             sakActionController.tilAttestering(sak.saksnummer)
@@ -88,7 +92,7 @@ class SakActionControllerSendTilAttesteringTest : AbstractSakActionTest() {
 
     @Test
     fun `skal feile validering når saken ikke er komplett`() {
-        val sak = SakTestData.lagreNySak(sakRepository)
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling().copy(vedtaksResultat = null))
 
         assertThatThrownBy {
             sakActionController.tilAttestering(sak.saksnummer)

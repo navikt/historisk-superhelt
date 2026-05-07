@@ -1,7 +1,6 @@
 package no.nav.historisk.superhelt.vedtak.rest
 
 import no.nav.common.types.Saksnummer
-import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
 import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -50,7 +49,7 @@ class VedtakControllerTest {
 
     @Test
     fun `hentVedtakForSak returnerer tom liste når ingen vedtak finnes`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
 
         assertThat(hentVedtak(sak.saksnummer))
             .hasStatus(HttpStatus.OK)
@@ -61,7 +60,7 @@ class VedtakControllerTest {
 
     @Test
     fun `hentVedtakForSak returnerer vedtak for saken`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository, SakTestData.nySakCompleteUtbetaling()) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakMedUtbetaling())
         val vedtak = VedtakTestData.vedtakForSak(sak)
         withMockedUser { vedtakRepository.save(vedtak) }
 
@@ -81,7 +80,7 @@ class VedtakControllerTest {
     @Test
     @WithLeseBruker
     fun `hentVedtakForSak er tilgjengelig for lesebruker`() {
-        val sak = withMockedUser { SakTestData.lagreNySak(sakRepository) }
+        val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
 
         assertThat(hentVedtak(sak.saksnummer))
             .hasStatus(HttpStatus.OK)

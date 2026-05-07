@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.dokarkiv
 
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -53,5 +54,12 @@ class JournalpostService(
         return journalposter
     }
 
+    @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
+    fun finnJournalposterForBruker(fnr: FolkeregisterIdent, vararg tema: FellesKodeverkTema): List<Journalpost> {
+        val journalposter =
+            safGraphqlClient.dokumentoversiktBruker(fnr, tema.toList()).data?.dokumentoversiktBruker?.journalposter
+                ?: emptyList()
+        return journalposter
+    }
 
 }

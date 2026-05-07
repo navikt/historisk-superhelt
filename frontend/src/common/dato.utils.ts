@@ -1,8 +1,21 @@
-export function isoTilLokal(isoDato?: string): string {
+export function isoTilLokal(isoDato?: string | null): string {
     if (!isoDato) {
         return "";
     }
     return new Date(isoDato).toLocaleString("no", { day: "numeric", month: "long", year: "numeric" });
+}
+
+export function isoTilLokalTid(isoDato?: string | null): string {
+    if (!isoDato) {
+        return "";
+    }
+    return new Date(isoDato).toLocaleString("no", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
 }
 
 export function dateTilIsoDato(date?: Date): string | undefined {

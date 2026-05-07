@@ -1,7 +1,7 @@
-import { TextField, VStack } from "@navikt/ds-react";
+import {TextField, VStack} from "@navikt/ds-react";
 
 interface Props {
-    value?: string;
+    value?: string | null;
     index?: number;
     name?: string;
     error?: string;
@@ -19,7 +19,7 @@ export function DokumentTittelFelt({ value, error, name, index = 0, readOnly }: 
                 label={getDokumentLabel(index)}
                 name={name}
                 error={error}
-                defaultValue={value}
+                defaultValue={value ?? undefined}
                 readOnly={readOnly}
             />
         </VStack>

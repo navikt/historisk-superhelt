@@ -68,7 +68,7 @@ class BrevControllerTest {
         @Test
         fun `opprett nytt brev når det ikke finnes fra før`() {
 
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val saksnummer = sak.saksnummer
             val request = OpprettBrevRequest(type = BrevType.VEDTAKSBREV, mottaker = BrevMottaker.BRUKER)
 
@@ -91,7 +91,7 @@ class BrevControllerTest {
         @Test
         fun `hent brev om det finnes fra før`() {
 
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val request = OpprettBrevRequest(type = BrevType.VEDTAKSBREV, mottaker = BrevMottaker.BRUKER)
@@ -131,7 +131,7 @@ class BrevControllerTest {
     inner class `hent brev` {
         @Test
         fun `hent brev ok`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
@@ -147,7 +147,7 @@ class BrevControllerTest {
 
         @Test
         fun `hent brev som ikke finnes skal gi feil`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val saksnummer = sak.saksnummer
             val brevId = BrevId.random()
 
@@ -165,7 +165,7 @@ class BrevControllerTest {
     inner class `html brev` {
         @Test
         fun `html brev ok`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
@@ -189,7 +189,7 @@ class BrevControllerTest {
     inner class `oppdater brev` {
         @Test
         fun `oppdater brev ok`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
@@ -208,7 +208,7 @@ class BrevControllerTest {
 
         @Test
         fun `oppdater brev valideringsfeil`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid
@@ -227,7 +227,7 @@ class BrevControllerTest {
         @WithLeseBruker
         @Test
         fun `oppdater brev uten skrivetilgang skal gi feil`() {
-            val sak = SakTestData.lagreNySak(sakRepository)
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
             val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
             val saksnummer = sak.saksnummer
             val brevId = brev.uuid

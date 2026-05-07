@@ -2,9 +2,11 @@ package no.nav.historisk.mock.dokarkiv
 
 import no.nav.common.types.EksternJournalpostId
 import no.nav.historisk.mock.pdl.GraphqlQuery
-import no.nav.saf.graphql.DokumentoversiktData
-import no.nav.saf.graphql.DokumentoversiktFagsakResult
-import no.nav.saf.graphql.DokumentoversiktGraphqlResponse
+import no.nav.saf.graphql.DokumentoversiktBrukerData
+import no.nav.saf.graphql.DokumentoversiktBrukerGraphqlResponse
+import no.nav.saf.graphql.DokumentoversiktFagsakData
+import no.nav.saf.graphql.DokumentoversiktFagsakGraphqlResponse
+import no.nav.saf.graphql.DokumentoversiktResult
 import no.nav.saf.graphql.HentJournalpostData
 import no.nav.saf.graphql.HentJournalpostGraphqlResponse
 import org.slf4j.LoggerFactory
@@ -57,15 +59,30 @@ class SafMockController(
             logger.debug("søker etter journalposter for fagsak: {}", fagsakId)
             val data = repository.finnJournalposterForSak(fagsakId)
             return ResponseEntity.ok(
-                DokumentoversiktGraphqlResponse(
-                    data = DokumentoversiktData(
-                        dokumentoversiktFagsak = DokumentoversiktFagsakResult(
+                DokumentoversiktFagsakGraphqlResponse(
+                    data = DokumentoversiktFagsakData(
+                        dokumentoversiktFagsak = DokumentoversiktResult(
                             data
                         )
                     )
                 )
             )
         }
+        if (query.contains("dokumentoversiktBruker")) {
+            val fnr = body.variables.fnr ?: throw IllegalArgumentException("fnr må være satt")
+            logger.debug("søker etter journalposter for fnr: {}", fnr)
+            val data = repository.finnJournalposterForFnr(fnr)
+            return ResponseEntity.ok(
+                DokumentoversiktBrukerGraphqlResponse(
+                    data = DokumentoversiktBrukerData(
+                        dokumentoversiktBruker = DokumentoversiktResult(
+                            data
+                        )
+                    )
+                )
+            )
+        }
+
         if (query.contains("hentJournalpost")) {
             val journalpostId =
                 body.variables.journalpostId ?: throw IllegalArgumentException("journalpostId må være satt")
@@ -79,7 +96,8 @@ class SafMockController(
 
     data class Variables(
         val journalpostId: EksternJournalpostId?,
-        val fagsakId: String?
+        val fagsakId: String?,
+        val fnr: String?
     )
 
 }
