@@ -31,14 +31,6 @@ class KlageEventService(
 
     @Transactional
     fun behandleEvent(event: BehandlingEvent) {
-        if (kabalEventRepository.erAlleredeProsessert(event)) {
-            logger.warn(
-                "Kabal-event {} (type={}) er allerede prosessert – ignorerer duplikat.",
-                event.eventId, event.type
-            )
-            return
-        }
-
         val saksnummer = runCatching { Saksnummer(event.kildeReferanse) }.getOrElse {
             logger.error("Ugyldig kildeReferanse '{}' i BehandlingEvent {}", event.kildeReferanse, event.eventId)
             return
@@ -52,7 +44,14 @@ class KlageEventService(
             return
         }
 
-        kabalEventRepository.lagre(event, saksnummer.value)
+        val erNytt = kabalEventRepository.lagre(event, saksnummer.value)
+        if (!erNytt) {
+            logger.warn(
+                "Kabal-event {} (type={}) er allerede prosessert – ignorerer duplikat.",
+                event.eventId, event.type
+            )
+            return
+        }
 
         logger.info(
             "Prosesserer Kabal-event {} (type={}, utfall={}) for sak {}",

@@ -16,23 +16,23 @@ import java.util.UUID
 class KabalEventRepository(
     private val jpaRepository: KabalEventJpaRepository,
 ) {
-    /** Returnerer true dersom event-id allerede er prosessert */
-    fun erAlleredeProsessert(event: BehandlingEvent): Boolean =
-        jpaRepository.existsByEventId(event.eventId)
 
-    fun lagre(event: BehandlingEvent, saksnummer: String) {
-        jpaRepository.save(
-            KabalEventEntity(
-                eventId = event.eventId,
-                saksnummer = saksnummer,
-                eventType = event.type.name,
-                utfall = event.utfall(),
-                tidspunkt = event.tidspunkt(),
-                aarsakFeilregistrert = event.detaljer.behandlingFeilregistrert?.reason,
-                journalpostReferanser = event.journalpostReferanser().joinToString(","),
-            )
-        )
-    }
+    /**
+     * Lagrer event atomisk med INSERT ... ON CONFLICT (event_id) DO NOTHING.
+     * Returnerer true hvis eventet ble lagret (nytt), false hvis det var et duplikat.
+     * Trådsikkert — race conditions ved parallell prosessering håndteres av databasen.
+     */
+    fun lagre(event: BehandlingEvent, saksnummer: String): Boolean =
+        jpaRepository.insertOnConflictDoNothing(
+            id = UUID.randomUUID(),
+            eventId = event.eventId,
+            saksnummer = saksnummer,
+            eventType = event.type.name,
+            utfall = event.utfall(),
+            tidspunkt = event.tidspunkt(),
+            aarsakFeilregistrert = event.detaljer.behandlingFeilregistrert?.reason,
+            journalpostReferanser = event.journalpostReferanser().joinToString(","),
+        ) > 0
 
     /** Returnerer alle Kabal-events for en sak, nyeste først. */
     fun hentHistorikkForSak(saksnummer: Saksnummer): List<KabalEventHistorikk> =
