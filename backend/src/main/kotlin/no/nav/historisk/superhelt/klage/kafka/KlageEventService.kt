@@ -9,6 +9,7 @@ import no.nav.historisk.superhelt.klage.tidspunkt
 import no.nav.historisk.superhelt.klage.utfall
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
+import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.kabal.model.BehandlingEvent
 import no.nav.kabal.model.BehandlingEventType
 import no.nav.oppgave.OppgaveType
@@ -61,10 +62,10 @@ class KlageEventService(
         when (event.type) {
             // ── Klagebehandling: sjekk saksstatus før oppgave opprettes ──────────────
             BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET ->
-                if (sak.status.isFinal()) {
+                if (sak.status == SakStatus.FEILREGISTRERT) {
                     logger.error(
                         "Mottatt KLAGEBEHANDLING_AVSLUTTET-event på sak {} med status {} – " +
-                            "event kan være lest fra tidligere. Oppretter ikke oppgave.",
+                            "saken er feilregistrert. Oppretter ikke oppgave.",
                         saksnummer, sak.status
                     )
                 } else {
