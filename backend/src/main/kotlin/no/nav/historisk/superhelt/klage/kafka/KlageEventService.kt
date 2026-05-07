@@ -11,6 +11,7 @@ import no.nav.oppgave.OppgaveType
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 class KlageEventService(
@@ -51,6 +52,7 @@ class KlageEventService(
         )
 
         when (event.type) {
+            // ── Klagebehandling: sjekk saksstatus før oppgave opprettes ──────────────
             BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET -> {
                 if (sak.status.isFinal()) {
                     logger.error(
@@ -59,90 +61,49 @@ class KlageEventService(
                         saksnummer, sak.status
                     )
                 } else {
-                    val detaljer = event.detaljer.klagebehandlingAvsluttet
-                        ?: error("KLAGEBEHANDLING_AVSLUTTET mangler detaljer for event ${event.eventId}")
-                    opprettOppgave(
-                        event = event,
-                        saksnummer = saksnummer,
-                        beskrivelse = "Klagebehandling avsluttet i Kabal. " +
-                            "Utfall: ${detaljer.utfall}. " +
-                            "Avsluttet: ${detaljer.avsluttet.toLocalDate()}.",
-                    )
+                    opprettOppgaveMedDetaljer(event, saksnummer)
                 }
             }
 
-            BehandlingEventType.ANKEBEHANDLING_AVSLUTTET -> {
-                val detaljer = event.detaljer.ankebehandlingAvsluttet
-                    ?: error("ANKEBEHANDLING_AVSLUTTET mangler detaljer for event ${event.eventId}")
-                opprettOppgave(
-                    event = event,
-                    saksnummer = saksnummer,
-                    beskrivelse = "Ankebehandling avsluttet i Kabal. " +
-                        "Utfall: ${detaljer.utfall}. " +
-                        "Avsluttet: ${detaljer.avsluttet.toLocalDate()}.",
-                )
-            }
+            // ── Avsluttede behandlinger som alltid medfører oppgave ──────────────────
+            BehandlingEventType.ANKEBEHANDLING_AVSLUTTET,
+            BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET,
+            BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET,
+            BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET,
+            -> opprettOppgaveMedDetaljer(event, saksnummer)
 
-            BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET -> {
-                val detaljer = event.detaljer.behandlingEtterTrygderettenOpphevetAvsluttet
-                    ?: error("BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET mangler detaljer for event ${event.eventId}")
-                opprettOppgave(
-                    event = event,
-                    saksnummer = saksnummer,
-                    beskrivelse = "Behandling etter Trygderetten opphevet er avsluttet i Kabal. " +
-                        "Utfall: ${detaljer.utfall}. " +
-                        "Avsluttet: ${detaljer.avsluttet.toLocalDate()}.",
-                )
-            }
-
-            BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET -> {
-                val detaljer = event.detaljer.omgjoeringskravbehandlingAvsluttet
-                    ?: error("OMGJOERINGSKRAVBEHANDLING_AVSLUTTET mangler detaljer for event ${event.eventId}")
-                opprettOppgave(
-                    event = event,
-                    saksnummer = saksnummer,
-                    beskrivelse = "Omgjøringskravbehandling avsluttet i Kabal. " +
-                        "Utfall: ${detaljer.utfall}. " +
-                        "Avsluttet: ${detaljer.avsluttet.toLocalDate()}.",
-                )
-            }
-
-            BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET -> {
-                val detaljer = event.detaljer.gjenopptaksbehandlingAvsluttet
-                    ?: error("GJENOPPTAKSBEHANDLING_AVSLUTTET mangler detaljer for event ${event.eventId}")
-                opprettOppgave(
-                    event = event,
-                    saksnummer = saksnummer,
-                    beskrivelse = "Gjenopptaksbehandling avsluttet i Kabal. " +
-                        "Utfall: ${detaljer.utfall}. " +
-                        "Avsluttet: ${detaljer.avsluttet.toLocalDate()}.",
-                )
-            }
-
+            // ── Feilregistrert: marker saken i databasen ────────────────────────────
             BehandlingEventType.BEHANDLING_FEILREGISTRERT -> {
                 val detaljer = event.detaljer.behandlingFeilregistrert
                     ?: error("BEHANDLING_FEILREGISTRERT mangler detaljer for event ${event.eventId}")
                 logger.info(
-                    "Markerer sak {} som feilregistrert etter Kabal-event {}. " +
-                        "Registrert av: {}, årsak: {}",
+                    "Markerer sak {} som feilregistrert etter Kabal-event {}. Registrert av: {}, årsak: {}",
                     saksnummer, event.eventId, detaljer.navIdent, detaljer.reason
                 )
                 sakRepository.feilregistrerSak(saksnummer)
             }
 
+            // ── Ingen aksjon kreves for disse event-typene ───────────────────────────
             BehandlingEventType.ANKEBEHANDLING_OPPRETTET,
             BehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET,
-            -> {
-                // Ingen aksjon – vi logger bare at vi har mottatt eventet
-                logger.info(
-                    "Mottatt Kabal-event {} av type {} for sak {} – ingen aksjon kreves.",
-                    event.eventId, event.type, saksnummer
-                )
-            }
+            -> logger.info(
+                "Mottatt Kabal-event {} av type {} for sak {} – ingen aksjon kreves.",
+                event.eventId, event.type, saksnummer
+            )
         }
     }
 
-    private fun opprettOppgave(event: BehandlingEvent, saksnummer: Saksnummer, beskrivelse: String) {
+    /**
+     * Bygger en dynamisk oppgave-beskrivelse basert på event-type og oppretter oppgaven.
+     * Forutsetter at event-typen har utfall og avsluttet-tidspunkt i detaljer.
+     */
+    private fun opprettOppgaveMedDetaljer(event: BehandlingEvent, saksnummer: Saksnummer) {
+        val (utfall, avsluttet) = event.utfallOgAvsluttet()
+            ?: error("${event.type} mangler detaljer for event ${event.eventId}")
+
+        val behandlingsNavn = event.type.toNorsk()
+        val beskrivelse = "$behandlingsNavn avsluttet i Kabal. Utfall: $utfall. Avsluttet: $avsluttet."
+
         val sak = sakRepository.getSak(saksnummer)
         logger.info("Oppretter oppgave for sak {} etter Kabal-event {} ({})", saksnummer, event.eventId, event.type)
         oppgaveService.opprettOppgave(
@@ -154,3 +115,36 @@ class KlageEventService(
     }
 }
 
+// ── Hjelpefunksjoner ──────────────────────────────────────────────────────────
+
+/** Returnerer (utfall, avsluttet-dato) for event-typer som har dette i detaljer. */
+private fun BehandlingEvent.utfallOgAvsluttet(): Pair<String, LocalDate>? =
+    when (type) {
+        BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET ->
+            detaljer.klagebehandlingAvsluttet?.let { it.utfall.name to it.avsluttet.toLocalDate() }
+
+        BehandlingEventType.ANKEBEHANDLING_AVSLUTTET ->
+            detaljer.ankebehandlingAvsluttet?.let { it.utfall.name to it.avsluttet.toLocalDate() }
+
+        BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET ->
+            detaljer.behandlingEtterTrygderettenOpphevetAvsluttet?.let { it.utfall.name to it.avsluttet.toLocalDate() }
+
+        BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET ->
+            detaljer.omgjoeringskravbehandlingAvsluttet?.let { it.utfall.name to it.avsluttet.toLocalDate() }
+
+        BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET ->
+            detaljer.gjenopptaksbehandlingAvsluttet?.let { it.utfall.name to it.avsluttet.toLocalDate() }
+
+        else -> null
+    }
+
+/** Norsk visningsnavn for event-typen, brukt i oppgave-beskrivelsen. */
+private fun BehandlingEventType.toNorsk(): String =
+    when (this) {
+        BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET -> "Klagebehandling"
+        BehandlingEventType.ANKEBEHANDLING_AVSLUTTET -> "Ankebehandling"
+        BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET -> "Behandling etter Trygderetten opphevet"
+        BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET -> "Omgjøringskravbehandling"
+        BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET -> "Gjenopptaksbehandling"
+        else -> name
+    }
