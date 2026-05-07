@@ -1,7 +1,11 @@
 package no.nav.historisk.superhelt.klage.kafka
 
+import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.klage.KabalEventRepository
+import no.nav.historisk.superhelt.klage.tidspunkt
 import no.nav.historisk.superhelt.klage.utfall
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -13,11 +17,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
+private val KABAL_SYSTEM_IDENT = NavIdent("kabal-event-system")
+
 @Service
 class KlageEventService(
     private val sakRepository: SakRepository,
     private val oppgaveService: OppgaveService,
     private val kabalEventRepository: KabalEventRepository,
+    private val endringsloggService: EndringsloggService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -53,7 +60,7 @@ class KlageEventService(
 
         when (event.type) {
             // ── Klagebehandling: sjekk saksstatus før oppgave opprettes ──────────────
-            BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET -> {
+            BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET ->
                 if (sak.status.isFinal()) {
                     logger.error(
                         "Mottatt KLAGEBEHANDLING_AVSLUTTET-event på sak {} med status {} – " +
@@ -63,7 +70,6 @@ class KlageEventService(
                 } else {
                     opprettOppgaveMedDetaljer(event, saksnummer)
                 }
-            }
 
             // ── Avsluttede behandlinger som alltid medfører oppgave ──────────────────
             BehandlingEventType.ANKEBEHANDLING_AVSLUTTET,
@@ -81,6 +87,11 @@ class KlageEventService(
                     saksnummer, event.eventId, detaljer.navIdent, detaljer.reason
                 )
                 sakRepository.feilregistrerSak(saksnummer)
+                loggTilEndringslogg(
+                    endringsloggService, saksnummer, event.type.tilEndringsloggType(), event,
+                    beskrivelse = "Registrert av: ${detaljer.navIdent}. Årsak: ${detaljer.reason}",
+                )
+                return
             }
 
             // ── Ingen aksjon kreves for disse event-typene ───────────────────────────
@@ -88,10 +99,14 @@ class KlageEventService(
             BehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET,
             -> logger.info(
                 "Mottatt Kabal-event {} av type {} for sak {} – ingen aksjon kreves.",
-                event.eventId, event.type, saksnummer
+                event.eventId, event.type, saksnummer,
             )
         }
+
+        // Alltid logg til sak-historikk (unntatt FEILREGISTRERT som returnerer tidlig med egen beskrivelse)
+        loggTilEndringslogg(endringsloggService, saksnummer, event.type.tilEndringsloggType(), event)
     }
+
 
     /**
      * Bygger en dynamisk oppgave-beskrivelse basert på event-type og oppretter oppgaven.
@@ -116,6 +131,22 @@ class KlageEventService(
 }
 
 // ── Hjelpefunksjoner ──────────────────────────────────────────────────────────
+
+/** Logg Kabal-event til endringslogg, slik at det vises i sak-historikken. */
+private fun loggTilEndringslogg(
+    endringsloggService: EndringsloggService,
+    saksnummer: Saksnummer,
+    type: EndringsloggType,
+    event: BehandlingEvent,
+    beskrivelse: String? = null,
+) = endringsloggService.logChange(
+    saksnummer = saksnummer,
+    endringsType = type,
+    navBruker = KABAL_SYSTEM_IDENT,
+    endring = event.type.toNorsk(),
+    beskrivelse = beskrivelse ?: event.utfall()?.let { "Utfall: $it" },
+    tidspunkt = event.tidspunkt(),
+)
 
 /** Returnerer (utfall, avsluttet-dato) for event-typer som har dette i detaljer. */
 private fun BehandlingEvent.utfallOgAvsluttet(): Pair<String, LocalDate>? =
@@ -147,4 +178,17 @@ private fun BehandlingEventType.toNorsk(): String =
         BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET -> "Omgjøringskravbehandling"
         BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET -> "Gjenopptaksbehandling"
         else -> name
+    }
+
+/** Mapper event-type til riktig EndringsloggType for logging. */
+private fun BehandlingEventType.tilEndringsloggType(): EndringsloggType =
+    when (this) {
+        BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET                          -> EndringsloggType.KABAL_KLAGEBEHANDLING_AVSLUTTET
+        BehandlingEventType.ANKEBEHANDLING_OPPRETTET                           -> EndringsloggType.KABAL_ANKEBEHANDLING_OPPRETTET
+        BehandlingEventType.ANKEBEHANDLING_AVSLUTTET                           -> EndringsloggType.KABAL_ANKEBEHANDLING_AVSLUTTET
+        BehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET            -> EndringsloggType.KABAL_ANKE_I_TRYGDERETTEN_OPPRETTET
+        BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET   -> EndringsloggType.KABAL_BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET
+        BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET                -> EndringsloggType.KABAL_OMGJOERINGSKRAVBEHANDLING_AVSLUTTET
+        BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET                    -> EndringsloggType.KABAL_GJENOPPTAKSBEHANDLING_AVSLUTTET
+        BehandlingEventType.BEHANDLING_FEILREGISTRERT                          -> EndringsloggType.KABAL_BEHANDLING_FEILREGISTRERT
     }
