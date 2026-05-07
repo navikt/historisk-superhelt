@@ -46,7 +46,7 @@ class KabalBehandlingEventConsumer(
 
         SecurityContextUtils.runAsSystemuser(
             name = "kabal-event-system",
-            permissions = listOf(Permission.READ, Permission.WRITE, Permission.IGNORE_TILGANGSMASKIN),
+            permissions = listOf(Permission.READ, Permission.WRITE),
         ) {
             klageEventService.behandleEvent(event)
         }
