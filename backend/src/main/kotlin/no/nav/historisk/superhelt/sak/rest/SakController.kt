@@ -78,6 +78,7 @@ class SakController(
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<Sak> {
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
+//            .checkTemaTilgang()
             .checkRettighet(SakRettighet.LES)
             .validate()
         sak.auditLog("Hentet opp sak")

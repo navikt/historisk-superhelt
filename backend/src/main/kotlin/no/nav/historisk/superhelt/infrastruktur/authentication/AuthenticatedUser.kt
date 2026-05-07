@@ -46,7 +46,7 @@ data class AuthenticatedUser(
         return permissions.contains(permission)
     }
 
-    fun haTemaAccess(t: FellesKodeverkTema): Boolean {
+    fun hasTemaAccess(t: FellesKodeverkTema): Boolean {
         return tema.contains(t)
     }
 

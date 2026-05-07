@@ -1,28 +1,53 @@
 package no.nav.historisk.superhelt.sak
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
 import no.nav.common.types.NavIdent
+import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
+import no.nav.historisk.superhelt.person.TilgangsmaskinTestData
+import no.nav.historisk.superhelt.person.tilgangsmaskin.TilgangsmaskinService
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithLeseBruker
+import no.nav.historisk.superhelt.test.WithMockJwtAuth
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import no.nav.historisk.superhelt.vedtak.VedtaksResultat
+import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authorization.AuthorizationDeniedException
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import java.time.LocalDate
 
 @MockedSpringBootTest
-@WithSaksbehandler
 class SakRepositoryTest {
 
     @Autowired
     private lateinit var sakRepository: SakRepository
 
+    @MockitoBean
+    private lateinit var tilgangsmaskinService: TilgangsmaskinService
+
+    @BeforeEach
+    fun setupTilgangsmaskin() {
+        whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
+            harTilgang = true
+        )
+    }
+
+    @WithSaksbehandler
     @Nested
     inner class UpdateSak {
 
@@ -175,6 +200,65 @@ class SakRepositoryTest {
                 val oppdatert = sakRepository.getSak(sak.saksnummer)
                 assertThat(oppdatert.klasseKode).isEqualTo(KlasseKode.PARYKK)
             }
+        }
+    }
+
+    @WithLeseBruker
+    @Nested
+    inner class HentSak {
+
+        @Test
+        fun `skal returnere korrekt sak`() {
+            val lagretSak = SakTestData.lagreSak(sakRepository)
+
+            val hentetSak = sakRepository.getSak(lagretSak.saksnummer)
+
+            assertThat(hentetSak.saksnummer).isEqualTo(lagretSak.saksnummer)
+            assertThat(hentetSak.fnr).isEqualTo(lagretSak.fnr)
+            assertThat(hentetSak.type).isEqualTo(lagretSak.type)
+            assertThat(hentetSak.status).isEqualTo(lagretSak.status)
+        }
+
+        @Test
+        fun `skal kaste IkkeFunnetException for ukjent saksnummer`() {
+            val ikkeEksisterendeSaksnummer = Saksnummer("SH-999999")
+
+            assertThatThrownBy {
+                sakRepository.getSak(ikkeEksisterendeSaksnummer)
+            }.isInstanceOf(IkkeFunnetException::class.java)
+        }
+
+        @WithMockJwtAuth(permissions = [])
+        @Test
+        fun `skal nekte tilgang uten READ-tillatelse`() {
+            val lagretSak = SakTestData.lagreSak(sakRepository)
+
+            assertThatThrownBy { sakRepository.getSak(lagretSak.saksnummer) }.isInstanceOf(AuthorizationDeniedException::class.java)
+        }
+
+        @Test
+        fun `skal nekte tilgang når tilgangsmaskin avviser`() {
+            val lagretSak = SakTestData.lagreSak(sakRepository)
+            whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
+                harTilgang = false,
+                response = TilgangsmaskinTestData.problemDetailResponse
+            )
+
+            assertThatThrownBy {
+                sakRepository.getSak(lagretSak.saksnummer)
+            }.isInstanceOf(AuthorizationDeniedException::class.java)
+        }
+
+        @WithSaksbehandler(tema = [FellesKodeverkTema.HEL])
+        @Test
+        fun `skal nekte tilgang for feil tema`() {
+            val hjeSak = SakTestData.lagreSak(
+                sakRepository,
+                SakTestData.sakUtenUtbetaling().copy(type = StonadsType.HOREAPPARAT)
+            )
+
+            assertThatThrownBy { sakRepository.getSak(hjeSak.saksnummer) }.isInstanceOf(AuthorizationDeniedException::class.java)
+                .hasMessageContaining("Mangler tilgang til tema")
         }
     }
 }
