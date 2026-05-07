@@ -13,5 +13,5 @@ export function useAutoSave<T>(value: T, saveFunction: (value: T) => void, delay
             return;
         }
         saveFunction(debouncedValue);
-    }, [debouncedValue]);
+    }, [debouncedValue, saveFunction]);
 }
