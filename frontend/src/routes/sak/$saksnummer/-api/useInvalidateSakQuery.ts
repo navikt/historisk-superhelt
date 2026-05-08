@@ -1,4 +1,4 @@
-import { hentEndringsloggForSakQueryKey } from "@generated/@tanstack/react-query.gen";
+import { hentEndringsloggForSakQueryKey, hentSakHistorikkForSakOptions } from "@generated/@tanstack/react-query.gen";
 import { useQueryClient } from "@tanstack/react-query";
 import { sakQueryKey } from "~/common/sak/sak.query";
 import { apiFinnJournalposterForSakOptions } from "./journalpost.query";
@@ -21,6 +21,10 @@ export function useInvalidateSakQuery() {
         // andre dokumenter på brukeren
         queryClient.invalidateQueries({
             queryKey: apiFinnJournalposterForSakOptions(saksnummer).queryKey,
+        });
+        // sakshistorikk for saken
+        queryClient.invalidateQueries({
+            queryKey: hentSakHistorikkForSakOptions({ path: { saksnummer } }).queryKey,
         });
     }
 

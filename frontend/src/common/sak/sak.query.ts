@@ -3,15 +3,13 @@ import {
     getKodeverkStonadTypeOptions,
     getKodeverkVedtaksResultatOptions as getKodeverkVedtaksResultatQueryOptions,
     getSakBySaksnummerOptions,
-    getSakBySaksnummerQueryKey,
 } from "@generated/@tanstack/react-query.gen";
 
 export const getSakOptions = (saksnummer: string) => ({
     ...getSakBySaksnummerOptions({ path: { saksnummer: saksnummer } }),
-    retry: false,
 });
 
-export const sakQueryKey = (saksnummer: string) => getSakBySaksnummerQueryKey({ path: { saksnummer: saksnummer } });
+export const sakQueryKey = (saksnummer: string) => getSakOptions(saksnummer).queryKey;
 
 export const getKodeverkStonadsTypeOptions = () => ({
     ...getKodeverkStonadTypeOptions(),

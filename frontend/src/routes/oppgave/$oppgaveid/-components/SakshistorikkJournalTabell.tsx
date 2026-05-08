@@ -6,12 +6,12 @@ import { isSakFerdig } from "~/common/sak/sak.utils";
 
 interface SakshistorikkJournalTabellProps {
     maskertPersonIdent: string;
-    tema: TemaType;
+    tema?: TemaType;
 }
 
 export function SakshistorikkJournalTabell({ maskertPersonIdent, tema }: SakshistorikkJournalTabellProps) {
     const { data, isPending, error } = useSuspenseQuery({
-        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent, tema: tema } }),
+        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent }, query: { tema } }),
     });
 
     const saker = data.saker.filter((sak) => !isSakFerdig(sak));

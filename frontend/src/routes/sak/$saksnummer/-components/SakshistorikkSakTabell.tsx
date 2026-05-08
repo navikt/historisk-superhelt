@@ -1,16 +1,14 @@
-import { hentSakHistorikkForPersonOptions } from "@generated/@tanstack/react-query.gen";
+import { hentSakHistorikkForSakOptions } from "@generated/@tanstack/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
-import type { TemaType } from "~/common/sak/sak.types";
 
 interface SakerTableProps {
-    maskertPersonIdent: string;
-    tema: TemaType;
+    saksnummer: string;
 }
 
-export function SakshistorikkSakTabell({ maskertPersonIdent, tema }: SakerTableProps) {
+export function SakshistorikkSakTabell({ saksnummer }: SakerTableProps) {
     const { data, isPending, error } = useSuspenseQuery({
-        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent, tema: tema } }),
+        ...hentSakHistorikkForSakOptions({ path: { saksnummer } }),
     });
 
     const saker = data.saker.filter((sak) => sak.status === "FERDIG");

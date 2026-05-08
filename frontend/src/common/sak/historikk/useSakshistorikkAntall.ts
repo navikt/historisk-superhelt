@@ -15,8 +15,7 @@ type Variant = "ferdig" | "aapen";
  */
 export function useSakshistorikkAntall(maskertPersonIdent: string, variant: Variant) {
     const { data, isSuccess } = useSuspenseQuery({
-        //TODO fix hardkodet
-        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent, tema: "HEL" } }),
+        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent } }),
     });
 
     const filtrerSaker: (sak: Sak) => boolean =

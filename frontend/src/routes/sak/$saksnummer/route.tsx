@@ -154,7 +154,7 @@ function SakLayout() {
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} tema={sak.tema} />
+                                <SakshistorikkSakTabell saksnummer={saksnummer} />
                             </Tabs.Panel>
                             <Tabs.Panel value="endringslogg">
                                 <Box paddingBlock="space-16 space-0">
