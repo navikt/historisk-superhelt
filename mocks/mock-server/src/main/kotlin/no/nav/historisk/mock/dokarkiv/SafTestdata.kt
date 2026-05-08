@@ -4,9 +4,13 @@ import net.datafaker.Faker
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.JournalpostType
 import no.nav.historisk.mock.classpathAsStream
-import no.nav.saf.graphql.*
+import no.nav.saf.graphql.JournalStatus
+import no.nav.saf.graphql.Journalpost
+import no.nav.saf.graphql.JournalpostBruker
+import no.nav.saf.graphql.JournalpostDokumentInfo
+import no.nav.saf.graphql.JournalpostDokumentVariant
+import no.nav.saf.graphql.SafJournalpostType
 import java.time.LocalDateTime
 
 val faker = Faker()
@@ -37,7 +41,7 @@ fun generateJournalpost(
         tittel = tittel,
         dokumenter = dokumenter,
         datoOpprettet = datoOpprettet,
-        journalposttype = JournalpostType.I,
+        journalposttype = SafJournalpostType.I,
     )
 }
 
@@ -66,7 +70,7 @@ private val journalpost =
             ),
         dokumenter = emptyList(),
         datoOpprettet = LocalDateTime.now(),
-        journalposttype = JournalpostType.I,
+        journalposttype = SafJournalpostType.I,
     )
 
 val pdfdoc = classpathAsStream("/saf/saf_doc.pdf").readBytes()

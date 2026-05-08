@@ -5,8 +5,14 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
-import no.nav.dokarkiv.JournalpostType
-import no.nav.saf.graphql.*
+import no.nav.saf.graphql.JournalStatus
+import no.nav.saf.graphql.Journalpost
+import no.nav.saf.graphql.JournalpostAvsenderMottaker
+import no.nav.saf.graphql.JournalpostBruker
+import no.nav.saf.graphql.JournalpostDokumentInfo
+import no.nav.saf.graphql.JournalpostDokumentVariant
+import no.nav.saf.graphql.JournalpostSak
+import no.nav.saf.graphql.SafJournalpostType
 import java.time.LocalDateTime
 
 object DokarkivTestdata {
@@ -32,7 +38,7 @@ object DokarkivTestdata {
             ),
             dokumenter = List(faker.number().numberBetween(1, 4)) { journalpostDokumentInfo() },
             datoOpprettet = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 10).toLong()),
-            journalposttype = JournalpostType.entries.random()
+            journalposttype = SafJournalpostType.entries.random()
         )
 
     private fun journalpostDokumentInfo() = JournalpostDokumentInfo(
