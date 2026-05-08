@@ -1,7 +1,6 @@
 import type { Sak } from "@generated";
 import { hentSakHistorikkForPersonOptions } from "@generated/@tanstack/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import type { TemaType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 
 type Variant = "ferdig" | "aapen";

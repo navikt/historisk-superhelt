@@ -1,5 +1,5 @@
 import type { ProblemDetail } from "@generated";
-import { Bleed, Box, GlobalAlert, LocalAlert } from "@navikt/ds-react";
+import { LocalAlert } from "@navikt/ds-react";
 
 type ErrorAlertType = Error | ProblemDetail;
 

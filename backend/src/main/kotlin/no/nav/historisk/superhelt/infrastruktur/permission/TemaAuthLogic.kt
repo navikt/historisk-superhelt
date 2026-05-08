@@ -8,14 +8,14 @@ import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.stereotype.Component
 
 /**
- * 
+ * Sjekker rettigheter i forhold til tema.
  */
 @Component("temaAuth")
 class TemaAuthLogic{
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun harTilgang(tema: FellesKodeverkTema): Boolean? {
+    fun harTilgang(tema: FellesKodeverkTema): Boolean {
 
         if (getAuthenticatedUser().systemUser) {
             logger.trace("Dropper sjekk for systembruker")
@@ -25,7 +25,7 @@ class TemaAuthLogic{
         if (!getAuthenticatedUser().hasTemaAccess(tema)) {
             throw AuthorizationDeniedException(
                 "Mangler tilgang til tema",
-                SakAuthorizationDecision(false, "Mangler tilgang til tema $tema. Bruker har tilgang til tema ${getAuthenticatedUser().tema.joinToString("), ")}")
+                SakAuthorizationDecision(false, "Mangler tilgang til tema $tema. Bruker har tilgang til tema ${getAuthenticatedUser().tema.joinToString(", ")}")
             )
         }
         return true
