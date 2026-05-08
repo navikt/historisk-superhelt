@@ -13,6 +13,7 @@ import no.nav.saf.graphql.JournalpostAvsenderMottaker
 import no.nav.saf.graphql.JournalpostBruker
 import no.nav.saf.graphql.JournalpostDokumentInfo
 import no.nav.saf.graphql.JournalpostSak
+import no.nav.saf.graphql.SafJournalpostType
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -63,7 +64,7 @@ class DokarkivController(
                             dokumentvarianter = emptyList(),
                         )
                     },
-                    journalposttype = req.journalpostType,
+                    journalposttype = SafJournalpostType.from(req.journalpostType),
                     avsenderMottaker = req.avsenderMottaker?.let {
                         JournalpostAvsenderMottaker(
                             id = it.id,
