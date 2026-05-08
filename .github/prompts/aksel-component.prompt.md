@@ -9,7 +9,7 @@ Du lager en ny React-komponent med Navs Aksel Design System.
 
 1. **Aldri bruk Tailwind padding/margin** (`p-*`, `m-*`, `px-*`, `py-*`)
 2. **Alltid bruk Aksel spacing-tokens** med `space-`-prefiks
-3**Bruk Aksel-komponenter**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
+3. **Bruk Aksel-komponenter**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
 
 ## Spør brukeren
 
