@@ -32,6 +32,7 @@ class SakController(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    @Deprecated("Bruk sakshistorikk i stedet")
     @Operation(operationId = "findSakerForPerson", summary = "Finn saker for en person")
     @GetMapping()
     fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<Sak>> {

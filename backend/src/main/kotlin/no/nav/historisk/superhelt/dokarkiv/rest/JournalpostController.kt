@@ -2,12 +2,15 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.saf.graphql.Journalpost
 import org.slf4j.LoggerFactory
@@ -74,14 +77,16 @@ class JournalpostController(
     }
 
     @Operation(operationId = "finnJournalposterForBruker")
-    @GetMapping("/bruker/{saksnummer}")
+    @GetMapping("/person/{maskertPersonIdent}/{tema}")
     fun finnJournalposterForBruker(
-        @PathVariable saksnummer: Saksnummer,
+        @PathVariable maskertPersonIdent: MaskertPersonIdent,
+        @PathVariable tema: FellesKodeverkTema
     ): List<Journalpost> {
-        val sak = sakRepository.getSak(saksnummer)
-        return journalpostService.finnJournalposterForBruker(sak.fnr, sak.type.tema)
+        if (!getAuthenticatedUser().hasTemaAccess(tema)) {
+            return emptyList()
+        }
+        return journalpostService.finnJournalposterForBruker(maskertPersonIdent.toFnr(), tema)
     }
-
 
 
 }

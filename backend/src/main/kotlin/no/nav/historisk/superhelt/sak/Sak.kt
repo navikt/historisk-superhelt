@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
@@ -57,6 +58,9 @@ data class Sak(
     val vedtaksbrevBruker: Brev? = null,
 ) {
 
+    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val tema: FellesKodeverkTema
+        get() = type.tema
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent
         get() = fnr.toMaskertPersonIdent()
