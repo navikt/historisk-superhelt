@@ -79,12 +79,6 @@ pnpm playwright:snapshot-update   # oppdater snapshots
 - Consumer: `UtbetalingStatusConsumer` mottar statuser og oppdaterer `UtbetalingStatus`
 - Status-maskin: `UTKAST → KLAR_TIL_UTBETALING → SENDT → MOTTATT → BEHANDLET → UTBETALT | FEILET`
 
-### Tester
-- Unit-tester bruker Assertj (`assertThat`) med JUnit 5
-- Integrasjonstester bruker Testcontainers (Postgres) – krever Docker
-- Testdata-fabrikker i `*TestData.kt`-objekter (eks. `SakTestData`, `UtbetalingTestData`)
-- Mockito-kotlin for mocking av eksterne avhengigheter
-
 ## Frontend-konvensjoner
 
 ### Typing
@@ -111,11 +105,6 @@ cd frontend && pnpm start   # :3000 med hot reload
 # Appen tilgjengelig på :4000 (gjennom Wonderwall med mock-auth)
 ```
 
-Testpersoner fra mock-server (se `mocks/mock-server/README.md`):
-- `70000000001` – person med dødsdato
-- `60000000001` – strengt fortrolig adresse
-- `40300000001` – avvises av tilgangsmaskin
-
 ## Libs-moduler
 
 Interne Kotlin-libs (versjonert sammen med appen):
@@ -128,3 +117,49 @@ Interne Kotlin-libs (versjonert sammen med appen):
 | `dokarkiv` | Journalføring (Dokarkiv + Dokdist + SAF) |
 | `oppgave` | Oppgave-klient (Gosys) |
 | `pdfgen` | Pdfgen-klient for brevgenerering |
+
+### Tester
+- Unit-tester bruker Assertj (`assertThat`) med JUnit 5
+- Integrasjonstester bruker Testcontainers (Postgres) – krever Docker
+- Testdata-fabrikker i `*TestData.kt`-objekter (eks. `SakTestData`, `UtbetalingTestData`)
+- Mockito-kotlin for mocking av eksterne avhengigheter
+- User workflows testes med Playwright (E2E)
+
+#### Test Naming
+
+```kotlin
+// ✅ Good - describes behavior
+`should create user when valid data provided`
+`should throw exception when email is invalid`
+`should publish event after successful processing`
+
+// ❌ Bad - not descriptive
+`test1`
+`createUserTest`
+`testValidation`
+```
+
+#### Boundaries
+
+##### ✅ Always
+
+- Write tests for new code before committing
+- Test both success and error cases
+- Use descriptive test names
+- Clean up test data after each test
+- Run full test suite before pushing
+
+##### ⚠️ Ask First
+
+- Changing test framework or structure
+- Adding complex test fixtures
+- Modifying shared test utilities
+- Disabling or skipping tests
+
+##### 🚫 Never
+
+- Commit failing tests
+- Skip tests without good reason
+- Test implementation details
+- Share mutable state between tests
+- Commit without running tests
