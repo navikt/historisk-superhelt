@@ -60,8 +60,7 @@ function OppgaveLayout() {
                         <Tabs.Panel value="historikk">
                             <SakshistorikkJournalTabell
                                 maskertPersonIdent={oppgave.maskertPersonIdent}
-                                // tema={oppgave.tema}
-                                tema={"HEL"}
+                                tema={oppgave.tema}
                             />
                         </Tabs.Panel>
                     </Tabs>
