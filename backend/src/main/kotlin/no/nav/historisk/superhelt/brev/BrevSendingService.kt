@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.brev
 
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
+import no.nav.historisk.superhelt.dokarkiv.DokdistService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
@@ -13,6 +14,7 @@ class BrevSendingService(
     private val brevRepository: BrevRepository,
     private val pdfgenService: PdfgenService,
     private val dokarkivService: DokarkivService,
+    private val dokdistService: DokdistService,
     private val endringsloggService: EndringsloggService
 ) {
 
@@ -44,7 +46,7 @@ class BrevSendingService(
 
         oppdatertBrev = arkiverBrev(brev = oppdatertBrev, sak = sak)
 
-        val distStatus = dokarkivService.distribuerBrev(sak = sak, brev = oppdatertBrev)
+        val distStatus = dokdistService.distribuer(brev = oppdatertBrev)
 
         oppdatertBrev = brevRepository.oppdater(uuid = brevId, oppdatering = BrevOppdatering(status = BrevStatus.SENDT))
         if (distStatus.sendtOk) {

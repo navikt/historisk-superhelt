@@ -4,8 +4,8 @@ import no.nav.common.types.EksternJournalpostId
 
 data class DistribuerJournalpostRequest(
     val journalpostId: EksternJournalpostId,
-    val bestillendeFagsystem: String, // todo: trenger en type som identifiserer om dette er felles kodeverk eller noe annet.
-    val dokumentProdApp: String, // todo: trenger en type som identifiserer om dette er felles kodeverk eller noe annet.
+    val bestillendeFagsystem: String,
+    val dokumentProdApp: String,
     val distribusjonstype: Distribusjonstype,
     val distribusjonstidspunkt: Distribusjonstidspunkt,
 ) {

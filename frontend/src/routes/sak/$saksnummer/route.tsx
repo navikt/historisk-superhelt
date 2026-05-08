@@ -1,4 +1,4 @@
-import { ClockDashedIcon, FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
+import { ClockDashedIcon, FilePdfIcon, FileTextIcon, TasklistIcon } from "@navikt/aksel-icons";
 import { Box, HStack, Tabs } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
+import { DokumentTabell } from "~/common/pdf/DokumentTabell";
+import { MultiPdfViewer } from "~/common/pdf/MultiPdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
 import { finnPersonQuery } from "~/common/person/person.query";
 import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
@@ -15,8 +17,10 @@ import { getSakOptions } from "~/common/sak/sak.query";
 import type { TilstandStatusType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn, kortSaksnummer } from "~/common/string.utils";
-import { apiFinnJournalposterOptions } from "~/routes/sak/$saksnummer/-api/journalpost.query";
-import DokumentViewer from "~/routes/sak/$saksnummer/-components/dokumenter/DokumentViewer";
+import {
+    apiFinnJournalposterForBrukerOptions,
+    apiFinnJournalposterForSakOptions,
+} from "~/routes/sak/$saksnummer/-api/journalpost.query";
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
@@ -27,7 +31,8 @@ export const Route = createFileRoute("/sak/$saksnummer")({
     component: SakLayout,
     loader: ({ params: { saksnummer }, context }) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer));
-        context.queryClient.ensureQueryData(apiFinnJournalposterOptions(saksnummer, false));
+        context.queryClient.ensureQueryData(apiFinnJournalposterForSakOptions(saksnummer));
+        context.queryClient.ensureQueryData(apiFinnJournalposterForBrukerOptions(saksnummer));
     },
     errorComponent: ({ error }) => {
         return <ErrorAlert error={error} />;
@@ -38,9 +43,14 @@ function SakLayout() {
     const { saksnummer } = Route.useParams();
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
-    const { data: journalposter } = useSuspenseQuery(apiFinnJournalposterOptions(saksnummer, false));
+    const { data: journalposter } = useSuspenseQuery(apiFinnJournalposterForSakOptions(saksnummer));
+    const { data: brukerJournalposter } = useSuspenseQuery(apiFinnJournalposterForBrukerOptions(saksnummer));
 
+    const andreJournalposter = brukerJournalposter.filter(
+        (jp) => !journalposter.some((jp2) => jp2.journalpostId === jp.journalpostId),
+    );
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
+    const antallAndreDokumenter = andreJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
     const { sakshistorikkLabel } = useSakshistorikkAntall(sak.maskertPersonIdent, "ferdig");
 
@@ -114,7 +124,7 @@ function SakLayout() {
                     </DeltVisning.Kolonne>
                     <DeltVisning.Kolonne justerbar>
                         <SakOppsummering sak={sak} />
-                        <Tabs defaultValue="dokumenter" style={{ height: "100%" }}>
+                        <Tabs defaultValue="dokumenter" style={{ marginTop: "1.5rem", height: "100%" }}>
                             <Tabs.List>
                                 <Tabs.Tab
                                     value="dokumenter"
@@ -131,21 +141,27 @@ function SakLayout() {
                                     label="Endringslogg"
                                     icon={<ClockDashedIcon aria-hidden />}
                                 />
+                                <Tabs.Tab
+                                    value="andre-dokumenter"
+                                    label={`Andre dokumenter (${antallAndreDokumenter})`}
+                                    icon={<FileTextIcon aria-hidden />}
+                                />
                             </Tabs.List>
                             <Tabs.Panel value="dokumenter" style={{ height: "100%" }}>
-                                <Box width="100%" height="100%" paddingBlock="space-16 space-0">
-                                    <DokumentViewer saksnummer={saksnummer} />
+                                <Box paddingBlock="space-8 space-0">
+                                    <MultiPdfViewer journalPoster={journalposter} />
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <Box width="100%" height="6rem" paddingBlock="space-16 space-0">
-                                    <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
-                                </Box>
+                                <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
                             </Tabs.Panel>
                             <Tabs.Panel value="endringslogg">
-                                <Box width="100%" paddingBlock="space-16 space-0">
+                                <Box paddingBlock="space-16 space-0">
                                     <SakEndringer sak={sak} />
                                 </Box>
+                            </Tabs.Panel>
+                            <Tabs.Panel value="andre-dokumenter">
+                                <DokumentTabell dokumenter={andreJournalposter} />
                             </Tabs.Panel>
                         </Tabs>
                     </DeltVisning.Kolonne>

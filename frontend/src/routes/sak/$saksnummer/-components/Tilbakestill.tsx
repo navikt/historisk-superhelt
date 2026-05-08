@@ -56,7 +56,7 @@ export function Tilbakestill({ open, onOpenChange }: TilbakestillProps) {
                 <Dialog.Header>
                     <Dialog.Title>Tilbakestill sak</Dialog.Title>
                 </Dialog.Header>
-                <Dialog.Body>
+                <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-32">
                         <BodyLong>
                             Saken ble gjenåpnet ved en feil. Ved å tilbakestille saken vil den bli gjenopprettet til

@@ -1,6 +1,6 @@
 import { henleggSakMutation } from "@generated/@tanstack/react-query.gen";
 import { Dialog, Textarea, VStack } from "@navikt/ds-react";
-import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
+import { BreakpointXl } from "@navikt/ds-tokens/dist/tokens";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
@@ -61,11 +61,11 @@ export function Henlegg({ open, onOpenChange }: HenleggProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg }}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointXl, resize: "both", overflow: "auto" }}>
                 <Dialog.Header>
                     <Dialog.Title>Henlegg sak</Dialog.Title>
                 </Dialog.Header>
-                <Dialog.Body>
+                <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-16">
                         <Textarea
                             label="Årsak til henleggelse"
