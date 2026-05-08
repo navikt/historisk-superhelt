@@ -2,7 +2,7 @@
   "collection": "fullstack",
   "version": "2026.04.30-090824-bb25c0e",
   "scope": "repo",
-  "source_sha": "bb25c0e",
+  "source_sha": "fd4e9e8",
   "installed_at": "2026-04-16T11:42:15Z",
   "files": [
     {
@@ -237,6 +237,10 @@
       "path": ".github/prompts/golang-service.prompt.md",
       "hash": "b3c85da75dc6b19c",
       "status": "ignored"
+    },
+    {
+      "path": ".github/skills/observability-debugging/",
+      "hash": "cc94b1e7bfe7626c"
     }
   ]
 }
