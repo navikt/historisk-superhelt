@@ -1,10 +1,25 @@
-import { ArrowRedoIcon, ArrowUndoIcon, BulletListIcon, NumberListIcon, PencilIcon } from "@navikt/aksel-icons";
+import {
+    ArrowRedoIcon,
+    ArrowUndoIcon,
+    BulletListIcon,
+    FloppydiskIcon,
+    NumberListIcon,
+    PencilIcon,
+} from "@navikt/aksel-icons";
 import { ActionMenu, BodyShort, Box, Button, Detail, HelpText, HStack, Tooltip, VStack } from "@navikt/ds-react";
 import { type Editor, useEditorState } from "@tiptap/react";
 import { Bold, Italic } from "./Icons";
 import styles from "./MenuBar.module.css";
 
-export function MenuBar({ editor, children }: { editor: Editor; children?: React.ReactNode }) {
+export function MenuBar({
+    editor,
+    children,
+    onSave,
+}: {
+    editor: Editor;
+    children?: React.ReactNode;
+    onSave?: () => void;
+}) {
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
         editor,
@@ -190,6 +205,17 @@ export function MenuBar({ editor, children }: { editor: Editor; children?: React
                         />
                     </Tooltip>
                 </HStack>
+                <Tooltip content="Lagre" keys={["Ctrl", "S"]} placement="top">
+                    <Button
+                        type="button"
+                        variant="tertiary"
+                        data-color="neutral"
+                        size="small"
+                        aria-label="Lagre"
+                        onClick={onSave}
+                        icon={<FloppydiskIcon fontSize="1.25rem" />}
+                    />
+                </Tooltip>
                 {children}
                 <HelpText title="Hvordan redigere brev">
                     <VStack gap="space-6">

@@ -2,7 +2,7 @@ import { Bleed, Box, ErrorMessage, HStack, InlineMessage, Loader } from "@navikt
 import Highlight from "@tiptap/extension-highlight";
 import StarterKit from "@tiptap/starter-kit";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import styles from "./TiptapEditor.module.css";
 import { MenuBar } from "./MenuBar";
 import { WordHighlight } from "./WordHighlight";
@@ -15,9 +15,18 @@ interface TiptapEditorProps {
     error: string | undefined;
     readOnly?: boolean;
     saveStatus?: "idle" | "saving" | "saved" | "error";
+    onSave?: () => void;
 }
 
-function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly, saveStatus }: TiptapEditorProps) {
+function TiptapEditor({
+    initialContentHtml,
+    onChange,
+    onBlur,
+    error,
+    readOnly,
+    saveStatus,
+    onSave,
+}: TiptapEditorProps) {
     const editor = useEditor({
         extensions,
         content: initialContentHtml,
@@ -37,6 +46,20 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly, s
 
     const providerValue = useMemo(() => ({ editor }), [editor]);
 
+    const onSaveRef = useRef(onSave);
+    onSaveRef.current = onSave;
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+                e.preventDefault();
+                onSaveRef.current?.();
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
     return (
         <Box
             background="raised"
@@ -48,7 +71,7 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly, s
         >
             <Bleed marginInline="space-28" marginBlock="space-1 space-0">
                 {!readOnly && editor && (
-                    <MenuBar editor={editor}>
+                    <MenuBar editor={editor} onSave={onSave}>
                         <Box marginInline="auto space-8">
                             <BrevStatus status={saveStatus} />
                         </Box>
@@ -69,6 +92,18 @@ function TiptapEditor({ initialContentHtml, onChange, onBlur, error, readOnly, s
 }
 
 function BrevStatus({ status }: { status: "idle" | "saving" | "saved" | "error" | undefined }) {
+    const savedAtRef = useRef("");
+    const prevStatusRef = useRef(status);
+
+    if (status === "saved" && prevStatusRef.current !== "saved") {
+        savedAtRef.current = new Date().toLocaleTimeString("no-NO", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        });
+    }
+    prevStatusRef.current = status;
+
     switch (status) {
         case "idle":
             return null;
@@ -82,12 +117,7 @@ function BrevStatus({ status }: { status: "idle" | "saving" | "saved" | "error" 
         case "saved":
             return (
                 <InlineMessage size="small" status="success">
-                    Lagret kl.{" "}
-                    {new Date().toLocaleTimeString("no-NO", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                    })}
+                    Lagret kl. {savedAtRef.current}
                 </InlineMessage>
             );
         case "error":
