@@ -1,4 +1,4 @@
-import { Bleed, Box, Detail, ErrorMessage, HStack, InlineMessage, Loader, VStack } from "@navikt/ds-react";
+import { Bleed, Box, ErrorMessage, HStack, InlineMessage, Loader } from "@navikt/ds-react";
 import Highlight from "@tiptap/extension-highlight";
 import StarterKit from "@tiptap/starter-kit";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
