@@ -3,9 +3,9 @@ package no.nav.dokarkiv
 enum class JournalpostType(
     val visningsnavn: String,
 ) {
-   I("Inngående"),
-   U("Utgående"),
-   N("Notat"),
+   INNGAAENDE("Inngående"),
+   UTGAAENDE("Utgående"),
+   NOTAT("Notat"),
 }
 
 enum class BrukerIdType {
