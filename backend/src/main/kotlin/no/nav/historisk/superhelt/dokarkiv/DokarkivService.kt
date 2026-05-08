@@ -37,7 +37,7 @@ class DokarkivService(
 
         val req = JournalpostRequest(
             tittel = brev.tittel!!,
-            journalpostType = JournalpostType.U,
+            journalpostType = JournalpostType.UTGAAENDE,
             tema = sak.type.tema,
             avsenderMottaker = avsenderMottakerResolver.resolve(brev.mottakerType, sak),
             eksternReferanseId = brev.uuid.toString(),

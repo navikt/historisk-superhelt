@@ -8,7 +8,7 @@ import java.io.File
 fun getMockJournalpostRequest() =
     JournalpostRequest(
         tittel = "Dummy Journalpost Title2",
-        journalpostType = JournalpostType.U,
+        journalpostType = JournalpostType.UTGAAENDE,
         tema = FellesKodeverkTema.HEL,
         avsenderMottaker =
             AvsenderMottaker(
