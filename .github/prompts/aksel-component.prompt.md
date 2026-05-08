@@ -10,6 +10,7 @@ Du lager en ny React-komponent med Navs Aksel Design System.
 1. **Aldri bruk Tailwind padding/margin** (`p-*`, `m-*`, `px-*`, `py-*`)
 2. **Alltid bruk Aksel spacing-tokens** med `space-`-prefiks
 3. **Bruk Aksel-komponenter**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
+4. **Desktop-først responsivitet**: bruk `lg`/`md` som primær, ikke `xs` som base
 
 ## Spør brukeren
 
@@ -36,10 +37,10 @@ export function {ComponentName}({
   return (
     <Box
       background="surface-subtle"
-      padding={{ xs: "space-16", md: "space-24" }}
+      padding={{ lg: "space-24", md: "space-16" }}
       borderRadius="large"
     >
-      <VStack gap="4">
+      <VStack gap="space-4">
         <Heading size="medium" level="2">
           {title}
         </Heading>
@@ -61,11 +62,11 @@ export function {ComponentName}({
 ```tsx
 <Box
   background="surface-subtle"
-  padding={{ xs: "space-16", md: "space-24" }}
+  padding={{ lg: "space-24", md: "space-16" }}
   borderRadius="large"
   className="hover:shadow-lg transition-shadow"
 >
-  <VStack gap="4">
+  <VStack gap="space-4">
     <Heading size="medium" level="3">
       {title}
     </Heading>
@@ -77,7 +78,7 @@ export function {ComponentName}({
 ### Responsiv grid-layout
 
 ```tsx
-<HGrid columns={{ xs: 1, md: 2, lg: 3 }} gap="4">
+<HGrid columns={{ lg: 3, md: 2 }} gap="space-4">
   {items.map((item) => (
     <Card key={item.id} {...item} />
   ))}
@@ -88,11 +89,11 @@ export function {ComponentName}({
 
 ```tsx
 <Box paddingBlock="space-24">
-  <VStack gap="8">
+    <VStack gap="space-8">
     <Heading size="large" level="2">
       Form Title
     </Heading>
-    <VStack gap="4">
+    <VStack gap="space-4">
       <TextField label="Felt 1" />
       <TextField label="Felt 2" />
       <Button>Send inn</Button>
@@ -104,17 +105,17 @@ export function {ComponentName}({
 ### Dashboard Section
 
 ```tsx
-<Box background="surface-default" padding={{ xs: "space-16", md: "space-24" }} borderRadius="medium">
-  <VStack gap="6">
-    <div className="flex items-center justify-between">
+<Box background="surface-default" padding={{ lg: "space-24", md: "space-16" }} borderRadius="medium">
+  <VStack gap="space-8">
+    <HStack justify="space-between" align="center">
       <Heading size="large" level="2">
         Section Title
       </Heading>
       <Button variant="secondary" size="small">
         Action
       </Button>
-    </div>
-    <HGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap="4">
+    </HStack>
+    <HGrid columns={{ lg: 4, md: 2 }} gap="space-4">
       {metrics.map((metric) => (
         <MetricCard key={metric.id} {...metric} />
       ))}
@@ -126,9 +127,9 @@ export function {ComponentName}({
 ### Page Container
 
 ```tsx
-<main className="max-w-7xl mx-auto">
-  <Box paddingBlock={{ xs: "space-16", md: "space-24" }} paddingInline={{ xs: "space-16", md: "space-40" }}>
-    <VStack gap={{ xs: "space-16", md: "space-24" }}>{/* Page content */}</VStack>
+<main>
+  <Box paddingBlock={{ lg: "space-24", md: "space-16" }} paddingInline={{ lg: "space-40", md: "space-24" }}>
+    <VStack gap={{ lg: "space-24", md: "space-16" }}>{/* Page content */}</VStack>
   </Box>
 </main>
 ```
@@ -190,22 +191,21 @@ background = "surface-danger-subtle"; // Light red
 ## Responsive Breakpoints
 
 ```tsx
-// Mobile-first approach
-padding={{ xs: "space-16" }}                          // All sizes
-padding={{ xs: "space-16", md: "space-24" }}         // Mobile + tablet
-padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}  // All breakpoints
+// Desktop-first approach
+padding="space-16"                                      // Default
+padding={{ lg: "space-24", md: "space-16" }}           // Desktop + tablet
+padding={{ lg: "space-32", md: "space-24", sm: "space-16" }}  // Nedskalering
 
-columns={{ xs: 1, md: 2, lg: 3 }}  // Responsive grid
-gap={{ xs: "4", md: "6" }}          // Responsive gap
+columns={{ lg: 3, md: 2 }}  // Responsive grid
+gap={{ lg: "space-8", md: "space-4" }} // Responsive gap
 ```
 
 Breakpoints:
 
-- `xs`: 0px (mobile)
-- `sm`: 480px
+- `lg`: 1024px (desktop, primær)
 - `md`: 768px (tablet)
-- `lg`: 1024px (desktop)
-- `xl`: 1280px (large desktop)
+- `sm`: 480px (ved behov)
+- `xs`: 0px (unngå som base)
 
 ## Testing
 
