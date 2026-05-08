@@ -4,7 +4,7 @@ import { type Editor, useEditorState } from "@tiptap/react";
 import { Bold, Italic } from "./Icons";
 import styles from "./MenuBar.module.css";
 
-export function MenuBar({ editor }: { editor: Editor }) {
+export function MenuBar({ editor, children }: { editor: Editor; children?: React.ReactNode }) {
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
         editor,
@@ -190,6 +190,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
                         />
                     </Tooltip>
                 </HStack>
+                {children}
                 <HelpText title="Hvordan redigere brev">
                     <VStack gap="space-6">
                         <BodyShort size="small">

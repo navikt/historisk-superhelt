@@ -7,7 +7,7 @@ import {
 } from "@generated/@tanstack/react-query.gen";
 import { Button, ErrorSummary, HStack, InfoCard, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useAutoSave } from "~/common/useAutosave";
 import { getOrCreateBrevQueryKey } from "~/routes/sak/$saksnummer/-api/brev.query";
 import { HtmlPdfgenEditor } from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlPdfgenEditor";
@@ -65,12 +65,34 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
 
     const [showValidation, setShowValidation] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+    const statusTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+    const idleTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+    const lastInputRef = useRef<number>(0);
+
+    const debouncedSetStatus = useCallback((status: "idle" | "saving" | "saved" | "error") => {
+        clearTimeout(statusTimeoutRef.current);
+        if (status === "idle") {
+            setSaveStatus("idle");
+            return;
+        }
+        const timeSinceLastInput = Date.now() - lastInputRef.current;
+        const delay = Math.max(0, 500 - timeSinceLastInput);
+        statusTimeoutRef.current = setTimeout(() => {
+            setSaveStatus(status);
+            clearTimeout(idleTimeoutRef.current);
+            idleTimeoutRef.current = setTimeout(() => setSaveStatus("idle"), 750);
+        }, delay);
+    }, []);
+
     const validationErrors = brev?.valideringsfeil || [];
     const hasValidationErrors = validationErrors.length > 0;
 
     const oppdaterBrev = useMutation({
         ...oppdaterBrevMutation(),
         onSuccess: (data) => {
+            debouncedSetStatus("saved");
             queryClient.setQueryData(getOrCreateBrevQueryKey(saksnummer, brev.type, brev.mottakerType), data);
             queryClient.invalidateQueries({
                 queryKey: hentBrevQueryKey({
@@ -81,12 +103,16 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
                 }),
             });
         },
+        onError: () => {
+            debouncedSetStatus("error");
+        },
     });
 
     async function lagreBrev(): Promise<Brev | undefined> {
         if (readOnly) return undefined;
         if (!hasChanged) return brev;
         setHasChanged(false);
+        debouncedSetStatus("saving");
         return oppdaterBrev.mutateAsync({
             path: {
                 saksnummer: saksnummer,
@@ -102,11 +128,16 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
     useAutoSave(editorContent, lagreBrev, 2000);
 
     const editorChanged = (html: string) => {
+        lastInputRef.current = Date.now();
+        clearTimeout(statusTimeoutRef.current);
+        clearTimeout(idleTimeoutRef.current);
+        setSaveStatus("idle");
         setHasChanged(true);
         setEditorContent(html);
     };
 
     const tittelChanged = (tekst: string) => {
+        lastInputRef.current = Date.now();
         setHasChanged(true);
         setTittel(tekst);
     };
@@ -146,6 +177,7 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
                 readOnly={readOnly}
                 error={getErrorMessage("innhold")}
                 onBlur={lagreBrev}
+                saveStatus={saveStatus}
             />
             <HStack gap="space-32" align="start">
                 <Button type="submit" variant="primary" onClick={onActionClick} disabled={readOnly} loading={loading}>
