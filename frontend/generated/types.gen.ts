@@ -63,12 +63,12 @@ export type Sak = {
     belop?: number | null;
     klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     vedtaksbrevBruker?: Brev | null;
+    readonly gjenapnet: boolean;
     tema: 'HEL' | 'HJE';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
-    readonly gjenapnet: boolean;
     readonly kanUtbetales: boolean;
-    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly tilstand: SakTilstand;
+    readonly valideringsfeil: Array<ValidationFieldError>;
     readonly maskertPersonIdent: string;
 };
 
@@ -286,8 +286,8 @@ export type OppgaveMedSak = {
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
-    readonly maskertPersonIdent: string;
     readonly oppgaveTypeTekst: string;
+    readonly maskertPersonIdent: string;
 };
 
 export type HjemmelDto = {
@@ -1737,10 +1737,11 @@ export type FinnJournalposterForBrukerData = {
     body?: never;
     path: {
         maskertPersonIdent: string;
-        tema: 'HEL' | 'HJE';
     };
-    query?: never;
-    url: '/api/journalpost/person/{maskertPersonIdent}/{tema}';
+    query?: {
+        tema?: 'HEL' | 'HJE';
+    };
+    url: '/api/journalpost/person/{maskertPersonIdent}';
 };
 
 export type FinnJournalposterForBrukerErrors = {

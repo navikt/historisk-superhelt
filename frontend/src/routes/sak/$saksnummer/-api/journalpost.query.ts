@@ -8,7 +8,7 @@ export const apiFinnJournalposterForSakOptions = (saksnummer: string) => ({
     ...finnJournalposterForSakOptions({ path: { saksnummer } }),
 });
 
-export const apiFinnJournalposterForBrukerOptions = (maskertPersonIdent: string, tema: TemaType) => ({
-    ...finnJournalposterForBrukerOptions({ path: { maskertPersonIdent, tema } }),
+export const apiFinnJournalposterForBrukerOptions = (maskertPersonIdent: string, tema?: TemaType) => ({
+    ...finnJournalposterForBrukerOptions({ path: { maskertPersonIdent }, query: { tema } }),
     enabled: !!maskertPersonIdent,
 });

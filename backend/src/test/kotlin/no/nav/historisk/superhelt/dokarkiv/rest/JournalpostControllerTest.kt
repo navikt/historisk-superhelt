@@ -38,6 +38,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import org.springframework.test.web.servlet.assertj.MvcTestResultAssert
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
@@ -220,10 +221,7 @@ class JournalpostControllerTest {
                     )
                 )
 
-            assertThat(
-                mockMvc.get()
-                    .uri("/api/journalpost/person/{maskertPersonIdent}/{tema}", fnr.toMaskertPersonIdent(), FellesKodeverkTema.HEL)
-            )
+            assertGetJournalposter(fnr, FellesKodeverkTema.HEL)
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
                 .hasPath("$[0].journalpostId")
@@ -245,16 +243,42 @@ class JournalpostControllerTest {
                     )
                 )
 
-            assertThat(
-                mockMvc.get()
-                    .uri("/api/journalpost/person/{maskertPersonIdent}/{tema}", fnr.toMaskertPersonIdent(), FellesKodeverkTema.HEL)
-            )
+            assertGetJournalposter(fnr, FellesKodeverkTema.HEL)
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
                 .doesNotHavePath("$[0].journalpostId")
 
             verify(safGraphqlClient,never()).dokumentoversiktBruker(any(), any())
         }
+
+        @WithSaksbehandler(tema = [FellesKodeverkTema.HJE])
+        @Test
+        fun `gi alle tema som bruker har tilgang til om det ikke oppgis temafilter`() {
+            val fnr = FolkeregisterIdent("12312312312")
+            val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
+
+            whenever(safGraphqlClient.dokumentoversiktBruker(any(), any()))
+                .thenReturn(
+                    DokumentoversiktBrukerGraphqlResponse(
+                        data = DokumentoversiktBrukerData(DokumentoversiktResult(journalposter))
+                    )
+                )
+
+            assertGetJournalposter(fnr, null)
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPath("$[0].journalpostId")
+
+            verify(safGraphqlClient,).dokumentoversiktBruker(eq(fnr), eq(listOf(FellesKodeverkTema.HJE)))
+        }
+
+
+
+        private fun assertGetJournalposter(fnr: FolkeregisterIdent, tema: FellesKodeverkTema?): MvcTestResultAssert = assertThat(
+            mockMvc.get()
+                .uri("/api/journalpost/person/{maskertPersonIdent}", fnr.toMaskertPersonIdent())
+                .apply { tema?.let { queryParam("tema", it.name) } }
+        )
     }
 
     @Nested

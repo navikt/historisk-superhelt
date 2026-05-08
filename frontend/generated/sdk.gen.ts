@@ -341,6 +341,6 @@ export const finnJournalposterForSak = <ThrowOnError extends boolean = false>(op
 
 export const finnJournalposterForBruker = <ThrowOnError extends boolean = false>(options: Options<FinnJournalposterForBrukerData, ThrowOnError>) => (options.client ?? client).get<FinnJournalposterForBrukerResponses, FinnJournalposterForBrukerErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/journalpost/person/{maskertPersonIdent}/{tema}',
+    url: '/api/journalpost/person/{maskertPersonIdent}',
     ...options
 });

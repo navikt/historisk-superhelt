@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -77,16 +78,24 @@ class JournalpostController(
     }
 
     @Operation(operationId = "finnJournalposterForBruker")
-    @GetMapping("/person/{maskertPersonIdent}/{tema}")
+    @GetMapping("/person/{maskertPersonIdent}")
     fun finnJournalposterForBruker(
         @PathVariable maskertPersonIdent: MaskertPersonIdent,
-        @PathVariable tema: FellesKodeverkTema
+        @RequestParam tema: FellesKodeverkTema?
     ): List<Journalpost> {
-        if (!getAuthenticatedUser().hasTemaAccess(tema)) {
+        val fnr = maskertPersonIdent.toFnr()
+        val authenticatedUser = getAuthenticatedUser()
+        val temaer: List<FellesKodeverkTema> = when {
+            tema != null && !authenticatedUser.hasTemaAccess(tema) -> emptyList()
+            tema != null -> listOf(tema)
+            else -> authenticatedUser.tema
+        }
+
+        if (temaer.isEmpty()) {
+            logger.debug("Bruker har ikke tilgang til noen tema. Gir tom liste av journalposter")
             return emptyList()
         }
-        return journalpostService.finnJournalposterForBruker(maskertPersonIdent.toFnr(), tema)
+        return journalpostService.finnJournalposterForBruker(fnr, *temaer.toTypedArray())
     }
-
 
 }
