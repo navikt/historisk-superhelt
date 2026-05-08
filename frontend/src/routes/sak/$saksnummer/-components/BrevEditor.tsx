@@ -7,7 +7,7 @@ import {
 } from "@generated/@tanstack/react-query.gen";
 import { Button, ErrorSummary, HStack, InfoCard, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoSave } from "~/common/useAutosave";
 import { getOrCreateBrevQueryKey } from "~/routes/sak/$saksnummer/-api/brev.query";
 import { HtmlPdfgenEditor } from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlPdfgenEditor";
@@ -67,8 +67,8 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
     const [loading, setLoading] = useState(false);
 
     const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
-    const statusTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-    const idleTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+    const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const lastInputRef = useRef<number>(0);
 
     const debouncedSetStatus = useCallback((status: "idle" | "saving" | "saved" | "error") => {
@@ -86,12 +86,21 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
         }, delay);
     }, []);
 
+    useEffect(() => {
+        return () => {
+            // Rydd opp i timeouts når komponenten unmountes
+            clearTimeout(statusTimeoutRef.current);
+            clearTimeout(idleTimeoutRef.current);
+        };
+    }, []);
+
     const validationErrors = brev?.valideringsfeil || [];
     const hasValidationErrors = validationErrors.length > 0;
 
     const oppdaterBrev = useMutation({
         ...oppdaterBrevMutation(),
         onSuccess: (data) => {
+            setHasChanged(false);
             debouncedSetStatus("saved");
             queryClient.setQueryData(getOrCreateBrevQueryKey(saksnummer, brev.type, brev.mottakerType), data);
             queryClient.invalidateQueries({
@@ -104,6 +113,7 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
             });
         },
         onError: () => {
+            setHasChanged(true);
             debouncedSetStatus("error");
         },
     });
@@ -111,7 +121,6 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
     async function lagreBrev(): Promise<Brev | undefined> {
         if (readOnly) return undefined;
         if (!hasChanged) return brev;
-        setHasChanged(false);
         debouncedSetStatus("saving");
         return oppdaterBrev.mutateAsync({
             path: {
