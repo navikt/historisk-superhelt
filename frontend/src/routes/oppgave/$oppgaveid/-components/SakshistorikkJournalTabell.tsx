@@ -1,24 +1,21 @@
-import {
-    findSakerForPersonOptions,
-    hentInfotrygdHistorikkForPersonOptions,
-} from "@generated/@tanstack/react-query.gen";
+import { hentSakHistorikkForPersonOptions } from "@generated/@tanstack/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
+import type { TemaType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 
 interface SakshistorikkJournalTabellProps {
     maskertPersonIdent: string;
+    tema: TemaType;
 }
 
-export function SakshistorikkJournalTabell({ maskertPersonIdent }: SakshistorikkJournalTabellProps) {
+export function SakshistorikkJournalTabell({ maskertPersonIdent, tema }: SakshistorikkJournalTabellProps) {
     const { data, isPending, error } = useSuspenseQuery({
-        ...findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }),
+        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent, tema: tema } }),
     });
-    const { data: infotrygdHistorikk } = useSuspenseQuery(
-        hentInfotrygdHistorikkForPersonOptions({ path: { maskertPersonIdent } }),
-    );
 
-    const saker = data.filter((sak) => !isSakFerdig(sak));
+    const saker = data.saker.filter((sak) => !isSakFerdig(sak));
+    const infotrygdHistorikk = data.infotrygd;
 
     return (
         <SakshistorikkKombinertTabell

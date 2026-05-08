@@ -1,9 +1,7 @@
-import {
-    findSakerForPersonOptions,
-    hentInfotrygdHistorikkForPersonOptions,
-} from "@generated/@tanstack/react-query.gen";
+import { hentSakHistorikkForPersonOptions } from "@generated/@tanstack/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
+import type { TemaType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 
 interface Props {
@@ -11,14 +9,13 @@ interface Props {
 }
 
 export function SakshistorikkPersonTabell({ maskertPersonIdent }: Props) {
-    const { data: saker } = useSuspenseQuery(
-        findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }),
-    );
-    const { data: infotrygdHistorikk } = useSuspenseQuery(
-        hentInfotrygdHistorikkForPersonOptions({ path: { maskertPersonIdent } }),
-    );
+    //TODO tema som query filter optional
+    const { data, isPending, error } = useSuspenseQuery({
+        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent, tema: "HEL" } }),
+    });
 
-    return (
-        <SakshistorikkKombinertTabell saker={saker.filter(isSakFerdig)} infotrygdHistorikk={infotrygdHistorikk ?? []} />
-    );
+    const saker = data.saker;
+    const infotrygdHistorikk = data.infotrygd;
+
+    return <SakshistorikkKombinertTabell saker={saker.filter(isSakFerdig)} infotrygdHistorikk={infotrygdHistorikk} />;
 }

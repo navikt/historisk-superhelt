@@ -32,7 +32,6 @@ export const Route = createFileRoute("/sak/$saksnummer")({
     loader: ({ params: { saksnummer }, context }) => {
         context.queryClient.ensureQueryData(getSakOptions(saksnummer));
         context.queryClient.ensureQueryData(apiFinnJournalposterForSakOptions(saksnummer));
-        context.queryClient.ensureQueryData(apiFinnJournalposterForBrukerOptions(saksnummer));
     },
     errorComponent: ({ error }) => {
         return <ErrorAlert error={error} />;
@@ -44,7 +43,9 @@ function SakLayout() {
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
     const { data: person } = useSuspenseQuery(finnPersonQuery(sak.maskertPersonIdent));
     const { data: journalposter } = useSuspenseQuery(apiFinnJournalposterForSakOptions(saksnummer));
-    const { data: brukerJournalposter } = useSuspenseQuery(apiFinnJournalposterForBrukerOptions(saksnummer));
+    const { data: brukerJournalposter } = useSuspenseQuery(
+        apiFinnJournalposterForBrukerOptions(sak.maskertPersonIdent, sak.tema),
+    );
 
     const andreJournalposter = brukerJournalposter.filter(
         (jp) => !journalposter.some((jp2) => jp2.journalpostId === jp.journalpostId),
@@ -153,7 +154,7 @@ function SakLayout() {
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} />
+                                <SakshistorikkSakTabell maskertPersonIdent={sak.maskertPersonIdent} tema={sak.tema} />
                             </Tabs.Panel>
                             <Tabs.Panel value="endringslogg">
                                 <Box paddingBlock="space-16 space-0">

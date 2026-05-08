@@ -58,7 +58,11 @@ function OppgaveLayout() {
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
-                            <SakshistorikkJournalTabell maskertPersonIdent={oppgave.maskertPersonIdent} />
+                            <SakshistorikkJournalTabell
+                                maskertPersonIdent={oppgave.maskertPersonIdent}
+                                // tema={oppgave.tema}
+                                tema={"HEL"}
+                            />
                         </Tabs.Panel>
                     </Tabs>
                 </DeltVisning.Kolonne>

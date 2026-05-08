@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/sakhistorikk")
 class SakHistorikkController(private val infotrygdService: InfotrygdService, private val sakRepository: SakRepository) {
 
-    @Operation(operationId = "hentHistorikkForPerson")
+    @Operation(operationId = "hentSakHistorikkForPerson")
     @GetMapping("/person/{maskertPersonIdent}/{tema}")
-    fun hentHistorikkForPerson(
+    fun hentSakHistorikkForPerson(
         @PathVariable maskertPersonIdent: MaskertPersonIdent,
         @PathVariable tema: FellesKodeverkTema): SakHistorikkResponse {
 

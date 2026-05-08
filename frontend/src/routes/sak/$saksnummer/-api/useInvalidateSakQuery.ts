@@ -1,7 +1,7 @@
 import { hentEndringsloggForSakQueryKey } from "@generated/@tanstack/react-query.gen";
 import { useQueryClient } from "@tanstack/react-query";
 import { sakQueryKey } from "~/common/sak/sak.query";
-import { apiFinnJournalposterForSakOptions, apiFinnJournalposterForBrukerOptions } from "./journalpost.query";
+import { apiFinnJournalposterForSakOptions } from "./journalpost.query";
 
 /** Invaliderer cachen for en sak og tilhørende endringslogg */
 export function useInvalidateSakQuery() {
@@ -20,7 +20,7 @@ export function useInvalidateSakQuery() {
         });
         // andre dokumenter på brukeren
         queryClient.invalidateQueries({
-            queryKey: apiFinnJournalposterForBrukerOptions(saksnummer).queryKey,
+            queryKey: apiFinnJournalposterForSakOptions(saksnummer).queryKey,
         });
     }
 
