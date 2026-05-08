@@ -125,16 +125,6 @@ Interne Kotlin-libs (versjonert sammen med appen):
 - Mockito-kotlin for mocking av eksterne avhengigheter
 - User workflows testes med Playwright (E2E)
 
-#### Test Coverage
-
-##### Coverage Requirements
-
-- **Utilities in `lib/`**: 80%+ coverage required
-- **Business logic**: 70%+ coverage required
-- **API routes**: Test happy path + error cases
-- **Repositories**: Test CRUD operations
-- **Event handlers**: Test event processing + publishing
-
 #### Test Naming
 
 ```kotlin

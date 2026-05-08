@@ -238,8 +238,8 @@ After generating the component, verify:
 
 After generating the component, explain:
 
-1**Komponentvalg** — Why `Box`/`VStack`/`HGrid` instead of raw `<div>` with CSS. What accessibility and maintainability benefits do these provide?
-2**Heading-nivåer** — Why `level` matters for accessibility (screen readers use heading hierarchy for navigation). What breaks with wrong heading levels?
+1. **Komponentvalg** — Why `Box`/`VStack`/`HGrid` instead of raw `<div>` with CSS. What accessibility and maintainability benefits do these provide?
+2. **Heading-nivåer** — Why `level` matters for accessibility (screen readers use heading hierarchy for navigation). What breaks with wrong heading levels?
 
 🔴 **Rød sone**: Accessibility markup (heading levels, ARIA attributes, labels) is worth understanding deeply — automated tools only catch ~30% of accessibility issues.
 
