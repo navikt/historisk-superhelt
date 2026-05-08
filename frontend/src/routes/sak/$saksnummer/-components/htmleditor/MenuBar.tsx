@@ -92,6 +92,18 @@ export function MenuBar({
                         />
                     </Tooltip>
 
+                    <Tooltip content="Lagre" keys={["Ctrl", "S"]} placement="top">
+                        <Button
+                            type="button"
+                            variant="tertiary"
+                            data-color="neutral"
+                            size="small"
+                            aria-label="Lagre"
+                            onClick={onSave}
+                            icon={<FloppydiskIcon fontSize="1.25rem" />}
+                        />
+                    </Tooltip>
+
                     <Tooltip content="Fet" keys={["Ctrl", "B"]} placement="top">
                         <Button
                             type="button"
@@ -205,17 +217,6 @@ export function MenuBar({
                         />
                     </Tooltip>
                 </HStack>
-                <Tooltip content="Lagre" keys={["Ctrl", "S"]} placement="top">
-                    <Button
-                        type="button"
-                        variant="tertiary"
-                        data-color="neutral"
-                        size="small"
-                        aria-label="Lagre"
-                        onClick={onSave}
-                        icon={<FloppydiskIcon fontSize="1.25rem" />}
-                    />
-                </Tooltip>
                 {children}
                 <HelpText title="Hvordan redigere brev">
                     <VStack gap="space-6">
