@@ -29,7 +29,7 @@ import java.time.LocalDate
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
-class SakHistorikkControllerTest {
+class SakshistorikkControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvcTester
@@ -73,7 +73,7 @@ class SakHistorikkControllerTest {
             assertGetSakHistorikkPerson(fnr, FellesKodeverkTema.HEL)
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
+                .convertTo(SakshistorikkController.SakshistorikkResponse::class.java)
                 .satisfies({
                     assertThat(it.infotrygd).hasSize(2)
                 })
@@ -87,7 +87,7 @@ class SakHistorikkControllerTest {
             assertGetSakHistorikkPerson(fnr, FellesKodeverkTema.HJE)
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
+                .convertTo(SakshistorikkController.SakshistorikkResponse::class.java)
                 .satisfies({
                     assertThat(it.infotrygd).isEmpty()
                 })
@@ -101,7 +101,7 @@ class SakHistorikkControllerTest {
             assertGetSakHistorikkPerson(fnr, null)
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
+                .convertTo(SakshistorikkController.SakshistorikkResponse::class.java)
                 .satisfies({
                     assertThat(it.infotrygd).isEmpty()
                 })
@@ -115,7 +115,7 @@ class SakHistorikkControllerTest {
             assertGetSakHistorikkPerson(fnr, FellesKodeverkTema.HEL)
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
-                .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
+                .convertTo(SakshistorikkController.SakshistorikkResponse::class.java)
                 .satisfies({
                     assertThat(it.infotrygd).isEmpty()
                 })
@@ -155,7 +155,7 @@ class SakHistorikkControllerTest {
                 assertGetSakHistorikkPerson(fnr, FellesKodeverkTema.HEL)
                     .hasStatus(HttpStatus.OK)
                     .bodyJson()
-                    .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
+                    .convertTo(SakshistorikkController.SakshistorikkResponse::class.java)
                     .satisfies({
                         assertThat(it.saker).hasSize(2)
                     })
@@ -175,7 +175,7 @@ class SakHistorikkControllerTest {
                 assertGetSakHistorikkPerson(fnr, null)
                     .hasStatus(HttpStatus.OK)
                     .bodyJson()
-                    .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
+                    .convertTo(SakshistorikkController.SakshistorikkResponse::class.java)
                     .satisfies({
                         assertThat(it.saker).hasSize(2)
                         assertThat(it.saker.map { it.tema }).containsOnly(FellesKodeverkTema.HJE)
@@ -192,7 +192,7 @@ class SakHistorikkControllerTest {
                 assertGetSakHistorikkPerson(fnr, FellesKodeverkTema.HJE)
                     .hasStatus(HttpStatus.OK)
                     .bodyJson()
-                    .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
+                    .convertTo(SakshistorikkController.SakshistorikkResponse::class.java)
                     .satisfies({
                         assertThat(it.saker).hasSize(1)
                         assertThat(it.saker.first().type).isEqualTo(StonadsType.HOREAPPARAT)
@@ -211,7 +211,7 @@ class SakHistorikkControllerTest {
     }
 
     private fun assertGetSakHistorikkPerson(fnr: FolkeregisterIdent, tema: FellesKodeverkTema?) = assertThat(
-        mockMvc.get().uri("/api/sakhistorikk/person/{maskertPersonIdent}", fnr.toMaskertPersonIdent())
+        mockMvc.get().uri("/api/sakshistorikk/person/{maskertPersonIdent}", fnr.toMaskertPersonIdent())
             .apply { tema?.let { queryParam("tema", it.name) } }
     )
 }

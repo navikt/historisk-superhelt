@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/sakhistorikk")
-class SakHistorikkController(private val infotrygdService: InfotrygdService, private val sakRepository: SakRepository) {
+@RequestMapping("/api/sakshistorikk")
+class SakshistorikkController(private val infotrygdService: InfotrygdService, private val sakRepository: SakRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @Operation(operationId = "hentSakHistorikkForPerson")
+    @Operation(operationId = "hentSakshistorikkForPerson")
     @GetMapping("/person/{maskertPersonIdent}")
-    fun hentSakHistorikkForPerson(
+    fun hentSakshistorikkForPerson(
         @PathVariable maskertPersonIdent: MaskertPersonIdent,
-        @RequestParam tema: FellesKodeverkTema?): SakHistorikkResponse {
+        @RequestParam tema: FellesKodeverkTema?): SakshistorikkResponse {
 
         val fnr = maskertPersonIdent.toFnr()
         val authenticatedUser = getAuthenticatedUser()
@@ -36,16 +36,16 @@ class SakHistorikkController(private val infotrygdService: InfotrygdService, pri
 
         if (temaer.isEmpty()) {
             logger.debug("Bruker har ikke tilgang til noen tema. Gir tom historikk")
-            return SakHistorikkResponse(emptyList())
+            return SakshistorikkResponse(emptyList())
         }
 
         val saker = sakRepository.finnSaker(fnr).filter { tema == null || it.tema == tema }
         val infotrygd = if (temaer.contains(FellesKodeverkTema.HEL)) infotrygdService.hentHistorikkFailsafe(fnr) else emptyList()
 
-        return SakHistorikkResponse(saker = saker, infotrygd = infotrygd)
+        return SakshistorikkResponse(saker = saker, infotrygd = infotrygd)
     }
 
-    data class SakHistorikkResponse(
+    data class SakshistorikkResponse(
         val saker: List<Sak>,
         val infotrygd: List<InfotrygdHistorikk> = emptyList()
     )

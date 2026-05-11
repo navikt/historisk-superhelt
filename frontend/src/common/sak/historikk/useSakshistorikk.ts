@@ -1,5 +1,5 @@
 import type { Sak } from "@generated";
-import { hentSakHistorikkForPersonOptions } from "@generated/@tanstack/react-query.gen";
+import { hentSakshistorikkForPersonOptions } from "@generated/@tanstack/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { SakshistorikkResult } from "~/common/sak/historikk/sakshistorikk.types";
 import type { TemaType } from "~/common/sak/sak.types";
@@ -12,7 +12,7 @@ interface SakshistorikkParams {
 
 export function useSakshistorikk({ maskertPersonIdent, tema, filter = () => true }: SakshistorikkParams) {
     const { data, isPending, error } = useSuspenseQuery({
-        ...hentSakHistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent }, query: { tema } }),
+        ...hentSakshistorikkForPersonOptions({ path: { maskertPersonIdent: maskertPersonIdent }, query: { tema } }),
     });
 
     const saker = data.saker.filter(filter);
