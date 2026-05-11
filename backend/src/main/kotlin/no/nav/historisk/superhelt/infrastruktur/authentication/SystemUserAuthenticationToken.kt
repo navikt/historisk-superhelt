@@ -22,7 +22,7 @@ class SystemUserAuthenticationToken(
         navIdent = NavIdent(name?: "system"),
         userName = name?: "system",
         jwt = null,
-        systemUser = true
+        systemUser = true,
+        authorities = authorities
     )
-
 }

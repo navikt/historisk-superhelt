@@ -4,7 +4,6 @@ import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema.HEL
 import no.nav.common.consts.FellesKodeverkTema.HJE
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
@@ -51,17 +50,13 @@ class OppgaveControllerTest {
     @MockitoBean
     private lateinit var personService: PersonService
 
-    @MockitoBean
-    private lateinit var entraProxyClient: EntraProxyClient
-
     @Autowired
     private lateinit var sakRepository: SakRepository
 
 
-    @WithSaksbehandler(navIdent = "Z1111111")
+    @WithSaksbehandler(navIdent = "Z1111111", tema = [HJE, HEL])
     @Test
     fun `Hent oppgaver for saksbehandler filterer ut oppgaver som ikke kan behandles `() {
-        whenever(entraProxyClient.hentTema()) doReturn setOf("HJE", "HEL")
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
             antallTreffTotalt = 4,
             oppgaver = listOf(
@@ -88,10 +83,10 @@ class OppgaveControllerTest {
 
     }
 
-    @WithSaksbehandler(navIdent = "Z123456")
+    @WithSaksbehandler(navIdent = "Z123456", tema = [HEL])
     @Test
     fun `Hent oppgaver for person henter oppgaver for andre applikasjoner også`() {
-        whenever(entraProxyClient.hentTema()) doReturn setOf("HEL")
+//        whenever(entraProxyClient.hentTema()) doReturn setOf("HEL")
         val fnr = FolkeregisterIdent("12345678901")
         whenever(personService.hentPerson(fnr)) doReturn PersonTestData.testPerson.copy(fnr = fnr)
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(

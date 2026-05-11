@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.oppgave
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -29,6 +30,7 @@ fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
         fnr = FolkeregisterIdent(ident),
         oppgaveId = this.id,
         oppgavestatus = this.status,
+        tema = this.temaEnum,
         oppgavetype = this.type,
         oppgaveGjelderTekst = this.gjelderTekst,
         journalpostId = this.journalpostId,
@@ -41,16 +43,16 @@ fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
         opprettetAv = this.opprettetAv,
         saksnummer = sak?.saksnummer,
         sakStatus = sak?.status,
-        stonadsType = sak?.type?: this.guessStonadsType(),
+        stonadsType = sak?.type ?: this.guessStonadsType(),
         sakBeskrivelse = sak?.beskrivelse,
     )
 }
 
 /** Tipper hva slags stønad dette gjelder for */
 private fun OppgaveDto.guessStonadsType(): StonadsType? {
-    //TODO har tema noe å si?
-    return when (this.behandlingstemaEnum){
-        ORTOPEDISKE_HJELPEMIDLER,FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER -> StonadsType.FOTSENG
+    //TODO har tema noe å si? Kanskje for reise?
+    return when (this.behandlingstemaEnum) {
+        ORTOPEDISKE_HJELPEMIDLER, FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER -> StonadsType.FOTSENG
         ANSIKTSDEFEKTSPROTESE -> StonadsType.ANSIKT_PROTESE
         BRYSTPROTESE_PROTESEBH -> StonadsType.BRYSTPROTESE
         OYEPROTESE -> StonadsType.OYE_PROTESE
@@ -61,7 +63,11 @@ private fun OppgaveDto.guessStonadsType(): StonadsType? {
         ARBEIDS_OG_UTDANNINGSREISER -> StonadsType.ARBEID_UTDANNING
         else -> null
     }
-
 }
+
+/** Gir tilbake tema for oppgaven hvis det er mulig å utlede det, ellers null */
+val OppgaveDto.temaEnum: FellesKodeverkTema?
+    get() = FellesKodeverkTema.entries.firstOrNull { it.kode == this.tema }
+
 
 

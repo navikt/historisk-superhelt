@@ -36,7 +36,7 @@ class SakController(
     @GetMapping()
     fun findSaker(@RequestParam maskertPersonId: MaskertPersonIdent): ResponseEntity<List<Sak>> {
         val fnr = maskertPersonId.toFnr()
-        val saker = sakRepository.findSaker(fnr)
+        val saker = sakRepository.finnSaker(fnr)
         return ResponseEntity.ok(saker)
     }
 
@@ -77,9 +77,6 @@ class SakController(
     @GetMapping("{saksnummer}")
     fun getSakBySaksnummer(@PathVariable saksnummer: Saksnummer): ResponseEntity<Sak> {
         val sak = sakRepository.getSak(saksnummer)
-        SakValidator(sak)
-            .checkRettighet(SakRettighet.LES)
-            .validate()
         sak.auditLog("Hentet opp sak")
         return ResponseEntity.ok(sak)
     }
@@ -88,7 +85,6 @@ class SakController(
     @GetMapping("{saksnummer}/status")
     fun getSakStatus(@PathVariable saksnummer: Saksnummer): ResponseEntity<SakStatusDto> {
         val sak = sakRepository.getSak(saksnummer)
-        SakValidator(sak).checkRettighet(SakRettighet.LES).validate()
 
         val utbetalingStatus = utbetalingRepository.findActiveByBehandling(sak)?.utbetalingStatus
         val brevStatus = sak.vedtaksbrevBruker?.status

@@ -56,7 +56,7 @@ class GlobalControllerAdvice : ResponseEntityExceptionHandler() {
                 field = it.propertyPath.toString(),
             )
         }
-        val problemDetail = createValidationErrorMessage(ex.javaClass.simpleName, fieldErrors, detail)
+        val problemDetail = createValidationErrorMessage("Valideringsfeil", fieldErrors, detail)
         return problemDetail
     }
 
