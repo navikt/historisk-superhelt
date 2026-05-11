@@ -22,10 +22,10 @@ class GruppeRoleConfig {
             props.drift to Role.DRIFT,
         )
         val gruppeTema = mapOf(
-            props.tema_hel to FellesKodeverkTema.HEL,
-            props.tema_hje to FellesKodeverkTema.HJE,
+            props.temaHel to FellesKodeverkTema.HEL,
+            props.temaHje to FellesKodeverkTema.HJE,
         )
-        logger.debug("GruppeRoleMapping: {}", gruppeRoller)
+        logger.debug("Mapping roller: {}, tema: {}", gruppeRoller, gruppeTema)
         return GruppeMapping(roller = gruppeRoller, tema = gruppeTema)
     }
 }
@@ -36,7 +36,6 @@ class GruppeConfigProperties(
     val saksbehandler: String,
     val attestant: String,
     val drift: String,
-    val tema_hel: String,
-    val tema_hje: String,
-
+    val temaHel: String,
+    val temaHje: String,
     )
