@@ -237,8 +237,6 @@ export const hentSakHistorikkForPerson = <ThrowOnError extends boolean = false>(
 
 /**
  * Finn saker for en person
- *
- * @deprecated
  */
 export const findSakerForPerson = <ThrowOnError extends boolean = false>(options: Options<FindSakerForPersonData, ThrowOnError>) => (options.client ?? client).get<FindSakerForPersonResponses, FindSakerForPersonErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],

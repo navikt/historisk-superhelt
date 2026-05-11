@@ -397,8 +397,6 @@ export const findSakerForPersonQueryKey = (options: Options<FindSakerForPersonDa
 
 /**
  * Finn saker for en person
- *
- * @deprecated
  */
 export const findSakerForPersonOptions = (options: Options<FindSakerForPersonData>) => queryOptions<FindSakerForPersonResponse, FindSakerForPersonError, FindSakerForPersonResponse, ReturnType<typeof findSakerForPersonQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
