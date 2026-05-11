@@ -1,16 +1,14 @@
 import {
     finnJournalposterForBrukerOptions,
-    finnJournalposterForBrukerQueryKey,
     finnJournalposterForSakOptions,
-    finnJournalposterForSakQueryKey,
 } from "@generated/@tanstack/react-query.gen";
+import type { TemaType } from "~/common/sak/sak.types";
 
 export const apiFinnJournalposterForSakOptions = (saksnummer: string) => ({
     ...finnJournalposterForSakOptions({ path: { saksnummer } }),
-    queryKey: finnJournalposterForSakQueryKey({ path: { saksnummer } }),
 });
 
-export const apiFinnJournalposterForBrukerOptions = (saksnummer: string) => ({
-    ...finnJournalposterForBrukerOptions({ path: { saksnummer } }),
-    queryKey: finnJournalposterForBrukerQueryKey({ path: { saksnummer } }),
+export const apiFinnJournalposterForBrukerOptions = (maskertPersonIdent: string, tema?: TemaType) => ({
+    ...finnJournalposterForBrukerOptions({ path: { maskertPersonIdent }, query: { tema } }),
+    enabled: !!maskertPersonIdent,
 });

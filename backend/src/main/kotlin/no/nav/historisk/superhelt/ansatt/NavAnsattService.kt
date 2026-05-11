@@ -1,10 +1,8 @@
 package no.nav.historisk.superhelt.ansatt
 
-import no.nav.common.consts.FellesKodeverkTema
 import no.nav.entraproxy.Enhet
 import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
-import no.nav.historisk.superhelt.infrastruktur.authentication.getCurrentUserRoles
 import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Service
 
@@ -21,22 +19,17 @@ class NavAnsattService(private val entraProxyClient: EntraProxyClient, cacheMana
         return entraProxyClient.hentEnheter()
     }
 
-    private fun hentNavTema(): List<FellesKodeverkTema> {
-        return entraProxyClient.hentTema()
-            .filter { FellesKodeverkTema.hasItem(it) }
-            .map { FellesKodeverkTema.valueOf(it) }
-    }
 
     private fun hentFraEntraProxy(): NavAnsatt {
-        val roles = getCurrentUserRoles()
-        val user = getAuthenticatedUser().navUser
+        val authenticatedUser = getAuthenticatedUser()
+        val user = authenticatedUser.navUser
 
         return NavAnsatt(
             name = user.navn,
             ident = user.navIdent,
-            roles = roles,
+            roles = authenticatedUser.roles,
             enheter = hentNavEnheter(),
-            tema = hentNavTema(),
+            tema = authenticatedUser.tema,
         )
     }
 

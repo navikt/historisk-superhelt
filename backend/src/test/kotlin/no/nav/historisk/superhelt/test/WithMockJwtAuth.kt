@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.test
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import org.springframework.security.core.context.SecurityContext
@@ -13,6 +14,7 @@ annotation class WithMockJwtAuth(
     val navIdent: String = "test456",
     val name: String = "Test User",
     val roles: Array<Role> = [],
+    val tema: Array<FellesKodeverkTema> = [FellesKodeverkTema.HEL, FellesKodeverkTema.HJE],
     val permissions: Array<Permission> = [Permission.READ],
     val claims: Array<String> = [] // Format: "key=value"
 ) {
@@ -28,6 +30,7 @@ annotation class WithMockJwtAuth(
                 navIdent = annotation.navIdent,
                 username = annotation.name,
                 roles = annotation.roles.toList(),
+                tema= annotation.tema.toList(),
                 permissions = annotation.permissions.toList()
             )
             context.authentication = authentication

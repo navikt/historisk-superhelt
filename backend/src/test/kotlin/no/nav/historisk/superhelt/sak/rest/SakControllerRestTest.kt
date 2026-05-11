@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.sak.rest
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
@@ -238,6 +239,22 @@ class SakControllerRestTest() {
                 })
 
             verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(fnr)
+        }
+
+        @Test
+        @WithSaksbehandler(tema = [FellesKodeverkTema.HJE])
+        fun `finn saker for person filterer på tema`() {
+            val fnr = FolkeregisterIdent("12345678902")
+            SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.HOREAPPARAT))
+            SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.PARYKK))
+
+            assertThat(finnSakerForPerson(fnr))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(List::class.java)
+                .satisfies({
+                    assertThat(it).hasSize(1)
+                })
         }
 
         @WithMockUser()

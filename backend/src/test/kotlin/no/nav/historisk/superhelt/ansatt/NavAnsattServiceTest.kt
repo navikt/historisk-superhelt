@@ -17,7 +17,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 
-@WithSaksbehandler
 @ExtendWith(SpringExtension::class)
 class NavAnsattServiceTest {
 
@@ -28,17 +27,18 @@ class NavAnsattServiceTest {
 
     private lateinit var service: NavAnsattService
 
+    @WithSaksbehandler(tema = [FellesKodeverkTema.HJE, FellesKodeverkTema.HEL])
     @BeforeEach
     fun setUp() {
         cacheManager.getCache(NAVANSATT_CACHE)?.clear()
         service = NavAnsattService(entraProxyClient, cacheManager)
     }
 
+    @WithSaksbehandler(tema = [FellesKodeverkTema.HJE, FellesKodeverkTema.HEL])
     @Test
     fun `hentNavAnsatt returnerer enheter og tema`() {
         val enheter = NavAnsattTestdata.createEnheter(2)
         whenever(entraProxyClient.hentEnheter()).thenReturn(enheter)
-        whenever(entraProxyClient.hentTema()).thenReturn(setOf("HJE", "ORT", "AAP", "HEL"))
 
         val result = service.hentNavAnsatt()
 
@@ -46,10 +46,10 @@ class NavAnsattServiceTest {
         assertThat(result.tema).containsExactlyInAnyOrder(FellesKodeverkTema.HJE, FellesKodeverkTema.HEL)
     }
 
+    @WithSaksbehandler(tema = [])
     @Test
     fun `hentNavAnsatt returnerer tomt sett når entra-proxy ikke returnerer data`() {
         whenever(entraProxyClient.hentEnheter()).thenReturn(emptyList())
-        whenever(entraProxyClient.hentTema()).thenReturn(emptySet())
 
         val result = service.hentNavAnsatt()
 
@@ -57,29 +57,31 @@ class NavAnsattServiceTest {
         assertThat(result.tema).isEmpty()
     }
 
+
+    @WithSaksbehandler
     @Test
     fun `hentNavAnsatt cacher kall mot entra-proxy per bruker`() {
         whenever(entraProxyClient.hentEnheter()).thenReturn(NavAnsattTestdata.createEnheter(1))
-        whenever(entraProxyClient.hentTema()).thenReturn(setOf("HJE"))
+//        whenever(entraProxyClient.hentTema()).thenReturn(setOf("HJE"))
 
         service.hentNavAnsatt()
         service.hentNavAnsatt()
         service.hentNavAnsatt()
 
         verify(entraProxyClient, times(1)).hentEnheter()
-        verify(entraProxyClient, times(1)).hentTema()
+//        verify(entraProxyClient, times(1)).hentTema()
 
         // Kjører som en annen bruker
-        withMockedUser("X888888"){
+        withMockedUser("X888888") {
             service.hentNavAnsatt()
             service.hentNavAnsatt()
             service.hentNavAnsatt()
 
             verify(entraProxyClient, times(2)).hentEnheter()
-            verify(entraProxyClient, times(2)).hentTema()
         }
     }
 
+    @WithSaksbehandler
     @Test
     fun `hentNavAnsatt propagerer exception fra entra-proxy`() {
         whenever(entraProxyClient.hentEnheter()).thenThrow(RuntimeException("entra-proxy nede"))

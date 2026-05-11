@@ -3,8 +3,6 @@ package no.nav.historisk.superhelt.sak
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
-import no.nav.historisk.superhelt.infrastruktur.authentication.hasPermission
-import no.nav.historisk.superhelt.infrastruktur.authentication.hasRole
 
 enum class SakRettighet {
     LES,
@@ -34,15 +32,16 @@ enum class SakRettighet {
 
 internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
     val rettigheter = mutableSetOf<SakRettighet>()
-    val navIdent = getAuthenticatedUser().navIdent
+    val authenticatedUser = getAuthenticatedUser()
+    val navIdent = authenticatedUser.navIdent
 
-    if (hasPermission(Permission.READ)) {
+    if (authenticatedUser.hasPermission(Permission.READ)) {
         rettigheter.add(SakRettighet.LES)
     }
     with(sak) {
         when (status) {
             SakStatus.UNDER_BEHANDLING -> {
-                if (hasRole(Role.SAKSBEHANDLER)) {
+                if (authenticatedUser.hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.SAKSBEHANDLE)
                     rettigheter.add(SakRettighet.FRITEKSTBREV)
 
@@ -57,7 +56,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             }
 
             SakStatus.TIL_ATTESTERING -> {
-                if (hasRole(Role.ATTESTANT) && navIdent != saksbehandler.navIdent) {
+                if (authenticatedUser.hasRole(Role.ATTESTANT) && navIdent != saksbehandler.navIdent) {
                     rettigheter.add(SakRettighet.ATTESTERE)
                 }
             }
@@ -67,7 +66,7 @@ internal fun getRettigheter(sak: Sak): Set<SakRettighet> {
             }
 
             SakStatus.FERDIG -> {
-                if (hasRole(Role.SAKSBEHANDLER)) {
+                if (authenticatedUser.hasRole(Role.SAKSBEHANDLER)) {
                     rettigheter.add(SakRettighet.GJENAPNE)
                     rettigheter.add(SakRettighet.SEND_KLAGE)
                     rettigheter.add(SakRettighet.FRITEKSTBREV)

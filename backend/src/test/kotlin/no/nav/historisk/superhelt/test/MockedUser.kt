@@ -2,8 +2,11 @@ package no.nav.historisk.superhelt.test
 
 //https://blog.aleksandar.io/spring-boot/kotlin/jwt/testing/jwt-testing-spring-kotlin/
 
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.Role
+import no.nav.historisk.superhelt.infrastruktur.authentication.rolePrefix
+import no.nav.historisk.superhelt.infrastruktur.authentication.temaPrefix
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
@@ -18,13 +21,21 @@ fun <T> withMockedUser(
     username: String = "test user",
     permissions: List<Permission> = listOf(Permission.READ, Permission.WRITE),
     roles: List<Role> = emptyList(),
+    tema: List<FellesKodeverkTema> = FellesKodeverkTema.entries.toList(),
     claims: Map<String, String> = emptyMap(),
     task: () -> T
 ): T {
     val originalAuth = SecurityContextHolder.getContext().authentication
 
     try {
-        val authentication = mockedJwtAutenticationToken(claims, navIdent, username, roles, permissions)
+        val authentication = mockedJwtAutenticationToken(
+            claims = claims,
+            navIdent = navIdent,
+            username = username,
+            roles = roles,
+            tema = tema,
+            permissions = permissions
+        )
         SecurityContextHolder.getContext().authentication = authentication
         return task()
     } finally {
@@ -32,11 +43,12 @@ fun <T> withMockedUser(
     }
 }
 
-fun mockedJwtAutenticationToken(
+internal fun mockedJwtAutenticationToken(
     claims: Map<String, String>,
     navIdent: String,
     username: String,
     roles: List<Role>,
+    tema: List<FellesKodeverkTema>,
     permissions: List<Permission>): JwtAuthenticationToken {
 
     val claimsMap = claims.toMutableMap()
@@ -48,9 +60,18 @@ fun mockedJwtAutenticationToken(
         .claims { it.putAll(claimsMap) }
         .build()
 
-    val roleAuthorities = roles.map { SimpleGrantedAuthority("ROLE_${it.name}") }
-    val permissionAuthorities = permissions.map { SimpleGrantedAuthority(it.name) }
-    val allAuthorities = roleAuthorities + permissionAuthorities
+    val allAuthorities = mapAuthorities(roles, tema, permissions)
     val authentication = JwtAuthenticationToken(jwt, allAuthorities, navIdent)
     return authentication
+}
+
+internal fun mapAuthorities(
+    roles: List<Role> = emptyList(),
+    tema: List<FellesKodeverkTema> = emptyList(),
+    permissions: List<Permission> = emptyList()): List<SimpleGrantedAuthority> {
+    val roleAuthorities = roles.map { SimpleGrantedAuthority("${rolePrefix}${it.name}") }
+    val temaAuthorities = tema.map { SimpleGrantedAuthority("${temaPrefix}${it.name}") }
+    val permissionAuthorities = permissions.map { SimpleGrantedAuthority(it.name) }
+    val allAuthorities = roleAuthorities + permissionAuthorities + temaAuthorities
+    return allAuthorities
 }

@@ -45,7 +45,6 @@ class BrevController(
         @PathVariable saksnummer: Saksnummer,
         @Valid @RequestBody request: OpprettBrevRequest): Brev {
         val sak = sakRepository.getSak(saksnummer)
-        SakValidator(sak).checkRettighet(SakRettighet.LES).validate()
 
         val brevListe = brevRepository.findBySak(saksnummer)
         val brev = brevListe.finnGjeldendeBrev(request.type, request.mottaker)
@@ -69,9 +68,6 @@ class BrevController(
     @GetMapping("{brevId}")
     fun hentBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): Brev {
         val sak = sakRepository.getSak(saksnummer)
-        SakValidator(sak)
-            .checkRettighet(SakRettighet.LES)
-            .validate()
         val brev = brevRepository.getByUUid(brevId)
         sak.auditLog("Henter brev ${brev.uuid} for sak")
         return brev
@@ -81,10 +77,6 @@ class BrevController(
     @GetMapping("{brevId}/html", produces = ["text/html"])
     fun htmlBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): ByteArray {
         val sak = sakRepository.getSak(saksnummer)
-        SakValidator(sak)
-            .checkRettighet(SakRettighet.LES)
-            .validate()
-
         val brev = brevRepository.getByUUid(brevId)
         val html = pdfgenService.genererHtml(sak, brev)
         sak.auditLog("Henter htmlbrev ${brev.uuid} for sak")

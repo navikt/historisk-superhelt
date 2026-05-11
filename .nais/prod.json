@@ -1,11 +1,13 @@
 {
-  "env": "prod",
-  "appIngress": "https://superhelt.intern.nav.no",
-  "legacyEnvSuffix": "",
-  "gruppe": {
-    "saksbehandler": "4b2a3bfb-3644-4030-be87-094ac364d322",
-    "attestant": "28b70009-f8b0-47dc-ba15-d31deac63817",
-    "les": "246eb003-6d6e-43c8-a33e-10db87a28d91",
-    "drift": "94035d6d-d3b1-4341-8ccd-e3275604d7e3"
-  }
+    "env": "prod",
+    "appIngress": "https://superhelt.intern.nav.no",
+    "legacyEnvSuffix": "",
+    "gruppe": {
+        "saksbehandler": "4b2a3bfb-3644-4030-be87-094ac364d322",
+        "attestant": "28b70009-f8b0-47dc-ba15-d31deac63817",
+        "les": "246eb003-6d6e-43c8-a33e-10db87a28d91",
+        "drift": "94035d6d-d3b1-4341-8ccd-e3275604d7e3",
+        "tema-hel": "10c67da4-7123-499d-8f00-50a05184fb70",
+        "tema-hje": "ce7a8212-f6e6-4434-9acf-ddc30a7ef285"
+    }
 }

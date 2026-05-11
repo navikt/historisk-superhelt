@@ -8,8 +8,14 @@ import org.springframework.security.oauth2.jwt.JwtClaimNames
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Component
 
+
+const val rolePrefix = "ROLE_"
+const val temaPrefix = "TEMA_"
+
 @Component
-class NavJwtAuthenticationConverter(private val gruppeRoleMapping: Map<String, Role> ) : Converter<Jwt, JwtAuthenticationToken> {
+ class NavJwtAuthenticationConverter(gruppeMapping: GruppeMapping ) : Converter<Jwt, JwtAuthenticationToken> {
+    private val gruppeRoleMapping= gruppeMapping.roller
+    private val gruppeTemaMapping= gruppeMapping.tema
 
     override fun convert(jwt: Jwt): JwtAuthenticationToken {
         val authorities = mapGroupsToAuthorities(jwt)
@@ -27,6 +33,12 @@ class NavJwtAuthenticationConverter(private val gruppeRoleMapping: Map<String, R
             authorities.add(SimpleGrantedAuthority("${rolePrefix}${role.name}"))
             authorities.addAll(role.permissions.map { SimpleGrantedAuthority(it.name) })
         }
+
+        val tema= groupsClaims.map { gruppeTemaMapping[it] }
+        tema.filterNotNull().forEach { tema ->
+            authorities.add(SimpleGrantedAuthority("${temaPrefix}${tema.name}"))
+        }
+
         return authorities
     }
 
