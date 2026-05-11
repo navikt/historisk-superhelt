@@ -19,6 +19,8 @@
         "pnpm": ">=10"
     },
     "dependencies": {
+        "@grafana/faro-web-sdk": "^2.5.0",
+        "@grafana/faro-web-tracing": "^2.5.0",
         "@navikt/aksel-icons": "^8.9.0",
         "@navikt/ds-css": "^8.9.0",
         "@navikt/ds-react": "^8.9.0",

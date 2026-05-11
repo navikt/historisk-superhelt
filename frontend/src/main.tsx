@@ -3,7 +3,6 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import "@navikt/ds-css";
 import "~/global.css";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
