@@ -18,11 +18,6 @@ export function useInvalidateSakQuery() {
         queryClient.invalidateQueries({
             queryKey: apiFinnJournalposterForSakOptions(saksnummer).queryKey,
         });
-
-        // sakshistorikk for saken
-        queryClient.invalidateQueries({
-            queryKey: hentSakHistorikkForSakOptions({ path: { saksnummer } }).queryKey,
-        });
     }
 
     return invalidateSakQuery;

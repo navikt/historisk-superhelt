@@ -1,4 +1,4 @@
-import type { InfotrygdHistorikk, ProblemDetail, Sak } from "@generated";
+import type { InfotrygdHistorikk, Sak } from "@generated";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import {
     BodyShort,
@@ -20,14 +20,10 @@ import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import { formatertValuta } from "~/common/string.utils";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
-import type { HistorikkRad, HistorikkSortKey } from "./sakshistorikk.types";
+import type { HistorikkRad, HistorikkSortKey, SakHistorikkResult } from "./sakshistorikk.types";
 import { infotrygdTilHistorikkRad, sakTilHistorikkRad } from "./sakshistorikk.utils";
 
-interface SakshistorikkKombinertProps {
-    saker: Array<Sak>;
-    infotrygdHistorikk: Array<InfotrygdHistorikk>;
-    isPending?: boolean;
-    error?: ProblemDetail | null;
+interface SakshistorikkKombinertProps extends SakHistorikkResult {
     openInNewTab?: boolean;
     size?: "medium" | "large";
 }

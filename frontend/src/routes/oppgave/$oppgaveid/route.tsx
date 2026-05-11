@@ -6,8 +6,9 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
 import { MultiPdfViewer } from "~/common/pdf/MultiPdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
-import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
-import { SakshistorikkJournalTabell } from "~/routes/oppgave/$oppgaveid/-components/SakshistorikkJournalTabell";
+import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
+import { useSakHistorikk } from "~/common/sak/historikk/useSaksHistorikk";
+import { isSakFerdig } from "~/common/sak/sak.utils";
 import { hentJournalpostMetadataQuery } from "./-api/journalpost.query";
 
 export const Route = createFileRoute("/oppgave/$oppgaveid")({
@@ -30,7 +31,11 @@ function OppgaveLayout() {
     const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
-    const { sakshistorikkLabel } = useSakshistorikkAntall(oppgave.maskertPersonIdent, "aapen");
+    const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakHistorikk({
+        maskertPersonIdent: oppgave.maskertPersonIdent,
+        tema: oppgave.tema,
+        filter: (sak) => isSakFerdig(sak),
+    });
 
     return (
         <>
@@ -58,10 +63,7 @@ function OppgaveLayout() {
                             </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
-                            <SakshistorikkJournalTabell
-                                maskertPersonIdent={oppgave.maskertPersonIdent}
-                                tema={oppgave.tema}
-                            />
+                            <SakshistorikkKombinertTabell {...sakHistorikkResult} size="medium" openInNewTab />
                         </Tabs.Panel>
                     </Tabs>
                 </DeltVisning.Kolonne>

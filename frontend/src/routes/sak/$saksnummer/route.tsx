@@ -12,7 +12,8 @@ import { PersonHeader } from "~/common/person/PersonHeader";
 import { finnPersonQuery } from "~/common/person/person.query";
 import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
 import { StepType } from "~/common/process-menu/StepType";
-import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
+import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
+import { useSakHistorikk } from "~/common/sak/historikk/useSaksHistorikk";
 import { getSakOptions } from "~/common/sak/sak.query";
 import type { TilstandStatusType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
@@ -24,7 +25,6 @@ import {
 import SakAlert from "~/routes/sak/$saksnummer/-components/SakAlerts";
 import SakEndringer from "~/routes/sak/$saksnummer/-components/SakEndringer";
 import SakOppsummering from "~/routes/sak/$saksnummer/-components/SakOppsummering";
-import { SakshistorikkSakTabell } from "~/routes/sak/$saksnummer/-components/SakshistorikkSakTabell";
 import BehandlingsMeny from "./-components/BehandlingsMeny";
 
 export const Route = createFileRoute("/sak/$saksnummer")({
@@ -53,7 +53,11 @@ function SakLayout() {
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
     const antallAndreDokumenter = andreJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
-    const { sakshistorikkLabel } = useSakshistorikkAntall(sak.maskertPersonIdent, "ferdig");
+    const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakHistorikk({
+        maskertPersonIdent: sak.maskertPersonIdent,
+        tema: sak.tema,
+        filter: (sak) => sak.status === "FERDIG",
+    });
 
     useEffect(() => {
         document.title = `${kortSaksnummer(sak.saksnummer)} – ${kortNavn(person.navn)}`;
@@ -154,7 +158,7 @@ function SakLayout() {
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="historikk">
-                                <SakshistorikkSakTabell saksnummer={saksnummer} />
+                                <SakshistorikkKombinertTabell {...sakHistorikkResult} size="medium" openInNewTab />
                             </Tabs.Panel>
                             <Tabs.Panel value="endringslogg">
                                 <Box paddingBlock="space-16 space-0">
