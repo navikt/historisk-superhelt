@@ -7,7 +7,7 @@ import DeltVisning from "~/common/delt-visning/DeltVisning";
 import { MultiPdfViewer } from "~/common/pdf/MultiPdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
 import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
-import { useSakHistorikk } from "~/common/sak/historikk/useSaksHistorikk";
+import { useSakshistorikk } from "~/common/sak/historikk/useSakshistorikk";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 import { hentJournalpostMetadataQuery } from "./-api/journalpost.query";
 
@@ -31,7 +31,7 @@ function OppgaveLayout() {
     const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
-    const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakHistorikk({
+    const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakshistorikk({
         maskertPersonIdent: oppgave.maskertPersonIdent,
         tema: oppgave.tema,
         filter: (sak) => isSakFerdig(sak),

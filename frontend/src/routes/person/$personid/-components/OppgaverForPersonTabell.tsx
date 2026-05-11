@@ -1,17 +1,17 @@
-import {hentOppgaverForPersonOptions} from "@generated/@tanstack/react-query.gen";
-import {InfoCard, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {OppgaveTabell} from "~/common/oppgave/OppgaveTabell";
-import {SakshistorikkKombinertTabell} from "~/common/sak/historikk/SakshistorikkKombinertTabell";
-import {useSakHistorikk} from "~/common/sak/historikk/useSaksHistorikk";
-import {isSakFerdig} from "~/common/sak/sak.utils";
+import { hentOppgaverForPersonOptions } from "@generated/@tanstack/react-query.gen";
+import { InfoCard, VStack } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { OppgaveTabell } from "~/common/oppgave/OppgaveTabell";
+import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
+import { useSakshistorikk } from "~/common/sak/historikk/useSakshistorikk";
+import { isSakFerdig } from "~/common/sak/sak.utils";
 
 interface SakerTableProps {
     maskertPersonIdent: string;
 }
 
 export function OppgaverForPersonTabell({ maskertPersonIdent }: SakerTableProps) {
-    const { result: sakHistorikkResult } = useSakHistorikk({
+    const { result: sakHistorikkResult } = useSakshistorikk({
         maskertPersonIdent: maskertPersonIdent,
     });
 

@@ -13,7 +13,7 @@ import { finnPersonQuery } from "~/common/person/person.query";
 import { ProcessMenu } from "~/common/process-menu/ProcessMenu";
 import { StepType } from "~/common/process-menu/StepType";
 import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
-import { useSakHistorikk } from "~/common/sak/historikk/useSaksHistorikk";
+import { useSakshistorikk } from "~/common/sak/historikk/useSakshistorikk";
 import { getSakOptions } from "~/common/sak/sak.query";
 import type { TilstandStatusType } from "~/common/sak/sak.types";
 import { isSakFerdig } from "~/common/sak/sak.utils";
@@ -53,7 +53,7 @@ function SakLayout() {
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
     const antallAndreDokumenter = andreJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
-    const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakHistorikk({
+    const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakshistorikk({
         maskertPersonIdent: sak.maskertPersonIdent,
         tema: sak.tema,
         filter: (sak) => sak.status === "FERDIG",

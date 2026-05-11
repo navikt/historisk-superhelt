@@ -14,7 +14,7 @@ export type HistorikkRad = {
 
 export type HistorikkSortKey = "dato" | "kategori" | "belop" | "id";
 
-export type SakHistorikkResult = {
+export type SakshistorikkResult = {
     saker: Array<Sak>;
     infotrygdHistorikk: Array<InfotrygdHistorikk>;
     isPending?: boolean;

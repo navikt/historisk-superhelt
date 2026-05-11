@@ -20,10 +20,10 @@ import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import { formatertValuta } from "~/common/string.utils";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
-import type { HistorikkRad, HistorikkSortKey, SakHistorikkResult } from "./sakshistorikk.types";
+import type { HistorikkRad, HistorikkSortKey, SakshistorikkResult } from "./sakshistorikk.types";
 import { infotrygdTilHistorikkRad, sakTilHistorikkRad } from "./sakshistorikk.utils";
 
-interface SakshistorikkKombinertProps extends SakHistorikkResult {
+interface SakshistorikkKombinertProps extends SakshistorikkResult {
     openInNewTab?: boolean;
     size?: "medium" | "large";
 }

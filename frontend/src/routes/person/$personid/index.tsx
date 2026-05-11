@@ -7,10 +7,10 @@ import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
 import { PersonHeader } from "~/common/person/PersonHeader";
 import { finnPersonQuery } from "~/common/person/person.query";
 import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
-import { useSakHistorikk } from "~/common/sak/historikk/useSaksHistorikk";
 import { isSakFerdig } from "~/common/sak/sak.utils";
 import { kortNavn } from "~/common/string.utils";
 import { OppgaverForPersonTabell } from "~/routes/person/$personid/-components/OppgaverForPersonTabell";
+import { useSakshistorikk } from "../../../common/sak/historikk/useSakshistorikk";
 
 export const Route = createFileRoute("/person/$personid/")({
     component: PersonPage,
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/person/$personid/")({
 function PersonPage() {
     const { personid } = Route.useParams();
     const { data: person } = useSuspenseQuery(finnPersonQuery(personid));
-    const { result: sakHistorikkResult } = useSakHistorikk({
+    const { result: sakHistorikkResult } = useSakshistorikk({
         maskertPersonIdent: personid,
         filter: (sak) => isSakFerdig(sak),
     });
