@@ -1,17 +1,18 @@
-import {findSakerForPersonOptions, hentOppgaverForPersonOptions} from "@generated/@tanstack/react-query.gen";
-import {InfoCard, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {OppgaveTabell} from "~/common/oppgave/OppgaveTabell";
-import {SakshistorikkKombinertTabell} from "~/common/sak/historikk/SakshistorikkKombinertTabell";
-import {isSakFerdig} from "~/common/sak/sak.utils";
+import { findSakerForPersonOptions, hentOppgaverForPersonOptions } from "@generated/@tanstack/react-query.gen";
+import { InfoCard, VStack } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { OppgaveTabell } from "~/common/oppgave/OppgaveTabell";
+import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
+import { useSakHistorikk } from "~/common/sak/historikk/useSaksHistorikk";
+import { isSakFerdig } from "~/common/sak/sak.utils";
 
 interface SakerTableProps {
     maskertPersonIdent: string;
 }
 
 export function OppgaverForPersonTabell({ maskertPersonIdent }: SakerTableProps) {
-    const { data: saker } = useSuspenseQuery({
-        ...findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }),
+    const { result: sakHistorikkResult } = useSakHistorikk({
+        maskertPersonIdent: maskertPersonIdent,
     });
 
     const { data: oppgaver, isPending } = useSuspenseQuery(
@@ -20,7 +21,7 @@ export function OppgaverForPersonTabell({ maskertPersonIdent }: SakerTableProps)
 
     const sakerMedOppgave = oppgaver.map((o) => o.saksnummer);
 
-    const sakerUnderBehandlingUtenOppgave = saker
+    const sakerUnderBehandlingUtenOppgave = sakHistorikkResult.saker
         .filter((sak) => !isSakFerdig(sak))
         .filter((sak) => !sakerMedOppgave.includes(sak.saksnummer));
 
