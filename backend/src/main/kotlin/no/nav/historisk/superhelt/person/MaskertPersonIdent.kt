@@ -53,6 +53,10 @@ value class MaskertPersonIdent(val value: String) {
      * @throws IkkeFunnetException hvis dekrypteringen mislykkes eller hvis det resulterende Fnr-objektet ikke er gyldig.
      */
     fun toFnr() = FnrEncryptor.decrypt(this.value)
+
+    override fun toString(): String {
+        return value
+    }
 }
 
 fun FolkeregisterIdent.toMaskertPersonIdent(): MaskertPersonIdent = FnrEncryptor.encrypt(this.value)

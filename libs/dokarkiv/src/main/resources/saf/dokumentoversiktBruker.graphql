@@ -1,4 +1,4 @@
-query fagsakBrukerQuery($fnr: String!, $tema: [Tema]!, $foerste: Int = 50) {
+query fagsakBrukerQuery($fnr: String!, $tema: [Tema]!, $foerste: Int = 100) {
     dokumentoversiktBruker(brukerId: { id: $fnr, type: FNR }, tema: $tema, foerste: $foerste) {
         journalposter {
             journalpostId
@@ -26,6 +26,8 @@ query fagsakBrukerQuery($fnr: String!, $tema: [Tema]!, $foerste: Int = 50) {
                     saksbehandlerHarTilgang
                 }
             }
+            datoOpprettet
+            journalposttype
         }
     }
 }

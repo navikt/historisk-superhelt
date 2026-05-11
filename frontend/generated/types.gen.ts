@@ -63,12 +63,13 @@ export type Sak = {
     belop?: number | null;
     klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     vedtaksbrevBruker?: Brev | null;
-    readonly maskertPersonIdent: string;
-    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
     readonly gjenapnet: boolean;
+    tema: 'HEL' | 'HJE';
+    readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
     readonly kanUtbetales: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
     readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
@@ -180,8 +181,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string | null;
-    loggId$superhelt_backend: string;
     annulleres: boolean;
+    loggId$superhelt_backend: string;
 };
 
 export type Enhet = {
@@ -195,6 +196,21 @@ export type NavAnsatt = {
     roles: Array<'LES' | 'SAKSBEHANDLER' | 'ATTESTANT' | 'DRIFT'>;
     enheter: Array<Enhet>;
     tema: Array<'HEL' | 'HJE'>;
+};
+
+export type InfotrygdHistorikk = {
+    dato?: string | null;
+    fom?: string | null;
+    tom?: string | null;
+    tekst?: string | null;
+    kontonummer: string;
+    kontonavn: string;
+    belop?: string | null;
+};
+
+export type SakshistorikkResponse = {
+    saker: Array<Sak>;
+    infotrygd: Array<InfotrygdHistorikk>;
 };
 
 export type Vedtak = {
@@ -270,8 +286,9 @@ export type OppgaveMedSak = {
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
-    readonly oppgaveTypeTekst: string;
+    tema?: 'HEL' | 'HJE';
     readonly maskertPersonIdent: string;
+    readonly oppgaveTypeTekst: string;
 };
 
 export type HjemmelDto = {
@@ -290,6 +307,8 @@ export type Journalpost = {
     bruker?: JournalpostBruker | null;
     avsenderMottaker?: JournalpostAvsenderMottaker | null;
     dokumenter?: Array<JournalpostDokumentInfo> | null;
+    datoOpprettet: string;
+    journalposttype?: 'I' | 'U' | 'N';
 };
 
 export type JournalpostAvsenderMottaker = {
@@ -318,16 +337,6 @@ export type JournalpostDokumentVariant = {
 export type JournalpostSak = {
     fagsaksystem?: string | null;
     fagsakId?: string | null;
-};
-
-export type InfotrygdHistorikk = {
-    dato?: string | null;
-    fom?: string | null;
-    tom?: string | null;
-    tekst?: string | null;
-    kontonummer: string;
-    kontonavn: string;
-    belop?: string | null;
 };
 
 export type BrevWritable = {
@@ -369,6 +378,11 @@ export type SakTilstandWritable = {
     oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
+export type SakshistorikkResponseWritable = {
+    saker: Array<SakWritable>;
+    infotrygd: Array<InfotrygdHistorikk>;
+};
+
 export type OppgaveMedSakWritable = {
     fnr: string;
     oppgaveId: number;
@@ -387,6 +401,7 @@ export type OppgaveMedSakWritable = {
     sakStatus?: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
+    tema?: 'HEL' | 'HJE';
 };
 
 export type GetSakBySaksnummerData = {
@@ -1132,6 +1147,43 @@ export type GetUserInfoResponses = {
 
 export type GetUserInfoResponse = GetUserInfoResponses[keyof GetUserInfoResponses];
 
+export type HentSakshistorikkForPersonData = {
+    body?: never;
+    path: {
+        maskertPersonIdent: string;
+    };
+    query?: {
+        tema?: 'HEL' | 'HJE';
+    };
+    url: '/api/sakshistorikk/person/{maskertPersonIdent}';
+};
+
+export type HentSakshistorikkForPersonErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type HentSakshistorikkForPersonError = HentSakshistorikkForPersonErrors[keyof HentSakshistorikkForPersonErrors];
+
+export type HentSakshistorikkForPersonResponses = {
+    /**
+     * OK
+     */
+    200: SakshistorikkResponse;
+};
+
+export type HentSakshistorikkForPersonResponse = HentSakshistorikkForPersonResponses[keyof HentSakshistorikkForPersonResponses];
+
 export type FindSakerForPersonData = {
     body?: never;
     path?: never;
@@ -1649,18 +1701,16 @@ export type HentJournalpostMetaDataResponses = {
 
 export type HentJournalpostMetaDataResponse = HentJournalpostMetaDataResponses[keyof HentJournalpostMetaDataResponses];
 
-export type FinnJournalposterForSakEllerBrukerData = {
+export type FinnJournalposterForSakData = {
     body?: never;
     path: {
         saksnummer: string;
     };
-    query?: {
-        inkluderAndreSaker?: boolean;
-    };
+    query?: never;
     url: '/api/journalpost/sak/{saksnummer}';
 };
 
-export type FinnJournalposterForSakEllerBrukerErrors = {
+export type FinnJournalposterForSakErrors = {
     /**
      * Bad Request
      */
@@ -1675,27 +1725,29 @@ export type FinnJournalposterForSakEllerBrukerErrors = {
     500: ProblemDetail;
 };
 
-export type FinnJournalposterForSakEllerBrukerError = FinnJournalposterForSakEllerBrukerErrors[keyof FinnJournalposterForSakEllerBrukerErrors];
+export type FinnJournalposterForSakError = FinnJournalposterForSakErrors[keyof FinnJournalposterForSakErrors];
 
-export type FinnJournalposterForSakEllerBrukerResponses = {
+export type FinnJournalposterForSakResponses = {
     /**
      * OK
      */
     200: Array<Journalpost>;
 };
 
-export type FinnJournalposterForSakEllerBrukerResponse = FinnJournalposterForSakEllerBrukerResponses[keyof FinnJournalposterForSakEllerBrukerResponses];
+export type FinnJournalposterForSakResponse = FinnJournalposterForSakResponses[keyof FinnJournalposterForSakResponses];
 
-export type HentInfotrygdHistorikkForPersonData = {
+export type FinnJournalposterForBrukerData = {
     body?: never;
     path: {
         maskertPersonIdent: string;
     };
-    query?: never;
-    url: '/api/infotrygd/historikk/{maskertPersonIdent}';
+    query?: {
+        tema?: 'HEL' | 'HJE';
+    };
+    url: '/api/journalpost/person/{maskertPersonIdent}';
 };
 
-export type HentInfotrygdHistorikkForPersonErrors = {
+export type FinnJournalposterForBrukerErrors = {
     /**
      * Bad Request
      */
@@ -1710,13 +1762,13 @@ export type HentInfotrygdHistorikkForPersonErrors = {
     500: ProblemDetail;
 };
 
-export type HentInfotrygdHistorikkForPersonError = HentInfotrygdHistorikkForPersonErrors[keyof HentInfotrygdHistorikkForPersonErrors];
+export type FinnJournalposterForBrukerError = FinnJournalposterForBrukerErrors[keyof FinnJournalposterForBrukerErrors];
 
-export type HentInfotrygdHistorikkForPersonResponses = {
+export type FinnJournalposterForBrukerResponses = {
     /**
      * OK
      */
-    200: Array<InfotrygdHistorikk>;
+    200: Array<Journalpost>;
 };
 
-export type HentInfotrygdHistorikkForPersonResponse = HentInfotrygdHistorikkForPersonResponses[keyof HentInfotrygdHistorikkForPersonResponses];
+export type FinnJournalposterForBrukerResponse = FinnJournalposterForBrukerResponses[keyof FinnJournalposterForBrukerResponses];

@@ -1,4 +1,4 @@
-query fagsakQuery($fagsakId: String!, $fagsaksystem: String!, $tema: [Tema]!, $foerste: Int = 10) {
+query fagsakQuery($fagsakId: String!, $fagsaksystem: String!, $tema: [Tema]!, $foerste: Int = 100) {
     dokumentoversiktFagsak( fagsak:{fagsakId:$fagsakId, fagsaksystem:$fagsaksystem}, tema: $tema, foerste: $foerste) {
         journalposter {
             journalpostId
@@ -26,6 +26,8 @@ query fagsakQuery($fagsakId: String!, $fagsaksystem: String!, $tema: [Tema]!, $f
                     saksbehandlerHarTilgang
                 }
             }
+            datoOpprettet
+            journalposttype
         }
     }
 }

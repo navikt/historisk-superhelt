@@ -4,6 +4,8 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.AvsenderMottakerIdType
 import no.nav.dokarkiv.BrukerIdType
 import no.nav.dokarkiv.EksternDokumentInfoId
+import no.nav.dokarkiv.JournalpostType
+import java.time.LocalDateTime
 
 data class Journalpost(
     val journalpostId: EksternJournalpostId,
@@ -13,6 +15,8 @@ data class Journalpost(
     val bruker: JournalpostBruker? = null,
     val avsenderMottaker: JournalpostAvsenderMottaker? = null,
     val dokumenter: List<JournalpostDokumentInfo>? = emptyList(),
+    val datoOpprettet: LocalDateTime,
+    val journalposttype: SafJournalpostType? = null,
 )
 
 data class JournalpostSak(
@@ -42,6 +46,18 @@ data class JournalpostAvsenderMottaker(
     val type: AvsenderMottakerIdType? = null,
     val navn: String? = null,
 )
+
+enum class SafJournalpostType(val dokarkivJournalpostType: JournalpostType) {
+    I(JournalpostType.INNGAAENDE),
+    U(JournalpostType.UTGAAENDE),
+    N(JournalpostType.NOTAT);
+
+    companion object {
+        fun from(journalpostType: JournalpostType): SafJournalpostType {
+            return entries.first { it.dokarkivJournalpostType == journalpostType }
+        }
+    }
+}
 
 enum class JournalStatus {
     /**

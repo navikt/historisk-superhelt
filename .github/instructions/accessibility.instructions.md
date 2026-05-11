@@ -1,5 +1,5 @@
 ---
-applyTo: "src/**/*.{tsx,jsx}"
+applyTo: "frontend/src/**/*.{tsx,jsx}"
 ---
 
 # Accessibility (UU) Standards

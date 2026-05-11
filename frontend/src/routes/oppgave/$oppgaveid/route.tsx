@@ -1,13 +1,14 @@
 import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
 import { FilePdfIcon, TasklistIcon } from "@navikt/aksel-icons";
-import { Tabs } from "@navikt/ds-react";
+import { Box, Tabs } from "@navikt/ds-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import DeltVisning from "~/common/delt-visning/DeltVisning";
-import { PdfViewer } from "~/common/pdf/PdfViewer";
+import { MultiPdfViewer } from "~/common/pdf/MultiPdfViewer";
 import { PersonHeader } from "~/common/person/PersonHeader";
-import { useSakshistorikkAntall } from "~/common/sak/historikk/useSakshistorikkAntall";
-import { SakshistorikkJournalTabell } from "~/routes/oppgave/$oppgaveid/-components/SakshistorikkJournalTabell";
+import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";
+import { useSakshistorikk } from "~/common/sak/historikk/useSakshistorikk";
+import { isSakFerdig } from "~/common/sak/sak.utils";
 import { hentJournalpostMetadataQuery } from "./-api/journalpost.query";
 
 export const Route = createFileRoute("/oppgave/$oppgaveid")({
@@ -22,11 +23,19 @@ function OppgaveLayout() {
     const { data: oppgave } = useSuspenseQuery(getOppgaveOptions({ path: { oppgaveId: Number(oppgaveId) } }));
     const journalpostId = oppgave.journalpostId;
 
-    const { data: journalpost, isSuccess: erJournalpostLastet } = useQuery(hentJournalpostMetadataQuery(journalpostId));
+    const {
+        data: journalpost,
+        isSuccess: erJournalpostLastet,
+        isPending: lasterJournalpost,
+    } = useQuery(hentJournalpostMetadataQuery(journalpostId));
     const antallDokumenter = erJournalpostLastet ? (journalpost.dokumenter ?? []).length : undefined;
     const dokumenterLabel = antallDokumenter !== undefined ? `Dokumenter (${antallDokumenter})` : "Dokumenter";
 
-    const { sakshistorikkLabel } = useSakshistorikkAntall(oppgave.maskertPersonIdent, "aapen");
+    const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakshistorikk({
+        maskertPersonIdent: oppgave.maskertPersonIdent,
+        tema: oppgave.tema,
+        filter: (sak) => isSakFerdig(sak),
+    });
 
     return (
         <>
@@ -46,10 +55,15 @@ function OppgaveLayout() {
                             />
                         </Tabs.List>
                         <Tabs.Panel value="dokumenter">
-                            <PdfViewer journalpostId={journalpostId} />
+                            <Box paddingBlock="space-8 space-0">
+                                <MultiPdfViewer
+                                    journalPoster={erJournalpostLastet ? [journalpost] : []}
+                                    laster={lasterJournalpost}
+                                />
+                            </Box>
                         </Tabs.Panel>
                         <Tabs.Panel value="historikk">
-                            <SakshistorikkJournalTabell maskertPersonIdent={oppgave.maskertPersonIdent} />
+                            <SakshistorikkKombinertTabell {...sakHistorikkResult} size="medium" openInNewTab />
                         </Tabs.Panel>
                     </Tabs>
                 </DeltVisning.Kolonne>

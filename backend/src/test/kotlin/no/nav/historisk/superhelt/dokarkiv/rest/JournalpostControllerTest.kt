@@ -2,9 +2,12 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 
 import net.datafaker.Faker
 import no.nav.common.consts.APP_NAVN
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
+import no.nav.common.types.FolkeregisterIdent
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.DokarkivTestdata
+import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
@@ -35,6 +38,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
+import org.springframework.test.web.servlet.assertj.MvcTestResultAssert
 
 @MockedSpringBootTest
 @AutoConfigureMockMvc
@@ -68,12 +72,14 @@ class JournalpostControllerTest {
             whenever(safGraphqlClient.hentJournalpost(any()))
                 .thenReturn(HentJournalpostGraphqlResponse(data = HentJournalpostData(journalpost)))
             whenever(safRestClient.hentDokument(any(), any()))
-                .thenReturn(DokumentResponse(
-                    data = pdfBytes,
-                    contentType = MediaType.APPLICATION_PDF,
-                    fileName = "dokument.pdf",
-                    contentLength = pdfBytes.size.toLong()
-                ))
+                .thenReturn(
+                    DokumentResponse(
+                        data = pdfBytes,
+                        contentType = MediaType.APPLICATION_PDF,
+                        fileName = "dokument.pdf",
+                        contentLength = pdfBytes.size.toLong()
+                    )
+                )
 
             assertThat(
                 mockMvc.get()
@@ -162,9 +168,11 @@ class JournalpostControllerTest {
             val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
 
             whenever(safGraphqlClient.dokumentoversiktFagsak(any(), any(), any()))
-                .thenReturn(DokumentoversiktFagsakGraphqlResponse(
-                    data = DokumentoversiktFagsakData(DokumentoversiktResult(journalposter))
-                ))
+                .thenReturn(
+                    DokumentoversiktFagsakGraphqlResponse(
+                        data = DokumentoversiktFagsakData(DokumentoversiktResult(journalposter))
+                    )
+                )
 
             assertThat(
                 mockMvc.get()
@@ -183,9 +191,11 @@ class JournalpostControllerTest {
             val sak = SakTestData.lagreSak(sakRepository)
 
             whenever(safGraphqlClient.dokumentoversiktFagsak(any(), any(), any()))
-                .thenReturn(DokumentoversiktFagsakGraphqlResponse(
-                    data = DokumentoversiktFagsakData(DokumentoversiktResult(emptyList()))
-                ))
+                .thenReturn(
+                    DokumentoversiktFagsakGraphqlResponse(
+                        data = DokumentoversiktFagsakData(DokumentoversiktResult(emptyList()))
+                    )
+                )
 
             assertThat(
                 mockMvc.get()
@@ -195,28 +205,80 @@ class JournalpostControllerTest {
                 .bodyText()
                 .isEqualTo("[]")
         }
+    }
 
+    @Nested
+    inner class FinnJournalposterForBruker {
         @Test
-        fun `inkluderAndreSaker=true henter journalposter for bruker på tvers av saker`() {
-            val sak = SakTestData.lagreSak(sakRepository)
+        fun `henter journalposter for bruker på tvers av saker`() {
+            val fnr = FolkeregisterIdent("12312312312")
             val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
 
             whenever(safGraphqlClient.dokumentoversiktBruker(any(), any()))
-                .thenReturn(DokumentoversiktBrukerGraphqlResponse(
-                    data = DokumentoversiktBrukerData(DokumentoversiktResult(journalposter))
-                ))
+                .thenReturn(
+                    DokumentoversiktBrukerGraphqlResponse(
+                        data = DokumentoversiktBrukerData(DokumentoversiktResult(journalposter))
+                    )
+                )
 
-            assertThat(
-                mockMvc.get()
-                    .uri("/api/journalpost/sak/{saksnummer}?inkluderAndreSaker=true", sak.saksnummer)
-            )
+            assertGetJournalposter(fnr, FellesKodeverkTema.HEL)
                 .hasStatus(HttpStatus.OK)
                 .bodyJson()
                 .hasPath("$[0].journalpostId")
 
-            verify(safGraphqlClient).dokumentoversiktBruker(eq(sak.fnr), eq(listOf(sak.type.tema)))
+            verify(safGraphqlClient).dokumentoversiktBruker(eq(fnr), eq(listOf(FellesKodeverkTema.HEL)))
             verify(safGraphqlClient, never()).dokumentoversiktFagsak(any(), any(), any())
         }
+
+        @WithSaksbehandler(tema = [FellesKodeverkTema.HJE])
+        @Test
+        fun `filtere bort tema som saksbehandler ikke har tilgang`() {
+            val fnr = FolkeregisterIdent("12312312312")
+            val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
+
+            whenever(safGraphqlClient.dokumentoversiktBruker(any(), any()))
+                .thenReturn(
+                    DokumentoversiktBrukerGraphqlResponse(
+                        data = DokumentoversiktBrukerData(DokumentoversiktResult(journalposter))
+                    )
+                )
+
+            assertGetJournalposter(fnr, FellesKodeverkTema.HEL)
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .doesNotHavePath("$[0].journalpostId")
+
+            verify(safGraphqlClient,never()).dokumentoversiktBruker(any(), any())
+        }
+
+        @WithSaksbehandler(tema = [FellesKodeverkTema.HJE])
+        @Test
+        fun `gi alle tema som bruker har tilgang til om det ikke oppgis temafilter`() {
+            val fnr = FolkeregisterIdent("12312312312")
+            val journalposter = listOf(DokarkivTestdata.journalPost(), DokarkivTestdata.journalPost())
+
+            whenever(safGraphqlClient.dokumentoversiktBruker(any(), any()))
+                .thenReturn(
+                    DokumentoversiktBrukerGraphqlResponse(
+                        data = DokumentoversiktBrukerData(DokumentoversiktResult(journalposter))
+                    )
+                )
+
+            assertGetJournalposter(fnr, null)
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .hasPath("$[0].journalpostId")
+
+            verify(safGraphqlClient,).dokumentoversiktBruker(eq(fnr), eq(listOf(FellesKodeverkTema.HJE)))
+        }
+
+
+
+        private fun assertGetJournalposter(fnr: FolkeregisterIdent, tema: FellesKodeverkTema?): MvcTestResultAssert = assertThat(
+            mockMvc.get()
+                .uri("/api/journalpost/person/{maskertPersonIdent}", fnr.toMaskertPersonIdent())
+                .apply { tema?.let { queryParam("tema", it.name) } }
+        )
     }
 
     @Nested

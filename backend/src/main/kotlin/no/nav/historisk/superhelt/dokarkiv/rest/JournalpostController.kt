@@ -2,12 +2,15 @@ package no.nav.historisk.superhelt.dokarkiv.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.dokarkiv.EksternDokumentInfoId
 import no.nav.historisk.superhelt.dokarkiv.JournalpostService
 import no.nav.historisk.superhelt.infrastruktur.audit.AuditLog
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
+import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.saf.graphql.Journalpost
 import org.slf4j.LoggerFactory
@@ -65,20 +68,34 @@ class JournalpostController(
         return journalpost
     }
 
-    @Operation(operationId = "finnJournalposterForSakEllerBruker")
+    @Operation(operationId = "finnJournalposterForSak")
     @GetMapping("/sak/{saksnummer}")
     fun finnJournalposterForSak(
-        @PathVariable saksnummer: Saksnummer, @RequestParam(required = false, defaultValue = "false") inkluderAndreSaker: Boolean
-
+        @PathVariable saksnummer: Saksnummer,
     ): List<Journalpost> {
         val sak = sakRepository.getSak(saksnummer)
-        val tema = sak.type.tema
-        if (inkluderAndreSaker) {
-            return journalpostService.finnJournalposterForBruker(sak.fnr, tema)
-        }
-        return journalpostService.finnJournalposter(saksnummer, tema)
+        return journalpostService.finnJournalposter(saksnummer, sak.type.tema)
     }
 
+    @Operation(operationId = "finnJournalposterForBruker")
+    @GetMapping("/person/{maskertPersonIdent}")
+    fun finnJournalposterForBruker(
+        @PathVariable maskertPersonIdent: MaskertPersonIdent,
+        @RequestParam tema: FellesKodeverkTema?
+    ): List<Journalpost> {
+        val fnr = maskertPersonIdent.toFnr()
+        val authenticatedUser = getAuthenticatedUser()
+        val temaer: List<FellesKodeverkTema> = when {
+            tema != null && !authenticatedUser.hasTemaAccess(tema) -> emptyList()
+            tema != null -> listOf(tema)
+            else -> authenticatedUser.tema
+        }
 
+        if (temaer.isEmpty()) {
+            logger.debug("Bruker har ikke tilgang til noen tema. Gir tom liste av journalposter")
+            return emptyList()
+        }
+        return journalpostService.finnJournalposterForBruker(fnr, *temaer.toTypedArray())
+    }
 
 }

@@ -1,5 +1,5 @@
 import type { ProblemDetail } from "@generated";
-import { Alert } from "@navikt/ds-react";
+import { LocalAlert } from "@navikt/ds-react";
 
 type ErrorAlertType = Error | ProblemDetail;
 
@@ -17,9 +17,11 @@ export function ErrorAlert({ error }: ErrorAlertProps) {
     const problemDetails = isProblemDetail(error);
 
     return (
-        <Alert variant="error">
-            <strong>{problemDetails ? error.title : "Noe gikk galt"}</strong>
-            <p>{problemDetails ? error.detail : error.message}</p>
-        </Alert>
+        <LocalAlert status="error">
+            <LocalAlert.Header>
+                <LocalAlert.Title>{problemDetails ? error.title : "Noe gikk galt"}</LocalAlert.Title>
+            </LocalAlert.Header>
+            <LocalAlert.Content>{problemDetails ? error.detail : error.message}</LocalAlert.Content>
+        </LocalAlert>
     );
 }

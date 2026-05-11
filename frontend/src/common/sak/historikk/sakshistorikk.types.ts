@@ -1,4 +1,4 @@
-import type { Sak } from "@generated";
+import type { InfotrygdHistorikk, ProblemDetail, Sak } from "@generated";
 
 export type HistorikkRad = {
     kilde: "SAK" | "INFOTRYGD";
@@ -13,3 +13,10 @@ export type HistorikkRad = {
 };
 
 export type HistorikkSortKey = "dato" | "kategori" | "belop" | "id";
+
+export type SakshistorikkResult = {
+    saker: Array<Sak>;
+    infotrygdHistorikk: Array<InfotrygdHistorikk>;
+    isPending?: boolean;
+    error?: ProblemDetail | null;
+};
