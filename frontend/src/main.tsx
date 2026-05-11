@@ -1,3 +1,4 @@
+import { getWebInstrumentations, initializeFaro } from "@grafana/faro-web-sdk";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
@@ -26,12 +27,16 @@ const router = createRouter({
     scrollRestoration: true,
 });
 
-// Register the router instance for type safety
-declare module "@tanstack/react-router" {
-    interface Register {
-        router: typeof router;
-    }
-}
+const faro = initializeFaro({
+    url: "https://telemetry.nav.no/collect",
+    paused: window.location.hostname === "localhost",
+    app: {
+        name: "superhelt",
+        namespace: "historisk",
+        version: process.env.COMMIT_SHA || "local",
+    },
+    instrumentations: [...getWebInstrumentations()],
+});
 
 // Render the app
 const rootElement = document.getElementById("root")!;
