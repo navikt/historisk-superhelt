@@ -2,11 +2,9 @@ package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
 import no.nav.common.consts.FellesKodeverkTema
-import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.infotrygd.InfotrygdService
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
-import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.infotrygd.InfotrygdHistorikk
@@ -21,17 +19,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/sakhistorikk")
 class SakHistorikkController(private val infotrygdService: InfotrygdService, private val sakRepository: SakRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
-
-    /** Henter relevante saker av samme tema for en person */
-    @Operation(operationId = "hentSakHistorikkForSak")
-    @GetMapping("/sak/{saksnummer}")
-    fun hentSakHistorikkForSak(@PathVariable saksnummer: Saksnummer): SakHistorikkResponse {
-        val sak = sakRepository.getSak(saksnummer)
-        val fnr = sak.fnr
-
-        return hentSakHistorikkForPerson(maskertPersonIdent = fnr.toMaskertPersonIdent(), tema = sak.tema)
-    }
-
 
     @Operation(operationId = "hentSakHistorikkForPerson")
     @GetMapping("/person/{maskertPersonIdent}")

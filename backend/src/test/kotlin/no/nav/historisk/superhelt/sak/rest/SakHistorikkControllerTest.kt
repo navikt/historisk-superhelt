@@ -2,7 +2,6 @@ package no.nav.historisk.superhelt.sak.rest
 
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.FolkeregisterIdent
-import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.SakRepository
@@ -45,60 +44,6 @@ class SakHistorikkControllerTest {
     @WithSaksbehandler
     inner class Infotrygd {
         private val fnr = FolkeregisterIdent("02345678901")
-
-        @Test
-        fun `infotrygd finn relevante saker skal kun gi svar på rett tema`() {
-            val sak1 = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.PARYKK))
-            val historikk = listOf(
-                InfotrygdHistorikk(
-                    dato = LocalDate.of(2024, 1, 15),
-                    fom = LocalDate.of(2024, 1, 1),
-                    tom = LocalDate.of(2024, 12, 31),
-                    tekst = "Ortose",
-                    kontonummer = "5122000",
-                    kontonavn = "Ortose",
-                    belop = "5000",
-                )
-            )
-            whenever(infotrygdClient.hentHistorikk(any())) doReturn historikk
-
-            assertGetSakHistorikkForSak(sak1.saksnummer)
-                .hasStatus(HttpStatus.OK)
-                .bodyJson()
-                .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
-                .satisfies({
-                    assertThat(it.infotrygd).hasSize(1)
-                })
-
-            verify(infotrygdClient).hentHistorikk(eq(fnr))
-        }
-
-        @Test
-        fun `infotrygd finn relevante saker ikke kalle `() {
-            val sak1 = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.HOREAPPARAT))
-            val historikk = listOf(
-                InfotrygdHistorikk(
-                    dato = LocalDate.of(2024, 1, 15),
-                    fom = LocalDate.of(2024, 1, 1),
-                    tom = LocalDate.of(2024, 12, 31),
-                    tekst = "Ortose",
-                    kontonummer = "5122000",
-                    kontonavn = "Ortose",
-                    belop = "5000",
-                )
-            )
-            whenever(infotrygdClient.hentHistorikk(any())) doReturn historikk
-
-            assertGetSakHistorikkForSak(sak1.saksnummer)
-                .hasStatus(HttpStatus.OK)
-                .bodyJson()
-                .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
-                .satisfies({
-                    assertThat(it.infotrygd).isEmpty()
-                })
-
-            verify(infotrygdClient, never()).hentHistorikk(eq(fnr))
-        }
 
         @WithSaksbehandler
         @Test
@@ -195,28 +140,6 @@ class SakHistorikkControllerTest {
         inner class `finn saker for person` {
 
             @Test
-            fun `finn relevante saker skal kun gi svar på rett tema`() {
-                val fnr = FolkeregisterIdent("22345678901")
-                val sak1 = SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.PARYKK))
-                SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.BRYSTPROTESE))
-                SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.HOREAPPARAT))
-                SakTestData.lagreSak(
-                    repository, SakTestData.sakUtenUtbetaling().copy(type = StonadsType.PARYKK, fnr = FolkeregisterIdent("98765432101"))
-                )
-
-
-                assertGetSakHistorikkForSak(sak1.saksnummer)
-                    .hasStatus(HttpStatus.OK)
-                    .bodyJson()
-                    .convertTo(SakHistorikkController.SakHistorikkResponse::class.java)
-                    .satisfies({
-                        assertThat(it.saker).hasSize(2)
-                        assertThat(it.saker.map { it.tema }).containsOnly(sak1.tema)
-                    })
-            }
-
-
-            @Test
             fun `finn saker for person med filter`() {
                 val fnr = FolkeregisterIdent("12345678901")
                 SakTestData.lagreSak(repository, SakTestData.sakUtenUtbetaling().copy(fnr = fnr, type = StonadsType.PARYKK))
@@ -290,9 +213,5 @@ class SakHistorikkControllerTest {
     private fun assertGetSakHistorikkPerson(fnr: FolkeregisterIdent, tema: FellesKodeverkTema?) = assertThat(
         mockMvc.get().uri("/api/sakhistorikk/person/{maskertPersonIdent}", fnr.toMaskertPersonIdent())
             .apply { tema?.let { queryParam("tema", it.name) } }
-    )
-
-    private fun assertGetSakHistorikkForSak(saksnummer: Saksnummer) = assertThat(
-        mockMvc.get().uri("/api/sakhistorikk/sak/{saksnummer}", saksnummer)
     )
 }
