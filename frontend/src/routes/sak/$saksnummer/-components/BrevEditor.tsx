@@ -7,7 +7,7 @@ import {
 } from "@generated/@tanstack/react-query.gen";
 import { Button, ErrorSummary, HStack, InfoCard, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoSave } from "~/common/useAutosave";
 import { getOrCreateBrevQueryKey } from "~/routes/sak/$saksnummer/-api/brev.query";
 import { HtmlPdfgenEditor } from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlPdfgenEditor";
@@ -65,12 +65,32 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
 
     const [showValidation, setShowValidation] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+    const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+    const setStatus = useCallback((status: "idle" | "saving" | "saved" | "error") => {
+        clearTimeout(idleTimeoutRef.current);
+        setSaveStatus(status);
+        if (status === "saved" || status === "error") {
+            idleTimeoutRef.current = setTimeout(() => setSaveStatus("idle"), 2000);
+        }
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            clearTimeout(idleTimeoutRef.current);
+        };
+    }, []);
+
     const validationErrors = brev?.valideringsfeil || [];
     const hasValidationErrors = validationErrors.length > 0;
 
     const oppdaterBrev = useMutation({
         ...oppdaterBrevMutation(),
         onSuccess: (data) => {
+            setHasChanged(false);
+            setStatus("saved");
             queryClient.setQueryData(getOrCreateBrevQueryKey(saksnummer, brev.type, brev.mottakerType), data);
             queryClient.invalidateQueries({
                 queryKey: hentBrevQueryKey({
@@ -81,12 +101,16 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
                 }),
             });
         },
+        onError: () => {
+            setHasChanged(true);
+            setStatus("error");
+        },
     });
 
-    async function lagreBrev(): Promise<Brev | undefined> {
+    async function lagreBrev(manuelt = false): Promise<Brev | undefined> {
         if (readOnly) return undefined;
-        if (!hasChanged) return brev;
-        setHasChanged(false);
+        if (!manuelt && !hasChanged) return brev;
+        setStatus("saving");
         return oppdaterBrev.mutateAsync({
             path: {
                 saksnummer: saksnummer,
@@ -99,7 +123,7 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
         });
     }
 
-    useAutoSave(editorContent, lagreBrev, 2000);
+    useAutoSave(editorContent, () => lagreBrev(), 500);
 
     const editorChanged = (html: string) => {
         setHasChanged(true);
@@ -138,14 +162,16 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
                 readOnly={readOnly}
                 onChange={(e) => tittelChanged(e.target.value)}
                 error={getErrorMessage("tittel")}
-                onBlur={lagreBrev}
+                onBlur={() => lagreBrev()}
             />
             <HtmlPdfgenEditor
                 html={genpdfHtml}
                 onChange={editorChanged}
                 readOnly={readOnly}
                 error={getErrorMessage("innhold")}
-                onBlur={lagreBrev}
+                onBlur={() => lagreBrev()}
+                onSave={() => lagreBrev(true)}
+                saveStatus={saveStatus}
             />
             <HStack gap="space-32" align="start">
                 <Button type="submit" variant="primary" onClick={onActionClick} disabled={readOnly} loading={loading}>
