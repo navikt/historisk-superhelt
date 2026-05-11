@@ -1,0 +1,35 @@
+{
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git"
+    },
+
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 120,
+        "trailingNewline": true
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "double",
+            "jsxQuoteStyle": "double"
+        }
+    },
+    "css": {
+        "parser": {
+            "cssModules": true
+        },
+        "formatter": {
+            "enabled": true,
+            "quoteStyle": "double"
+        }
+    }
+}

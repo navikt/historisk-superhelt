@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"@biomejs/monorepo": "github:biomejs/biome"
+	}
+}

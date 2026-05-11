@@ -1,0 +1,24 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@biomejs/monorepo':
+        specifier: github:biomejs/biome
+        version: https://codeload.github.com/biomejs/biome/tar.gz/d9e62f4db18a87cc54e0f5af0df30ca928c922c3
+
+packages:
+
+  '@biomejs/monorepo@https://codeload.github.com/biomejs/biome/tar.gz/d9e62f4db18a87cc54e0f5af0df30ca928c922c3':
+    resolution: {tarball: https://codeload.github.com/biomejs/biome/tar.gz/d9e62f4db18a87cc54e0f5af0df30ca928c922c3}
+    version: 0.0.0
+    engines: {pnpm: 10.32.1}
+
+snapshots:
+
+  '@biomejs/monorepo@https://codeload.github.com/biomejs/biome/tar.gz/d9e62f4db18a87cc54e0f5af0df30ca928c922c3': {}
