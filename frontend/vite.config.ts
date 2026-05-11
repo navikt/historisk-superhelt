@@ -25,6 +25,9 @@ export default defineConfig({
         globals: true,
         environment: "jsdom",
     },
+    define: {
+        "process.env.COMMIT_SHA": JSON.stringify(process.env.COMMIT_SHA ?? "local"),
+    },
     server: {
         // Proxy til wonderwall
         proxy: {

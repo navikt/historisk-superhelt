@@ -36,6 +36,29 @@ const faro = initializeFaro({
         version: process.env.COMMIT_SHA || "local",
     },
     instrumentations: [...getWebInstrumentations()],
+    beforeSend: (item) => {
+        if (item.meta?.page?.url) {
+            try {
+                const url = new URL(item.meta.page.url);
+                url.search = "";
+                item.meta.page.url = url.toString();
+            } catch {
+                /* ignore malformed URLs */
+            }
+        }
+        const payload = JSON.stringify(item);
+        if (/\d{11}/.test(payload)) {
+            return null;
+        }
+        return item;
+    },
+    pageTracking: {
+        generatePageId: (location) =>
+            location.pathname
+                .replace(/\/sak\/[^/]+/, "/sak/{saksnummer}")
+                .replace(/\/person\/[^/]+/, "/person/{personid}")
+                .replace(/\/oppgave\/[^/]+/, "/oppgave/{oppgaveid}"),
+    },
 });
 
 // Render the app
