@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.oppgave
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
 import no.nav.common.types.Enhetsnummer
@@ -34,7 +35,8 @@ data class OppgaveMedSak(
     val saksnummer: Saksnummer?,
     val sakStatus: SakStatus?,
     val stonadsType: StonadsType?,
-    val sakBeskrivelse: String?
+    val sakBeskrivelse: String?,
+    val tema: FellesKodeverkTema?
 
 ){
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)

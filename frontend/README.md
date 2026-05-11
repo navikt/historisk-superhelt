@@ -6,6 +6,20 @@ React 19-frontend for Superhelt, bygget med TanStack Router/Query og Nav Aksel D
 
 ```bash
 pnpm install
+```
+
+## Git-hooks
+
+Prosjektet bruker [Lefthook](https://github.com/evilmartians/lefthook) for å kjøre linting og formatering før commits og pushes. Dette trengs bare å settes opp en gang for prosjektet.
+For å sette opp git-hooks, kjør:
+
+```bash
+pnpm exec lefthook install 
+```
+
+## Dev server
+
+```bash
 pnpm start   # dev-server på :3000 med hot reload
 ```
 

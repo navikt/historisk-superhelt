@@ -18,6 +18,8 @@ app:
     attestant: gr_attestant
     les: gr_les
     drift: gr_drift
+    tema-hel: gr_tema_hel
+    tema-hje: gr_tema_hje
   pdl:
     audience: api://mock.pdl.pdl-api/.default
     url: http://pdl-junit.mocked

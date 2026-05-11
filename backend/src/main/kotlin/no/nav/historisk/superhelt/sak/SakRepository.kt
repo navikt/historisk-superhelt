@@ -116,22 +116,27 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
+    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr) and @temaAuth.harTilgang(returnObject.type.tema)")
     fun getSakEntityOrThrow(saksnummer: Saksnummer): SakJpaEntity {
         return getSakEntity(saksnummer)
             ?: throw IkkeFunnetException("Sak med saksnummer $saksnummer ikke funnet")
     }
 
     @PreAuthorize("hasAuthority('READ')")
-    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr)")
+    @PostAuthorize("@tilgangsmaskin.harTilgang(returnObject.fnr) and @temaAuth.harTilgang(returnObject.type.tema)")
     fun getSak(saksnummer: Saksnummer): Sak {
         return getSakEntityOrThrow(saksnummer).toDomain()
     }
 
+    /** Henter saker for en person og filterer på tema som personen har tilgang til  */
     @PreAuthorize("hasAuthority('READ') and @tilgangsmaskin.harTilgang(#fnr)")
-    fun findSaker(fnr: FolkeregisterIdent): List<Sak> {
-        return jpaRepository.findSakEntitiesByFnr(fnr).map { it.toDomain() }
+    fun finnSaker(fnr: FolkeregisterIdent): List<Sak> {
+        val authenticatedUser= getAuthenticatedUser()
+        return jpaRepository.findSakEntitiesByFnr(fnr)
+            .filter { authenticatedUser.hasTemaAccess(it.type.tema) }
+            .map { it.toDomain() }
     }
+
 
     @PreAuthorize("hasAuthority('WRITE')")
     @Transactional
@@ -142,6 +147,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         logger.info("Sak {} er markert som feilregistrert via Kabal-event", saksnummer)
     }
 
+    @PreAuthorize("hasAuthority('READ')")
     internal fun finnAapneSaker(): List<Sak> =
         jpaRepository.findByStatusNotIn(listOf(SakStatus.FERDIG, SakStatus.FEILREGISTRERT))
             .map { it.toDomain() }

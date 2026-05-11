@@ -16,9 +16,11 @@ interface HtmlEditorProps {
     onBlur?: () => void;
     error?: string | undefined;
     readOnly?: boolean;
+    saveStatus?: "idle" | "saving" | "saved" | "error";
+    onSave?: () => void;
 }
 
-export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly }: HtmlEditorProps) {
+export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly, saveStatus, onSave }: HtmlEditorProps) {
     const xhtml = toXhtml(html);
     const prefix = utledPrefiksInnhold(xhtml);
     const postfix = utledPostfixInnhold(xhtml);
@@ -34,6 +36,8 @@ export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly }: Ht
                     error={error}
                     onBlur={onBlur}
                     readOnly={readOnly}
+                    saveStatus={saveStatus}
+                    onSave={onSave}
                 />
                 <ReadMore header="Standardtekster og signatur" variant="moderate" data-color="neutral">
                     <FixedHtml html={postfix} />

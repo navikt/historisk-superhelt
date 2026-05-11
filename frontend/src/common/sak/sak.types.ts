@@ -7,3 +7,4 @@ export type UtbetalingsType = Sak["utbetalingsType"];
 export type RettighetType = Sak["rettigheter"][0];
 export type TilstandStatusType = SakTilstand["opplysninger"];
 export type KlassekodeType = Sak["klasseKode"];
+export type TemaType = Sak["tema"];
