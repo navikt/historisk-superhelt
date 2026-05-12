@@ -13,13 +13,14 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Card } from "~/common/card/Card";
 import { dateTilIsoDato } from "~/common/dato.utils";
 import { NumericInput } from "~/common/NumericInput";
-import { getKodeverkStonadsTypeOptions, sakQueryKey } from "~/common/sak/sak.query";
+import { StonadsTypeVelger } from "~/common/sak/StonadsTypeVelger";
+import { sakQueryKey } from "~/common/sak/sak.query";
 import type { KlassekodeType, SakVedtakType, StonadType, UtbetalingsType } from "~/common/sak/sak.types";
 import { useStonadsType } from "~/common/sak/useStonadsType";
 import useDebounce from "~/common/useDebounce";
@@ -29,7 +30,6 @@ interface Props {
 }
 
 export default function SakOpplysningerEditor({ sak }: Props) {
-    const { data: saksTyper } = useSuspenseQuery(getKodeverkStonadsTypeOptions());
     const stonadstype = useStonadsType();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -122,7 +122,7 @@ export default function SakOpplysningerEditor({ sak }: Props) {
         return validationErrors.find((feil) => feil.field === field)?.message || undefined;
     }
 
-    function changeStonad(stonadsType: StonadType) {
+    function changeStonad(stonadsType?: StonadType) {
         if (updateSakData.type !== stonadsType) {
             patchSak({ type: stonadsType, klasseKode: undefined });
         }
@@ -131,18 +131,13 @@ export default function SakOpplysningerEditor({ sak }: Props) {
     return (
         <VStack gap="space-24">
             <Card>
-                <Select
+                <StonadsTypeVelger
                     label="Stønad"
                     value={updateSakData.type}
-                    disabled={sak.gjenapnet}
-                    onChange={(e) => changeStonad(e.target.value as StonadType)}
-                >
-                    {saksTyper.map((st) => (
-                        <option key={st.type} value={st.type}>
-                            {st.navn}
-                        </option>
-                    ))}
-                </Select>
+                    readOnly={sak.gjenapnet}
+                    onChange={changeStonad}
+                    temaFilter={[sak.tema]}
+                />
 
                 <HStack gap="space-24">
                     <DatePicker {...datepickerProps}>
