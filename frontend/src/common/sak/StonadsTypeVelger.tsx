@@ -1,7 +1,8 @@
 import { UNSAFE_Combobox } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { getKodeverkStonadsTypeOptions } from "~/common/sak/sak.query";
-import type { StonadType } from "~/common/sak/sak.types";
+import type { StonadType, TemaType } from "~/common/sak/sak.types";
 
 interface Props {
     label: string;
@@ -10,15 +11,29 @@ interface Props {
     onChange: (type: StonadType | undefined) => void;
     name?: string;
     readOnly?: boolean;
+    temaFilter: Array<TemaType>;
 }
 
-export function StonadsTypeVelger({ label, value, error, onChange, name = "stonadstype", readOnly }: Props) {
-    const { data: stonadsTyper } = useSuspenseQuery(getKodeverkStonadsTypeOptions());
+export function StonadsTypeVelger({
+    label,
+    value,
+    temaFilter,
+    error,
+    onChange,
+    name = "stonadstype",
+    readOnly,
+}: Props) {
+    const { data: alleStonadstyper } = useSuspenseQuery(getKodeverkStonadsTypeOptions());
     const selectValue: string = (value ?? "") as string;
+
+    const filteredStonadstyper = alleStonadstyper
+        .filter((s) => temaFilter.includes(s.tema))
+        .sort((a, b) => a.navn.localeCompare(b.navn, "no"));
 
     function changeStonadsType(option: string) {
         onChange(option === "" ? undefined : (option as StonadType));
     }
+
     return (
         <UNSAFE_Combobox
             label={label}
@@ -26,10 +41,13 @@ export function StonadsTypeVelger({ label, value, error, onChange, name = "stona
             error={error}
             isMultiSelect={false}
             readOnly={readOnly}
+            shouldAutocomplete={true}
             onToggleSelected={(option) => changeStonadsType(option)}
-            options={stonadsTyper.map((bt) => ({ label: bt.navn, value: bt.type }))}
+            options={filteredStonadstyper.map((bt) => ({ label: bt.navn, value: bt.type }))}
             selectedOptions={
-                stonadsTyper?.filter((s) => s.type === selectValue).map((h) => ({ label: h.navn, value: h.type })) ?? []
+                alleStonadstyper
+                    ?.filter((s) => s.type === selectValue)
+                    .map((h) => ({ label: h.navn, value: h.type })) ?? []
             }
         />
     );

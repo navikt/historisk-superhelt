@@ -136,6 +136,7 @@ export default function SakOpplysningerEditor({ sak }: Props) {
                     value={updateSakData.type}
                     readOnly={sak.gjenapnet}
                     onChange={changeStonad}
+                    temaFilter={[sak.tema]}
                 />
 
                 <HStack gap="space-24">
