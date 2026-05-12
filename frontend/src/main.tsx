@@ -27,9 +27,8 @@ const router = createRouter({
     scrollRestoration: true,
 });
 
-const faro = initializeFaro({
+initializeFaro({
     url: "https://telemetry.nav.no/collect",
-    paused: window.location.hostname === "localhost",
     app: {
         name: "superhelt",
         namespace: "historisk",
