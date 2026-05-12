@@ -18,6 +18,7 @@ import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
@@ -77,6 +78,9 @@ class VedtakJpaEntity(
     var tildelingsAar: Int?,
     val vedtaksTidspunkt: Instant,
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "klassekode")
+    var klassekode: KlasseKode?
     ) {
 
 
@@ -108,6 +112,7 @@ class VedtakJpaEntity(
             vedtaksTidspunkt = vedtaksTidspunkt,
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },
+            klasseKode = this.klassekode
         )
     }
 }

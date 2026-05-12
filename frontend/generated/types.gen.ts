@@ -213,23 +213,6 @@ export type SakshistorikkResponse = {
     infotrygd: Array<InfotrygdHistorikk>;
 };
 
-export type Vedtak = {
-    saksnummer: string;
-    behandlingsnummer: number;
-    stonadstype: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
-    fnr: string;
-    beskrivelse: string;
-    soknadsDato: string;
-    tildelingsAar?: number | null;
-    begrunnelse?: string | null;
-    resultat: 'INNVILGET' | 'DELVIS_INNVILGET' | 'AVSLATT' | 'HENLAGT';
-    vedtaksTidspunkt: string;
-    saksbehandler: NavUser;
-    attestant: NavUser;
-    utbetalingsType: 'BRUKER' | 'FORHANDSTILSAGN' | 'INGEN';
-    belop?: number | null;
-};
-
 export type SakStatusDto = {
     sakStatus: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     utbetalingStatus?: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
@@ -288,8 +271,8 @@ export type OppgaveMedSak = {
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
     tema?: 'HEL' | 'HJE';
-    readonly maskertPersonIdent: string;
     readonly oppgaveTypeTekst: string;
+    readonly maskertPersonIdent: string;
 };
 
 export type HjemmelDto = {
@@ -1219,41 +1202,6 @@ export type FindSakerForPersonResponses = {
 };
 
 export type FindSakerForPersonResponse = FindSakerForPersonResponses[keyof FindSakerForPersonResponses];
-
-export type HentVedtakForSakData = {
-    body?: never;
-    path: {
-        saksnummer: string;
-    };
-    query?: never;
-    url: '/api/sak/{saksnummer}/vedtak';
-};
-
-export type HentVedtakForSakErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type HentVedtakForSakError = HentVedtakForSakErrors[keyof HentVedtakForSakErrors];
-
-export type HentVedtakForSakResponses = {
-    /**
-     * OK
-     */
-    200: Array<Vedtak>;
-};
-
-export type HentVedtakForSakResponse = HentVedtakForSakResponses[keyof HentVedtakForSakResponses];
 
 export type GetSakStatusData = {
     body?: never;
