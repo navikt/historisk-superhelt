@@ -12,7 +12,7 @@ import no.nav.historisk.superhelt.utbetaling.UtbetalingsType
 import java.time.Instant
 import java.time.LocalDate
 
-/** Resultet av ett fattet vedtak i en sak på ett gitt tidspunkt*/
+/** Resultatet av et fattet vedtak i en sak på ett gitt tidspunkt */
 data class Vedtak(
     val saksnummer: Saksnummer,
     val behandlingsnummer: Behandlingsnummer,
