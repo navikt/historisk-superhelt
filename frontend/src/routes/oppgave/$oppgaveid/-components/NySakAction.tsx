@@ -1,13 +1,13 @@
-import type {Journalpost, OppgaveMedSak, ProblemDetail} from "@generated";
-import {journalforNySakMutation} from "@generated/@tanstack/react-query.gen";
-import {Button, VStack} from "@navikt/ds-react";
-import {useMutation} from "@tanstack/react-query";
-import {useNavigate} from "@tanstack/react-router";
-import {useState} from "react";
-import {ErrorAlert} from "~/common/error/ErrorAlert";
-import type {StonadType} from "~/common/sak/sak.types";
-import type {FellesData} from "./JournalforForm";
-import {StonadsTypeVelger} from "./StonadsTypeVelger";
+import type { Journalpost, OppgaveMedSak, ProblemDetail } from "@generated";
+import { getUserInfoOptions, journalforNySakMutation } from "@generated/@tanstack/react-query.gen";
+import { Button, VStack } from "@navikt/ds-react";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { ErrorAlert } from "~/common/error/ErrorAlert";
+import { StonadsTypeVelger } from "~/common/sak/StonadsTypeVelger";
+import type { StonadType } from "~/common/sak/sak.types";
+import type { FellesData } from "./JournalforForm";
 
 interface Props {
     oppgaveMedSak: OppgaveMedSak;
@@ -19,6 +19,9 @@ interface Props {
 
 export function NySakAction({ oppgaveMedSak, journalPost, defaultStonadstype, readOnly, getCommonData }: Props) {
     const navigate = useNavigate();
+    const { data: navAnsatt } = useSuspenseQuery({
+        ...getUserInfoOptions(),
+    });
     const [stonadstype, setStonadstype] = useState<StonadType | undefined>(defaultStonadstype);
     const [error, setError] = useState<string | undefined>();
     const [backendError, setBackendError] = useState<ProblemDetail | undefined>();
@@ -48,10 +51,11 @@ export function NySakAction({ oppgaveMedSak, journalPost, defaultStonadstype, re
     return (
         <VStack gap="space-24">
             <StonadsTypeVelger
-                name="stonadstype"
+                label="Velg type stønad"
                 value={stonadstype}
                 error={error}
                 readOnly={readOnly}
+                temaFilter={navAnsatt.tema}
                 onChange={(v) => {
                     setStonadstype(v);
                     setError(undefined);

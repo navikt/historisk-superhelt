@@ -50,6 +50,40 @@ class SakRepositoryTest {
 
     @WithSaksbehandler
     @Nested
+    inner class OpprettSak {
+        @Test
+        fun `opprett sak ok`() {
+            val sak = sakRepository.opprettNySak(
+                OpprettSakDto(
+                    fnr = FolkeregisterIdent("12345678901"),
+                    type = StonadsType.PARYKK,
+                    properties = UpdateSakDto(beskrivelse = "Testbeskrivelse")
+                )
+            )
+            assertThat(sak.fnr.value).isEqualTo("12345678901")
+            assertThat(sak.type).isEqualTo(StonadsType.PARYKK)
+            assertThat(sak.beskrivelse).isEqualTo("Testbeskrivelse")
+        }
+
+        @WithSaksbehandler(tema = [FellesKodeverkTema.HJE])
+        @Test
+        fun `opprett sak skal sjekke på tema`() {
+            assertThatThrownBy {
+                sakRepository.opprettNySak(
+                    OpprettSakDto(
+                        fnr = FolkeregisterIdent("12345678901"),
+                        type = StonadsType.PARYKK,
+                    )
+                )
+            }
+                .isInstanceOf(AuthorizationDeniedException::class.java)
+                .hasMessageContaining("Mangler tilgang til tema")
+        }
+
+    }
+
+    @WithSaksbehandler
+    @Nested
     inner class UpdateSak {
 
         @Test

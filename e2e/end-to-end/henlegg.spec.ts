@@ -21,7 +21,7 @@ test.describe("Henlegg sak", () => {
         });
 
         await test.step("Journalfør", async () => {
-            await journalforing.journalforNySak(brukerFnr, "SARAH", "REISEUTGIFTER");
+            await journalforing.journalforNySak(brukerFnr, "SARAH");
         });
 
         await test.step("Henlegg sak", async () => {
