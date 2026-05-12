@@ -52,7 +52,7 @@ test.describe("Fritekstbrev", () => {
         await test.step("Sjekk brevet", async () => {
             await page.getByLabel("Dokumenter i saken").selectOption("Brev 1", { timeout: 10_000 });
 
-            // TODO sjekk innhold i pdf
+            //  sjekk innhold i pdf, men hvordan?
         });
     });
 });

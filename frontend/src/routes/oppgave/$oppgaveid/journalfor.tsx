@@ -1,11 +1,11 @@
-import {getOppgaveOptions, getUserInfoOptions} from "@generated/@tanstack/react-query.gen";
-import {Heading, VStack} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {createFileRoute} from "@tanstack/react-router";
-import {finnPersonQuery} from "~/common/person/person.query";
-import {hentJournalpostMetadataQuery} from "~/routes/oppgave/$oppgaveid/-api/journalpost.query";
-import {FerdigJournalfort} from "~/routes/oppgave/$oppgaveid/-components/FerdigJournalfort";
-import {JournalforForm} from "~/routes/oppgave/$oppgaveid/-components/JournalforForm";
+import { getOppgaveOptions, getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
+import { Heading, VStack } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { finnPersonQuery } from "~/common/person/person.query";
+import { hentJournalpostMetadataQuery } from "~/routes/oppgave/$oppgaveid/-api/journalpost.query";
+import { FerdigJournalfort } from "~/routes/oppgave/$oppgaveid/-components/FerdigJournalfort";
+import { JournalforForm } from "~/routes/oppgave/$oppgaveid/-components/JournalforForm";
 
 export const Route = createFileRoute("/oppgave/$oppgaveid/journalfor")({
     component: JournalforPage,
@@ -22,7 +22,6 @@ function JournalforPage() {
     const completed = oppgave.oppgavestatus === "FERDIGSTILT" && !!oppgave.saksnummer;
 
     function oppdaterBruker() {
-        // TODO hvordan bytte bruker i header
         console.log("Bruker oppdatert");
     }
 

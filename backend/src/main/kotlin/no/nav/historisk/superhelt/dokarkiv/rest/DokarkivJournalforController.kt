@@ -128,7 +128,6 @@ class DokarkivJournalforController(
 
         // Denne er allerede idempotent og vil ikke ferdigstille oppgaven hvis den er ferdigstilt fra før
         oppgaveService.ferdigstillOppgave(request.jfrOppgaveId)
-        // TODO kanskje sjekke om det er åpne oppgaver på saken i stedet?
         if (sak.status.isFinal()) {
             runCatching {
                 oppgaveService.opprettOppgave(

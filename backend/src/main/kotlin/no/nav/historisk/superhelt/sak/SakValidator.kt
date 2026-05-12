@@ -40,7 +40,6 @@ class SakValidator(private val sak: Sak): Validator() {
     }
 
     fun checkSoknad(): SakValidator {
-        // TODO vurdere å bruke enum for felt for mer strukturert validering
         with(sak) {
 
             check(beskrivelse.isNullOrBlank(), "beskrivelse", "Beskrivelse må være satt")
