@@ -32,6 +32,7 @@ class VedtakRepository(
             soknadsDato = vedtak.soknadsDato,
             vedtaksTidspunkt = vedtak.vedtaksTidspunkt,
             tildelingsAar = vedtak.tildelingsAar?.value,
+            klassekode = vedtak.klasseKode
         )
         vedtakJpaRepository.save(vedtakJpaEntity)
     }
