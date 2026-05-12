@@ -26,7 +26,7 @@ import java.time.LocalDate
 class SakRepository(private val jpaRepository: SakJpaRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
+    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr) and @temaAuth.harTilgang(#req.type.tema)")
     fun opprettNySak(req: OpprettSakDto): Sak {
         val properties = req.properties
         val saksbehandler = properties?.saksbehandler ?: getAuthenticatedUser().navUser
