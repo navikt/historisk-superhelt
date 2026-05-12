@@ -28,6 +28,7 @@ object SakExtensions {
             soknadsDato = sak.soknadsDato!!,
             tildelingsAar = sak.tildelingsAar,
             vedtaksTidspunkt = vedtaksTidspunkt,
+            klasseKode = sak.klasseKode
         )
     }
 
