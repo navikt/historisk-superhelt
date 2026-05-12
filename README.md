@@ -150,9 +150,6 @@ Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
 
 Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
 
-### Pdfgen
-Se https://github.com/navikt/pdfgen/pkgs/container/pdfgen for tilgjengelige versjoner. For lokal utvikling kan du bygge og kjøre pdfgen fra `pdfgen/`-mappen:
-
 ```shell
 
 ### Formatering og linting (frontend)
