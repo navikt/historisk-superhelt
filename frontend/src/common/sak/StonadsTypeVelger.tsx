@@ -1,6 +1,5 @@
 import { UNSAFE_Combobox } from "@navikt/ds-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
 import { getKodeverkStonadsTypeOptions } from "~/common/sak/sak.query";
 import type { StonadType, TemaType } from "~/common/sak/sak.types";
 

@@ -43,8 +43,8 @@ export class JournalforingPage {
 
     private async journalforOgStartBehandling(soknadType: string) {
         await this.page.getByRole("radio", { name: "Ny sak" }).check();
-        await this.page.getByRole('combobox', { name: 'Velg type stønad' }).click();
-        await this.page.getByRole('option', { name: soknadType }).click();
+        await this.page.getByRole("combobox", { name: "Velg type stønad" }).click();
+        await this.page.getByRole("option", { name: soknadType }).click();
         await this.page.getByRole("button", { name: "Journalfør og start behandling" }).click();
     }
 
