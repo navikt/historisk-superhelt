@@ -28,7 +28,7 @@ const router = createRouter({
 });
 
 initializeFaro({
-    url: "https://telemetry.nav.no/collect",
+    url: "https://telemetry.ekstern.dev.nav.no/collect",
     app: {
         name: "superhelt",
         namespace: "historisk",
