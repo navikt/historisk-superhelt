@@ -4,7 +4,7 @@ import { opprettJFR, tildelOppgave } from "./oppgave.utils";
 export class JournalforingPage {
     constructor(public readonly page: Page) {}
 
-    async journalforNySak(fnr: string, saksbehandler: string, soknadType = "REISEUTGIFTER", dokumentTittel?: string) {
+    async journalforNySak(fnr: string, saksbehandler: string, soknadType = "Reiseutgifter", dokumentTittel?: string) {
         const jfrId = await opprettJFR(fnr);
         await tildelOppgave(jfrId, saksbehandler);
         await this.velgOppgave(fnr);
@@ -43,7 +43,8 @@ export class JournalforingPage {
 
     private async journalforOgStartBehandling(soknadType: string) {
         await this.page.getByRole("radio", { name: "Ny sak" }).check();
-        await this.page.getByLabel("Velg type stønad").selectOption(soknadType);
+        await this.page.getByRole('combobox', { name: 'Velg type stønad' }).click();
+        await this.page.getByRole('option', { name: soknadType }).click();
         await this.page.getByRole("button", { name: "Journalfør og start behandling" }).click();
     }
 
