@@ -150,6 +150,8 @@ Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
 
 Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
 
+```shell
+
 ### Formatering og linting (frontend)
 
 ```shell

@@ -1,7 +1,8 @@
 # pdfgen
 
-
 Maler og innhold for generering av brev for superhelt
+
+Se https://github.com/navikt/pdfgen/pkgs/container/pdfgen for tilgjengelige versjoner. 
 
 # Komme i gang
 
