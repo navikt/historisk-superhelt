@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.util.HtmlUtils
 
 @RestController
 @RequestMapping("kabal-mock")
@@ -43,7 +44,8 @@ class KabalMockController(
         val event = KabalTestdata.lagKlagebehandlingAvsluttetEvent(kildeReferanse, klageUtfall)
         producer.sendEvent(event)
         logger.info("Sendte KLAGEBEHANDLING_AVSLUTTET kildeReferanse={} utfall={}", kildeReferanse, klageUtfall)
-        return ResponseEntity.ok("Sendte KLAGEBEHANDLING_AVSLUTTET for $kildeReferanse med utfall=$klageUtfall")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte KLAGEBEHANDLING_AVSLUTTET for $safeKildeReferanse med utfall=$klageUtfall")
     }
 
     // ── 2. ANKEBEHANDLING_OPPRETTET ─────────────────────────────────────────
@@ -55,7 +57,8 @@ class KabalMockController(
         val event = KabalTestdata.lagAnkebehandlingOpprettetEvent(kildeReferanse)
         producer.sendEvent(event)
         logger.info("Sendte ANKEBEHANDLING_OPPRETTET kildeReferanse={}", kildeReferanse)
-        return ResponseEntity.ok("Sendte ANKEBEHANDLING_OPPRETTET for $kildeReferanse")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte ANKEBEHANDLING_OPPRETTET for $safeKildeReferanse")
     }
 
     // ── 3. ANKEBEHANDLING_AVSLUTTET ─────────────────────────────────────────
@@ -72,7 +75,8 @@ class KabalMockController(
         val event = KabalTestdata.lagAnkebehandlingAvsluttetEvent(kildeReferanse, ankeUtfall)
         producer.sendEvent(event)
         logger.info("Sendte ANKEBEHANDLING_AVSLUTTET kildeReferanse={} utfall={}", kildeReferanse, ankeUtfall)
-        return ResponseEntity.ok("Sendte ANKEBEHANDLING_AVSLUTTET for $kildeReferanse med utfall=$ankeUtfall")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte ANKEBEHANDLING_AVSLUTTET for $safeKildeReferanse med utfall=$ankeUtfall")
     }
 
     // ── 4. ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET ──────────────────────────
@@ -84,7 +88,8 @@ class KabalMockController(
         val event = KabalTestdata.lagAnkeITrygderettenOpprettetEvent(kildeReferanse)
         producer.sendEvent(event)
         logger.info("Sendte ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET kildeReferanse={}", kildeReferanse)
-        return ResponseEntity.ok("Sendte ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET for $kildeReferanse")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET for $safeKildeReferanse")
     }
 
     // ── 5. BEHANDLING_FEILREGISTRERT ────────────────────────────────────────
@@ -103,7 +108,8 @@ class KabalMockController(
         val event = KabalTestdata.lagBehandlingFeilregistrertEvent(kildeReferanse, feilType, navIdent, reason)
         producer.sendEvent(event)
         logger.info("Sendte BEHANDLING_FEILREGISTRERT kildeReferanse={} type={}", kildeReferanse, feilType)
-        return ResponseEntity.ok("Sendte BEHANDLING_FEILREGISTRERT for $kildeReferanse type=$feilType")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte BEHANDLING_FEILREGISTRERT for $safeKildeReferanse type=$feilType")
     }
 
     // ── 6. BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET ─────────────────
@@ -120,7 +126,8 @@ class KabalMockController(
         val event = KabalTestdata.lagBehandlingEtterTrygderettenOpphevetAvsluttetEvent(kildeReferanse, klageUtfall)
         producer.sendEvent(event)
         logger.info("Sendte BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET kildeReferanse={} utfall={}", kildeReferanse, klageUtfall)
-        return ResponseEntity.ok("Sendte BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET for $kildeReferanse med utfall=$klageUtfall")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET for $safeKildeReferanse med utfall=$klageUtfall")
     }
 
     // ── 7. OMGJOERINGSKRAVBEHANDLING_AVSLUTTET ──────────────────────────────
@@ -137,7 +144,8 @@ class KabalMockController(
         val event = KabalTestdata.lagOmgjoeringskravbehandlingAvsluttetEvent(kildeReferanse, omgjUtfall)
         producer.sendEvent(event)
         logger.info("Sendte OMGJOERINGSKRAVBEHANDLING_AVSLUTTET kildeReferanse={} utfall={}", kildeReferanse, omgjUtfall)
-        return ResponseEntity.ok("Sendte OMGJOERINGSKRAVBEHANDLING_AVSLUTTET for $kildeReferanse med utfall=$omgjUtfall")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte OMGJOERINGSKRAVBEHANDLING_AVSLUTTET for $safeKildeReferanse med utfall=$omgjUtfall")
     }
 
     // ── 8. GJENOPPTAKSBEHANDLING_AVSLUTTET ──────────────────────────────────
@@ -154,6 +162,7 @@ class KabalMockController(
         val event = KabalTestdata.lagGjenopptaksbehandlingAvsluttetEvent(kildeReferanse, gjenUtfall)
         producer.sendEvent(event)
         logger.info("Sendte GJENOPPTAKSBEHANDLING_AVSLUTTET kildeReferanse={} utfall={}", kildeReferanse, gjenUtfall)
-        return ResponseEntity.ok("Sendte GJENOPPTAKSBEHANDLING_AVSLUTTET for $kildeReferanse med utfall=$gjenUtfall")
+        val safeKildeReferanse = HtmlUtils.htmlEscape(kildeReferanse)
+        return ResponseEntity.ok("Sendte GJENOPPTAKSBEHANDLING_AVSLUTTET for $safeKildeReferanse med utfall=$gjenUtfall")
     }
 }
