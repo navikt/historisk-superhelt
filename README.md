@@ -150,6 +150,10 @@ Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
 
 Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
 
+### Simulere klage/anke-svar fra Kabal (lokalt)
+
+Mock-serveren kan simulere at Kabal avslutter en klage- eller ankebehandling ved å sende en Kafka-melding på `klage.behandling-events.v1`. Se [mocks/mock-server/README.md – Kabal mock](./mocks/mock-server/README.md#kabal-mock--simulate-klageanke-events-locally) for detaljer og eksempler.
+
 ### Formatering og linting (frontend)
 
 ```shell

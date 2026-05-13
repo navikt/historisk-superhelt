@@ -17,7 +17,7 @@ class KabalEventEntity(
     @Column(name = "event_id", nullable = false, unique = true)
     val eventId: UUID,
 
-    @Column(name = "saksnummer", nullable = false)
+    @Column(name = "saksnummer", nullable = false, length = 100)
     val saksnummer: String,
 
     @Column(name = "event_type", nullable = false)
