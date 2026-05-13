@@ -62,7 +62,7 @@ object SakTestData {
             begrunnelse = faker.lebowski().quote(),
             attestant = null,
             utbetalingsType = null,
-            enhet = Enhetsnummer(faker.numerify("????"))
+            enhet = Enhetsnummer(faker.numerify("####"))
         )
     }
 

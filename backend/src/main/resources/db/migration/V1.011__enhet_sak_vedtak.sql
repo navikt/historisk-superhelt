@@ -5,10 +5,9 @@ ALTER TABLE vedtak
     ADD COLUMN enhet VARCHAR(10);
 
 -- Sett enhet basert på stonads_type-logikk fra Enheter.guessEnhet:
---   tema = HEL               → 4485 (NAV Arbeid og ytelser)
+--   HOREAPPARAT              → 9999
 --   ARBEID_UTDANNING (HJE)   → 0587 (NAV Tiltak Innlandet)
---   øvrige (HJE)             → 9999 (dummy)
-
+--   øvrige (HEL)             → (NAV Arbeid og ytelser)
 UPDATE sak
 SET enhet = CASE
                 WHEN stonads_type = 'ARBEID_UTDANNING' THEN '0587'
