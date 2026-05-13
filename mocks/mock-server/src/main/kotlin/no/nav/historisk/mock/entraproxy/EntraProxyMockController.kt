@@ -14,6 +14,7 @@ class EntraProxyMockController {
     fun hentEnheter(): List<EnhetResponse> {
         return listOf(
             EnhetResponse(enhetnummer = "4488", navn = "NAV Vest-Viken"),
+            EnhetResponse(enhetnummer = "4485", navn = "Nav arbeid og ytelser - helseTjenester"),
         )
     }
 
