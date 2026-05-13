@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.klage
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.historisk.superhelt.ansatt.NavAnsattService
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
@@ -44,13 +45,14 @@ class KlageService(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
             klager = Klager(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
-            fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = "SUPERHELT"),
+            fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = APP_NAVN),
             kildeReferanse = sak.saksnummer.value,
             dvhReferanse = sak.saksnummer.value,
             hjemler = listOf(hjemmel.id),
             forrigeBehandlendeEnhet = enhet.enhetnummer.value,
             tilknyttedeJournalposter = emptyList(),
             brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
+           //TODO Dette gjelder vel ikke for alle stønader. Hva med hjelpemidler?
             ytelse = "HEL_HEL",
             kommentar = request.kommentar,
         )

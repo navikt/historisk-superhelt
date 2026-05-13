@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.klage.kafka
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.klage.config.KabalProperties
@@ -34,8 +35,8 @@ class KabalBehandlingEventConsumer(
             return
         }
 
-        if (event.kilde != FORVENTET_KILDE) {
-            logger.trace("Ignorerer BehandlingEvent med kilde='{}' (forventet '{}')", event.kilde, FORVENTET_KILDE)
+        if (event.kilde != APP_NAVN) {
+            logger.trace("Ignorerer BehandlingEvent med kilde='{}' (forventet '{}')", event.kilde, APP_NAVN)
             return
         }
 
@@ -50,10 +51,6 @@ class KabalBehandlingEventConsumer(
         ) {
             klageEventService.behandleEvent(event)
         }
-    }
-
-    companion object {
-        private const val FORVENTET_KILDE = "SUPERHELT"
     }
 }
 
