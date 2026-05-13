@@ -58,7 +58,7 @@ class DokarkivJournalforController(
             dokArkivService.journalførIArkivet(
                 journalPostId = journalpost.journalpostId,
                 fagsaksnummer = saksnummer,
-                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.type.enhet,
+                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.enhet,
                 request = request,
                 tema = sak.type.tema
             )
@@ -112,8 +112,8 @@ class DokarkivJournalforController(
             dokArkivService.journalførIArkivet(
                 journalPostId = journalpost.journalpostId,
                 fagsaksnummer = saksnummer,
-                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.type.enhet,
-                tema = sak.type.tema,
+                journalfoerendeEnhet = jfrOppgave.tildeltEnhetsnr ?: sak.enhet,
+                tema = sak.tema,
                 request = request,
             )
             endringsloggService.logChange(

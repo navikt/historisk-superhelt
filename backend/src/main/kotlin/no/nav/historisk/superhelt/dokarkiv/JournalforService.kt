@@ -17,15 +17,15 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class JournalforService (
+class JournalforService(
     private val oppgaveService: OppgaveService,
     private val sakRepository: SakRepository,
     private val endringsloggService: EndringsloggService
-){
+) {
 
     @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#request.bruker)")
     @Transactional
-     fun lagNySakOgKnyttDenTilOppgave(
+    fun lagNySakOgKnyttDenTilOppgave(
         request: JournalforNySakRequest,
         jfrOppgave: OppgaveMedSak): Saksnummer {
         val soknadsDato = jfrOppgave.opprettetTidspunkt
@@ -37,18 +37,19 @@ class JournalforService (
                     soknadsDato = soknadsDato?.toLocalDate(),
                     tildelingsAar = soknadsDato?.let { Aar(it.year) },
                     saksbehandler = getAuthenticatedUser().navUser,
-                    )
+                    enhet = jfrOppgave.tildeltEnhetsnr,
+                )
             )
         )
         soknadsDato?.let {
-                endringsloggService.logChange(
-                    saksnummer = nySak.saksnummer,
-                    endringsType = EndringsloggType.DOKUMENT_MOTTATT,
-                    endring = "Dokument mottatt av NAV",
-                    tidspunkt = it.toInstant(),
-                    navBruker = NavIdent("system"),
-                    beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelderTekst}\" registrert som mottatt"
-                )
+            endringsloggService.logChange(
+                saksnummer = nySak.saksnummer,
+                endringsType = EndringsloggType.DOKUMENT_MOTTATT,
+                endring = "Dokument mottatt av NAV",
+                tidspunkt = it.toInstant(),
+                navBruker = NavIdent("system"),
+                beskrivelse = "Dokument av type \"${jfrOppgave.oppgaveGjelderTekst}\" registrert som mottatt"
+            )
         }
         endringsloggService.logChange(
             saksnummer = nySak.saksnummer,

@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.sak
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
@@ -57,12 +58,13 @@ class SakRepositoryTest {
                 OpprettSakDto(
                     fnr = FolkeregisterIdent("12345678901"),
                     type = StonadsType.PARYKK,
-                    properties = UpdateSakDto(beskrivelse = "Testbeskrivelse")
+                    properties = UpdateSakDto(beskrivelse = "Testbeskrivelse", enhet = Enhetsnummer("1234")),
                 )
             )
             assertThat(sak.fnr.value).isEqualTo("12345678901")
             assertThat(sak.type).isEqualTo(StonadsType.PARYKK)
             assertThat(sak.beskrivelse).isEqualTo("Testbeskrivelse")
+            assertThat(sak.enhet).isEqualTo(Enhetsnummer("1234"))
         }
 
         @WithSaksbehandler(tema = [FellesKodeverkTema.HJE])
