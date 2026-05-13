@@ -17,7 +17,9 @@ import jakarta.persistence.Table
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
@@ -77,7 +79,14 @@ class VedtakJpaEntity(
     var tildelingsAar: Int?,
     val vedtaksTidspunkt: Instant,
 
-    ) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "klassekode")
+    var klassekode: KlasseKode?,
+
+    @Column(name = "enhet")
+    var enhet: Enhetsnummer
+
+) {
 
 
     override fun equals(other: Any?): Boolean {
@@ -95,7 +104,7 @@ class VedtakJpaEntity(
         val saksnummer = this.sak.saksnummer
         return Vedtak(
             saksnummer = saksnummer,
-            behandlingsnummer = Behandlingsnummer( this.behandlingsTeller),
+            behandlingsnummer = Behandlingsnummer(this.behandlingsTeller),
             stonadstype = this.type,
             fnr = this.fnr,
             beskrivelse = this.beskrivelse,
@@ -108,6 +117,8 @@ class VedtakJpaEntity(
             vedtaksTidspunkt = vedtaksTidspunkt,
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },
+            klasseKode = this.klassekode,
+            enhet = this.enhet
         )
     }
 }

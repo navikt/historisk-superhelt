@@ -2,10 +2,12 @@ package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
+import no.nav.historisk.superhelt.ansatt.Enheter
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -26,7 +28,7 @@ import java.time.LocalDate
 class SakRepository(private val jpaRepository: SakJpaRepository) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr)")
+    @PreAuthorize("hasAuthority('WRITE') and @tilgangsmaskin.harTilgang(#req.fnr) and @temaAuth.harTilgang(#req.type.tema)")
     fun opprettNySak(req: OpprettSakDto): Sak {
         val properties = req.properties
         val saksbehandler = properties?.saksbehandler ?: getAuthenticatedUser().navUser
@@ -36,7 +38,8 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
                 type = req.type,
                 fnr = req.fnr,
                 status = SakStatus.UNDER_BEHANDLING,
-                saksbehandler = saksbehandler
+                saksbehandler = saksbehandler,
+                enhet = properties?.enhet?: Enheter.guessEnhet(req.type)
             )
         )
         val saved = jpaRepository.save(sakEntity)
@@ -67,6 +70,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.tildelingsAar?.let { entity.tildelingsAar = it.value }
         dto.vedtaksResultat?.let { entity.vedtaksResultat = it }
         dto.saksbehandler?.let { entity.saksbehandler = it }
+        dto.enhet?.let { entity.enhet = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
 
         dto.utbetalingsType?.let { entity.utbetalingsType = it }
@@ -107,6 +111,8 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         sakEntity.vedtaksResultat = vedtak.resultat
         sakEntity.utbetalingsType = vedtak.utbetalingsType
         sakEntity.belop = vedtak.belop?.value
+        sakEntity.klassekode = vedtak.klasseKode
+        sakEntity.enhet = vedtak.enhet
         return jpaRepository.save(sakEntity).toDomain()
     }
 
@@ -162,5 +168,6 @@ data class UpdateSakDto(
     val utbetalingsType: UtbetalingsType? = null,
     val belop: Belop? = null,
     val klasseKode: KlasseKode? = null,
+    val enhet: Enhetsnummer? = null
 )
 

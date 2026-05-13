@@ -50,7 +50,6 @@ fun OppgaveDto.toOppgaveMedSak(sak: Sak?): OppgaveMedSak {
 
 /** Tipper hva slags stønad dette gjelder for */
 private fun OppgaveDto.guessStonadsType(): StonadsType? {
-    //TODO har tema noe å si? Kanskje for reise?
     return when (this.behandlingstemaEnum) {
         ORTOPEDISKE_HJELPEMIDLER, FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER -> StonadsType.FOTSENG
         ANSIKTSDEFEKTSPROTESE -> StonadsType.ANSIKT_PROTESE

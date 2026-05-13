@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.sak.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import no.nav.common.consts.FellesKodeverkTema
 import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.sak.SakStatus
@@ -36,6 +37,7 @@ class SakKodeverkController {
         val navn: String = type.navn
         val beskrivelse: String? = type.beskrivelse
         val klasseKoder: List<KlasseKodeDto> = type.klassekoder.map { KlasseKodeDto(it, it.navn) }
+        val tema: FellesKodeverkTema = type.tema
     }
 
     data class KlasseKodeDto(val klasseKode: KlasseKode, val navn: String)

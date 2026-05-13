@@ -25,7 +25,7 @@ export async function behandleSakTilAttestring({ auth, sak, journalforing }: Sar
     });
 
     await test.step("Journalfør ny sak", async () => {
-        await journalforing.journalforNySak(brukerFnr, "SARAH", "REISEUTGIFTER");
+        await journalforing.journalforNySak(brukerFnr, "SARAH");
     });
 
     await test.step("Fyll inn opplysninger", async () => {

@@ -17,6 +17,7 @@ import jakarta.persistence.Table
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
@@ -93,7 +94,10 @@ class SakJpaEntity(
     var klassekode: KlasseKode? = null,
 
     @OneToMany(mappedBy = "sak", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
-    private var brev: MutableList<BrevJpaEntity> = mutableListOf()
+    private var brev: MutableList<BrevJpaEntity> = mutableListOf(),
+
+    @Column(name = "enhet")
+    var enhet: Enhetsnummer
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -134,9 +138,9 @@ class SakJpaEntity(
             tildelingsAar = this.tildelingsAar?.let { Aar(it) },
             utbetalingsType = this.utbetalingsType,
             belop = this.belop?.let { Belop(it) },
-            //TODO Finne ut om dette kanskje skal mappes ett annet sted
             klasseKode = this.klassekode ?: this.type.defaultKlasseKode,
-            vedtaksbrevBruker = this.getVedtaksbrevBrev()
+            vedtaksbrevBruker = this.getVedtaksbrevBrev(),
+            enhet = this.enhet,
         )
     }
 }

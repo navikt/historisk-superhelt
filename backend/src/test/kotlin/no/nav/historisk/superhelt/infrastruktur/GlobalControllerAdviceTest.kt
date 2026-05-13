@@ -21,8 +21,6 @@ class GlobalControllerAdviceTest() {
             .andExpect(MockMvcResultMatchers.status().isInternalServerError)
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
 
-            // TODO Finne ut om Spring har sluttet å sette "type" feltet automatisk for generelle exceptions
-//            .andExpect(MockMvcResultMatchers.jsonPath("$.type").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("RuntimeException"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(500))
             .andExpect(MockMvcResultMatchers.jsonPath("$.detail").value("Test exception message"))

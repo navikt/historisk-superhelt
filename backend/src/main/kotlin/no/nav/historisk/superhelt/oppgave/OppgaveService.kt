@@ -164,9 +164,9 @@ class OppgaveService(
         val gjelder = sak.type.tilOppgaveGjelder()
         val oppgave = oppgaveClient.opprettOppgave(
             OpprettOppgaveRequest(
-                tema = sak.type.tema.kode,
+                tema = sak.tema.kode,
                 oppgavetype = type.oppgavetype,
-                opprettetAvEnhetsnr = sak.type.enhet.value,
+                opprettetAvEnhetsnr = sak.enhet.value,
                 journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,

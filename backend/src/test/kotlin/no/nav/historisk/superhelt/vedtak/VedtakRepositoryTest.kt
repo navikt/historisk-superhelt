@@ -47,6 +47,7 @@ class VedtakRepositoryTest {
             assertThat(v.soknadsDato).isEqualTo(vedtak.soknadsDato)
             assertThat(v.saksbehandler).isEqualTo(sak.saksbehandler)
             assertThat(v.attestant).isEqualTo(vedtak.attestant)
+            assertThat(v.klasseKode).isEqualTo(vedtak.klasseKode)
         })
     }
 
