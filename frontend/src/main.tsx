@@ -46,7 +46,7 @@ initializeFaro({
             }
         }
         const payload = JSON.stringify(item);
-        if (/\d{11}/.test(payload)) {
+        if (/(?<!\d)\d{11}(?!\d)/.test(payload)) {
             return null;
         }
         return item;
