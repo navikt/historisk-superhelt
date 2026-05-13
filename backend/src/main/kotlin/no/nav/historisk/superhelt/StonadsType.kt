@@ -48,6 +48,7 @@ enum class StonadsType(
     ),
     REISEUTGIFTER(
         navn = "Reiseutgifter helsetjenester",
+        beskrivelse = "Reiseutgifter knyttet til helsetjenester, for eksempel reise til og fra ortopedisk verksted",
         klassekoder = listOf(KlasseKode.REISEUTGIFTER),
         tema = HEL,
         enhet = Enheter.navArbeidOgYtelser
