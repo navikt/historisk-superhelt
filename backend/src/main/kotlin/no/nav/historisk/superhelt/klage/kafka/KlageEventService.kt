@@ -9,7 +9,6 @@ import no.nav.historisk.superhelt.klage.tidspunkt
 import no.nav.historisk.superhelt.klage.utfall
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
-import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.kabal.model.BehandlingEvent
 import no.nav.kabal.model.BehandlingEventType
 import no.nav.oppgave.OppgaveType
@@ -49,26 +48,15 @@ class KlageEventService(
         )
 
         when (event.type) {
-            // ── Klagebehandling: sjekk saksstatus før oppgave opprettes ──────────────
-            BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET ->
-                if (sak.status == SakStatus.FEILREGISTRERT) {
-                    logger.error(
-                        "Mottatt KLAGEBEHANDLING_AVSLUTTET-event på sak {} med status {} – " +
-                            "saken er feilregistrert. Oppretter ikke oppgave.",
-                        saksnummer, sak.status
-                    )
-                } else {
-                    opprettOppgaveMedDetaljer(event, saksnummer)
-                }
-
             // ── Avsluttede behandlinger som alltid medfører oppgave ──────────────────
+            BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
             BehandlingEventType.ANKEBEHANDLING_AVSLUTTET,
             BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET,
             BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET,
             BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET,
             -> opprettOppgaveMedDetaljer(event, saksnummer)
 
-            // ── Feilregistrert: marker saken i databasen ────────────────────────────
+            // ── Feilregistrert: marker saken i databasen og varsle saksbehandler ──
             BehandlingEventType.BEHANDLING_FEILREGISTRERT -> {
                 val detaljer = event.detaljer.behandlingFeilregistrert
                     ?: error("BEHANDLING_FEILREGISTRERT mangler detaljer for event ${event.eventId}")
@@ -77,6 +65,12 @@ class KlageEventService(
                     saksnummer, event.eventId, detaljer.navIdent, detaljer.reason
                 )
                 sakRepository.feilregistrerSak(saksnummer)
+                oppgaveService.opprettOppgave(
+                    type = OppgaveType.VUR_KONS_YTE,
+                    sak = sak,
+                    beskrivelse = "Klagebehandlingen er sendt tilbake fra KA med status feilregistrert.\n\nBegrunnelse fra KA: \"${detaljer.reason}\"",
+                    behandlesAvApplikasjon = "SUPERHELT",
+                )
                 loggTilEndringslogg(
                     endringsloggService, saksnummer, event.type.tilEndringsloggType(), event,
                     beskrivelse = "Registrert av: ${detaljer.navIdent}. Årsak: ${detaljer.reason}",

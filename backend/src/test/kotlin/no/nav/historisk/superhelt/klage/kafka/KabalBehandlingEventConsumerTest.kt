@@ -94,7 +94,7 @@ class KabalBehandlingEventConsumerTest {
     }
 
     @Test
-    fun `markerer sak som feilregistrert ved BEHANDLING_FEILREGISTRERT uten å opprette oppgave`() {
+    fun `markerer sak som feilregistrert og oppretter VUR_KONS_YTE-oppgave med årsak ved BEHANDLING_FEILREGISTRERT`() {
         val sak = SakTestData.lagreSak(
             repository = sakRepository,
             sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
@@ -117,7 +117,18 @@ class KabalBehandlingEventConsumerTest {
             klageEventService.behandleEvent(event)
         }
 
-        verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
+        val beskrivelseCaptor = argumentCaptor<String>()
+        verify(oppgaveService).opprettOppgave(
+            type = eq(OppgaveType.VUR_KONS_YTE),
+            sak = any(),
+            beskrivelse = beskrivelseCaptor.capture(),
+            tilordneTil = anyOrNull(),
+            behandlesAvApplikasjon = anyOrNull(),
+            journalpostId = anyOrNull(),
+        )
+        assertThat(beskrivelseCaptor.firstValue)
+            .contains("feilregistrert")
+            .contains("Feil sak")
 
         val oppdatertSak = withMockedUser { sakRepository.getSak(sak.saksnummer) }
         assertThat(oppdatertSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
