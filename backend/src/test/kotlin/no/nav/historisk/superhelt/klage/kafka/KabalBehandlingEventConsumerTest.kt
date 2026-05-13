@@ -94,7 +94,7 @@ class KabalBehandlingEventConsumerTest {
     }
 
     @Test
-    fun `markerer sak som feilregistrert og oppretter VUR_KONS_YTE-oppgave med årsak ved BEHANDLING_FEILREGISTRERT`() {
+    fun `oppretter VUR_KONS_YTE-oppgave med årsak ved BEHANDLING_FEILREGISTRERT uten å endre saksstatus`() {
         val sak = SakTestData.lagreSak(
             repository = sakRepository,
             sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
@@ -130,8 +130,9 @@ class KabalBehandlingEventConsumerTest {
             .contains("feilregistrert")
             .contains("Feil sak")
 
+        // Saksbehandler beslutter selv – status skal ikke endres automatisk
         val oppdatertSak = withMockedUser { sakRepository.getSak(sak.saksnummer) }
-        assertThat(oppdatertSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
+        assertThat(oppdatertSak.status).isEqualTo(SakStatus.FERDIG)
 
         val endringslogg = withMockedUser { endringsloggService.findBySak(sak.saksnummer) }
         assertThat(endringslogg).anyMatch { it.type == EndringsloggType.KABAL_BEHANDLING_FEILREGISTRERT }

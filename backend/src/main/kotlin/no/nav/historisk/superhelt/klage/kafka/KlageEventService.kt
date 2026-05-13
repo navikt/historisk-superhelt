@@ -56,15 +56,14 @@ class KlageEventService(
             BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET,
             -> opprettOppgaveMedDetaljer(event, saksnummer)
 
-            // ── Feilregistrert: marker saken i databasen og varsle saksbehandler ──
+            // ── Feilregistrert: varsle saksbehandler via oppgave – saksbehandler beslutter videre ──
             BehandlingEventType.BEHANDLING_FEILREGISTRERT -> {
                 val detaljer = event.detaljer.behandlingFeilregistrert
                     ?: error("BEHANDLING_FEILREGISTRERT mangler detaljer for event ${event.eventId}")
                 logger.info(
-                    "Markerer sak {} som feilregistrert etter Kabal-event {}. Registrert av: {}, årsak: {}",
+                    "Mottatt BEHANDLING_FEILREGISTRERT fra Kabal for sak {} (event {}). Registrert av: {}, årsak: {}. Oppretter oppgave til saksbehandler.",
                     saksnummer, event.eventId, detaljer.navIdent, detaljer.reason
                 )
-                sakRepository.feilregistrerSak(saksnummer)
                 oppgaveService.opprettOppgave(
                     type = OppgaveType.VUR_KONS_YTE,
                     sak = sak,
