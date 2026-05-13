@@ -28,7 +28,8 @@ object VedtakTestData {
             attestant = sak.attestant ?: NavUser(NavIdent(faker.bothify("A??###")), faker.name().name()),
             utbetalingsType = sak.utbetalingsType ?: UtbetalingsType.INGEN,
             belop = sak.belop,
-            klasseKode = sak.klasseKode
+            klasseKode = sak.klasseKode,
+            enhet = sak.enhet,
         )
     }
 }

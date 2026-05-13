@@ -49,7 +49,7 @@ class StatistikkService(
             sakYtelse = sak.type,
             behandlingType = BehandlingType.SØKNAD,
             saksbehandler = sak.saksbehandler.navIdent.value,
-            ansvarligEnhet = sak.type.enhet.value,
+            ansvarligEnhet = sak.enhet.value,
             fagsystemNavn = APP_NAVN,
             fagsystemVersjon = appVersion
         )
