@@ -21,7 +21,7 @@ test.describe("Fritekstbrev", () => {
         });
 
         await test.step("Journalfør", async () => {
-            await journalforing.journalforNySak(brukerFnr, "SARAH", "FOTSENG");
+            await journalforing.journalforNySak(brukerFnr, "SARAH", "Parykk");
         });
 
         await test.step("Skriv fritekstbrev", async () => {
@@ -50,9 +50,9 @@ test.describe("Fritekstbrev", () => {
         });
 
         await test.step("Sjekk brevet", async () => {
-            await page.getByLabel("Dokumenter i saken").selectOption("Brev 1");
+            await page.getByLabel("Dokumenter i saken").selectOption("Brev 1", { timeout: 10_000 });
 
-            // TODO sjekk innhold i pdf
+            //  sjekk innhold i pdf, men hvordan?
         });
     });
 });

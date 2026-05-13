@@ -4,7 +4,6 @@ import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedU
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestClient.builder
 
-//TODO cache og retry logikk
 class NaisTokenService(
     oboEndpoint: String,
     m2mEndpoint: String

@@ -1,46 +1,17 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.4.11/schema.json",
-    "vcs": {
-        "enabled": true,
-        "clientKind": "git"
-    },
+    "root": false,
+    "extends": "//",
+
     "files": {
         "includes": [
             "**",
-            "!!**/dist",
-            "!!**/generated",
+            "!!**/playwright-report",
+            "!!**/test-results",
             "!!**/node",
             "!!**/node_modules",
             "!!**/target",
-            "!!package-lock.json"
+            "!!package-lock.json",
+            "!!pnpm-lock.yaml"
         ]
-    },
-    "formatter": {
-        "enabled": true,
-        "indentStyle": "space",
-        "indentWidth": 4,
-        "lineWidth": 120,
-        "trailingNewline": true
-    },
-    "linter": {
-        "enabled": true,
-        "rules": {
-            "recommended": true
-        }
-    },
-    "javascript": {
-        "formatter": {
-            "quoteStyle": "double",
-            "jsxQuoteStyle": "double"
-        }
-    },
-    "css": {
-        "parser": {
-            "cssModules": true
-        },
-        "formatter": {
-            "enabled": true,
-            "quoteStyle": "double"
-        }
     }
 }

@@ -21,7 +21,7 @@ test.describe("Journalfør på eksisterende åpen sak", () => {
         });
 
         await test.step("Journalfør", async () => {
-            await journalforing.journalforNySak(brukerFnr, "SARAH", "PARYKK", "Søknaden min");
+            await journalforing.journalforNySak(brukerFnr, "SARAH", "Parykk", "Søknaden min");
         });
 
         await test.step("Fyll inn opplysninger", async () => {

@@ -32,7 +32,6 @@ private val standardBehandlingstema = listOf(
     Behandlingstema.FORNYELSESSOKNAD_ORTOPEDISKE_HJELPEMIDLER,
 )
 
-// TODO inkludere tema
 private fun randomBehandlingstema(): Behandlingstema =
     if (faker.number().randomDouble(2, 0, 1) < 0.80) {
         standardBehandlingstema.random()

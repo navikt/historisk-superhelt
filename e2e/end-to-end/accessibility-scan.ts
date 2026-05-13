@@ -6,10 +6,6 @@ export class AccessibilityScan {
 
     async violations() {
         const accessibilityScanResults = await new AxeBuilder({ page: this.page }).analyze();
-        return (
-            accessibilityScanResults.violations
-                // TODO - Skipper over color-contrast problemer da det er feil i default knapper i aksel
-                .filter((violation) => violation.id !== "color-contrast")
-        );
+        return accessibilityScanResults.violations;
     }
 }
