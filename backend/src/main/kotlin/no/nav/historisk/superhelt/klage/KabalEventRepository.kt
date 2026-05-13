@@ -1,6 +1,5 @@
 package no.nav.historisk.superhelt.klage
 
-import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.klage.db.KabalEventEntity
 import no.nav.historisk.superhelt.klage.db.KabalEventJpaRepository
 import no.nav.kabal.model.BehandlingEvent
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
-import java.util.UUID
 
 /**
  * Lagrer og slår opp Kabal-events for idempotens og revisjon.
@@ -42,37 +40,7 @@ class KabalEventRepository(
         )
         return true
     }
-
-    /** Returnerer alle Kabal-events for en sak, nyeste først. */
-    fun hentHistorikkForSak(saksnummer: Saksnummer): List<KabalEventHistorikk> =
-        jpaRepository.findBySaksnummerOrderByTidspunktDesc(saksnummer.value)
-            .map { it.tilHistorikk() }
 }
-
-data class KabalEventHistorikk(
-    val eventId: UUID,
-    val saksnummer: String,
-    val eventType: String,
-    val utfall: String?,
-    val tidspunkt: Instant,
-    val aarsakFeilregistrert: String?,
-    val journalpostReferanser: List<String>,
-    val opprettetTid: Instant,
-)
-
-private fun KabalEventEntity.tilHistorikk() = KabalEventHistorikk(
-    eventId = eventId,
-    saksnummer = saksnummer,
-    eventType = eventType,
-    utfall = utfall,
-    tidspunkt = tidspunkt,
-    aarsakFeilregistrert = aarsakFeilregistrert,
-    journalpostReferanser = journalpostReferanser
-        ?.split(",")
-        ?.filter { it.isNotBlank() }
-        ?: emptyList(),
-    opprettetTid = opprettetTid,
-)
 
 // ── Hjelpefunksjoner for å lese tvers av alle event-typer ────────────────────
 
