@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.klage.kafka
 
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.oppgave.OppgaveService
@@ -36,6 +38,9 @@ class KabalBehandlingEventConsumerTest {
 
     @Autowired
     private lateinit var sakRepository: SakRepository
+
+    @Autowired
+    private lateinit var endringsloggService: EndringsloggService
 
     @Autowired
     private lateinit var klageEventService: KlageEventService
@@ -116,6 +121,9 @@ class KabalBehandlingEventConsumerTest {
 
         val oppdatertSak = withMockedUser { sakRepository.getSak(sak.saksnummer) }
         assertThat(oppdatertSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
+
+        val endringslogg = withMockedUser { endringsloggService.findBySak(sak.saksnummer) }
+        assertThat(endringslogg).anyMatch { it.type == EndringsloggType.K_BEHANDLING_FEILREGISTRERT }
     }
 
     @Test
