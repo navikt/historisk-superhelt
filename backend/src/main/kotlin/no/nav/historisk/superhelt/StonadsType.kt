@@ -3,87 +3,73 @@ package no.nav.historisk.superhelt
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.consts.FellesKodeverkTema.HEL
 import no.nav.common.consts.FellesKodeverkTema.HJE
-import no.nav.common.types.Enhetsnummer
 import no.nav.helved.KlasseKode
-import no.nav.historisk.superhelt.ansatt.Enheter
 
 enum class StonadsType(
     val navn: String,
     val klassekoder: List<KlasseKode>,
     val beskrivelse: String? = null,
-    val tema: FellesKodeverkTema,
-    @Deprecated("Bruk enhet fra oppgave")
-    val enhet: Enhetsnummer) {
+    val tema: FellesKodeverkTema
+) {
 
     /* Helsetjenester */
     PARYKK(
         navn = "Parykk/hodeplagg",
         klassekoder = listOf(KlasseKode.PARYKK),
         beskrivelse = "Dekker kostnader til parykk og hodeplagg",
-        tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
+        tema = HEL
     ),
     ANSIKT_PROTESE(
         navn = "Ansiktdefektprotese",
         klassekoder = listOf(KlasseKode.ANSIKTSDEFEKTPROTESE),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     OYE_PROTESE(
         navn = "Øyeprotese",
         klassekoder = listOf(KlasseKode.ØYEPROTESE),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     BRYSTPROTESE(
         navn = "Brystprotese/spesial-bh",
         klassekoder = listOf(KlasseKode.BRYSTPROTESE),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     FOTTOY(
         navn = "Alminnelig fottøy i ulik størrelse",
         klassekoder = listOf(KlasseKode.VANLIGE_SKO),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     REISEUTGIFTER(
         navn = "Reiseutgifter helsetjenester",
         beskrivelse = "Reiseutgifter knyttet til helsetjenester, for eksempel reise til og fra ortopedisk verksted",
         klassekoder = listOf(KlasseKode.REISEUTGIFTER),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     FOTSENG(
         navn = "Fotseng",
         klassekoder = listOf(KlasseKode.FOTSENG),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     PROTESE(
         navn = "Ortopedisk protese",
         klassekoder = listOf(KlasseKode.ORTOPEDISK_PROTESE),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     ORTOSE(
         navn = "Ortopedisk ortose",
         klassekoder = listOf(KlasseKode.ORTOSE),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
     SPESIALSKO(
         navn = "Ortopediske spesialsko",
         klassekoder = listOf(KlasseKode.SPESIALSKO),
         tema = HEL,
-        enhet = Enheter.navArbeidOgYtelser
     ),
 
     ARBEID_UTDANNING(
         navn = "Arbeid og utdanningsreiser",
         tema = HJE,
         klassekoder = emptyList(),
-        enhet = Enheter.navTiltakInnlandet
     ),
 
     /* Hjelpemidler */
@@ -91,7 +77,6 @@ enum class StonadsType(
         navn = "Høreapparat",
         klassekoder = listOf(KlasseKode.HØREAPPARAT_ANSKAFFELSE, KlasseKode.HØREAPPARAT_EGENBETALING, KlasseKode.HØREAPPARAT_REPARASJON),
         tema = HJE,
-        enhet = Enheter.dummyEnhet
     ),
 
     /* Hjelpemidler */

@@ -5,19 +5,19 @@ import no.nav.common.types.Enhetsnummer
 import no.nav.historisk.superhelt.StonadsType
 
 object Enheter {
-    val navArbeidOgYtelser = Enhetsnummer("4485")
-    val navTiltakInnlandet = Enhetsnummer("0587")
+    private val navArbeidOgYtelser = Enhetsnummer("4485")
+    private val navTiltakInnlandet = Enhetsnummer("0587")
 
     //    val hjelpemiddelsentralene = Enhetsnummer("47")
-    val dummyEnhet = Enhetsnummer("9999")
+    private val dummyEnhet = Enhetsnummer("9999")
 
     fun guessEnhet(stonadsType: StonadsType): Enhetsnummer {
         if (stonadsType.tema == FellesKodeverkTema.HEL) {
             return navArbeidOgYtelser
         }
-        when (stonadsType) {
-            StonadsType.ARBEID_UTDANNING -> return navTiltakInnlandet
-            else -> return dummyEnhet
+        return when (stonadsType) {
+            StonadsType.ARBEID_UTDANNING -> navTiltakInnlandet
+            else -> dummyEnhet
         }
     }
 }

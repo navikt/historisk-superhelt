@@ -38,7 +38,7 @@ class DokarkivService(
         val req = JournalpostRequest(
             tittel = brev.tittel!!,
             journalpostType = JournalpostType.UTGAAENDE,
-            tema = sak.type.tema,
+            tema = sak.tema,
             avsenderMottaker = avsenderMottakerResolver.resolve(brev.mottakerType, sak),
             eksternReferanseId = brev.uuid.toString(),
             dokumenter = listOf(
@@ -64,7 +64,7 @@ class DokarkivService(
                 fagsakId = sak.saksnummer,
                 fagsaksystem = APP_NAVN,
             ),
-            journalfoerendeEnhet = sak.type.enhet
+            journalfoerendeEnhet = sak.enhet
         )
         return dokarkivClient.opprett(req, forsokFerdigstill = true)
     }
