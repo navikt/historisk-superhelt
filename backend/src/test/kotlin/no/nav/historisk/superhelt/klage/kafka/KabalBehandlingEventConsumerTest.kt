@@ -123,7 +123,7 @@ class KabalBehandlingEventConsumerTest {
         assertThat(oppdatertSak.status).isEqualTo(SakStatus.FEILREGISTRERT)
 
         val endringslogg = withMockedUser { endringsloggService.findBySak(sak.saksnummer) }
-        assertThat(endringslogg).anyMatch { it.type == EndringsloggType.K_BEHANDLING_FEILREGISTRERT }
+        assertThat(endringslogg).anyMatch { it.type == EndringsloggType.KABAL_BEHANDLING_FEILREGISTRERT }
     }
 
     @Test

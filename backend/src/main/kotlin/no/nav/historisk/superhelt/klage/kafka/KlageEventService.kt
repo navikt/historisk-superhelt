@@ -183,12 +183,12 @@ private fun BehandlingEventType.toNorsk(): String =
 /** Mapper event-type til riktig EndringsloggType for logging. */
 private fun BehandlingEventType.tilEndringsloggType(): EndringsloggType =
     when (this) {
-        BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET                          -> EndringsloggType.K_KLAGEBEHANDLING_AVSLUTTET
-        BehandlingEventType.ANKEBEHANDLING_OPPRETTET                           -> EndringsloggType.K_ANKEBEHANDLING_OPPRETTET
-        BehandlingEventType.ANKEBEHANDLING_AVSLUTTET                           -> EndringsloggType.K_ANKEBEHANDLING_AVSLUTTET
-        BehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET            -> EndringsloggType.K_ANKE_I_TRYGDERETTEN_OPPRETTET
-        BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET   -> EndringsloggType.K_BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET
-        BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET                -> EndringsloggType.K_OMGJOERINGSKRAVBEHANDLING_AVSLUTTET
-        BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET                    -> EndringsloggType.K_GJENOPPTAKSBEHANDLING_AVSLUTTET
-        BehandlingEventType.BEHANDLING_FEILREGISTRERT                          -> EndringsloggType.K_BEHANDLING_FEILREGISTRERT
+        BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET                          -> EndringsloggType.KABAL_BEHANDLING_AVSLUTTET
+        BehandlingEventType.ANKEBEHANDLING_OPPRETTET                           -> EndringsloggType.KABAL_BEHANDLING_OPPRETTET
+        BehandlingEventType.ANKEBEHANDLING_AVSLUTTET                           -> EndringsloggType.KABAL_BEHANDLING_AVSLUTTET
+        BehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET            -> EndringsloggType.KABAL_BEHANDLING_OPPRETTET
+        BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET   -> EndringsloggType.KABAL_BEHANDLING_AVSLUTTET
+        BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET                -> EndringsloggType.KABAL_BEHANDLING_AVSLUTTET
+        BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET                    -> EndringsloggType.KABAL_BEHANDLING_AVSLUTTET
+        BehandlingEventType.BEHANDLING_FEILREGISTRERT                          -> EndringsloggType.KABAL_BEHANDLING_FEILREGISTRERT
     }
