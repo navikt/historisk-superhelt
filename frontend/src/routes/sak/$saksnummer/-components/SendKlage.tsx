@@ -1,4 +1,4 @@
-import { getKodeverkHjemlerOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
+import { getKodeverkHjemlerForYtelseOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
 import {
     Button,
     DatePicker,
@@ -27,8 +27,12 @@ interface SendKlageProps {
 export function SendKlage({ open, onOpenChange }: SendKlageProps) {
     const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
+    // Henter kun hjemler som er gyldige for sakens ytelse (f.eks. HEL_HEL, HJE_HJE eller HJE_AUR).
+    // sak.kabalYtelse er utledet automatisk fra sakens stønadstype på backend-siden.
     const { data: hjemler } = useQuery({
-        ...getKodeverkHjemlerOptions(),
+        ...getKodeverkHjemlerForYtelseOptions({
+            path: { ytelseId: sak.kabalYtelse },
+        }),
         staleTime: Number.POSITIVE_INFINITY,
         enabled: open,
     });

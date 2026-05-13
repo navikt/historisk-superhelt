@@ -18,6 +18,18 @@ enum class Hjemmel(
     FTRL_10_5("FTRL_10_5", LovKilde.FOLKETRYGDLOVEN, "§ 10-5"),
     FTRL_10_6("FTRL_10_6", LovKilde.FOLKETRYGDLOVEN, "§ 10-6"),
     FTRL_10_7I("FTRL_10_7I", LovKilde.FOLKETRYGDLOVEN, "§ 10-7i Ortopediske hjelpemidler"),
+    FTRL_10_7_HJELPEMIDLER("FTRL_10_7_HJELPEMIDLER", LovKilde.FOLKETRYGDLOVEN, "§ 10-7 Hjelpemidler"),
+    FTRL_10_7A("FTRL_10_7A", LovKilde.FOLKETRYGDLOVEN, "§ 10-7a"),
+    FTRL_10_7A_BRILLER_TIL_BARN("FTRL_10_7A_BRILLER_TIL_BARN", LovKilde.FOLKETRYGDLOVEN, "§ 10-7a Briller til barn"),
+    FTRL_10_7B("FTRL_10_7B", LovKilde.FOLKETRYGDLOVEN, "§ 10-7b Høreapparat"),
+    FTRL_10_7C("FTRL_10_7C", LovKilde.FOLKETRYGDLOVEN, "§ 10-7c Grunnmønster"),
+    FTRL_10_7D("FTRL_10_7D", LovKilde.FOLKETRYGDLOVEN, "§ 10-7d Førerhund"),
+    FTRL_10_7E("FTRL_10_7E", LovKilde.FOLKETRYGDLOVEN, "§ 10-7e Lese- og sekretærhjelp"),
+    FTRL_10_7F("FTRL_10_7F", LovKilde.FOLKETRYGDLOVEN, "§ 10-7f Tolkehjelp"),
+    FTRL_10_7G("FTRL_10_7G", LovKilde.FOLKETRYGDLOVEN, "§ 10-7g Tolk- og ledsagerhjelp"),
+    FTRL_10_7I_B("FTRL_10_7I_B", LovKilde.FOLKETRYGDLOVEN, "§ 10-7i HMS"),
+    FTRL_10_7XA("FTRL_10_7XA", LovKilde.FOLKETRYGDLOVEN, "§ 10-7 Ombygging av maskiner"),
+    FTRL_10_7XB("FTRL_10_7XB", LovKilde.FOLKETRYGDLOVEN, "§ 10-7 Opplæringstiltak"),
     FTRL_10_8("FTRL_10_8", LovKilde.FOLKETRYGDLOVEN, "§ 10-8 Bortfall av rettigheter"),
 
     // Folketrygdloven – kapittel 21
@@ -48,6 +60,40 @@ enum class Hjemmel(
     FS_ORT_HJE_MM_9AA("FS_ORT_HJE_MM_9AA", LovKilde.FORSKRIFT_OM_ORTOPEDISKE_HJELPEMIDLER_MM, "§ 9a overekstremitetsortoser ved revmatisme"),
     FS_ORT_HJE_MM_10A("FS_ORT_HJE_MM_10A", LovKilde.FORSKRIFT_OM_ORTOPEDISKE_HJELPEMIDLER_MM, "§ 10 Forhåndstilsagn"),
     FS_ORT_HJE_MM_12A("FS_ORT_HJE_MM_12A", LovKilde.FORSKRIFT_OM_ORTOPEDISKE_HJELPEMIDLER_MM, "§ 12 reise"),
+
+    // Forskrift om hjelpemidler mm.
+    FS_HJE_MM_2A("FS_HJE_MM_2A", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 trening, aktivisering, stimulering og lek"),
+    FS_HJE_MM_2B("FS_HJE_MM_2B", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 datautstyr"),
+    FS_HJE_MM_2C("FS_HJE_MM_2C", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 synshjelpemidler"),
+    FS_HJE_MM_2D("FS_HJE_MM_2D", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 briller og linser"),
+    FS_HJE_MM_2E("FS_HJE_MM_2E", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 behandlingsbriller til barn"),
+    FS_HJE_MM_2F("FS_HJE_MM_2F", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 hørselshjelpmidler"),
+    FS_HJE_MM_2G("FS_HJE_MM_2G", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 kommunikasjon (ASK)"),
+    FS_HJE_MM_2H("FS_HJE_MM_2H", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 boligtilskudd"),
+    FS_HJE_MM_2I("FS_HJE_MM_2I", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 heisløsninger"),
+    FS_HJE_MM_2J("FS_HJE_MM_2J", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 gå- og forflytningshjelpemidler"),
+    FS_HJE_MM_2K("FS_HJE_MM_2K", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 småhjelpemidler"),
+    FS_HJE_MM_2L("FS_HJE_MM_2L", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2"),
+    FS_HJE_MM_2M("FS_HJE_MM_2M", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 gjeldsoppgjør"),
+    FS_HJE_MM_2N("FS_HJE_MM_2N", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 alarm og varsling"),
+    FS_HJE_MM_2O("FS_HJE_MM_2O", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 madrasser og puter"),
+    FS_HJE_MM_2P("FS_HJE_MM_2P", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 utstyr på arbeidsplass"),
+    FS_HJE_MM_2Q("FS_HJE_MM_2Q", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 varmehjelpemidler"),
+    FS_HJE_MM_2R("FS_HJE_MM_2R", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 2 refusjon"),
+    FS_HJE_MM_4("FS_HJE_MM_4", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 4 førerhund"),
+    FS_HJE_MM_6A("FS_HJE_MM_6A", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 6 tilpasningskurs"),
+    FS_HJE_MM_6D("FS_HJE_MM_6D", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 6 folkehøgskole"),
+    FS_HJE_MM_7("FS_HJE_MM_7", LovKilde.FORSKRIFT_OM_HJELPEMIDLER_MM, "§ 7 reise"),
+
+    // Forskrift om høreapparater mm.
+    FS_HA_MM_2A("FS_HA_MM_2A", LovKilde.FORSKRIFT_OM_HØREAPPARATER_MM, "§ 2 høreapparat"),
+    FS_HA_MM_3A("FS_HA_MM_3A", LovKilde.FORSKRIFT_OM_HØREAPPARATER_MM, "§ 3 gjenanskaffelse"),
+    FS_HA_MM_4A("FS_HA_MM_4A", LovKilde.FORSKRIFT_OM_HØREAPPARATER_MM, "§ 4 krav til søknad og produkt"),
+    FS_HA_MM_6A("FS_HA_MM_6A", LovKilde.FORSKRIFT_OM_HØREAPPARATER_MM, "§ 6 Pris og leveringsavtaler"),
+    FS_HA_MM_8A("FS_HA_MM_8A", LovKilde.FORSKRIFT_OM_HØREAPPARATER_MM, "§ 8 stønad og satser"),
+
+    // Forskrift om servicehund
+    FS_SH_2("FS_SH_2", LovKilde.FORSKRIFT_OM_SERVICEHUND, "§ 2 servicehund"),
 
     // EØS-forordning 883/2004
     EOES_883_2004_11("EOES_883_2004_11", LovKilde.EØS_FORORDNING_883_2004, "art. 11"),
@@ -92,9 +138,74 @@ enum class Hjemmel(
     TRRL_11("TRRL_11", LovKilde.TRYGDERETTSLOVEN, "§ 11"),
     TRRL_12("TRRL_12", LovKilde.TRYGDERETTSLOVEN, "§ 12"),
     TRRL_14("TRRL_14", LovKilde.TRYGDERETTSLOVEN, "§ 14"),
+
+    // Forskrift om aktivitetshjelpemidler til de over 26 år
+    FS_AKT_26_2A("FS_AKT_26_2A", LovKilde.FORSKRIFT_OM_AKTIVITETSHJELPEMIDLER_TIL_DE_OVER_26_AR, "§ 2 aktivitetshjelpemidler"),
+    FS_AKT_26_2B("FS_AKT_26_2B", LovKilde.FORSKRIFT_OM_AKTIVITETSHJELPEMIDLER_TIL_DE_OVER_26_AR, "§ 2 utlån"),
+    FS_AKT_26_4("FS_AKT_26_4", LovKilde.FORSKRIFT_OM_AKTIVITETSHJELPEMIDLER_TIL_DE_OVER_26_AR, "§ 4 egenandel"),
+    FS_AKT_26_5("FS_AKT_26_5", LovKilde.FORSKRIFT_OM_AKTIVITETSHJELPEMIDLER_TIL_DE_OVER_26_AR, "§ 5 spesialtilpasning av ordinært utstyr"),
+
+    // Forskrift om arbeids- og utdanningsreiser
+    FS_ARB_UTD_R_2("FS_ARB_UTD_R_2", LovKilde.FORSKRIFT_OM_ARBEIDS_OG_UTDANNINGSREISER, "§ 2"),
+    FS_ARB_UTD_R_3("FS_ARB_UTD_R_3", LovKilde.FORSKRIFT_OM_ARBEIDS_OG_UTDANNINGSREISER, "§ 3"),
+    FS_ARB_UTD_R_4("FS_ARB_UTD_R_4", LovKilde.FORSKRIFT_OM_ARBEIDS_OG_UTDANNINGSREISER, "§ 4"),
+    FS_ARB_UTD_R_5("FS_ARB_UTD_R_5", LovKilde.FORSKRIFT_OM_ARBEIDS_OG_UTDANNINGSREISER, "§ 5"),
+    FS_ARB_UTD_R_6("FS_ARB_UTD_R_6", LovKilde.FORSKRIFT_OM_ARBEIDS_OG_UTDANNINGSREISER, "§ 6"),
+    FS_ARB_UTD_R_8("FS_ARB_UTD_R_8", LovKilde.FORSKRIFT_OM_ARBEIDS_OG_UTDANNINGSREISER, "§ 8"),
     ;
 
     companion object {
+        /** Hjemler per Kabal-ytelse-ID (kilde: klage-kodeverk YtelseToHjemler). */
+        private val PER_YTELSE: Map<String, List<Hjemmel>> = mapOf(
+            "HEL_HEL" to listOf(
+                FTRL_10_3, FTRL_10_4, FTRL_10_5, FTRL_10_6, FTRL_10_7I, FTRL_10_8,
+                FTRL_21_3, FTRL_21_7, FTRL_21_8, FTRL_21_10, FTRL_21_12,
+                FTRL_22_12, FTRL_22_13, FTRL_22_14, FTRL_22_17,
+                FS_ORT_HJE_MM_1A, FS_ORT_HJE_MM_1B, FS_ORT_HJE_MM_1C, FS_ORT_HJE_MM_2F,
+                FS_ORT_HJE_MM_3A, FS_ORT_HJE_MM_4A, FS_ORT_HJE_MM_5A, FS_ORT_HJE_MM_6A,
+                FS_ORT_HJE_MM_7A, FS_ORT_HJE_MM_8G, FS_ORT_HJE_MM_9A, FS_ORT_HJE_MM_9AA,
+                FS_ORT_HJE_MM_10A, FS_ORT_HJE_MM_12A,
+                EOES_883_2004_11, EOES_883_2004_12, EOES_883_2004_13, EOES_883_2004_23,
+                EOES_883_2004_24, EOES_883_2004_25, EOES_883_2004_33, EOES_883_2004_81,
+                GJ_F_FORD_987_2009_11, NORDISK_KONVENSJON,
+                FVL_11, FVL_12, FVL_14, FVL_16, FVL_17, FVL_18_19, FVL_21, FVL_24,
+                FVL_25, FVL_28, FVL_29, FVL_30, FVL_31, FVL_32, FVL_33, FVL_35, FVL_41, FVL_42,
+                TRRL_2, TRRL_9, TRRL_10, TRRL_11, TRRL_12, TRRL_14,
+            ),
+            "HJE_HJE" to listOf(
+                FTRL_10_3, FTRL_10_4, FTRL_10_5, FTRL_10_6,
+                FTRL_10_7_HJELPEMIDLER, FTRL_10_7A, FTRL_10_7A_BRILLER_TIL_BARN,
+                FTRL_10_7B, FTRL_10_7C, FTRL_10_7D,
+                FTRL_10_7E, FTRL_10_7F, FTRL_10_7G, FTRL_10_7I_B, FTRL_10_7XA, FTRL_10_7XB,
+                FTRL_10_8,
+                FTRL_21_3, FTRL_21_7, FTRL_21_8, FTRL_21_10, FTRL_21_12,
+                FTRL_22_12, FTRL_22_13, FTRL_22_14, FTRL_22_17,
+                FS_AKT_26_2A, FS_AKT_26_2B, FS_AKT_26_4, FS_AKT_26_5,
+                FS_HJE_MM_2A, FS_HJE_MM_2B, FS_HJE_MM_2C, FS_HJE_MM_2D, FS_HJE_MM_2E,
+                FS_HJE_MM_2F, FS_HJE_MM_2G, FS_HJE_MM_2H, FS_HJE_MM_2I, FS_HJE_MM_2J,
+                FS_HJE_MM_2K, FS_HJE_MM_2L, FS_HJE_MM_2M, FS_HJE_MM_2N, FS_HJE_MM_2O,
+                FS_HJE_MM_2P, FS_HJE_MM_2Q, FS_HJE_MM_2R,
+                FS_HJE_MM_4, FS_HJE_MM_6A, FS_HJE_MM_6D, FS_HJE_MM_7,
+                FS_HA_MM_2A, FS_HA_MM_3A, FS_HA_MM_4A, FS_HA_MM_6A, FS_HA_MM_8A,
+                FS_SH_2,
+                EOES_883_2004_11, EOES_883_2004_12, EOES_883_2004_13, EOES_883_2004_23,
+                EOES_883_2004_24, EOES_883_2004_25, EOES_883_2004_33, EOES_883_2004_81,
+                GJ_F_FORD_987_2009_11, NORDISK_KONVENSJON,
+                FVL_11, FVL_12, FVL_14, FVL_16, FVL_17, FVL_18_19, FVL_21, FVL_24,
+                FVL_25, FVL_28, FVL_29, FVL_30, FVL_31, FVL_32, FVL_33, FVL_35, FVL_41, FVL_42,
+                TRRL_2, TRRL_9, TRRL_10, TRRL_11, TRRL_12, TRRL_14,
+            ),
+            "HJE_AUR" to listOf(
+                FS_ARB_UTD_R_2, FS_ARB_UTD_R_3, FS_ARB_UTD_R_4,
+                FS_ARB_UTD_R_5, FS_ARB_UTD_R_6, FS_ARB_UTD_R_8,
+                FVL_11, FVL_12, FVL_14, FVL_16, FVL_17, FVL_18_19, FVL_21, FVL_24,
+                FVL_25, FVL_28, FVL_29, FVL_30, FVL_31, FVL_32, FVL_33, FVL_35, FVL_41, FVL_42,
+                TRRL_9, TRRL_10,
+            ),
+        )
+
+        fun forYtelse(ytelseId: String): List<Hjemmel> = PER_YTELSE[ytelseId] ?: emptyList()
+
         fun fromId(id: String): Hjemmel =
             entries.firstOrNull { it.id == id }
                 ?: throw IllegalArgumentException("No Hjemmel with id '$id'")

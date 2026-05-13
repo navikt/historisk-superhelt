@@ -67,6 +67,7 @@ export type Sak = {
     readonly maskertPersonIdent: string;
     readonly gjenapnet: boolean;
     tema: 'HEL' | 'HJE';
+    readonly kabalYtelse: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
     readonly kanUtbetales: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
@@ -1580,6 +1581,41 @@ export type GetKodeverkHjemlerResponses = {
 };
 
 export type GetKodeverkHjemlerResponse = GetKodeverkHjemlerResponses[keyof GetKodeverkHjemlerResponses];
+
+export type GetKodeverkHjemlerForYtelseData = {
+    body?: never;
+    path: {
+        ytelseId: string;
+    };
+    query?: never;
+    url: '/api/klage/kodeverk/hjemler/{ytelseId}';
+};
+
+export type GetKodeverkHjemlerForYtelseErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkHjemlerForYtelseError = GetKodeverkHjemlerForYtelseErrors[keyof GetKodeverkHjemlerForYtelseErrors];
+
+export type GetKodeverkHjemlerForYtelseResponses = {
+    /**
+     * OK
+     */
+    200: Array<HjemmelDto>;
+};
+
+export type GetKodeverkHjemlerForYtelseResponse = GetKodeverkHjemlerForYtelseResponses[keyof GetKodeverkHjemlerForYtelseResponses];
 
 export type LastnedDokumentFraJournalpostData = {
     body?: never;

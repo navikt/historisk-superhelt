@@ -143,8 +143,6 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
             .map { it.toDomain() }
     }
 
-
-
     @PreAuthorize("hasAuthority('READ')")
     internal fun finnAapneSaker(): List<Sak> =
         jpaRepository.findByStatusNotIn(listOf(SakStatus.FERDIG, SakStatus.FEILREGISTRERT))

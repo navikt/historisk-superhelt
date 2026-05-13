@@ -52,8 +52,7 @@ class KlageService(
             forrigeBehandlendeEnhet = enhet.enhetnummer.value,
             tilknyttedeJournalposter = emptyList(),
             brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
-           //TODO Dette gjelder vel ikke for alle stønader. Hva med hjelpemidler?
-            ytelse = "HEL_HEL",
+            ytelse = sak.type.kabalYtelse,
             kommentar = request.kommentar,
         )
 
