@@ -1,0 +1,2 @@
+ALTER TABLE sak
+    ADD COLUMN enhet VARCHAR(10);

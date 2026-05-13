@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.sak
 import net.datafaker.Faker
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
@@ -61,6 +62,7 @@ object SakTestData {
             begrunnelse = faker.lebowski().quote(),
             attestant = null,
             utbetalingsType = null,
+            enhet = Enhetsnummer(faker.numerify("????"))
         )
     }
 
@@ -82,7 +84,8 @@ object SakTestData {
                         attestant = sak.attestant,
                         utbetalingsType = sak.utbetalingsType,
                         belop = sak.belop,
-                        tildelingsAar = sak.tildelingsAar
+                        tildelingsAar = sak.tildelingsAar,
+                        enhet = sak.enhet,
                     )
                 )
             )

@@ -5,6 +5,7 @@ import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
@@ -56,6 +57,7 @@ data class Sak(
     val klasseKode: KlasseKode? = null,
 
     val vedtaksbrevBruker: Brev? = null,
+    val enhet: Enhetsnummer
 ) {
 
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)

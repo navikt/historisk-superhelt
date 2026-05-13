@@ -12,6 +12,7 @@ enum class StonadsType(
     val klassekoder: List<KlasseKode>,
     val beskrivelse: String? = null,
     val tema: FellesKodeverkTema,
+    @Deprecated("Bruk enhet fra oppgave")
     val enhet: Enhetsnummer) {
 
     /* Helsetjenester */

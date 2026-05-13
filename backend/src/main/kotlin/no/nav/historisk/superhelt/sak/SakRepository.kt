@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.sak
 
 import no.nav.common.types.Aar
 import no.nav.common.types.Belop
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
@@ -36,7 +37,8 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
                 type = req.type,
                 fnr = req.fnr,
                 status = SakStatus.UNDER_BEHANDLING,
-                saksbehandler = saksbehandler
+                saksbehandler = saksbehandler,
+                enhet = properties?.enhet
             )
         )
         val saved = jpaRepository.save(sakEntity)
@@ -67,6 +69,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         dto.tildelingsAar?.let { entity.tildelingsAar = it.value }
         dto.vedtaksResultat?.let { entity.vedtaksResultat = it }
         dto.saksbehandler?.let { entity.saksbehandler = it }
+        dto.enhet?.let { entity.enhet = it }
         dto.attestant?.let { entity.attestant = if (it == NavUser.NULL_VALUE) null else it }
 
         dto.utbetalingsType?.let { entity.utbetalingsType = it }
@@ -162,5 +165,6 @@ data class UpdateSakDto(
     val utbetalingsType: UtbetalingsType? = null,
     val belop: Belop? = null,
     val klasseKode: KlasseKode? = null,
+    val enhet: Enhetsnummer? = null
 )
 
