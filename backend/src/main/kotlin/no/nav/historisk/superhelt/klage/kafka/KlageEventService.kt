@@ -31,18 +31,8 @@ class KlageEventService(
 
     @Transactional
     fun behandleEvent(event: BehandlingEvent) {
-        val saksnummer = runCatching { Saksnummer(event.kildeReferanse) }.getOrElse {
-            logger.error("Ugyldig kildeReferanse '{}' i BehandlingEvent {}", event.kildeReferanse, event.eventId)
-            return
-        }
-
-        val sak = runCatching { sakRepository.getSak(saksnummer) }.getOrElse {
-            logger.error(
-                "Fant ikke sak {} fra Kabal-event {} (type={}). Ignorerer.",
-                saksnummer, event.eventId, event.type
-            )
-            return
-        }
+        val saksnummer = Saksnummer(event.kildeReferanse)
+        val sak = sakRepository.getSak(saksnummer)
 
         val erNytt = kabalEventRepository.lagre(event, saksnummer.value)
         if (!erNytt) {
