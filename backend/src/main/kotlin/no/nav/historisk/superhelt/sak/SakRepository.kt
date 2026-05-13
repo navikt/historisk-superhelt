@@ -110,6 +110,8 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
         sakEntity.vedtaksResultat = vedtak.resultat
         sakEntity.utbetalingsType = vedtak.utbetalingsType
         sakEntity.belop = vedtak.belop?.value
+        sakEntity.klassekode = vedtak.klasseKode
+        sakEntity.enhet = vedtak.enhet
         return jpaRepository.save(sakEntity).toDomain()
     }
 

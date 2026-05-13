@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.vedtak
 import no.nav.common.types.Aar
 import no.nav.common.types.Behandlingsnummer
 import no.nav.common.types.Belop
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
@@ -28,5 +29,6 @@ data class Vedtak(
     val attestant: NavUser,
     val utbetalingsType: UtbetalingsType,
     val belop: Belop?,
-    val klasseKode: KlasseKode?
+    val klasseKode: KlasseKode?,
+    var enhet: Enhetsnummer?
 )
