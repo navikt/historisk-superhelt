@@ -27,7 +27,7 @@ const router = createRouter({
     scrollRestoration: true,
 });
 
-initialiserFaro();
+initialiserFaro(router);
 
 // Render the app
 const rootElement = document.getElementById("root")!;

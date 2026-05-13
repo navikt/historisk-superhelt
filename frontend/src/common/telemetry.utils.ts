@@ -1,8 +1,10 @@
 import { getWebInstrumentations, initializeFaro } from "@grafana/faro-web-sdk";
+import type { AnyRouter } from "@tanstack/react-router";
 
-export function initialiserFaro() {
+export function initialiserFaro(router: AnyRouter) {
     try {
         initializeFaro({
+            paused: window.location.hostname === "localhost", // pause på localhost
             url: import.meta.env.PROD
                 ? "https://telemetry.nav.no/collect"
                 : "https://telemetry.ekstern.dev.nav.no/collect",
@@ -22,11 +24,13 @@ export function initialiserFaro() {
                 return item;
             },
             pageTracking: {
-                generatePageId: (location) =>
-                    location.pathname
-                        .replace(/\/sak\/[^/]+/, "/sak/{saksnummer}")
-                        .replace(/\/person\/[^/]+/, "/person/{personid}")
-                        .replace(/\/oppgave\/[^/]+/, "/oppgave/{oppgaveid}"),
+                generatePageId: (location) => {
+                    /* grupperer dynamiske url-er basert på routeren,
+                    slik at feks. /person/123 og /person/456 blir /person/{personid} */
+                    const matched = router.matchRoutes(location.pathname, {});
+                    const lastMatch = matched.at(-1);
+                    return lastMatch?.fullPath ?? location.pathname;
+                },
             },
         });
     } catch (error) {
