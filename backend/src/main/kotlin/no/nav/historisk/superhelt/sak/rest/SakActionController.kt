@@ -160,7 +160,7 @@ class SakActionController(
             oppgaveService.opprettOppgave(
                 type = OppgaveType.GOD_VED,
                 sak = sak,
-                beskrivelse = "Attestering av sak ${sak.type.navn} i Superhelt(${sak.saksnummer}) saksbehandlet av ${sak.saksbehandler.navIdent}",
+                beskrivelse = "${sak.saksbehandler.navIdent}/${sak.saksnummer} - Attestering av sak ${sak.beskrivelse} i Superhelt(${sak.saksnummer}) saksbehandlet av ${sak.saksbehandler.navIdent}",
                 tilordneTil = null
             )
         }.onFailure { e ->
