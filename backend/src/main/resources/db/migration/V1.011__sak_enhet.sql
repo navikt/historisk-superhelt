@@ -1,5 +1,0 @@
-ALTER TABLE sak
-    ADD COLUMN enhet VARCHAR(10);
-
-ALTER TABLE vedtak
-    ADD COLUMN enhet VARCHAR(10);

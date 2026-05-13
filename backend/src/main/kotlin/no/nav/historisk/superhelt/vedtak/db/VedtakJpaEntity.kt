@@ -84,7 +84,7 @@ class VedtakJpaEntity(
     var klassekode: KlasseKode?,
 
     @Column(name = "enhet")
-    var enhet: Enhetsnummer?
+    var enhet: Enhetsnummer
 
 ) {
 

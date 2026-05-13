@@ -7,6 +7,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
+import no.nav.historisk.superhelt.ansatt.Enheter
 import no.nav.historisk.superhelt.infrastruktur.authentication.NavUser
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
@@ -38,7 +39,7 @@ class SakRepository(private val jpaRepository: SakJpaRepository) {
                 fnr = req.fnr,
                 status = SakStatus.UNDER_BEHANDLING,
                 saksbehandler = saksbehandler,
-                enhet = properties?.enhet
+                enhet = properties?.enhet?: Enheter.guessEnhet(req.type)
             )
         )
         val saved = jpaRepository.save(sakEntity)

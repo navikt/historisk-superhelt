@@ -22,7 +22,6 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.Saksnummer
 import no.nav.helved.KlasseKode
 import no.nav.historisk.superhelt.StonadsType
-import no.nav.historisk.superhelt.ansatt.Enheter
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.db.BrevJpaEntity
@@ -98,7 +97,7 @@ class SakJpaEntity(
     private var brev: MutableList<BrevJpaEntity> = mutableListOf(),
 
     @Column(name = "enhet")
-    var enhet: Enhetsnummer?
+    var enhet: Enhetsnummer
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -141,7 +140,7 @@ class SakJpaEntity(
             belop = this.belop?.let { Belop(it) },
             klasseKode = this.klassekode ?: this.type.defaultKlasseKode,
             vedtaksbrevBruker = this.getVedtaksbrevBrev(),
-            enhet = this.enhet?: Enheter.guessEnhet(this.type),
+            enhet = this.enhet,
         )
     }
 }

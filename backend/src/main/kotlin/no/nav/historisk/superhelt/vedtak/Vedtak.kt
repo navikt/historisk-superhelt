@@ -30,5 +30,5 @@ data class Vedtak(
     val utbetalingsType: UtbetalingsType,
     val belop: Belop?,
     val klasseKode: KlasseKode?,
-    var enhet: Enhetsnummer?
+    var enhet: Enhetsnummer
 )
