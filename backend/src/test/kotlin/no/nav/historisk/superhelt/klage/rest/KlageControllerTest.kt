@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.klage.rest
 
+import no.nav.common.types.Enhetsnummer
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
@@ -124,11 +125,7 @@ class KlageControllerTest {
                 SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             val kommentar = "Klager er uenig i vedtaket"
-            val request = mapOf(
-                "hjemmelId" to "FTRL_10_7I",
-                "datoKlageMottatt" to LocalDate.now().minusDays(5).toString(),
-                "kommentar" to kommentar,
-            )
+            val request =gyldigKlageRequest().copy(kommentar = kommentar)
 
             assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.NO_CONTENT)
@@ -188,10 +185,7 @@ class KlageControllerTest {
                 sakRepository,
                 SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
-            val request = mapOf(
-                "hjemmelId" to "UKJENT_HJEMMEL_XYZ",
-                "datoKlageMottatt" to "2026-01-15",
-            )
+            val request =gyldigKlageRequest().copy(hjemmelId = "UKJENT_HJEMMEL_XYZ")
 
             assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.BAD_REQUEST)
@@ -306,10 +300,13 @@ class KlageControllerTest {
 
     // ── helpers ───────────────────────────────────────────────────────────────
 
-    private fun gyldigKlageRequest(datoKlageMottatt: LocalDate = LocalDate.now().minusDays(10)): Map<String, String> = mapOf(
-        "hjemmelId" to "FTRL_10_7I",
-        "datoKlageMottatt" to datoKlageMottatt.toString(),
-    )
+    private fun gyldigKlageRequest(datoKlageMottatt: LocalDate = LocalDate.now().minusDays(10)): SendKlageRequestDto =
+        SendKlageRequestDto(
+            hjemmelId = "FTRL_10_7I",
+            datoKlageMottatt = datoKlageMottatt,
+            enhet = Enhetsnummer("1234")
+        )
+
 
     private fun sendKlage(saksnummer: String, body: Any): MockMvcTester.MockMvcRequestBuilder =
         mockMvc.post().uri("/api/sak/{saksnummer}/klage", saksnummer)

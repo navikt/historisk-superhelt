@@ -65,11 +65,11 @@ export type Sak = {
     vedtaksbrevBruker?: Brev | null;
     enhet: string;
     readonly maskertPersonIdent: string;
-    readonly gjenapnet: boolean;
     tema: 'HEL' | 'HJE';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
-    readonly kanUtbetales: boolean;
+    readonly gjenapnet: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly kanUtbetales: boolean;
     readonly tilstand: SakTilstand;
 };
 
@@ -137,6 +137,7 @@ export type SendKlageRequestDto = {
     hjemmelId: string;
     datoKlageMottatt: string;
     kommentar?: string | null;
+    enhet: string;
 };
 
 export type OpprettBrevRequest = {
