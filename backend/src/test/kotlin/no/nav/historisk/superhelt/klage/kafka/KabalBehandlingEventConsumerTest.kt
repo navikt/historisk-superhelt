@@ -4,6 +4,7 @@ import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
@@ -20,6 +21,7 @@ import no.nav.kabal.model.KlagebehandlingAvsluttetDetaljer
 import no.nav.oppgave.OppgaveType
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
@@ -161,7 +163,7 @@ class KabalBehandlingEventConsumerTest {
     }
 
     @Test
-    fun `ignorerer event der sak ikke finnes`() {
+    fun `kaster feil når sak ikke finnes`() {
         val event = lagBehandlingEvent(
             kildeReferanse = "SH-999999",
             type = BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
@@ -174,9 +176,11 @@ class KabalBehandlingEventConsumerTest {
             )
         )
 
-        SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
-            klageEventService.behandleEvent(event)
-        }
+        assertThatThrownBy {
+            SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
+                klageEventService.behandleEvent(event)
+            }
+        }.isInstanceOf(IkkeFunnetException::class.java)
 
         verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
