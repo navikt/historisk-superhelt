@@ -4,6 +4,7 @@ import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.klage.KabalEventRepository
 import no.nav.historisk.superhelt.klage.tidspunkt
 import no.nav.historisk.superhelt.klage.utfall
@@ -31,7 +32,12 @@ class KlageEventService(
     @Transactional
     fun behandleEvent(event: BehandlingEvent) {
         val saksnummer = Saksnummer(event.kildeReferanse)
-        val sak = sakRepository.getSak(saksnummer)
+        val sak = try {
+            sakRepository.getSak(saksnummer)
+        } catch (_: IkkeFunnetException) {
+            logger.info("Ignorerer Kabal-event for ukjent sak {}", event.kildeReferanse)
+            return
+        }
 
         val erNytt = kabalEventRepository.lagre(event, saksnummer.value)
         if (!erNytt) {
