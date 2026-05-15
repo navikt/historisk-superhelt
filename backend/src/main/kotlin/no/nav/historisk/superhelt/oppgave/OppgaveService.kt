@@ -198,7 +198,7 @@ class OppgaveService(
 
     private fun finnOpprettetAvEnhet(sak: Sak): Enhetsnummer? {
         val authenticatedUser = getAuthenticatedUser()
-        if (authenticatedUser.systemUser){
+        if (authenticatedUser.systemUser) {
             return null
         }
         val enhet = sak.enhet
@@ -209,7 +209,7 @@ class OppgaveService(
         } else {
             val fallbackEnhet = brukersEnheter.firstOrNull()
             logger.warn("Bruker har ikke tilgang til sakens enhet {}, tildeler oppgave til enhet {} i stedet", enhet, fallbackEnhet)
-            return fallbackEnhet?: enhet
+            return fallbackEnhet
         }
     }
 }
