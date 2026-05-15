@@ -163,20 +163,18 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
                             error={hjemmelError}
                         />
 
-                        {enheter.length > 1 && (
-                            <Select
-                                label={"Enhet"}
-                                description="Velg hvilken geografisk enhet du jobber i"
-                                value={enhet}
-                                onChange={(event) => setEnhet(event.target.value)}
-                            >
-                                {enheter.map((e) => (
-                                    <option key={e.enhetnummer} value={e.enhetnummer}>
-                                        {e.navn}
-                                    </option>
-                                ))}
-                            </Select>
-                        )}
+                        <Select
+                            label={"Enhet"}
+                            description="Velg hvilken geografisk enhet du jobber i"
+                            value={enhet}
+                            onChange={(event) => setEnhet(event.target.value)}
+                        >
+                            {enheter.map((e) => (
+                                <option key={e.enhetnummer} value={e.enhetnummer}>
+                                    {e.navn}
+                                </option>
+                            ))}
+                        </Select>
 
                         <Textarea
                             label="Kommentar (valgfri)"

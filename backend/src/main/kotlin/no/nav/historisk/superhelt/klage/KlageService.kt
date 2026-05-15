@@ -1,5 +1,7 @@
 package no.nav.historisk.superhelt.klage
 
+import no.nav.common.types.Enhetsnummer
+import no.nav.historisk.superhelt.ansatt.NavAnsattService
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
 import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
 import no.nav.historisk.superhelt.klage.rest.SendKlageRequestDto
@@ -18,7 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
-class KlageService(private val kabalClient: KabalClient) {
+class KlageService(private val kabalClient: KabalClient, private val navAnsattService: NavAnsattService) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PreAuthorize("hasAuthority('WRITE')")
@@ -32,7 +34,7 @@ class KlageService(private val kabalClient: KabalClient) {
                 validationErrors = listOf(ValidationFieldError("hjemmelId", "Ukjent hjemmelId: ${request.hjemmelId}")),
             )
         }
-        val enhet = request.enhet
+        val enhet = finnEnhet(request.enhet)
         val kabalRequest = SendSakV4Request(
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
@@ -51,5 +53,16 @@ class KlageService(private val kabalClient: KabalClient) {
         logger.info("Sender klage til Kabal for sak ${sak.saksnummer}, hjemmel: ${hjemmel.id}, enhet: ${enhet}")
         kabalClient.sendSakV4(kabalRequest)
         logger.info("Klage sendt til Kabal for sak ${sak.saksnummer}")
+    }
+
+    private fun finnEnhet(enhetsnummer: Enhetsnummer): Enhetsnummer {
+        val brukersEnheter = navAnsattService.hentNavAnsatt().enheter.map { it.enhetnummer }
+        if (!brukersEnheter.contains(enhetsnummer)) {
+            throw ValideringException(
+                reason = "Angitt enhet ${enhetsnummer.value} er ikke blant enhetene til innlogget saksbehandler.",
+                validationErrors = listOf(ValidationFieldError("enhet", "Gyldige enheter: ${brukersEnheter.joinToString(", ")}")),
+            )
+        }
+        return enhetsnummer
     }
 }

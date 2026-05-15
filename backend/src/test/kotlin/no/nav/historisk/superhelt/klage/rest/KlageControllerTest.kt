@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.klage.rest
 
 import no.nav.common.types.Enhetsnummer
+import no.nav.entraproxy.Enhet
+import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
@@ -29,6 +31,7 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -59,11 +62,18 @@ class KlageControllerTest {
     @MockitoBean
     private lateinit var kabalClient: KabalClient
 
+    @MockitoBean
+    private lateinit var entraProxyClient: EntraProxyClient
+
     @BeforeEach
     fun setup() {
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
             harTilgang = true
         )
+        whenever { entraProxyClient.hentEnheter() } doReturn listOf(Enhet(
+            enhetnummer = Enhetsnummer("1234"),
+            navn = "MockEnhet"
+        ))
         // Kabal returnerer ingen body – Unit/void er default for mockede metoder
     }
 
@@ -150,7 +160,7 @@ class KlageControllerTest {
             whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "Kabal er utilgjengelig",
-                org.springframework.http.HttpHeaders.EMPTY,
+                HttpHeaders.EMPTY,
                 """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
                 null
             )
@@ -191,6 +201,20 @@ class KlageControllerTest {
                 .hasStatus(HttpStatus.BAD_REQUEST)
                 .bodyAsProblemDetail()
                 .satisfies({ assertThat(it?.detail).isNotBlank() })
+
+            verifyNoInteractions(kabalClient)
+        }
+
+        @Test
+        fun `returnerer 400 når saksbehandler ikke har tilgang til enhet`() {
+            val sak = SakTestData.lagreSak(
+                sakRepository,
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
+            )
+            val request =gyldigKlageRequest().copy(enhet = Enhetsnummer("9999"))
+
+            assertThat(sendKlage(sak.saksnummer.value, request))
+                .hasStatus(HttpStatus.BAD_REQUEST)
 
             verifyNoInteractions(kabalClient)
         }
@@ -244,7 +268,7 @@ class KlageControllerTest {
             whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "Kabal er utilgjengelig",
-                org.springframework.http.HttpHeaders.EMPTY,
+                HttpHeaders.EMPTY,
                 """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
                 null
             )

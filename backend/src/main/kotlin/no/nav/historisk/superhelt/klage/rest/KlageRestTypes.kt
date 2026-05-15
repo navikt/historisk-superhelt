@@ -10,6 +10,7 @@ data class SendKlageRequestDto(
     val datoKlageMottatt: LocalDate,
     @field:Size(max = 2000)
     val kommentar: String? = null,
+    @field:Size(min = 4, max = 4)
     val enhet: Enhetsnummer
 )
 
