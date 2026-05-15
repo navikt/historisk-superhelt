@@ -4,6 +4,8 @@ app:
     status-topic: helved.status.v1
   statistikk:
     saks-behandling-statistikk-topic: historisk.superhelt.statistikk.saksbehandling.v1
+  kabal:
+    behandling-event-topic: klage.behandling-events.v1
 
 spring:
   application:

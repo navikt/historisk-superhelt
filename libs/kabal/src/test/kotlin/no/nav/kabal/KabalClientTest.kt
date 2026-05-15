@@ -86,7 +86,7 @@ class KabalClientTest {
             brukersKlageMottattVedtaksinstans = LocalDate.of(2026, 3, 1),
             frist = LocalDate.of(2026, 6, 1),
             sakMottattKaTidspunkt = LocalDateTime.of(2026, 3, 5, 10, 0),
-            ytelse = "OMS_OMP",
+            ytelse = KabalYtelse.HEL_HEL,
             kommentar = "Klager er uenig i vedtaket",
             hindreAutomatiskSvarbrev = true,
             saksbehandlerIdentForTildeling = "Z123456"
@@ -117,7 +117,7 @@ class KabalClientTest {
             fagsak = Fagsak("654321", "SUPERHELT"),
             kildeReferanse = "kilde-ref-virksomhet",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HEL_HEL",
+            ytelse = KabalYtelse.HEL_HEL,
         )
 
         mockServer.expect(requestTo("/api/oversendelse/v4/sak"))
@@ -149,7 +149,7 @@ class KabalClientTest {
             fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HEL_HEL",
+            ytelse = KabalYtelse.HEL_HEL,
             tilknyttedeJournalposter = journalposter
         )
 
@@ -223,7 +223,7 @@ class KabalClientTest {
             fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HEL_HEL",
+            ytelse = KabalYtelse.HEL_HEL,
         )
     }
 }
