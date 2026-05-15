@@ -8,7 +8,7 @@ Saksbehandlingssystem for engangsutbetalinger på enkle helseytelser (ortoser, p
 root (Maven multi-module)
 ├── backend/          Spring Boot 4 + Kotlin – REST API + Kafka + JPA
 ├── frontend/         React 19 + TanStack Router/Query + Nav Aksel DS
-├── libs/             Interne Kotlin-biblioteker (common-types, pdl, helved, tilgangsmaskin, dokarkiv, oppgave, pdfgen)
+├── libs/             Interne Kotlin-biblioteker (common-types, pdl, helved, tilgangsmaskin, dokarkiv, oppgave, pdfgen, kabal, infotrygd, ereg, entra-proxy, statistikk)
 ├── mocks/            Mock-server (kotlin server) + mock-oidc for lokal utvikling
 ├── pdfgen/           Brev-generator (Docker) 
 └── e2e/              Playwright-tester (kjøres mot kjørende app)
@@ -19,6 +19,8 @@ root (Maven multi-module)
 2. Attestant attesterer → sak ferdigstilles → `Vedtak` lagres
 3. Ved innvilgelse sendes `Utbetaling` til Helved via Kafka (`historisk.utbetaling.v1`) og vedtaket journalføres i Dokarkiv og distribueres
 4. Helved returnerer statuser tilbake på `helved.status.v1`
+5. Saksbehandlingsstatistikk publiseres til `historisk.superhelt.statistikk.saksbehandling.v1`
+6. Ved klage: saksbehandler sender til Kabal → Kabal returnerer behandlingsstatus på `klage.behandling-events.v1`
 
 **Auth:** Azure AD via Nais Wonderwall (sidecar). Lokalt kjøres mock-oidc + Wonderwall i Docker. Texas brukes for token exchange til andre tjenester.
 
@@ -75,8 +77,10 @@ pnpm playwright:snapshot-update   # oppdater snapshots
 - JPA-entity skal aldri eksponeres utenfor repository-laget
 
 ### Kafka
-- Producer: `UtbetalingKafkaProducer` sender `UtbetalingMelding` til Helved
-- Consumer: `UtbetalingStatusConsumer` mottar statuser og oppdaterer `UtbetalingStatus`
+- Producer: `UtbetalingKafkaProducer` sender `UtbetalingMelding` til Helved (`historisk.utbetaling.v1`)
+- Consumer: `UtbetalingStatusConsumer` mottar statuser fra Helved (`helved.status.v1`) og oppdaterer `UtbetalingStatus`
+- Producer: `SakStatistikkKafkaProducer` sender `SaksbehandlingsStatistikk` (`historisk.superhelt.statistikk.saksbehandling.v1`)
+- Consumer: `KabalBehandlingEventConsumer` mottar klage/anke-events fra Kabal (`klage.behandling-events.v1`) og oppdaterer `KabalEventRepository`
 - Status-maskin: `UTKAST → KLAR_TIL_UTBETALING → SENDT → MOTTATT → BEHANDLET → UTBETALT | FEILET`
 
 ## Frontend-konvensjoner
@@ -117,6 +121,11 @@ Interne Kotlin-libs (versjonert sammen med appen):
 | `dokarkiv` | Journalføring (Dokarkiv + Dokdist + SAF) |
 | `oppgave` | Oppgave-klient (Gosys) |
 | `pdfgen` | Pdfgen-klient for brevgenerering |
+| `kabal` | Klient for oversending av klagesaker til Kabal (klage/anke) |
+| `infotrygd` | Klient mot InfoTrygd |
+| `ereg` | Klient mot Enhetsregisteret (samhandler-oppslag) |
+| `entra-proxy` | Entra ID-proxy for tjenestekommunikasjon |
+| `statistikk` | Kafka-meldingstyper for saksbehandlingsstatistikk |
 
 ### Tester
 - Unit-tester bruker Assertj (`assertThat`) med JUnit 5
