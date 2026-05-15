@@ -3,10 +3,12 @@ package no.nav.historisk.superhelt.oppgave
 import no.nav.common.consts.APP_NAVN
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.ansatt.NavAnsattService
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
 import no.nav.historisk.superhelt.sak.Sak
@@ -28,7 +30,7 @@ class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val oppgaveRepository: OppgaveRepository,
     private val personService: PersonService,
-    private  val navAnsattService: NavAnsattService
+    private val navAnsattService: NavAnsattService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -166,7 +168,7 @@ class OppgaveService(
             OpprettOppgaveRequest(
                 tema = sak.tema.kode,
                 oppgavetype = type.oppgavetype,
-                opprettetAvEnhetsnr = sak.enhet.value,
+                opprettetAvEnhetsnr = finnOpprettetAvEnhet(sak)?.value,
                 journalpostId = journalpostId,
                 beskrivelse = beskrivelse,
                 personident = sak.fnr.value,
@@ -192,5 +194,22 @@ class OppgaveService(
         logger.info("Oppretter oppgave {}:{} for sak {}", type, oppgave.id, sak.saksnummer)
         return oppgave.toOppgaveMedSak(sak)
 
+    }
+
+    private fun finnOpprettetAvEnhet(sak: Sak): Enhetsnummer? {
+        val authenticatedUser = getAuthenticatedUser()
+        if (authenticatedUser.systemUser){
+            return null
+        }
+        val enhet = sak.enhet
+        val brukersEnheter = navAnsattService.hentNavAnsatt().enheter.map { it.enhetnummer }
+
+        if (brukersEnheter.contains(enhet)) {
+            return enhet
+        } else {
+            val fallbackEnhet = brukersEnheter.firstOrNull()
+            logger.warn("Bruker har ikke tilgang til sakens enhet {}, tildeler oppgave til enhet {} i stedet", enhet, fallbackEnhet)
+            return fallbackEnhet?: enhet
+        }
     }
 }
