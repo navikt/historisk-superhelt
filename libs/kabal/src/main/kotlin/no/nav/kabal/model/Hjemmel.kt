@@ -156,8 +156,8 @@ enum class Hjemmel(
 
     companion object {
         /** Hjemler per Kabal-ytelse-ID (kilde: klage-kodeverk YtelseToHjemler). */
-        private val PER_YTELSE: Map<String, List<Hjemmel>> = mapOf(
-            "HEL_HEL" to listOf(
+        private val PER_YTELSE: Map<KabalYtelse, List<Hjemmel>> = mapOf(
+            KabalYtelse.HEL_HEL to listOf(
                 FTRL_10_3, FTRL_10_4, FTRL_10_5, FTRL_10_6, FTRL_10_7I, FTRL_10_8,
                 FTRL_21_3, FTRL_21_7, FTRL_21_8, FTRL_21_10, FTRL_21_12,
                 FTRL_22_12, FTRL_22_13, FTRL_22_14, FTRL_22_17,
@@ -172,7 +172,7 @@ enum class Hjemmel(
                 FVL_25, FVL_28, FVL_29, FVL_30, FVL_31, FVL_32, FVL_33, FVL_35, FVL_41, FVL_42,
                 TRRL_2, TRRL_9, TRRL_10, TRRL_11, TRRL_12, TRRL_14,
             ),
-            "HJE_HJE" to listOf(
+            KabalYtelse.HJE_HJE to listOf(
                 FTRL_10_3, FTRL_10_4, FTRL_10_5, FTRL_10_6,
                 FTRL_10_7_HJELPEMIDLER, FTRL_10_7A, FTRL_10_7A_BRILLER_TIL_BARN,
                 FTRL_10_7B, FTRL_10_7C, FTRL_10_7D,
@@ -195,7 +195,7 @@ enum class Hjemmel(
                 FVL_25, FVL_28, FVL_29, FVL_30, FVL_31, FVL_32, FVL_33, FVL_35, FVL_41, FVL_42,
                 TRRL_2, TRRL_9, TRRL_10, TRRL_11, TRRL_12, TRRL_14,
             ),
-            "HJE_AUR" to listOf(
+            KabalYtelse.HJE_AUR to listOf(
                 FS_ARB_UTD_R_2, FS_ARB_UTD_R_3, FS_ARB_UTD_R_4,
                 FS_ARB_UTD_R_5, FS_ARB_UTD_R_6, FS_ARB_UTD_R_8,
                 FVL_11, FVL_12, FVL_14, FVL_16, FVL_17, FVL_18_19, FVL_21, FVL_24,
@@ -204,7 +204,7 @@ enum class Hjemmel(
             ),
         )
 
-        fun forYtelse(ytelseId: String): List<Hjemmel> = PER_YTELSE[ytelseId] ?: emptyList()
+        fun forYtelse(kabalYtelse: KabalYtelse): List<Hjemmel> = PER_YTELSE[kabalYtelse] ?: emptyList()
 
         fun fromId(id: String): Hjemmel =
             entries.firstOrNull { it.id == id }

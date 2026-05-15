@@ -1,6 +1,8 @@
 package no.nav.historisk.superhelt.klage.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import no.nav.historisk.superhelt.StonadsType
+import no.nav.historisk.superhelt.klage.kabalYtelse
 import no.nav.kabal.model.Hjemmel
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,15 +21,12 @@ class KlageKodeverkController {
     }
 
     /**
-     * Returnerer kun hjemler som er gyldige for den angitte Kabal-ytelseId-en.
-     * Ytelsefiltrering sørger for at saksbehandler bare ser relevante hjemler
-     * for sakens stønadstype (f.eks. kun ortopedi-hjemler for HEL_HEL,
-     * hjelpemiddelhjemler for HJE_HJE, og AUR-hjemler for HJE_AUR).
+     * Returnerer kun hjemler som er gyldige for en stønad.
      */
-    @Operation(operationId = "getKodeverkHjemlerForYtelse")
-    @GetMapping("hjemler/{ytelseId}")
-    fun hjemlerForYtelse(@PathVariable ytelseId: String): List<HjemmelDto> {
-        return Hjemmel.forYtelse(ytelseId).map { it.toDto() }
+    @Operation(operationId = "getKodeverkHjemlerForStonad")
+    @GetMapping("hjemler/{stonadsType}")
+    fun hjemlerForStonad(@PathVariable stonadsType: StonadsType): List<HjemmelDto> {
+        return Hjemmel.forYtelse(stonadsType.kabalYtelse).map { it.toDto() }
     }
 
     /** Konverterer et Hjemmel-enum til DTO for REST-responsen. */

@@ -1,4 +1,4 @@
-import { getKodeverkHjemlerForYtelseOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
+import { getKodeverkHjemlerForStonadOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
 import {
     Button,
     DatePicker,
@@ -27,11 +27,10 @@ interface SendKlageProps {
 export function SendKlage({ open, onOpenChange }: SendKlageProps) {
     const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
-    // Henter kun hjemler som er gyldige for sakens ytelse (f.eks. HEL_HEL, HJE_HJE eller HJE_AUR).
-    // sak.kabalYtelse er utledet automatisk fra sakens stønadstype på backend-siden.
+    // Henter kun hjemler som er gyldige for saken
     const { data: hjemler } = useQuery({
-        ...getKodeverkHjemlerForYtelseOptions({
-            path: { ytelseId: sak.kabalYtelse },
+        ...getKodeverkHjemlerForStonadOptions({
+            path: { stonadsType: sak.type },
         }),
         staleTime: Number.POSITIVE_INFINITY,
         enabled: open,
@@ -110,7 +109,6 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
                     <Dialog.Title>Send klage til Kabal</Dialog.Title>
                 </Dialog.Header>
 
-
                 <Dialog.Body style={{ height: "100%" }}>
                     <VStack gap="space-16">
                         {sendKlage.isSuccess && (
@@ -118,9 +116,7 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
                                 <LocalAlert.Header>
                                     <LocalAlert.Title>Klage sendt</LocalAlert.Title>
                                 </LocalAlert.Header>
-                                <LocalAlert.Content>
-                                    Klagen ble oversendt til Kabal og er mottatt.
-                                </LocalAlert.Content>
+                                <LocalAlert.Content>Klagen ble oversendt til Kabal og er mottatt.</LocalAlert.Content>
                             </LocalAlert>
                         )}
                         {sendKlage.isError && (

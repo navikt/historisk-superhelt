@@ -65,10 +65,9 @@ export type Sak = {
     vedtaksbrevBruker?: Brev | null;
     enhet: string;
     readonly maskertPersonIdent: string;
-    readonly gjenapnet: boolean;
     tema: 'HEL' | 'HJE';
-    readonly kabalYtelse: string;
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
+    readonly gjenapnet: boolean;
     readonly kanUtbetales: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
     readonly tilstand: SakTilstand;
@@ -225,7 +224,7 @@ export type SakStatusDto = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK' | 'KLAGE_SENDT_KABAL';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK' | 'KLAGE_SENDT_KABAL' | 'KABAL_BEHANDLING_OPPRETTET' | 'KABAL_BEHANDLING_AVSLUTTET' | 'KABAL_BEHANDLING_FEILREGISTRERT';
     endring: string;
     beskrivelse?: string | null;
     endretAv: string;
@@ -1582,16 +1581,16 @@ export type GetKodeverkHjemlerResponses = {
 
 export type GetKodeverkHjemlerResponse = GetKodeverkHjemlerResponses[keyof GetKodeverkHjemlerResponses];
 
-export type GetKodeverkHjemlerForYtelseData = {
+export type GetKodeverkHjemlerForStonadData = {
     body?: never;
     path: {
-        ytelseId: string;
+        stonadsType: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     };
     query?: never;
-    url: '/api/klage/kodeverk/hjemler/{ytelseId}';
+    url: '/api/klage/kodeverk/hjemler/{stonadsType}';
 };
 
-export type GetKodeverkHjemlerForYtelseErrors = {
+export type GetKodeverkHjemlerForStonadErrors = {
     /**
      * Bad Request
      */
@@ -1606,16 +1605,16 @@ export type GetKodeverkHjemlerForYtelseErrors = {
     500: ProblemDetail;
 };
 
-export type GetKodeverkHjemlerForYtelseError = GetKodeverkHjemlerForYtelseErrors[keyof GetKodeverkHjemlerForYtelseErrors];
+export type GetKodeverkHjemlerForStonadError = GetKodeverkHjemlerForStonadErrors[keyof GetKodeverkHjemlerForStonadErrors];
 
-export type GetKodeverkHjemlerForYtelseResponses = {
+export type GetKodeverkHjemlerForStonadResponses = {
     /**
      * OK
      */
     200: Array<HjemmelDto>;
 };
 
-export type GetKodeverkHjemlerForYtelseResponse = GetKodeverkHjemlerForYtelseResponses[keyof GetKodeverkHjemlerForYtelseResponses];
+export type GetKodeverkHjemlerForStonadResponse = GetKodeverkHjemlerForStonadResponses[keyof GetKodeverkHjemlerForStonadResponses];
 
 export type LastnedDokumentFraJournalpostData = {
     body?: never;
