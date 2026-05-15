@@ -34,5 +34,7 @@ data class KabalProperties(
     val url: String,
     /** api://<cluster>.<namespace>.<other-api-app-name>/.default */
     val audience: String,
+    /** Kafka topic: klage.behandling-events.v1 */
+    val behandlingEventTopic: String,
 )
 

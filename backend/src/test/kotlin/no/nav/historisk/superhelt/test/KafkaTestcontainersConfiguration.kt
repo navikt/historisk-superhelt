@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.test
 
+import no.nav.historisk.superhelt.klage.config.KabalProperties
 import no.nav.historisk.superhelt.statistikk.kafka.StatistikkConfigProperties
 import no.nav.historisk.superhelt.utbetaling.kafka.UtbetalingConfigProperties
 import org.apache.kafka.clients.admin.NewTopic
@@ -12,7 +13,8 @@ import org.testcontainers.utility.DockerImageName
 @TestConfiguration(proxyBeanMethods = false)
 class KafkaTestcontainersConfiguration(
     private val utbetalingProperties: UtbetalingConfigProperties,
-    private val statistikkProperties: StatistikkConfigProperties) {
+    private val statistikkProperties: StatistikkConfigProperties,
+    private val kabalProperties: KabalProperties) {
 
     @Bean
     @ServiceConnection
@@ -30,5 +32,8 @@ class KafkaTestcontainersConfiguration(
 
     @Bean
     fun statistikkTopic() = NewTopic(statistikkProperties.saksBehandlingStatistikkTopic, 1, 1.toShort())
+
+    @Bean
+    fun kabalBehandlingEventTopic() = NewTopic(kabalProperties.behandlingEventTopic, 1, 1.toShort())
 
 }
