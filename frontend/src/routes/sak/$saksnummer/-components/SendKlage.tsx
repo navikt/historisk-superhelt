@@ -42,12 +42,12 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
     });
     const { data: navAnsatt } = useSuspenseQuery(getUserInfoOptions());
     const enheter = navAnsatt.enheter;
+    const intitialEnhet = enheter[0]?.enhetnummer ?? "";
 
     const invalidateSakQuery = useInvalidateSakQuery();
-
     const [valgtHjemmelId, setValgtHjemmelId] = useState<string>("");
     const [kommentar, setKommentar] = useState<string>("");
-    const [enhet, setEnhet] = useState<string>(enheter[0]?.enhetnummer ?? "");
+    const [enhet, setEnhet] = useState<string>(intitialEnhet);
     const [hjemmelError, setHjemmelError] = useState<string | undefined>();
     const [datoError, setDatoError] = useState<string | undefined>();
     const [valgtDato, setValgtDato] = useState<Date | undefined>();
@@ -73,7 +73,7 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
         setHjemmelError(undefined);
         setDatoError(undefined);
         setValgtDato(undefined);
-        setEnhet(enheter[0]?.enhetnummer ?? "");
+        setEnhet(intitialEnhet);
         sendKlage.reset();
     };
 
