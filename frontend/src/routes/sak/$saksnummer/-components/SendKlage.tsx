@@ -1,9 +1,14 @@
-import { getKodeverkHjemlerForStonadOptions, sendKlageTilKabalMutation } from "@generated/@tanstack/react-query.gen";
+import {
+    getKodeverkHjemlerForStonadOptions,
+    getUserInfoOptions,
+    sendKlageTilKabalMutation,
+} from "@generated/@tanstack/react-query.gen";
 import {
     Button,
     DatePicker,
     Dialog,
     LocalAlert,
+    Select,
     Textarea,
     UNSAFE_Combobox,
     useDatepicker,
@@ -35,10 +40,14 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
         staleTime: Number.POSITIVE_INFINITY,
         enabled: open,
     });
-    const invalidateSakQuery = useInvalidateSakQuery();
+    const { data: navAnsatt } = useSuspenseQuery(getUserInfoOptions());
+    const enheter = navAnsatt.enheter;
+    const intitialEnhet = enheter[0]?.enhetnummer ?? "";
 
+    const invalidateSakQuery = useInvalidateSakQuery();
     const [valgtHjemmelId, setValgtHjemmelId] = useState<string>("");
     const [kommentar, setKommentar] = useState<string>("");
+    const [enhet, setEnhet] = useState<string>(intitialEnhet);
     const [hjemmelError, setHjemmelError] = useState<string | undefined>();
     const [datoError, setDatoError] = useState<string | undefined>();
     const [valgtDato, setValgtDato] = useState<Date | undefined>();
@@ -64,6 +73,7 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
         setHjemmelError(undefined);
         setDatoError(undefined);
         setValgtDato(undefined);
+        setEnhet(intitialEnhet);
         sendKlage.reset();
     };
 
@@ -97,6 +107,7 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
             body: {
                 hjemmelId: valgtHjemmelId,
                 datoKlageMottatt: dateTilIsoDato(valgtDato) ?? "",
+                enhet: enhet,
                 kommentar: kommentar.trim() || undefined,
             },
         });
@@ -155,6 +166,19 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
                             shouldAutocomplete
                             error={hjemmelError}
                         />
+
+                        <Select
+                            label={"Enhet"}
+                            description="Velg hvilken geografisk enhet du jobber i"
+                            value={enhet}
+                            onChange={(event) => setEnhet(event.target.value)}
+                        >
+                            {enheter.map((e) => (
+                                <option key={e.enhetnummer} value={e.enhetnummer}>
+                                    {e.navn}
+                                </option>
+                            ))}
+                        </Select>
 
                         <Textarea
                             label="Kommentar (valgfri)"
