@@ -67,6 +67,17 @@ root (Maven multi-module)
 2. Attestant attesterer → sak ferdigstilles → **Vedtak** lagres
 3. Ved innvilgelse sendes **Utbetaling** til Helved via Kafka (`historisk.utbetaling.v1`) og vedtaket journalføres i Dokarkiv og distribueres
 4. Helved returnerer utbetalingsstatuser tilbake på `helved.status.v1`
+5. Saksbehandlingsstatistikk publiseres til `historisk.superhelt.statistikk.saksbehandling.v1`
+6. Ved klage: saksbehandler sender til Kabal → Kabal returnerer behandlingsstatus på `klage.behandling-events.v1`
+
+### Kafka-topics
+
+| Topic | Retning | Beskrivelse |
+|---|---|---|
+| `historisk.utbetaling.v1` | Producer | Utbetalingsmeldinger til Helved |
+| `helved.status.v1` | Consumer | Utbetalingsstatuser fra Helved |
+| `historisk.superhelt.statistikk.saksbehandling.v1` | Producer | Saksbehandlingsstatistikk |
+| `klage.behandling-events.v1` | Consumer | Behandlingsevents fra Kabal |
 
 **Auth:** Azure AD via Nais Wonderwall (sidecar). Token exchange til andre tjenester håndteres via Texas. Lokalt kjøres mock-oidc + Wonderwall i Docker.
 

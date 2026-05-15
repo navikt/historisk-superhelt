@@ -3,6 +3,57 @@
 > Fullstendig prosjektbeskrivelse, konvensjoner og arkitektur ligger i `.github/copilot-instructions.md`.
 > Denne filen inneholder kun tilleggsinformasjon som er spesifikk for autonome agenter.
 
+## Architecture Supplements
+
+### Libs-moduler (komplett liste — erstatter tabellen i copilot-instructions.md)
+
+| Modul | Innhold |
+|---|---|
+| `common-types` | Verdi-typer: `Saksnummer`, `FolkeregisterIdent`, `Belop`, `NavIdent` m.fl. |
+| `pdl` | PDL-klient (personopplysninger) |
+| `helved` | Kafka-meldingstyper for utbetaling |
+| `tilgangsmaskin` | Tilgangskontroll-klient |
+| `dokarkiv` | Journalføring (Dokarkiv + Dokdist + SAF) |
+| `oppgave` | Oppgave-klient (Gosys) |
+| `pdfgen` | Pdfgen-klient for brevgenerering |
+| `kabal` | Klient for oversending av klagesaker til Kabal (klage/anke) |
+| `infotrygd` | Klient mot InfoTrygd |
+| `ereg` | Klient mot Enhetsregisteret (samhandler-oppslag) |
+| `entra-proxy` | Entra ID-proxy for tjenestekommunikasjon |
+| `statistikk` | Kafka-meldingstyper for saksbehandlingsstatistikk |
+
+### Backend-domener (under `backend/src/main/kotlin/no/nav/historisk/superhelt/`)
+
+| Pakke | Ansvar |
+|---|---|
+| `sak/` | Saksdomenets kjerne |
+| `vedtak/` | Vedtak og attestering |
+| `utbetaling/` | Utbetalingshåndtering (Helved-integrasjon) |
+| `klage/` | Klage/anke — oversendelse til Kabal, mottar events tilbake |
+| `brev/` | Brevgenerering via Pdfgen |
+| `person/` | Personopplysninger via PDL |
+| `ansatt/` | NAV-ansatt-informasjon |
+| `oppgave/` | Gosys-oppgaver |
+| `samhandler/` | Samhandler-oppslag via Ereg |
+| `statistikk/` | Sender saksbehandlingsstatistikk til Kafka |
+| `infotrygd/` | InfoTrygd-integrasjon |
+| `dokarkiv/` | Journalføring |
+
+### Kafka-topics (komplett)
+
+| Topic | Retning | Beskrivelse |
+|---|---|---|
+| `historisk.utbetaling.v1` | Producer | Utbetalingsmeldinger til Helved |
+| `helved.status.v1` | Consumer | Utbetalingsstatuser fra Helved |
+| `historisk.superhelt.statistikk.saksbehandling.v1` | Producer | Saksbehandlingsstatistikk |
+| `klage.behandling-events.v1` | Consumer | Behandlingsevents fra Kabal |
+
+### Klage/anke-flyt
+
+1. Saksbehandler sender klage fra Superhelt → `KlageService` → `KabalClient` → Kabal API
+2. Kabal sender behandlingsstatus tilbake på `klage.behandling-events.v1`
+3. `KabalBehandlingEventConsumer` prosesserer events og oppdaterer `KabalEventRepository`
+
 ## Build & Test Commands
 
 ### Backend
