@@ -1,5 +1,5 @@
 import {
-    getKodeverkHjemlerOptions,
+    getKodeverkHjemlerForStonadOptions,
     getUserInfoOptions,
     sendKlageTilKabalMutation,
 } from "@generated/@tanstack/react-query.gen";
@@ -32,8 +32,11 @@ interface SendKlageProps {
 export function SendKlage({ open, onOpenChange }: SendKlageProps) {
     const { saksnummer } = useParams({ from: "/sak/$saksnummer" });
     const { data: sak } = useSuspenseQuery(getSakOptions(saksnummer));
+    // Henter kun hjemler som er gyldige for saken
     const { data: hjemler } = useQuery({
-        ...getKodeverkHjemlerOptions(),
+        ...getKodeverkHjemlerForStonadOptions({
+            path: { stonadsType: sak.type },
+        }),
         staleTime: Number.POSITIVE_INFINITY,
         enabled: open,
     });

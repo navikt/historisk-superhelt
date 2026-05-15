@@ -1,5 +1,6 @@
 package no.nav.historisk.superhelt.klage
 
+import no.nav.common.consts.APP_NAVN
 import no.nav.common.types.Enhetsnummer
 import no.nav.historisk.superhelt.ansatt.NavAnsattService
 import no.nav.historisk.superhelt.infrastruktur.validation.ValidationFieldError
@@ -39,14 +40,14 @@ class KlageService(private val kabalClient: KabalClient, private val navAnsattSe
             type = SakType.KLAGE,
             sakenGjelder = SakenGjelder(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
             klager = Klager(id = Ident(type = IdentType.PERSON, verdi = sak.fnr.value)),
-            fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = "SUPERHELT"),
+            fagsak = Fagsak(fagsakId = sak.saksnummer.value, fagsystem = APP_NAVN),
             kildeReferanse = sak.saksnummer.value,
             dvhReferanse = sak.saksnummer.value,
             hjemler = listOf(hjemmel.id),
             forrigeBehandlendeEnhet = enhet.value,
             tilknyttedeJournalposter = emptyList(),
             brukersKlageMottattVedtaksinstans = request.datoKlageMottatt,
-            ytelse = "HEL_HEL",
+            ytelse = sak.type.kabalYtelse,
             kommentar = request.kommentar,
         )
 
