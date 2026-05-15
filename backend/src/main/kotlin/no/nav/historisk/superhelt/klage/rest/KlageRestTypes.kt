@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.klage.rest
 
 import jakarta.validation.constraints.Size
+import no.nav.common.types.Enhetsnummer
 import java.time.LocalDate
 
 data class SendKlageRequestDto(
@@ -9,6 +10,8 @@ data class SendKlageRequestDto(
     val datoKlageMottatt: LocalDate,
     @field:Size(max = 2000)
     val kommentar: String? = null,
+    @field:Size(min = 4, max = 4)
+    val enhet: Enhetsnummer
 )
 
 data class HjemmelDto(
