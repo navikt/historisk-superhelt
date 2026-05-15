@@ -1,5 +1,8 @@
 package no.nav.historisk.superhelt.klage.rest
 
+import no.nav.common.types.Enhetsnummer
+import no.nav.entraproxy.Enhet
+import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
@@ -13,6 +16,7 @@ import no.nav.historisk.superhelt.test.WithMockJwtAuth
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.historisk.superhelt.test.bodyAsProblemDetail
 import no.nav.kabal.KabalClient
+import no.nav.kabal.model.KabalYtelse
 import no.nav.kabal.model.SendSakV4Request
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
 import org.assertj.core.api.Assertions.assertThat
@@ -28,6 +32,7 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -58,11 +63,18 @@ class KlageControllerTest {
     @MockitoBean
     private lateinit var kabalClient: KabalClient
 
+    @MockitoBean
+    private lateinit var entraProxyClient: EntraProxyClient
+
     @BeforeEach
     fun setup() {
         whenever(tilgangsmaskinService.sjekkKomplettTilgang(any())) doReturn TilgangsmaskinClient.TilgangResult(
             harTilgang = true
         )
+        whenever { entraProxyClient.hentEnheter() } doReturn listOf(Enhet(
+            enhetnummer = Enhetsnummer("1234"),
+            navn = "MockEnhet"
+        ))
         // Kabal returnerer ingen body – Unit/void er default for mockede metoder
     }
 
@@ -111,7 +123,7 @@ class KlageControllerTest {
             assertThat(request.kildeReferanse).isEqualTo(sak.saksnummer.value)
             assertThat(request.dvhReferanse).isEqualTo(sak.saksnummer.value)
             assertThat(request.hjemler).containsExactly("FTRL_10_7I")
-            assertThat(request.ytelse).isEqualTo("HEL_HEL")
+            assertThat(request.ytelse).isEqualTo(KabalYtelse.HEL_HEL)
             assertThat(request.brukersKlageMottattVedtaksinstans).isEqualTo(datoKlageMottatt)
             assertThat(request.sakenGjelder.id.verdi).isEqualTo(sak.fnr.value)
             assertThat(request.klager.id.verdi).isEqualTo(sak.fnr.value)
@@ -124,11 +136,7 @@ class KlageControllerTest {
                 SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
             val kommentar = "Klager er uenig i vedtaket"
-            val request = mapOf(
-                "hjemmelId" to "FTRL_10_7I",
-                "datoKlageMottatt" to LocalDate.now().minusDays(5).toString(),
-                "kommentar" to kommentar,
-            )
+            val request =gyldigKlageRequest().copy(kommentar = kommentar)
 
             assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.NO_CONTENT)
@@ -153,7 +161,7 @@ class KlageControllerTest {
             whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "Kabal er utilgjengelig",
-                org.springframework.http.HttpHeaders.EMPTY,
+                HttpHeaders.EMPTY,
                 """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
                 null
             )
@@ -188,15 +196,26 @@ class KlageControllerTest {
                 sakRepository,
                 SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
             )
-            val request = mapOf(
-                "hjemmelId" to "UKJENT_HJEMMEL_XYZ",
-                "datoKlageMottatt" to "2026-01-15",
-            )
+            val request =gyldigKlageRequest().copy(hjemmelId = "UKJENT_HJEMMEL_XYZ")
 
             assertThat(sendKlage(sak.saksnummer.value, request))
                 .hasStatus(HttpStatus.BAD_REQUEST)
                 .bodyAsProblemDetail()
                 .satisfies({ assertThat(it?.detail).isNotBlank() })
+
+            verifyNoInteractions(kabalClient)
+        }
+
+        @Test
+        fun `returnerer 400 når saksbehandler ikke har tilgang til enhet`() {
+            val sak = SakTestData.lagreSak(
+                sakRepository,
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
+            )
+            val request =gyldigKlageRequest().copy(enhet = Enhetsnummer("9999"))
+
+            assertThat(sendKlage(sak.saksnummer.value, request))
+                .hasStatus(HttpStatus.BAD_REQUEST)
 
             verifyNoInteractions(kabalClient)
         }
@@ -250,7 +269,7 @@ class KlageControllerTest {
             whenever(kabalClient.sendSakV4(any())) doThrow HttpServerErrorException.create(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "Kabal er utilgjengelig",
-                org.springframework.http.HttpHeaders.EMPTY,
+                HttpHeaders.EMPTY,
                 """{"feil":"Kabal er utilgjengelig"}""".toByteArray(),
                 null
             )
@@ -306,10 +325,13 @@ class KlageControllerTest {
 
     // ── helpers ───────────────────────────────────────────────────────────────
 
-    private fun gyldigKlageRequest(datoKlageMottatt: LocalDate = LocalDate.now().minusDays(10)): Map<String, String> = mapOf(
-        "hjemmelId" to "FTRL_10_7I",
-        "datoKlageMottatt" to datoKlageMottatt.toString(),
-    )
+    private fun gyldigKlageRequest(datoKlageMottatt: LocalDate = LocalDate.now().minusDays(10)): SendKlageRequestDto =
+        SendKlageRequestDto(
+            hjemmelId = "FTRL_10_7I",
+            datoKlageMottatt = datoKlageMottatt,
+            enhet = Enhetsnummer("1234")
+        )
+
 
     private fun sendKlage(saksnummer: String, body: Any): MockMvcTester.MockMvcRequestBuilder =
         mockMvc.post().uri("/api/sak/{saksnummer}/klage", saksnummer)
