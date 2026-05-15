@@ -64,14 +64,6 @@ data class Sak(
     val tema: FellesKodeverkTema
         get() = type.tema
 
-    /**
-     * Kabal-ytelse-ID utledet fra sakens stønadstype.
-     * Brukes av frontend for å hente riktig hjemmelliste ved klargjøring av klage.
-     * Eksempler: "HEL_HEL" for helseytelser, "HJE_HJE" for hjelpemidler, "HJE_AUR" for arbeids- og utdanningsreiser.
-     */
-    @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val kabalYtelse: String
-        get() = type.kabalYtelse
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val maskertPersonIdent: MaskertPersonIdent
         get() = fnr.toMaskertPersonIdent()

@@ -1,5 +1,6 @@
 package no.nav.kabal.model
 
+import no.nav.kabal.model.KabalYtelse
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -13,7 +14,7 @@ object KabalTestData {
         fagsystem: String = "HJE",
         kildeReferanse: String = "kilde-ref-123",
         forrigeBehandlendeEnhet: String = "4201",
-        ytelse: String = "HEL_HEL",
+        ytelse: KabalYtelse = KabalYtelse.HEL_HEL,
         kommentar: String? = null,
         hjemler: List<String> = emptyList()
     ): SendSakV4Request {
@@ -52,7 +53,7 @@ object KabalTestData {
             fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HEL_HEL",
+            ytelse = KabalYtelse.HEL_HEL,
         )
     }
 
@@ -68,7 +69,7 @@ object KabalTestData {
             fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "kilde-ref-123",
             forrigeBehandlendeEnhet = "4201",
-            ytelse = "HEL_HEL",
+            ytelse = KabalYtelse.HEL_HEL,
             tilknyttedeJournalposter = journalposter
         )
     }
@@ -76,7 +77,7 @@ object KabalTestData {
     fun createSendSakV4RequestWithAllFields(
         type: SakType = SakType.KLAGE,
         hjemler: List<String> = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id),
-        ytelse: String = "OMS_OMP"
+        ytelse: KabalYtelse = KabalYtelse.HEL_HEL
     ): SendSakV4Request {
         return SendSakV4Request(
             type = type,
