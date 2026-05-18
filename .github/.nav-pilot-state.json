@@ -1,13 +1,13 @@
 {
   "collection": "fullstack",
-  "version": "2026.04.30-090824-bb25c0e",
+  "version": "2026.05.15-141852-d0c0363",
   "scope": "repo",
-  "source_sha": "fd4e9e8",
+  "source_sha": "d0c0363",
   "installed_at": "2026-04-16T11:42:15Z",
   "files": [
     {
       "path": ".github/agents/accessibility.agent.md",
-      "hash": "98867df3e31b8cd4"
+      "hash": "243143499e16befb"
     },
     {
       "path": ".github/agents/accessibility.metadata.json",
@@ -15,7 +15,7 @@
     },
     {
       "path": ".github/agents/aksel.agent.md",
-      "hash": "f3f31e695bc1df0f"
+      "hash": "7103fb8df66fb0b1"
     },
     {
       "path": ".github/agents/aksel.metadata.json",
@@ -23,7 +23,7 @@
     },
     {
       "path": ".github/agents/auth.agent.md",
-      "hash": "97b03fd441f35a44"
+      "hash": "bdadec09cbdaf722"
     },
     {
       "path": ".github/agents/auth.metadata.json",
@@ -31,7 +31,7 @@
     },
     {
       "path": ".github/agents/code-review.agent.md",
-      "hash": "452bf7eb43ff1205"
+      "hash": "3f32b4e215bca95d"
     },
     {
       "path": ".github/agents/code-review.metadata.json",
@@ -39,7 +39,7 @@
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "4e55f4d189619dcb"
+      "hash": "6cc31221eab50d30"
     },
     {
       "path": ".github/agents/forfatter.metadata.json",
@@ -47,7 +47,7 @@
     },
     {
       "path": ".github/agents/kafka.agent.md",
-      "hash": "0b87e50b3d4178de"
+      "hash": "fdf4869940190473"
     },
     {
       "path": ".github/agents/kafka.metadata.json",
@@ -55,7 +55,7 @@
     },
     {
       "path": ".github/agents/nais.agent.md",
-      "hash": "fa07ad8cfdf54a4a"
+      "hash": "5cdca085bd4edc56"
     },
     {
       "path": ".github/agents/nais.metadata.json",
@@ -63,7 +63,7 @@
     },
     {
       "path": ".github/agents/observability.agent.md",
-      "hash": "5ba4036f431e3cfb"
+      "hash": "6f7b01a64b6fd461"
     },
     {
       "path": ".github/agents/observability.metadata.json",
@@ -71,7 +71,7 @@
     },
     {
       "path": ".github/agents/security-champion.agent.md",
-      "hash": "3081dcf0ddde695d"
+      "hash": "5ccba48b66938fd0"
     },
     {
       "path": ".github/agents/security-champion.metadata.json",
@@ -79,7 +79,7 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "8384742b958b4b84"
+      "hash": "e50baf495f28613f"
     },
     {
       "path": ".github/agents/nav-pilot.metadata.json",
@@ -141,7 +141,7 @@
     },
     {
       "path": ".github/skills/nav-deep-interview/",
-      "hash": "42e9aab52e591ef0"
+      "hash": "eeb3399ecd4e352c"
     },
     {
       "path": ".github/skills/nav-architecture-review/",
@@ -185,7 +185,8 @@
     },
     {
       "path": ".github/instructions/testing-kotlin.instructions.md",
-      "hash": "13a5a10d86577f84"
+      "hash": "13a5a10d86577f84",
+      "status": "ignored"
     },
     {
       "path": ".github/instructions/testing-typescript.instructions.md",
@@ -214,15 +215,15 @@
     },
     {
       "path": ".github/prompts/spring-boot-endpoint.prompt.md",
-      "hash": "5b79c3b867419f3c"
+      "hash": "3e68aab2f5cbe402"
     },
     {
       "path": ".github/prompts/kafka-topic.prompt.md",
-      "hash": "3204fac1321522bc"
+      "hash": "4e3cb2fe36ecb2f4"
     },
     {
       "path": ".github/prompts/nais-manifest.prompt.md",
-      "hash": "a7564098ae008cce"
+      "hash": "8576571223ffef8a"
     },
     {
       "path": ".github/prompts/aksel-component.prompt.md",

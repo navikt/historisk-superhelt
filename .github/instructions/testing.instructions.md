@@ -4,10 +4,17 @@ applyTo: "**/*.test.{ts,tsx,kt,kts}"
 
 # Testing Standards
 
-Felles testprinsipper for Nav. Repoet bruker:
-- Kotlin: JUnit 5 + AssertJ (`assertThat`) og Mockito-kotlin
-- Integrasjonstester: Testcontainers (Postgres)
-- Frontend: Vitest (se [TypeScript](testing-typescript.instructions.md))
+Felles testprinsipper for Nav. Språkspesifikke eksempler finnes i egne instruksjoner for [Kotlin](testing-kotlin.instructions.md) og [TypeScript](testing-typescript.instructions.md).
+
+## Test Coverage
+
+### Coverage Requirements
+
+- **Utilities in `lib/`**: 80%+ coverage required
+- **Business logic**: 70%+ coverage required
+- **API routes**: Test happy path + error cases
+- **Repositories**: Test CRUD operations
+- **Event handlers**: Test event processing + publishing
 
 ## Test Naming
 
@@ -29,18 +36,18 @@ Choose test type based on what you're verifying:
 
 | What to test | Test type | Tools |
 |---|---|---|
-| Pure functions, business logic | Unit test | JUnit 5 + AssertJ (+ Mockito-kotlin ved behov) / Vitest |
-| Controller + validation | Integration test | `@SpringBootTest` + MockMvc |
+| Pure functions, utils | Unit test | Kotest / Vitest |
+| Controller + validation | Slice test | `@WebMvcTest` + MockkBean |
+| Repository + SQL | Slice test | `@DataJpaTest` + Testcontainers |
 | Full API flow | Integration test | `@SpringBootTest` + Testcontainers |
-| Repository + SQL | Integration test | Testcontainers (Postgres) |
 | User workflows | E2E test | Playwright |
 | Accessibility | E2E test | Playwright + axe-core |
 
 ### When to use what
 
 - **Unit**: Business logic, data transformations, formatting
-- **Integration** (`@SpringBootTest`): Auth flow, controller/service/repository samspill
-- **Integration + Testcontainers**: Databaselogikk med ekte Postgres
+- **Slice** (`@WebMvcTest`, `@DataJpaTest`): Faster than full integration, tests one layer
+- **Integration** (`@SpringBootTest`): Auth flow, multi-layer, real DB
 - **E2E** (Playwright): Critical user journeys, form submission, navigation
 
 ## Playwright E2E Tests
