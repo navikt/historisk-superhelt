@@ -7,6 +7,7 @@ import no.nav.historisk.superhelt.klage.KabalEventRepository
 import no.nav.historisk.superhelt.klage.tidspunkt
 import no.nav.historisk.superhelt.klage.utfall
 import no.nav.historisk.superhelt.oppgave.OppgaveService
+import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.kabal.model.KabalBehandlingEvent
 import no.nav.kabal.model.KabalBehandlingEventType
@@ -29,6 +30,11 @@ class KlageEventService(
     @Transactional
     fun behandleEvent(event: KabalBehandlingEvent) {
         val saksnummer = Saksnummer(event.kildeReferanse)
+        val sak=sakRepository.getSak(saksnummer) ?: run {
+            logger.warn("Sak med saksnummer {} ikke funnet for Kabal-event {} (type={}) – ignorerer event.",
+                saksnummer, event.eventId, event.type)
+            return
+        }
 
         val erNytt = kabalEventRepository.lagre(event, saksnummer.value)
         if (!erNytt) {
@@ -45,7 +51,7 @@ class KlageEventService(
         )
         val utfall = event.utfall
         if (utfall?.lagOppgave == true){
-            opprettOppgaveMedDetaljer(event, saksnummer)
+            opprettOppgaveMedDetaljer(event, sak)
         }
 
         loggTilEndringslogg(endringsloggService, saksnummer, event.type.tilEndringsloggType(), event)
@@ -56,15 +62,14 @@ class KlageEventService(
      * Bygger en dynamisk oppgave-beskrivelse basert på event-type og oppretter oppgaven.
      * Forutsetter at event-typen har utfall og avsluttet-tidspunkt i detaljer.
      */
-    private fun opprettOppgaveMedDetaljer(event: KabalBehandlingEvent, saksnummer: Saksnummer) {
+    private fun opprettOppgaveMedDetaljer(event: KabalBehandlingEvent, sak: Sak) {
         val (utfall, avsluttet) = event.utfallOgAvsluttet()
             ?: error("${event.type} mangler detaljer for event ${event.eventId}")
 
         val behandlingsNavn = event.type.toNorsk()
         val beskrivelse = "$behandlingsNavn avsluttet i Kabal. Utfall: $utfall. Avsluttet: $avsluttet."
 
-        val sak = sakRepository.getSak(saksnummer)
-        logger.info("Oppretter oppgave for sak {} etter Kabal-event {} ({})", saksnummer, event.eventId, event.type)
+        logger.info("Oppretter oppgave for sak {} etter Kabal-event {} ({})", sak.saksnummer, event.eventId, event.type)
         oppgaveService.opprettOppgave(
             type = OppgaveType.VUR_KONS_YTE,
             sak = sak,

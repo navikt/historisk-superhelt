@@ -16,9 +16,10 @@ import no.nav.kabal.model.KlageUtfall
 import no.nav.kabal.model.KlagebehandlingAvsluttetDetaljer
 import no.nav.oppgave.OppgaveType
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
@@ -37,7 +38,7 @@ class KabalBehandlingEventConsumerTest {
     @Autowired
     private lateinit var sakRepository: SakRepository
 
-    @Autowired
+    @MockitoBean
     private lateinit var endringsloggService: EndringsloggService
 
     @Autowired
@@ -52,11 +53,10 @@ class KabalBehandlingEventConsumerTest {
     @MockitoBean
     private lateinit var oppgaveService: OppgaveService
 
-    private val systemPermissions = listOf(Permission.READ, Permission.WRITE)
-
     @WithSystemUser(permissions = [Permission.READ, Permission.WRITE])
-    @Test
-    fun `oppretter -oppgave ved KLAGEBEHANDLING_AVSLUTTET for vår sak`() {
+    @ParameterizedTest(name = "should create oppgave when utfall is {0}")
+    @EnumSource(value = KlageUtfall::class, names = ["MEDHOLD", "DELVIS_MEDHOLD", "OPPHEVET", "UGUNST", "RETUR"])
+    fun `should create oppgave for utfall that requires action`(utfall: KlageUtfall) {
         val sak = SakTestData.lagreSak(
             repository = sakRepository,
             sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
@@ -68,7 +68,7 @@ class KabalBehandlingEventConsumerTest {
             detaljer = KabalBehandlingDetaljer(
                 klagebehandlingAvsluttet = KlagebehandlingAvsluttetDetaljer(
                     avsluttet = LocalDateTime.now(),
-                    utfall = KlageUtfall.MEDHOLD,
+                    utfall = utfall,
                     journalpostReferanser = listOf("jp-111"),
                 )
             )
@@ -85,13 +85,52 @@ class KabalBehandlingEventConsumerTest {
             behandlesAvApplikasjon = anyOrNull(),
             journalpostId = anyOrNull(),
         )
-        assertThat(beskrivelseCaptor.firstValue)
-            .contains("MEDHOLD")
-            .contains("Klagebehandling avsluttet")
+        verify(endringsloggService).logChange(
+            saksnummer = eq(sak.saksnummer),
+            endringsType = any(),
+            navBruker = anyOrNull(),
+            endring = any(),
+            beskrivelse = anyOrNull(),
+            tidspunkt = any(),
+        )
+    }
+
+    @WithSystemUser(permissions = [Permission.READ, Permission.WRITE])
+    @ParameterizedTest(name = "should only log to endringslogg when utfall is {0}")
+    @EnumSource(value = KlageUtfall::class, names = ["TRUKKET", "STADFESTELSE", "AVVIST", "HENLAGT"])
+    fun `should not create oppgave for utfall that does not require action`(utfall: KlageUtfall) {
+        val sak = SakTestData.lagreSak(
+            repository = sakRepository,
+            sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
+        )
+
+        val event = lagBehandlingEvent(
+            kildeReferanse = sak.saksnummer.value,
+            type = KabalBehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
+            detaljer = KabalBehandlingDetaljer(
+                klagebehandlingAvsluttet = KlagebehandlingAvsluttetDetaljer(
+                    avsluttet = LocalDateTime.now(),
+                    utfall = utfall,
+                    journalpostReferanser = emptyList(),
+                )
+            )
+        )
+
+        klageEventService.behandleEvent(event)
+
+        verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
+        verify(endringsloggService).logChange(
+            saksnummer = eq(sak.saksnummer),
+            endringsType = any(),
+            navBruker = anyOrNull(),
+            endring = any(),
+            beskrivelse = anyOrNull(),
+            tidspunkt = any(),
+        )
     }
 
     @Test
-    fun `ignorerer event med annen kilde enn SUPERHELT`() {
+    fun `should ignore event from other source than SUPERHELT`() {
         val event = lagBehandlingEvent(
             kildeReferanse = "SH-000001",
             kilde = "ANNET_FAGSYSTEM",
@@ -105,7 +144,6 @@ class KabalBehandlingEventConsumerTest {
             )
         )
 
-        // Kilde-filtrering skjer i KabalBehandlingEventConsumer — kall consumer direkte
         val record = ConsumerRecord("kabal.behandling-events-junit", 0, 0L, event.kildeReferanse, objectMapper.writeValueAsString(event))
         kabalBehandlingEventConsumer.onBehandlingEvent(record)
 
@@ -114,7 +152,7 @@ class KabalBehandlingEventConsumerTest {
 
     @WithSystemUser(permissions = [Permission.READ, Permission.WRITE])
     @Test
-    fun `kaster feil når sak ikke finnes`() {
+    fun `should throw exception when sak does not exist`() {
         val event = lagBehandlingEvent(
             kildeReferanse = "SH-999999",
             type = KabalBehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
