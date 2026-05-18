@@ -1,5 +1,7 @@
 ---
-applyTo: "**/*.test.{ts,tsx,kt,kts}"
+applyTo:
+  - "**/*.{test,spec}.{ts,tsx,kt,kts}"
+  - "**/*Test.{kt,kts}"
 ---
 
 # Testing Standards
@@ -36,8 +38,8 @@ Choose test type based on what you're verifying:
 
 | What to test | Test type | Tools |
 |---|---|---|
-| Pure functions, utils | Unit test | Kotest / Vitest |
-| Controller + validation | Slice test | `@WebMvcTest` + MockkBean |
+| Pure functions, business logic | Unit test | JUnit 5 + AssertJ (+ Mockito-kotlin ved behov) / Vitest |
+| Controller + validation | Integration test | `@SpringBootTest` + MockMvc |
 | Repository + SQL | Slice test | `@DataJpaTest` + Testcontainers |
 | Full API flow | Integration test | `@SpringBootTest` + Testcontainers |
 | User workflows | E2E test | Playwright |
