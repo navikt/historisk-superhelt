@@ -9,15 +9,15 @@ enum class StonadsType(
     val navn: String,
     val klassekoder: List<KlasseKode>,
     val beskrivelse: String? = null,
-    val tema: FellesKodeverkTema
+    val tema: FellesKodeverkTema,
 ) {
 
-    /* Helsetjenester */
+    /* Helsetjenester – alle bruker HEL_HEL */
     PARYKK(
         navn = "Parykk/hodeplagg",
         klassekoder = listOf(KlasseKode.PARYKK),
         beskrivelse = "Dekker kostnader til parykk og hodeplagg",
-        tema = HEL
+        tema = HEL,
     ),
     ANSIKT_PROTESE(
         navn = "Ansiktdefektprotese",
@@ -95,4 +95,3 @@ enum class StonadsType(
     val kanUtbetales: Boolean get() = klassekoder.isNotEmpty()
 
 }
-

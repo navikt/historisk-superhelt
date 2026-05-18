@@ -64,12 +64,12 @@ export type Sak = {
     klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     vedtaksbrevBruker?: Brev | null;
     enhet: string;
-    readonly maskertPersonIdent: string;
-    readonly gjenapnet: boolean;
     tema: 'HEL' | 'HJE';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
+    readonly gjenapnet: boolean;
     readonly kanUtbetales: boolean;
     readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
     readonly tilstand: SakTilstand;
 };
 
@@ -137,6 +137,7 @@ export type SendKlageRequestDto = {
     hjemmelId: string;
     datoKlageMottatt: string;
     kommentar?: string | null;
+    enhet: string;
 };
 
 export type OpprettBrevRequest = {
@@ -224,7 +225,7 @@ export type SakStatusDto = {
 export type EndringsloggLinje = {
     saksnummer: string;
     endretTidspunkt: string;
-    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK' | 'KLAGE_SENDT_KABAL';
+    type: 'DOKUMENT_MOTTATT' | 'OPPRETTET_SAK' | 'TIL_ATTESTERING' | 'ATTESTERT_SAK' | 'FERDIGSTILT_SAK' | 'ATTESTERING_UNDERKJENT' | 'GJENAPNET_SAK' | 'SENDT_BREV' | 'UTBETALING_OK' | 'UTBETALING_FEILET' | 'FEILREGISTERT' | 'HENLAGT_SAK' | 'TILBAKESTILT_SAK' | 'DOKUMENT_JOURNALFOERT_EKSISTERENDE_SAK' | 'KLAGE_SENDT_KABAL' | 'KABAL_BEHANDLING_OPPRETTET' | 'KABAL_BEHANDLING_AVSLUTTET' | 'KABAL_BEHANDLING_FEILREGISTRERT';
     endring: string;
     beskrivelse?: string | null;
     endretAv: string;
@@ -272,8 +273,8 @@ export type OppgaveMedSak = {
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
     tema?: 'HEL' | 'HJE';
-    readonly oppgaveTypeTekst: string;
     readonly maskertPersonIdent: string;
+    readonly oppgaveTypeTekst: string;
 };
 
 export type HjemmelDto = {
@@ -1580,6 +1581,41 @@ export type GetKodeverkHjemlerResponses = {
 };
 
 export type GetKodeverkHjemlerResponse = GetKodeverkHjemlerResponses[keyof GetKodeverkHjemlerResponses];
+
+export type GetKodeverkHjemlerForStonadData = {
+    body?: never;
+    path: {
+        stonadsType: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
+    };
+    query?: never;
+    url: '/api/klage/kodeverk/hjemler/{stonadsType}';
+};
+
+export type GetKodeverkHjemlerForStonadErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetKodeverkHjemlerForStonadError = GetKodeverkHjemlerForStonadErrors[keyof GetKodeverkHjemlerForStonadErrors];
+
+export type GetKodeverkHjemlerForStonadResponses = {
+    /**
+     * OK
+     */
+    200: Array<HjemmelDto>;
+};
+
+export type GetKodeverkHjemlerForStonadResponse = GetKodeverkHjemlerForStonadResponses[keyof GetKodeverkHjemlerForStonadResponses];
 
 export type LastnedDokumentFraJournalpostData = {
     body?: never;

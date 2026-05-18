@@ -80,19 +80,15 @@ export function Header() {
                         />
                     </HStack>
                     <Spacer />
-
                     <Dropdown>
                         <InternalHeader.UserButton as={Dropdown.Toggle} name={navAnsatt?.name ?? "--"} />
                         <Dropdown.Menu>
                             <dl>
-                                <BodyShort as="dt" size="small">
-                                    {navAnsatt?.name}
-                                </BodyShort>
-                                <Detail as="dd">Roller: {navAnsatt?.roles.join(", ")}</Detail>
-                                <Detail as="dd">
-                                    Enhet: {navAnsatt?.enheter.map((e) => `${e.navn}(${e.enhetnummer})`).join(", ")}
-                                </Detail>
+                                <Detail as="dd">{navAnsatt.roles.join(", ")}</Detail>
                                 <Detail as="dd">Tema: {navAnsatt?.tema.join(", ")}</Detail>
+                                <Detail as="dd">
+                                    Enheter: {navAnsatt?.enheter.map((e) => e.enhetnummer).join(", ")}
+                                </Detail>
                             </dl>
                             <Dropdown.Menu.Divider />
                             <Dropdown.Menu.List>
