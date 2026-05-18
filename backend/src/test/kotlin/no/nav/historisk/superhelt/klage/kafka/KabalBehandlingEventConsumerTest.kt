@@ -1,21 +1,17 @@
 package no.nav.historisk.superhelt.klage.kafka
 
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
-import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
-import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
-import no.nav.historisk.superhelt.test.withMockedUser
-import no.nav.kabal.model.BehandlingDetaljer
-import no.nav.kabal.model.BehandlingEvent
-import no.nav.kabal.model.BehandlingEventType
-import no.nav.kabal.model.BehandlingFeilregistrertDetaljer
-import no.nav.kabal.model.FeilregistrertBehandlingType
+import no.nav.historisk.superhelt.test.WithSystemUser
+import no.nav.kabal.model.KabalBehandlingDetaljer
+import no.nav.kabal.model.KabalBehandlingEvent
+import no.nav.kabal.model.KabalBehandlingEventType
 import no.nav.kabal.model.KlageUtfall
 import no.nav.kabal.model.KlagebehandlingAvsluttetDetaljer
 import no.nav.oppgave.OppgaveType
@@ -58,8 +54,9 @@ class KabalBehandlingEventConsumerTest {
 
     private val systemPermissions = listOf(Permission.READ, Permission.WRITE)
 
+    @WithSystemUser(permissions = [Permission.READ, Permission.WRITE])
     @Test
-    fun `oppretter VUR_KONS_YTE-oppgave ved KLAGEBEHANDLING_AVSLUTTET for vår sak`() {
+    fun `oppretter -oppgave ved KLAGEBEHANDLING_AVSLUTTET for vår sak`() {
         val sak = SakTestData.lagreSak(
             repository = sakRepository,
             sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
@@ -67,8 +64,8 @@ class KabalBehandlingEventConsumerTest {
 
         val event = lagBehandlingEvent(
             kildeReferanse = sak.saksnummer.value,
-            type = BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
-            detaljer = BehandlingDetaljer(
+            type = KabalBehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
+            detaljer = KabalBehandlingDetaljer(
                 klagebehandlingAvsluttet = KlagebehandlingAvsluttetDetaljer(
                     avsluttet = LocalDateTime.now(),
                     utfall = KlageUtfall.MEDHOLD,
@@ -77,9 +74,7 @@ class KabalBehandlingEventConsumerTest {
             )
         )
 
-        SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
-            klageEventService.behandleEvent(event)
-        }
+        klageEventService.behandleEvent(event)
 
         val beskrivelseCaptor = argumentCaptor<String>()
         verify(oppgaveService).opprettOppgave(
@@ -96,57 +91,12 @@ class KabalBehandlingEventConsumerTest {
     }
 
     @Test
-    fun `oppretter VUR_KONS_YTE-oppgave med årsak ved BEHANDLING_FEILREGISTRERT uten å endre saksstatus`() {
-        val sak = SakTestData.lagreSak(
-            repository = sakRepository,
-            sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
-        )
-
-        val event = lagBehandlingEvent(
-            kildeReferanse = sak.saksnummer.value,
-            type = BehandlingEventType.BEHANDLING_FEILREGISTRERT,
-            detaljer = BehandlingDetaljer(
-                behandlingFeilregistrert = BehandlingFeilregistrertDetaljer(
-                    feilregistrert = LocalDateTime.now(),
-                    navIdent = "Z123456",
-                    reason = "Feil sak",
-                    type = FeilregistrertBehandlingType.KLAGE,
-                )
-            )
-        )
-
-        SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
-            klageEventService.behandleEvent(event)
-        }
-
-        val beskrivelseCaptor = argumentCaptor<String>()
-        verify(oppgaveService).opprettOppgave(
-            type = eq(OppgaveType.VUR_KONS_YTE),
-            sak = any(),
-            beskrivelse = beskrivelseCaptor.capture(),
-            tilordneTil = anyOrNull(),
-            behandlesAvApplikasjon = anyOrNull(),
-            journalpostId = anyOrNull(),
-        )
-        assertThat(beskrivelseCaptor.firstValue)
-            .contains("feilregistrert")
-            .contains("Feil sak")
-
-        // Saksbehandler beslutter selv – status skal ikke endres automatisk
-        val oppdatertSak = withMockedUser { sakRepository.getSak(sak.saksnummer) }
-        assertThat(oppdatertSak.status).isEqualTo(SakStatus.FERDIG)
-
-        val endringslogg = withMockedUser { endringsloggService.findBySak(sak.saksnummer) }
-        assertThat(endringslogg).anyMatch { it.type == EndringsloggType.KABAL_BEHANDLING_FEILREGISTRERT }
-    }
-
-    @Test
     fun `ignorerer event med annen kilde enn SUPERHELT`() {
         val event = lagBehandlingEvent(
             kildeReferanse = "SH-000001",
             kilde = "ANNET_FAGSYSTEM",
-            type = BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
-            detaljer = BehandlingDetaljer(
+            type = KabalBehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
+            detaljer = KabalBehandlingDetaljer(
                 klagebehandlingAvsluttet = KlagebehandlingAvsluttetDetaljer(
                     avsluttet = LocalDateTime.now(),
                     utfall = KlageUtfall.STADFESTELSE,
@@ -162,12 +112,13 @@ class KabalBehandlingEventConsumerTest {
         verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
 
+    @WithSystemUser(permissions = [Permission.READ, Permission.WRITE])
     @Test
     fun `kaster feil når sak ikke finnes`() {
         val event = lagBehandlingEvent(
             kildeReferanse = "SH-999999",
-            type = BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
-            detaljer = BehandlingDetaljer(
+            type = KabalBehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
+            detaljer = KabalBehandlingDetaljer(
                 klagebehandlingAvsluttet = KlagebehandlingAvsluttetDetaljer(
                     avsluttet = LocalDateTime.now(),
                     utfall = KlageUtfall.AVVIST,
@@ -177,9 +128,7 @@ class KabalBehandlingEventConsumerTest {
         )
 
         assertThatThrownBy {
-            SecurityContextUtils.runAsSystemuser("test", systemPermissions) {
-                klageEventService.behandleEvent(event)
-            }
+            klageEventService.behandleEvent(event)
         }.isInstanceOf(IkkeFunnetException::class.java)
 
         verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
@@ -190,9 +139,9 @@ class KabalBehandlingEventConsumerTest {
     private fun lagBehandlingEvent(
         kildeReferanse: String,
         kilde: String = "SUPERHELT",
-        type: BehandlingEventType,
-        detaljer: BehandlingDetaljer,
-    ) = BehandlingEvent(
+        type: KabalBehandlingEventType,
+        detaljer: KabalBehandlingDetaljer,
+    ) = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = kilde,

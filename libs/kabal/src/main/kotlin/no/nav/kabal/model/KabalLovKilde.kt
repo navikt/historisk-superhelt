@@ -5,7 +5,7 @@ package no.nav.kabal.model
  * Hentet fra:
  * https://github.com/navikt/klage-kodeverk/blob/main/src/main/kotlin/no/nav/klage/kodeverk/hjemmel/LovKilde.kt
  */
-enum class LovKilde(val id: String, val navn: String, val beskrivelse: String) {
+enum class KabalLovKilde(val id: String, val navn: String, val beskrivelse: String) {
     FOLKETRYGDLOVEN("1", "Folketrygdloven", "Ftrl"),
     FORSKRIFT_OM_HJELPEMIDLER_MM("3", "Forskrift om hjelpemidler mm.", "Forskrift om stønad til hjelpemidler mv."),
     FORSKRIFT_OM_ORTOPEDISKE_HJELPEMIDLER_MM("4", "Forskrift om ortopediske hjelpemidler mm.", "Forskrift om dekning av utgifter til proteser mv."),

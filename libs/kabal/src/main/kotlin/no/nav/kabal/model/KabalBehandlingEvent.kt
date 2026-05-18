@@ -7,7 +7,7 @@ import java.util.UUID
  * Kafka-melding fra Kabal på topic behandling-events.v1.
  * Schema: https://github.com/navikt/kabal-api/blob/main/docs/schema/behandling-events.json
  */
-data class BehandlingEvent(
+data class KabalBehandlingEvent(
     val eventId: UUID,
     /** Ekstern id sendt inn – matcher kildeReferanse i SendSakV4Request */
     val kildeReferanse: String,
@@ -15,11 +15,11 @@ data class BehandlingEvent(
     val kilde: String,
     /** Intern referanse i Kabal */
     val kabalReferanse: String,
-    val type: BehandlingEventType,
-    val detaljer: BehandlingDetaljer,
+    val type: KabalBehandlingEventType,
+    val detaljer: KabalBehandlingDetaljer,
 )
 
-enum class BehandlingEventType {
+enum class KabalBehandlingEventType {
     KLAGEBEHANDLING_AVSLUTTET,
     ANKEBEHANDLING_OPPRETTET,
     ANKEBEHANDLING_AVSLUTTET,
@@ -30,7 +30,7 @@ enum class BehandlingEventType {
     GJENOPPTAKSBEHANDLING_AVSLUTTET,
 }
 
-data class BehandlingDetaljer(
+data class KabalBehandlingDetaljer(
     val klagebehandlingAvsluttet: KlagebehandlingAvsluttetDetaljer? = null,
     val ankebehandlingOpprettet: AnkebehandlingOpprettetDetaljer? = null,
     val ankebehandlingAvsluttet: AnkebehandlingAvsluttetDetaljer? = null,

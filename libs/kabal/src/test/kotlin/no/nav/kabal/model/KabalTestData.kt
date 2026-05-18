@@ -1,6 +1,5 @@
 package no.nav.kabal.model
 
-import no.nav.kabal.model.KabalYtelse
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -76,7 +75,7 @@ object KabalTestData {
 
     fun createSendSakV4RequestWithAllFields(
         type: SakType = SakType.KLAGE,
-        hjemler: List<String> = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id),
+        hjemler: List<String> = listOf(KabalHjemmel.FVL_11.id, KabalHjemmel.FVL_12.id),
         ytelse: KabalYtelse = KabalYtelse.HEL_HEL
     ): SendSakV4Request {
         return SendSakV4Request(

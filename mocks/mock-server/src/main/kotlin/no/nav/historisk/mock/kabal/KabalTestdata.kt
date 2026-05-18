@@ -2,21 +2,21 @@ package no.nav.historisk.mock.kabal
 
 import net.datafaker.Faker
 import no.nav.kabal.model.AnkeITrygderettenbehandlingOpprettetDetaljer
+import no.nav.kabal.model.AnkeUtfall
 import no.nav.kabal.model.AnkebehandlingAvsluttetDetaljer
 import no.nav.kabal.model.AnkebehandlingOpprettetDetaljer
-import no.nav.kabal.model.AnkeUtfall
-import no.nav.kabal.model.BehandlingDetaljer
 import no.nav.kabal.model.BehandlingEtterTrygderettenOpphevetAvsluttetDetaljer
-import no.nav.kabal.model.BehandlingEvent
-import no.nav.kabal.model.BehandlingEventType
 import no.nav.kabal.model.BehandlingFeilregistrertDetaljer
 import no.nav.kabal.model.FeilregistrertBehandlingType
-import no.nav.kabal.model.GjenopptaksbehandlingAvsluttetDetaljer
 import no.nav.kabal.model.GjenopptaksUtfall
+import no.nav.kabal.model.GjenopptaksbehandlingAvsluttetDetaljer
+import no.nav.kabal.model.KabalBehandlingDetaljer
+import no.nav.kabal.model.KabalBehandlingEvent
+import no.nav.kabal.model.KabalBehandlingEventType
 import no.nav.kabal.model.KlageUtfall
 import no.nav.kabal.model.KlagebehandlingAvsluttetDetaljer
-import no.nav.kabal.model.OmgjoeringskravbehandlingAvsluttetDetaljer
 import no.nav.kabal.model.OmgjoeringskravUtfall
+import no.nav.kabal.model.OmgjoeringskravbehandlingAvsluttetDetaljer
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -27,13 +27,13 @@ object KabalTestdata {
     fun lagKlagebehandlingAvsluttetEvent(
         kildeReferanse: String,
         utfall: KlageUtfall = KlageUtfall.entries.random(),
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.KLAGEBEHANDLING_AVSLUTTET,
+        detaljer = KabalBehandlingDetaljer(
             klagebehandlingAvsluttet = KlagebehandlingAvsluttetDetaljer(
                 avsluttet = LocalDateTime.now(),
                 utfall = utfall,
@@ -47,13 +47,13 @@ object KabalTestdata {
 
     fun lagAnkebehandlingOpprettetEvent(
         kildeReferanse: String,
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.ANKEBEHANDLING_OPPRETTET,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.ANKEBEHANDLING_OPPRETTET,
+        detaljer = KabalBehandlingDetaljer(
             ankebehandlingOpprettet = AnkebehandlingOpprettetDetaljer(
                 mottattKlageinstans = LocalDateTime.now(),
             )
@@ -63,13 +63,13 @@ object KabalTestdata {
     fun lagAnkebehandlingAvsluttetEvent(
         kildeReferanse: String,
         utfall: AnkeUtfall = AnkeUtfall.entries.random(),
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.ANKEBEHANDLING_AVSLUTTET,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.ANKEBEHANDLING_AVSLUTTET,
+        detaljer = KabalBehandlingDetaljer(
             ankebehandlingAvsluttet = AnkebehandlingAvsluttetDetaljer(
                 avsluttet = LocalDateTime.now(),
                 utfall = utfall,
@@ -82,13 +82,13 @@ object KabalTestdata {
 
     fun lagAnkeITrygderettenOpprettetEvent(
         kildeReferanse: String,
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET,
+        detaljer = KabalBehandlingDetaljer(
             ankeITrygderettenbehandlingOpprettet = AnkeITrygderettenbehandlingOpprettetDetaljer(
                 sendtTilTrygderetten = LocalDateTime.now(),
             )
@@ -100,13 +100,13 @@ object KabalTestdata {
         type: FeilregistrertBehandlingType = FeilregistrertBehandlingType.KLAGE,
         navIdent: String = "Z999999",
         reason: String = "Feilregistrert under testing",
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.BEHANDLING_FEILREGISTRERT,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.BEHANDLING_FEILREGISTRERT,
+        detaljer = KabalBehandlingDetaljer(
             behandlingFeilregistrert = BehandlingFeilregistrertDetaljer(
                 feilregistrert = LocalDateTime.now(),
                 navIdent = navIdent,
@@ -119,13 +119,13 @@ object KabalTestdata {
     fun lagBehandlingEtterTrygderettenOpphevetAvsluttetEvent(
         kildeReferanse: String,
         utfall: KlageUtfall = KlageUtfall.entries.random(),
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET,
+        detaljer = KabalBehandlingDetaljer(
             behandlingEtterTrygderettenOpphevetAvsluttet = BehandlingEtterTrygderettenOpphevetAvsluttetDetaljer(
                 avsluttet = LocalDateTime.now(),
                 utfall = utfall,
@@ -139,13 +139,13 @@ object KabalTestdata {
     fun lagOmgjoeringskravbehandlingAvsluttetEvent(
         kildeReferanse: String,
         utfall: OmgjoeringskravUtfall = OmgjoeringskravUtfall.entries.random(),
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.OMGJOERINGSKRAVBEHANDLING_AVSLUTTET,
+        detaljer = KabalBehandlingDetaljer(
             omgjoeringskravbehandlingAvsluttet = OmgjoeringskravbehandlingAvsluttetDetaljer(
                 avsluttet = LocalDateTime.now(),
                 utfall = utfall,
@@ -159,13 +159,13 @@ object KabalTestdata {
     fun lagGjenopptaksbehandlingAvsluttetEvent(
         kildeReferanse: String,
         utfall: GjenopptaksUtfall = GjenopptaksUtfall.entries.random(),
-    ): BehandlingEvent = BehandlingEvent(
+    ): KabalBehandlingEvent = KabalBehandlingEvent(
         eventId = UUID.randomUUID(),
         kildeReferanse = kildeReferanse,
         kilde = "SUPERHELT",
         kabalReferanse = UUID.randomUUID().toString(),
-        type = BehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET,
-        detaljer = BehandlingDetaljer(
+        type = KabalBehandlingEventType.GJENOPPTAKSBEHANDLING_AVSLUTTET,
+        detaljer = KabalBehandlingDetaljer(
             gjenopptaksbehandlingAvsluttet = GjenopptaksbehandlingAvsluttetDetaljer(
                 avsluttet = LocalDateTime.now(),
                 utfall = utfall,
