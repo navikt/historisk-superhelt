@@ -1,6 +1,16 @@
 import { getWebInstrumentations, initializeFaro } from "@grafana/faro-web-sdk";
 import type { AnyRouter } from "@tanstack/react-router";
 
+export function inneholderPersonnummer(tekst: string): boolean {
+    return /(?:^|[^\d])\d{11}(?:$|[^\d])/.test(tekst);
+}
+
+export function genererSideId(router: AnyRouter, pathname: string): string {
+    const matched = router.matchRoutes(pathname, {});
+    const lastMatch = matched.at(-1);
+    return lastMatch?.fullPath ?? pathname;
+}
+
 export function initialiserFaro(router: AnyRouter) {
     try {
         initializeFaro({
@@ -11,25 +21,20 @@ export function initialiserFaro(router: AnyRouter) {
             app: {
                 name: "superhelt",
                 namespace: "historisk",
-                version: import.meta.env.COMMIT_SHA,
             },
             instrumentations: [...getWebInstrumentations()],
             beforeSend: (item) => {
                 const payload = JSON.stringify(item);
+
                 /* Sjekk for 11-sifrede tall som ikke er en del av et lengre tall, 
                 kan være personnummer, og fjern hele item hvis det finnes. */
-                if (/(?<!\d)\d{11}(?!\d)/.test(payload)) {
-                    return null;
-                }
-                return item;
+                return inneholderPersonnummer(payload) ? null : item;
             },
             pageTracking: {
                 generatePageId: (location) => {
                     /* grupperer dynamiske url-er basert på routeren,
                     slik at feks. /person/123 og /person/456 blir /person/{personid} */
-                    const matched = router.matchRoutes(location.pathname, {});
-                    const lastMatch = matched.at(-1);
-                    return lastMatch?.fullPath ?? location.pathname;
+                    return genererSideId(router, location.pathname);
                 },
             },
         });
