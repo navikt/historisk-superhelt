@@ -117,15 +117,15 @@ export function SakshistorikkKombinertTabell({
                     rel="noopener noreferrer"
                     icon={<ExternalLinkIcon aria-hidden />}
                     iconPosition="right"
-                    aria-label="Åpne sak"
+                    aria-label="Vis sak"
                 >
-                    Åpne sak
+                    Vis sak
                 </Button>
             );
         }
         return (
             <Button size="small" variant="secondary" as={Link} to={`/sak/${sak.saksnummer}`}>
-                Åpne sak
+                Vis sak
             </Button>
         );
     };
