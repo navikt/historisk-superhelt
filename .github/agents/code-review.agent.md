@@ -1,7 +1,6 @@
 ---
 name: code-review-agent
 description: Kodegjennomgang for Nav-applikasjoner — finner feil, sikkerhetsproblemer og brudd på Nav-konvensjoner
-model: GPT-5.3-Codex
 tools:
   - execute
   - read

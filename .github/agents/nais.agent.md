@@ -1,7 +1,6 @@
 ---
 name: nais-agent
 description: Nais-deployment, GCP-ressurser, Kafka-topics og feilsøking på plattformen
-model: GPT-5.3-Codex
 tools:
   - execute
   - read
