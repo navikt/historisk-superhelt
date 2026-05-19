@@ -47,9 +47,7 @@ function SakLayout() {
         apiFinnJournalposterForBrukerOptions(sak.maskertPersonIdent, sak.tema),
     );
 
-    const andreJournalposter = brukerJournalposter.filter(
-        (jp) => !journalposter.some((jp2) => jp2.journalpostId === jp.journalpostId),
-    );
+    const andreJournalposter = brukerJournalposter;
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
     const antallAndreDokumenter = andreJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 

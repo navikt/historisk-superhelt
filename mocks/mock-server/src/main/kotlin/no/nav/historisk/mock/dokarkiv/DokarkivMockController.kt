@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
@@ -44,6 +45,7 @@ class DokarkivController(
                 .copy(
                     journalstatus = JournalStatus.JOURNALFOERT,
                     tittel = req.tittel,
+                    datoOpprettet = LocalDateTime.now(),
                     sak = req.sak.let {
                         JournalpostSak(
                             fagsakId = it.fagsakId.value,
