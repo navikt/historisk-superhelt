@@ -9,5 +9,8 @@
         "drift": "883603b8-6d77-4192-b416-e5db3ddb115f",
         "tema-hel": "ba17a97e-a78d-459c-800f-c2d145c30c23",
         "tema-hje": "ebd6a437-788c-4cce-b029-d0455dac0150"
+    },
+    "database": {
+        "tier": "db-f1-micro"
     }
 }
