@@ -3,8 +3,8 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import "@navikt/ds-css";
 import "~/global.css";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { initialiserFaro } from "./common/telemetry.utils";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
@@ -27,12 +27,7 @@ const router = createRouter({
     scrollRestoration: true,
 });
 
-// Register the router instance for type safety
-declare module "@tanstack/react-router" {
-    interface Register {
-        router: typeof router;
-    }
-}
+initialiserFaro(router);
 
 // Render the app
 const rootElement = document.getElementById("root")!;
