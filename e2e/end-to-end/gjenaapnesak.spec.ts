@@ -37,7 +37,7 @@ test.describe("Gjenåpne sak", () => {
             const row = page.locator("tr", {
                 has: page.locator(`text=Søknad om superkrefter`),
             });
-            await row.getByRole("button", { name: "Åpne sak" }).click();
+            await row.getByRole("button", { name: "Vis sak" }).click();
         });
 
         await test.step("Gjenåpne sak", async () => {

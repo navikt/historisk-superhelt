@@ -47,11 +47,8 @@ function SakLayout() {
         apiFinnJournalposterForBrukerOptions(sak.maskertPersonIdent, sak.tema),
     );
 
-    const andreJournalposter = brukerJournalposter.filter(
-        (jp) => !journalposter.some((jp2) => jp2.journalpostId === jp.journalpostId),
-    );
     const antallDokumenter = journalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
-    const antallAndreDokumenter = andreJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
+    const antallAndreDokumenter = brukerJournalposter.reduce((sum, jp) => sum + (jp.dokumenter?.length ?? 0), 0);
 
     const { result: sakHistorikkResult, label: sakshistorikkLabel } = useSakshistorikk({
         maskertPersonIdent: sak.maskertPersonIdent,
@@ -166,7 +163,7 @@ function SakLayout() {
                                 </Box>
                             </Tabs.Panel>
                             <Tabs.Panel value="andre-dokumenter">
-                                <DokumentTabell dokumenter={andreJournalposter} />
+                                <DokumentTabell dokumenter={brukerJournalposter} />
                             </Tabs.Panel>
                         </Tabs>
                     </DeltVisning.Kolonne>

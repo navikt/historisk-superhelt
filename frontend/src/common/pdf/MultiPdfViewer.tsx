@@ -28,7 +28,7 @@ const getTitle = (d: JournalpostDokument, index: number) => {
     if (dokumentTittel === journalpostTittel) {
         return `${dokumentTittel}`;
     }
-    return `${d.journalpostTittel} - ${d.dokumentTittel}`;
+    return `${d.dokumentTittel} - ${d.journalpostTittel}`;
 };
 
 export function MultiPdfViewer({ journalPoster, laster }: Props) {
