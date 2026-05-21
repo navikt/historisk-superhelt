@@ -9,6 +9,8 @@ import no.nav.historisk.superhelt.sak.SakStatus
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSystemUser
+import no.nav.kabal.model.AnkeITrygderettenUtfall
+import no.nav.kabal.model.AnkeITrygderettenbehandlingOpprettetDetaljer
 import no.nav.kabal.model.KabalBehandlingDetaljer
 import no.nav.kabal.model.KabalBehandlingEvent
 import no.nav.kabal.model.KabalBehandlingEventType
@@ -173,6 +175,33 @@ class KabalBehandlingEventConsumerTest {
     }
 
     // ── helpers ───────────────────────────────────────────────────────────────
+
+    @WithSystemUser(permissions = [Permission.READ, Permission.WRITE])
+    @Test
+    fun `should not create oppgave for ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET even when utfall has lagOppgave true`() {
+        // DELVIS_MEDHOLD har lagOppgave=true, men ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET
+        // skal ikke trigge opprettelse av oppgave via utfall-logikken (skalLageOppgaveVedUtfall=false).
+        // Uten guard ville dette krasjet fordi utfallOgAvsluttet() returnerer null for OPPRETTET-events.
+        val sak = SakTestData.lagreSak(
+            repository = sakRepository,
+            sak = SakTestData.sakMedStatus(sakStatus = SakStatus.FERDIG)
+        )
+
+        val event = lagBehandlingEvent(
+            kildeReferanse = sak.saksnummer.value,
+            type = KabalBehandlingEventType.ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET,
+            detaljer = KabalBehandlingDetaljer(
+                ankeITrygderettenbehandlingOpprettet = AnkeITrygderettenbehandlingOpprettetDetaljer(
+                    sendtTilTrygderetten = LocalDateTime.now(),
+                    utfall = AnkeITrygderettenUtfall.DELVIS_MEDHOLD,
+                )
+            )
+        )
+
+        klageEventService.behandleEvent(event)
+
+        verify(oppgaveService, never()).opprettOppgave(any(), any(), anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
+    }
 
     private fun lagBehandlingEvent(
         kildeReferanse: String,

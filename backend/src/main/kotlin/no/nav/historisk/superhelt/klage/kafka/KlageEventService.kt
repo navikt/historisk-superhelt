@@ -46,7 +46,7 @@ class KlageEventService(
             event.eventId, event.type, event.utfall, saksnummer
         )
         val utfall = event.utfall
-        if (utfall?.lagOppgave == true){
+        if (event.type.skalLageOppgaveVedUtfall && utfall?.lagOppgave == true) {
             opprettOppgaveMedDetaljer(event, sak)
         }
 

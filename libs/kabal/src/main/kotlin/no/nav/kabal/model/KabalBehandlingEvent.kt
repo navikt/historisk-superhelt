@@ -19,16 +19,6 @@ data class KabalBehandlingEvent(
     val detaljer: KabalBehandlingDetaljer,
 )
 
-enum class KabalBehandlingEventType {
-    KLAGEBEHANDLING_AVSLUTTET,
-    ANKEBEHANDLING_OPPRETTET,
-    ANKEBEHANDLING_AVSLUTTET,
-    ANKE_I_TRYGDERETTENBEHANDLING_OPPRETTET,
-    BEHANDLING_FEILREGISTRERT,
-    BEHANDLING_ETTER_TRYGDERETTEN_OPPHEVET_AVSLUTTET,
-    OMGJOERINGSKRAVBEHANDLING_AVSLUTTET,
-    GJENOPPTAKSBEHANDLING_AVSLUTTET,
-}
 
 data class KabalBehandlingDetaljer(
     val klagebehandlingAvsluttet: KlagebehandlingAvsluttetDetaljer? = null,
