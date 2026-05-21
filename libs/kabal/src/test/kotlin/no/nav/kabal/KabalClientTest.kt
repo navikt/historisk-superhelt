@@ -1,6 +1,18 @@
 package no.nav.kabal
 
-import no.nav.kabal.model.*
+import no.nav.kabal.model.Adresse
+import no.nav.kabal.model.Fagsak
+import no.nav.kabal.model.Ident
+import no.nav.kabal.model.IdentType
+import no.nav.kabal.model.JournalpostType
+import no.nav.kabal.model.KabalHjemmel
+import no.nav.kabal.model.KabalYtelse
+import no.nav.kabal.model.Klager
+import no.nav.kabal.model.Prosessfullmektig
+import no.nav.kabal.model.SakType
+import no.nav.kabal.model.SakenGjelder
+import no.nav.kabal.model.SendSakV4Request
+import no.nav.kabal.model.TilknyttetJournalpost
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -9,7 +21,10 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers.*
+import org.springframework.test.web.client.match.MockRestRequestMatchers.content
+import org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath
+import org.springframework.test.web.client.match.MockRestRequestMatchers.method
+import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
@@ -77,7 +92,7 @@ class KabalClientTest {
             fagsak = Fagsak("123456", "SUPERHELT"),
             kildeReferanse = "ref-123",
             dvhReferanse = "dvh-456",
-            hjemler = listOf(Hjemmel.FVL_11.id, Hjemmel.FVL_12.id),
+            hjemler = listOf(KabalHjemmel.FVL_11.id, KabalHjemmel.FVL_12.id),
             forrigeBehandlendeEnhet = "NAV Oslo",
             tilknyttedeJournalposter = listOf(
                 TilknyttetJournalpost(JournalpostType.BRUKERS_KLAGE, "jp-123"),

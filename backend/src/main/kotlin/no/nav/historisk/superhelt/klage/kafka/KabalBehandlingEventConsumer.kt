@@ -4,7 +4,7 @@ import no.nav.common.consts.APP_NAVN
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
 import no.nav.historisk.superhelt.infrastruktur.authentication.SecurityContextUtils
 import no.nav.historisk.superhelt.klage.config.KabalProperties
-import no.nav.kabal.model.BehandlingEvent
+import no.nav.kabal.model.KabalBehandlingEvent
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
@@ -29,7 +29,7 @@ class KabalBehandlingEventConsumer(
     )
     fun onBehandlingEvent(record: ConsumerRecord<String, String>) {
         val event = try {
-            objectMapper.readValue(record.value(), BehandlingEvent::class.java)
+            objectMapper.readValue(record.value(), KabalBehandlingEvent::class.java)
         } catch (e: Exception) {
             logger.error("Klarte ikke deserialisere BehandlingEvent fra Kabal. key={}", record.key(), e)
             return

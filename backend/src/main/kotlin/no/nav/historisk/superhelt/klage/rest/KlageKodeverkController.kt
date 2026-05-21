@@ -3,7 +3,7 @@ package no.nav.historisk.superhelt.klage.rest
 import io.swagger.v3.oas.annotations.Operation
 import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.klage.kabalYtelse
-import no.nav.kabal.model.Hjemmel
+import no.nav.kabal.model.KabalHjemmel
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,7 +17,7 @@ class KlageKodeverkController {
     @Operation(operationId = "getKodeverkHjemler")
     @GetMapping("hjemler")
     fun hjemlerKodeverk(): List<HjemmelDto> {
-        return Hjemmel.entries.map { it.toDto() }
+        return KabalHjemmel.entries.map { it.toDto() }
     }
 
     /**
@@ -26,11 +26,11 @@ class KlageKodeverkController {
     @Operation(operationId = "getKodeverkHjemlerForStonad")
     @GetMapping("hjemler/{stonadsType}")
     fun hjemlerForStonad(@PathVariable stonadsType: StonadsType): List<HjemmelDto> {
-        return Hjemmel.forYtelse(stonadsType.kabalYtelse).map { it.toDto() }
+        return KabalHjemmel.forYtelse(stonadsType.kabalYtelse).map { it.toDto() }
     }
 
     /** Konverterer et Hjemmel-enum til DTO for REST-responsen. */
-    private fun Hjemmel.toDto() = HjemmelDto(
+    private fun KabalHjemmel.toDto() = HjemmelDto(
         id = id,
         lovKildeNavn = lovKilde.navn,
         lovKildeBeskrivelse = lovKilde.beskrivelse,

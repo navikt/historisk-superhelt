@@ -9,9 +9,9 @@ import no.nav.historisk.superhelt.klage.rest.SendKlageRequestDto
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.kabal.KabalClient
 import no.nav.kabal.model.Fagsak
-import no.nav.kabal.model.Hjemmel
 import no.nav.kabal.model.Ident
 import no.nav.kabal.model.IdentType
+import no.nav.kabal.model.KabalHjemmel
 import no.nav.kabal.model.Klager
 import no.nav.kabal.model.SakType
 import no.nav.kabal.model.SakenGjelder
@@ -27,7 +27,7 @@ class KlageService(private val kabalClient: KabalClient, private val navAnsattSe
     @PreAuthorize("hasAuthority('WRITE')")
     fun sendKlage(sak: Sak, request: SendKlageRequestDto) {
         val hjemmel = try {
-            Hjemmel.fromId(request.hjemmelId)
+            KabalHjemmel.fromId(request.hjemmelId)
         } catch (e: IllegalArgumentException) {
             throw ValideringException(
                 reason = "Ugyldig hjemmelId '${request.hjemmelId}'. Bruk GET /api/sak/kodeverk/hjemler for gyldige verdier.",
