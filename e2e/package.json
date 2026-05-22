@@ -21,9 +21,9 @@
     "license": "ISC",
     "devDependencies": {
         "@axe-core/playwright": "^4.11.3",
-        "@biomejs/biome": "2.4.14",
+        "@biomejs/biome": "2.4.15",
         "@faker-js/faker": "^10.4.0",
-        "@playwright/test": "^1.59.1",
+        "@playwright/test": "^1.60.0",
         "date-fns": "^4.1.0",
         "dotenv": "^17.4.2",
         "uuid": "^14.0.0"
