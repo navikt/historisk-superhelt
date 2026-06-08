@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.klage.rest
 import no.nav.common.types.Enhetsnummer
 import no.nav.entraproxy.Enhet
 import no.nav.entraproxy.EntraProxyClient
+import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.infrastruktur.authentication.Permission
@@ -107,7 +108,7 @@ class KlageControllerTest {
             val datoKlageMottatt = LocalDate.now().minusDays(10)
             val sak = SakTestData.lagreSak(
                 sakRepository,
-                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG)
+                SakTestData.sakMedUtbetaling().copy(status = SakStatus.FERDIG, type = StonadsType.PARYKK)
             )
 
             assertThat(sendKlage(sak.saksnummer.value, gyldigKlageRequest(datoKlageMottatt)))
