@@ -33,10 +33,10 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Deploy backend til dev-gcp
-        uses: nais/deploy/actions/deploy@e90640a98702d2554350fb35c4d5d242dd8e4346 #v2
+        uses: nais/deploy/actions/deploy@fa8ae01f11325be17c1aa6de23cfe921008e2072 #v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/app/backend.yaml
@@ -54,10 +54,10 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Deploy backend til prod-gcp
-        uses: nais/deploy/actions/deploy@e90640a98702d2554350fb35c4d5d242dd8e4346 #v2
+        uses: nais/deploy/actions/deploy@fa8ae01f11325be17c1aa6de23cfe921008e2072 #v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: .nais/app/backend.yaml
