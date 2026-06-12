@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: nais/deploy/actions/deploy@fa8ae01f11325be17c1aa6de23cfe921008e2072 #v2
+      - uses: nais/deploy/actions/deploy@8a6fb62e73f837af6287d5db84a46ea96aa6c30d #v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/app/topics.yaml
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: nais/deploy/actions/deploy@fa8ae01f11325be17c1aa6de23cfe921008e2072 #v2
+      - uses: nais/deploy/actions/deploy@8a6fb62e73f837af6287d5db84a46ea96aa6c30d #v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: .nais/app/topics.yaml
