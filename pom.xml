@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.6</version>
+        <version>4.1.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>no.nav.historisk</groupId>
@@ -27,27 +27,6 @@
         <module>mocks</module>
         <module>backend</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Pin Tomcat embed modules to 11.0.22 to fix CVE-2026-41293 (CRITICAL) from spring-boot-starter-webmvc -->
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>11.0.22</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>11.0.22</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>11.0.22</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>

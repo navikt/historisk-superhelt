@@ -19,7 +19,7 @@ const val temaPrefix = "TEMA_"
 
     override fun convert(jwt: Jwt): JwtAuthenticationToken {
         val authorities = mapGroupsToAuthorities(jwt)
-        val navIdent = extractNavIdent(jwt)
+        val navIdent = extractNavIdent(jwt) ?: "ukjent"
 
         return JwtAuthenticationToken(jwt, authorities, navIdent)
     }
