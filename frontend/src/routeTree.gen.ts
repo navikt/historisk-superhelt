@@ -10,24 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SakSaksnummerRouteRouteImport } from './routes/sak/$saksnummer/route'
 import { Route as OppgaveOppgaveidRouteRouteImport } from './routes/oppgave/$oppgaveid/route'
-import { Route as SakSaksnummerIndexRouteImport } from './routes/sak/$saksnummer/index'
-import { Route as PersonPersonidIndexRouteImport } from './routes/person/$personid/index'
+import { Route as SakSaksnummerRouteRouteImport } from './routes/sak/$saksnummer/route'
 import { Route as OppgaveOppgaveidIndexRouteImport } from './routes/oppgave/$oppgaveid/index'
-import { Route as SakSaksnummerVedtaksbrevbrukerRouteImport } from './routes/sak/$saksnummer/vedtaksbrevbruker'
-import { Route as SakSaksnummerOppsummeringRouteImport } from './routes/sak/$saksnummer/oppsummering'
-import { Route as SakSaksnummerOpplysningerRouteImport } from './routes/sak/$saksnummer/opplysninger'
 import { Route as OppgaveOppgaveidJournalforRouteImport } from './routes/oppgave/$oppgaveid/journalfor'
+import { Route as PersonPersonidIndexRouteImport } from './routes/person/$personid/index'
+import { Route as SakSaksnummerIndexRouteImport } from './routes/sak/$saksnummer/index'
+import { Route as SakSaksnummerOpplysningerRouteImport } from './routes/sak/$saksnummer/opplysninger'
+import { Route as SakSaksnummerOppsummeringRouteImport } from './routes/sak/$saksnummer/oppsummering'
+import { Route as SakSaksnummerVedtaksbrevbrukerRouteImport } from './routes/sak/$saksnummer/vedtaksbrevbruker'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SakSaksnummerRouteRoute = SakSaksnummerRouteRouteImport.update({
-  id: '/sak/$saksnummer',
-  path: '/sak/$saksnummer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OppgaveOppgaveidRouteRoute = OppgaveOppgaveidRouteRouteImport.update({
@@ -35,14 +30,9 @@ const OppgaveOppgaveidRouteRoute = OppgaveOppgaveidRouteRouteImport.update({
   path: '/oppgave/$oppgaveid',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SakSaksnummerIndexRoute = SakSaksnummerIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SakSaksnummerRouteRoute,
-} as any)
-const PersonPersonidIndexRoute = PersonPersonidIndexRouteImport.update({
-  id: '/person/$personid/',
-  path: '/person/$personid/',
+const SakSaksnummerRouteRoute = SakSaksnummerRouteRouteImport.update({
+  id: '/sak/$saksnummer',
+  path: '/sak/$saksnummer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OppgaveOppgaveidIndexRoute = OppgaveOppgaveidIndexRouteImport.update({
@@ -50,10 +40,26 @@ const OppgaveOppgaveidIndexRoute = OppgaveOppgaveidIndexRouteImport.update({
   path: '/',
   getParentRoute: () => OppgaveOppgaveidRouteRoute,
 } as any)
-const SakSaksnummerVedtaksbrevbrukerRoute =
-  SakSaksnummerVedtaksbrevbrukerRouteImport.update({
-    id: '/vedtaksbrevbruker',
-    path: '/vedtaksbrevbruker',
+const OppgaveOppgaveidJournalforRoute =
+  OppgaveOppgaveidJournalforRouteImport.update({
+    id: '/journalfor',
+    path: '/journalfor',
+    getParentRoute: () => OppgaveOppgaveidRouteRoute,
+  } as any)
+const PersonPersonidIndexRoute = PersonPersonidIndexRouteImport.update({
+  id: '/person/$personid/',
+  path: '/person/$personid/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SakSaksnummerIndexRoute = SakSaksnummerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SakSaksnummerRouteRoute,
+} as any)
+const SakSaksnummerOpplysningerRoute =
+  SakSaksnummerOpplysningerRouteImport.update({
+    id: '/opplysninger',
+    path: '/opplysninger',
     getParentRoute: () => SakSaksnummerRouteRoute,
   } as any)
 const SakSaksnummerOppsummeringRoute =
@@ -62,17 +68,11 @@ const SakSaksnummerOppsummeringRoute =
     path: '/oppsummering',
     getParentRoute: () => SakSaksnummerRouteRoute,
   } as any)
-const SakSaksnummerOpplysningerRoute =
-  SakSaksnummerOpplysningerRouteImport.update({
-    id: '/opplysninger',
-    path: '/opplysninger',
+const SakSaksnummerVedtaksbrevbrukerRoute =
+  SakSaksnummerVedtaksbrevbrukerRouteImport.update({
+    id: '/vedtaksbrevbruker',
+    path: '/vedtaksbrevbruker',
     getParentRoute: () => SakSaksnummerRouteRoute,
-  } as any)
-const OppgaveOppgaveidJournalforRoute =
-  OppgaveOppgaveidJournalforRouteImport.update({
-    id: '/journalfor',
-    path: '/journalfor',
-    getParentRoute: () => OppgaveOppgaveidRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -163,13 +163,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sak/$saksnummer': {
-      id: '/sak/$saksnummer'
-      path: '/sak/$saksnummer'
-      fullPath: '/sak/$saksnummer'
-      preLoaderRoute: typeof SakSaksnummerRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/oppgave/$oppgaveid': {
       id: '/oppgave/$oppgaveid'
       path: '/oppgave/$oppgaveid'
@@ -177,18 +170,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OppgaveOppgaveidRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sak/$saksnummer/': {
-      id: '/sak/$saksnummer/'
-      path: '/'
-      fullPath: '/sak/$saksnummer/'
-      preLoaderRoute: typeof SakSaksnummerIndexRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
-    }
-    '/person/$personid/': {
-      id: '/person/$personid/'
-      path: '/person/$personid'
-      fullPath: '/person/$personid/'
-      preLoaderRoute: typeof PersonPersonidIndexRouteImport
+    '/sak/$saksnummer': {
+      id: '/sak/$saksnummer'
+      path: '/sak/$saksnummer'
+      fullPath: '/sak/$saksnummer'
+      preLoaderRoute: typeof SakSaksnummerRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/oppgave/$oppgaveid/': {
@@ -198,18 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OppgaveOppgaveidIndexRouteImport
       parentRoute: typeof OppgaveOppgaveidRouteRoute
     }
-    '/sak/$saksnummer/vedtaksbrevbruker': {
-      id: '/sak/$saksnummer/vedtaksbrevbruker'
-      path: '/vedtaksbrevbruker'
-      fullPath: '/sak/$saksnummer/vedtaksbrevbruker'
-      preLoaderRoute: typeof SakSaksnummerVedtaksbrevbrukerRouteImport
-      parentRoute: typeof SakSaksnummerRouteRoute
+    '/oppgave/$oppgaveid/journalfor': {
+      id: '/oppgave/$oppgaveid/journalfor'
+      path: '/journalfor'
+      fullPath: '/oppgave/$oppgaveid/journalfor'
+      preLoaderRoute: typeof OppgaveOppgaveidJournalforRouteImport
+      parentRoute: typeof OppgaveOppgaveidRouteRoute
     }
-    '/sak/$saksnummer/oppsummering': {
-      id: '/sak/$saksnummer/oppsummering'
-      path: '/oppsummering'
-      fullPath: '/sak/$saksnummer/oppsummering'
-      preLoaderRoute: typeof SakSaksnummerOppsummeringRouteImport
+    '/person/$personid/': {
+      id: '/person/$personid/'
+      path: '/person/$personid'
+      fullPath: '/person/$personid/'
+      preLoaderRoute: typeof PersonPersonidIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sak/$saksnummer/': {
+      id: '/sak/$saksnummer/'
+      path: '/'
+      fullPath: '/sak/$saksnummer/'
+      preLoaderRoute: typeof SakSaksnummerIndexRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
     '/sak/$saksnummer/opplysninger': {
@@ -219,12 +212,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SakSaksnummerOpplysningerRouteImport
       parentRoute: typeof SakSaksnummerRouteRoute
     }
-    '/oppgave/$oppgaveid/journalfor': {
-      id: '/oppgave/$oppgaveid/journalfor'
-      path: '/journalfor'
-      fullPath: '/oppgave/$oppgaveid/journalfor'
-      preLoaderRoute: typeof OppgaveOppgaveidJournalforRouteImport
-      parentRoute: typeof OppgaveOppgaveidRouteRoute
+    '/sak/$saksnummer/oppsummering': {
+      id: '/sak/$saksnummer/oppsummering'
+      path: '/oppsummering'
+      fullPath: '/sak/$saksnummer/oppsummering'
+      preLoaderRoute: typeof SakSaksnummerOppsummeringRouteImport
+      parentRoute: typeof SakSaksnummerRouteRoute
+    }
+    '/sak/$saksnummer/vedtaksbrevbruker': {
+      id: '/sak/$saksnummer/vedtaksbrevbruker'
+      path: '/vedtaksbrevbruker'
+      fullPath: '/sak/$saksnummer/vedtaksbrevbruker'
+      preLoaderRoute: typeof SakSaksnummerVedtaksbrevbrukerRouteImport
+      parentRoute: typeof SakSaksnummerRouteRoute
     }
   }
 }
