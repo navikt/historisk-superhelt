@@ -25,11 +25,11 @@ runs:
         cache-dependency-path: |
           frontend/pnpm-lock.yaml
           e2e/pnpm-lock.yaml
-        registry-url: "https://npm.pkg.github.com"
+#        registry-url: "https://npm.pkg.github.com"
 
     - name: Installere node moduler
       shell: bash
       working-directory: ./frontend
       run: pnpm install --frozen-lockfile
-      env:
-        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
+#      env:
+#        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
