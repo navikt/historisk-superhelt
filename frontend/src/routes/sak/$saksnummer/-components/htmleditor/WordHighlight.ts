@@ -1,9 +1,9 @@
-import { Extension } from "@tiptap/core";
-
-/* 
+/*
 markerte elementer i Word har ofte inline-styles for bakgrunnsfarge, 
 som vi ønsker å konvertere til <mark> for å beholde markeringen når det limes inn i editoren
 */
+import { Extension } from "@tiptap/react";
+
 export const WordHighlight = Extension.create({
     name: "wordHighlight",
     transformPastedHTML(html: string) {
