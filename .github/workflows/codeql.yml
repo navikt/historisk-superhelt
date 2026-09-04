@@ -124,7 +124,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version: '24'
-          registry-url: "https://npm.pkg.github.com"
+#          registry-url: "https://npm.pkg.github.com"
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4
@@ -135,8 +135,8 @@ jobs:
 
       - name: Build artifacts
         run: mvn test-compile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4

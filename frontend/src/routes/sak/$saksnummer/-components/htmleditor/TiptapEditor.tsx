@@ -1,10 +1,10 @@
 import { Bleed, Box, ErrorMessage, HStack, InlineMessage, Loader } from "@navikt/ds-react";
 import Highlight from "@tiptap/extension-highlight";
-import StarterKit from "@tiptap/starter-kit";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo, useRef } from "react";
-import styles from "./TiptapEditor.module.css";
 import { MenuBar } from "./MenuBar";
+import styles from "./TiptapEditor.module.css";
 import { WordHighlight } from "./WordHighlight";
 
 const extensions = [StarterKit, Highlight, WordHighlight];
@@ -39,9 +39,8 @@ function TiptapEditor({
 
     // Oppdater editor-innhold når initialContentHtml endres
     useEffect(() => {
-        if (editor && initialContentHtml !== editor.getHTML()) {
-            editor.commands.setContent(initialContentHtml, { emitUpdate: false });
-        }
+        if (!editor) return;
+        editor.chain().setContent(initialContentHtml, { emitUpdate: false });
     }, [editor, initialContentHtml]);
 
     const providerValue = useMemo(() => ({ editor }), [editor]);
