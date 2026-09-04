@@ -1,4 +1,4 @@
-import { Extension } from "@tiptap/core";
+import { Extension } from "@tiptap/react";
 
 /* 
 markerte elementer i Word har ofte inline-styles for bakgrunnsfarge, 
