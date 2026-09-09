@@ -20,6 +20,8 @@
         <java.version>25</java.version>
         <kotlin.version>2.3.20</kotlin.version>
         <springdoc.version>3.1.0</springdoc.version>
+        <!--  midlertidig fix for CVE-2026-65182 -->
+        <tomcat.version>11.0.25</tomcat.version>
     </properties>
     <modules>
         <module>libs</module>
