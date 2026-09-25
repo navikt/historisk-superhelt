@@ -24,7 +24,7 @@ jobs:
 
       # Verify: curl -s https://api.github.com/repos/nais/docker-build-push/git/refs/tags/v0 | jq -r '.object.sha'
       - name: Bygg og push docker image til GAR
-        uses: nais/docker-build-push@0e73849f69ff260ee27597553c0a7848ca4e9795 #v0
+        uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a #v0
         id: docker-build-push
         with:
           team: historisk
@@ -42,7 +42,7 @@ jobs:
 
       # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
       - name: Deploy pdfgen til dev-gcp
-        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6 #v2
+        uses: nais/deploy/actions/deploy@1de80da70ad26556ecdc5964a8b7ec3bbed98120 #v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: .nais/app/pdfgen.yaml
@@ -62,7 +62,7 @@ jobs:
 
       # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
       - name: Deploy pdfgen til prod-gcp
-        uses: nais/deploy/actions/deploy@027a91857992525139798892f2804b0ca21f4af6 #v2
+        uses: nais/deploy/actions/deploy@1de80da70ad26556ecdc5964a8b7ec3bbed98120 #v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: .nais/app/pdfgen.yaml
