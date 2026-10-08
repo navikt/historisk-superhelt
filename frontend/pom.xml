@@ -14,8 +14,7 @@
 
     <properties>
         <!-- Siste lts version -->
-        <node.version>v24.11.1</node.version>
-        <pnpm.version>v10.33.0</pnpm.version>
+        <node.version>v26.11.1</node.version>
     </properties>
     <build>
         <plugins>
@@ -44,37 +43,36 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.15.4</version>
+                <version>2.0.2</version>
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
-                    <pnpmVersion>${pnpm.version}</pnpmVersion>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node and pnpm</id>
+                        <id>install-node-and-corepack</id>
                         <goals>
-                            <goal>install-node-and-pnpm</goal>
+                            <goal>install-node-and-corepack</goal>
                         </goals>
                         <phase>initialize</phase>
                     </execution>
                     <execution>
                         <id>pnpm install</id>
                         <goals>
-                            <goal>pnpm</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
-                            <arguments>install --frozen-lockfile</arguments>
+                            <arguments>pnpm install --frozen-lockfile</arguments>
                         </configuration>
                     </execution>
                     <execution>
                         <id>pnpm test</id>
                         <goals>
-                            <goal>pnpm</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <phase>test</phase>
                         <configuration>
-                            <arguments>test</arguments>
+                            <arguments>pnpm test</arguments>
                             <environmentVariables>
                                 <CI>true</CI>
                             </environmentVariables>
@@ -83,11 +81,11 @@
                     <execution>
                         <id>pnpm build</id>
                         <goals>
-                            <goal>pnpm</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <phase>compile</phase>
                         <configuration>
-                            <arguments>run build</arguments>
+                            <arguments>pnpm run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
