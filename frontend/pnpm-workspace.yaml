@@ -1,1 +1,4 @@
+allowBuilds:
+  esbuild: true
+  lefthook: true
 minimumReleaseAge: 10080 # 10080 minutter = 7 dager
