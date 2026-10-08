@@ -17,28 +17,8 @@
     </properties>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>dist</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
+            <!-- Bygg med pnpm. Forusetter at pnpm og node finnes i aktivt shell  -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -50,7 +30,7 @@
                 <executions>
                     <execution>
                         <id>pnpm-install</id>
-                        <phase>generate-resources</phase>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -89,6 +69,29 @@
                             <environmentVariables>
                                 <CI>true</CI>
                             </environmentVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Kopier frontend build til jarfil så vi kan bruke den som maven avhengighet i frontend -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>dist</directory>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>

@@ -121,10 +121,6 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version: '26'
-          registry-url: "https://npm.pkg.github.com"
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
@@ -134,7 +130,7 @@ jobs:
           dependency-caching: false
 
       - name: Build artifacts
-        run: mvn test-compile
+        run: mvn --batch-mode test-compile -Dexec.skip=true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
