@@ -11,12 +11,15 @@ interface Props {
 
 export default function SakErrorSummary({ sak }: Props) {
     const { data: sakStatus } = useSuspenseQuery(getSakStatusOptions({ path: { saksnummer: sak.saksnummer } }));
+    // Todo flytte funksjonalitet til backend
+    const sakFerdig = sak.status === "FERDIG";
+    const sakHenlagt = sak.vedtaksResultat === "HENLAGT";
     const utbetalingError = sakStatus.utbetalingStatus === "FEILET";
-    const vedtakBrevError = sakStatus.brevStatus !== "SENDT";
+    const vedtakBrevError = !sakHenlagt && sakStatus.brevStatus !== "SENDT";
 
     const hasError = utbetalingError || vedtakBrevError;
 
-    if (!hasError) {
+    if (!sakFerdig || !hasError) {
         return null;
     }
 
