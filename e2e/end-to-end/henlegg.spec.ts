@@ -31,7 +31,9 @@ test.describe("Henlegg sak", () => {
             await aarsakInput.click();
             await aarsakInput.fill("Fordi fordi fordi");
 
-            await page.getByRole("button", { name: "Henlegg" }).click();
+            const henleggButton = page.getByRole("button", { name: "Henlegg" });
+            await henleggButton.click();
+            await expect(henleggButton).toBeHidden();
         });
 
         await test.step("Sjekk at sak er henlagt", async () => {

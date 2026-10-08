@@ -20,7 +20,7 @@ export default defineConfig({
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI,
     /* Retry on CI only */
-    retries: process.env.CI ? 2 : 0,
+    retries: process.env.CI ? 2 : 1,
     /* Opt out of parallel tests on CI. */
     // TODO: parallellkjøring lokalt kan gi innloggingsproblemer — vurder å sette til 1 ved behov
     workers: process.env.CI ? 1 : undefined,

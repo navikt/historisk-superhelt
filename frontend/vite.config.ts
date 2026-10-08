@@ -17,8 +17,8 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            "~": path.resolve(__dirname, "src"),
-            "@generated": path.resolve(__dirname, "generated"),
+            "~": path.resolve(import.meta.dirname, "src"),
+            "@generated": path.resolve(import.meta.dirname, "generated"),
         },
     },
     test: {
