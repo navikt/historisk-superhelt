@@ -85,7 +85,7 @@
                         </goals>
                         <phase>compile</phase>
                         <configuration>
-                            <arguments>pnpm run build</arguments>
+                            <arguments>pnpm build</arguments>
                         </configuration>
                     </execution>
                 </executions>
