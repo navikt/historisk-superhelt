@@ -1,0 +1,175 @@
+name: PR-beskrivelse
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+      - labeled
+
+concurrency:
+  group: pr-beskrivelse-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: "read"
+
+env:
+  # Tom verdi lar Copilot CLI velge sin egen default-modell. Det er med vilje:
+  # et hardkodet modellnavn råtner når modeller utfases (gpt-4.1 gjorde nettopp
+  # det). Sett et navn her kun hvis du trenger en bestemt modell.
+  MODELL: ""
+  MAKS_DIFF_TEGN: "60000"
+
+jobs:
+  beskriv_endringer:
+    # Fork-PR-er får et read-only token og kan ikke oppdatere beskrivelsen.
+    # Etikett-hendelser er kun relevante for etiketten "oppdater-beskrivelse",
+    # som lar en utvikler be om et nytt AI-sammendrag på forespørsel.
+    if: >-
+      github.actor != 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      (github.event.action != 'labeled' ||
+       github.event.label.name == 'oppdater-beskrivelse')
+    name: "Oppdater PR-beskrivelse med endringsoversikt"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      pull-requests: "write"
+      copilot-requests: "write"
+    env:
+      # Modultabellen bygges av rene git-kommandoer og oppdateres derfor på hver
+      # push. AI-prosaen koster en Copilot-request og en npm-installasjon, så den
+      # kjøres kun når beskrivelsen faktisk trenger nytt innhold. Prosaen fra
+      # forrige kjøring beholdes i mellomtiden.
+      GENERER_PROSA: >-
+        ${{ github.event.pull_request.draft == false &&
+            github.event.action != 'synchronize' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Sett arbeidskatalog
+        # runner-konteksten er kun tilgjengelig på steg-nivå, så variabelen
+        # eksporteres via GITHUB_ENV for å kunne brukes i resten av jobben.
+        run: echo "ARBEIDSKATALOG=$RUNNER_TEMP/pr-beskrivelse" >> "$GITHUB_ENV"
+
+      - name: Kjør tester for hjelpeskriptene
+        run: |
+          bash .github/scripts/test-pr-endringsoversikt.sh
+          python3 .github/scripts/test_oppdater_pr_beskrivelse.py
+
+      - name: Bygg endringsoversikt
+        run: |
+          git fetch origin "$BASE_BRANCH" --quiet
+          BASE_SHA="$(git merge-base "origin/$BASE_BRANCH" HEAD)"
+          echo "Sammenligner $BASE_SHA..${{ github.event.pull_request.head.sha }}"
+          .github/scripts/pr-endringsoversikt.sh \
+            "$BASE_SHA" \
+            "${{ github.event.pull_request.head.sha }}" \
+            "$ARBEIDSKATALOG"
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+
+      - name: Lag prompt
+        if: env.GENERER_PROSA == 'true'
+        run: |
+          {
+            cat "$SYSTEMPROMPT_FIL"
+            echo
+            echo "Tittel på pull requesten: $PR_TITTEL"
+            echo
+            echo "Berørte moduler:"
+            cat "$ARBEIDSKATALOG/tabell.md"
+            echo
+            echo "Diff:"
+            echo '```diff'
+            cat "$ARBEIDSKATALOG/diff.txt"
+            echo '```'
+          } > "$ARBEIDSKATALOG/prompt.txt"
+        env:
+          PR_TITTEL: ${{ github.event.pull_request.title }}
+          SYSTEMPROMPT_FIL: .github/prompts/pr-beskrivelse-system.txt
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: env.GENERER_PROSA == 'true'
+        with:
+          node-version: '24'
+
+      - name: Installer Copilot CLI
+        if: env.GENERER_PROSA == 'true'
+        run: npm install -g @github/copilot
+
+      - name: Generer sammendrag
+        id: sammendrag
+        if: env.GENERER_PROSA == 'true'
+        # Kaller Copilot CLI direkte framfor actions/ai-inference, fordi den
+        # actionen skriver CLI-ens stderr til core.debug og dermed skjuler
+        # årsaken til feil i vanlige kjøringer. Flaggene er de samme som
+        # actionen bruker internt.
+        #
+        # Et feilende sammendrag skal ikke blokkere PR-en; tabellen legges inn
+        # uansett i steget under.
+        continue-on-error: true
+        run: |
+          SAMMENDRAG_FIL="$ARBEIDSKATALOG/rasammendrag.md"
+          STDERR_FIL="$ARBEIDSKATALOG/copilot-stderr.txt"
+
+          MODELL_ARGUMENT=()
+          if [[ -n "$MODELL" ]]; then
+            MODELL_ARGUMENT=(--model "$MODELL")
+          fi
+
+          if copilot \
+            -p "$(cat "$ARBEIDSKATALOG/prompt.txt")" \
+            -s \
+            --no-ask-user \
+            "${MODELL_ARGUMENT[@]}" \
+            > "$SAMMENDRAG_FIL" 2> "$STDERR_FIL"; then
+            echo "sammendrag-fil=$SAMMENDRAG_FIL" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Copilot CLI feilet. stderr følger:"
+            cat "$STDERR_FIL"
+            exit 1
+          fi
+        env:
+          # Copilot CLI autentiseres med det innebygde Actions-tokenet, som
+          # krever permissionen copilot-requests: write. Bruken billes til
+          # organisasjonen, så ingen PAT eller lagret secret er nødvendig.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Oppdater PR-beskrivelse
+        run: |
+          SAMMENDRAG_ARGUMENT=()
+          if [[ -n "$SAMMENDRAG_FIL" && -s "$SAMMENDRAG_FIL" ]]; then
+            # Fjern eventuelle markører modellen måtte ha funnet på å gjenta,
+            # slik at blokkstrukturen i beskrivelsen ikke ødelegges.
+            sed -e 's/<!-- pr-beskrivelse:start -->//g' \
+                -e 's/<!-- pr-beskrivelse:slutt -->//g' \
+                "$SAMMENDRAG_FIL" > "$ARBEIDSKATALOG/sammendrag.md"
+            SAMMENDRAG_ARGUMENT=(--sammendrag-fil "$ARBEIDSKATALOG/sammendrag.md")
+          else
+            if [[ "$GENERER_PROSA" == "true" ]]; then
+              echo "::warning::Sammendrag ble ikke generert. Beholder eventuelt tidligere sammendrag."
+            else
+              echo "::notice::Hopper over AI-sammendrag for denne hendelsen. Tabellen oppdateres, og et eventuelt tidligere sammendrag beholdes."
+            fi
+          fi
+
+          gh pr view "$PR_NUMMER" --json body --jq '.body' \
+            > "$ARBEIDSKATALOG/beskrivelse.md"
+
+          python3 .github/scripts/oppdater_pr_beskrivelse.py \
+            --beskrivelse-fil "$ARBEIDSKATALOG/beskrivelse.md" \
+            --tabell-fil "$ARBEIDSKATALOG/tabell.md" \
+            "${SAMMENDRAG_ARGUMENT[@]}" \
+            > "$ARBEIDSKATALOG/ny-beskrivelse.md"
+
+          gh pr edit "$PR_NUMMER" --body-file "$ARBEIDSKATALOG/ny-beskrivelse.md"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMMER: ${{ github.event.pull_request.number }}
+          SAMMENDRAG_FIL: ${{ steps.sammendrag.outputs.sammendrag-fil }}
