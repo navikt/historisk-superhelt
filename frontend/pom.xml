@@ -46,6 +46,7 @@
                 <version>2.0.2</version>
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
+                    <corepackVersion>0.34.2</corepackVersion>
                 </configuration>
                 <executions>
                     <execution>
