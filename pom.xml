@@ -16,12 +16,20 @@
     <description>Saksbehandling og Utbetaling På Enkle Regler</description>
 
     <properties>
-        <revision>0.0.1-SNAPSHOT</revision>
+        <revision>1.0.0-SNAPSHOT</revision>
         <java.version>25</java.version>
-        <kotlin.version>2.3.20</kotlin.version>
         <springdoc.version>3.1.1</springdoc.version>
+
+        <!-- Diverse overstyringer av spring boot avhengigheter. Bør fjernes når spring boot kommer med nye versjoner -->
         <!--  midlertidig fix for CVE-2026-65182 -->
-        <tomcat.version>11.0.25</tomcat.version>
+        <tomcat.version>11.0.26</tomcat.version>
+        <!--  midlertidig fix for CVE-2026-19880 -->
+        <logback.version>1.6.5</logback.version>
+        <!--  midlertidig fix for diverse jackson feil -->
+        <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
+        <jackson-bom.version>3.1.7</jackson-bom.version>
+        <!--  midlertidig fix for diverse kafka feil -->
+        <kafka.version>4.2.2</kafka.version>
     </properties>
     <modules>
         <module>libs</module>
