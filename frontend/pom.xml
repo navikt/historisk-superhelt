@@ -13,8 +13,7 @@
     <description>React frontend for supoer</description>
 
     <properties>
-        <!-- Siste lts version -->
-        <node.version>v26.11.1</node.version>
+        <skipTests>false</skipTests>
     </properties>
     <build>
         <plugins>
@@ -41,57 +40,59 @@
             </plugin>
 
             <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>2.0.2</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.4</version>
                 <configuration>
-                    <nodeVersion>${node.version}</nodeVersion>
-                    <corepackVersion>0.34.2</corepackVersion>
+                    <executable>pnpm</executable>
+                    <workingDirectory>${project.basedir}</workingDirectory>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install-node-and-corepack</id>
+                        <id>pnpm-install</id>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>install-node-and-corepack</goal>
+                            <goal>exec</goal>
                         </goals>
-                        <phase>initialize</phase>
-                    </execution>
-                    <execution>
-                        <id>pnpm install</id>
-                        <goals>
-                            <goal>corepack</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
                         <configuration>
-                            <arguments>pnpm install --frozen-lockfile</arguments>
+                            <arguments>
+                                <argument>install</argument>
+                                <argument>--frozen-lockfile</argument>
+                            </arguments>
                         </configuration>
                     </execution>
+
                     <execution>
-                        <id>pnpm test</id>
+                        <id>pnpm-build</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>corepack</goal>
+                            <goal>exec</goal>
                         </goals>
-                        <phase>test</phase>
                         <configuration>
-                            <arguments>pnpm test</arguments>
+                            <arguments>
+                                <argument>build</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>pnpm-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                            <arguments>
+                                <argument>test</argument>
+                            </arguments>
                             <environmentVariables>
                                 <CI>true</CI>
                             </environmentVariables>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>pnpm build</id>
-                        <goals>
-                            <goal>corepack</goal>
-                        </goals>
-                        <phase>compile</phase>
-                        <configuration>
-                            <arguments>pnpm build</arguments>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
