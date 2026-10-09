@@ -183,7 +183,7 @@ gh extension install github/gh-aw --pin v0.89.21
 gh aw compile pr-summary --strict --action-mode release --action-tag v0.89.21
 ```
 
-Review og versjoner endringene i `pr-summary.lock.yml` og `.github/aw/actions-lock.json` i samme PR. Dependabot ignorerer `github/gh-aw-actions/*` fordi disse actionene skal oppdateres sammen med kompilatoren.
+Review og versjoner endringene i `pr-summary.lock.yml` og `.github/aw/actions-lock.json` i samme PR. Dependabot ignorerer `github/gh-aw/*` fordi disse actionene skal oppdateres sammen med kompilatoren.
 
 Workflow-sammendraget viser testresultater for Maven, Vitest og Playwright, med navn på feilede tester. JUnit XML-rapporter og Playwright HTML-rapporten kan lastes ned som artifacts i tre dager. Rapporteringen kjører også når tester feiler og krever ingen ekstra GitHub-tilganger.
 

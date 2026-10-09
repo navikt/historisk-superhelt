@@ -35,7 +35,7 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      - dependency-name: "github/gh-aw-actions/*"
+      - dependency-name: "github/gh-aw/*"
     groups:
       github:
         patterns:
