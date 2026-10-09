@@ -20,7 +20,7 @@ on:
 
 jobs:
   frontend:
-    name: Frontend (${{ matrix.check }})
+    name: Sjekk frontend (${{ matrix.check }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -29,11 +29,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - check: Biome
+          - check: biome
             command: pnpm run biome
-          - check: Vitest
+          - check: test
             command: pnpm test
-          - check: TypeScript
+          - check: typecheck
             command: pnpm run typecheck
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
