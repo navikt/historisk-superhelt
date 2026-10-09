@@ -14,7 +14,6 @@ permissions:
 checkout: false
 engine:
   id: copilot
-  version: "1.0.94"
   bare: true
 timeout-minutes: 10
 max-turns: 30
