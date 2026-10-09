@@ -34,6 +34,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "github/gh-aw-actions/*"
     groups:
       github:
         patterns:
