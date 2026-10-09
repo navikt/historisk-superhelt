@@ -32,7 +32,7 @@ jobs:
           - check: biome
             command: pnpm run biome
           - check: test
-            command: pnpm test
+            command: pnpm test --reporter=default --reporter=junit --outputFile=test-results/junit.xml
           - check: typecheck
             command: pnpm run typecheck
     steps:
@@ -46,10 +46,34 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: ${{ matrix.check }}
+        id: frontend-check
         working-directory: ./frontend
         env:
           CI: true
         run: ${{ matrix.command }}
+
+      - name: Rapporter frontend-tester
+        if: ${{ always() && matrix.check == 'test' }}
+        uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
+        with:
+          check_name: Frontend (Vitest)
+          report_paths: frontend/test-results/junit.xml
+          annotate_only: true
+          skip_annotations: true
+          job_summary: true
+          detailed_summary: true
+          fail_on_failure: true
+          fail_on_parse_error: true
+          require_tests: ${{ steps.frontend-check.outcome == 'success' }}
+
+      - name: Last opp frontend-testresultater
+        if: ${{ always() && matrix.check == 'test' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: frontend-test-results
+          path: frontend/test-results/junit.xml
+          if-no-files-found: warn
+          retention-days: 3
 
   build:
     name: "Bygg backend"
@@ -64,9 +88,37 @@ jobs:
       - uses: ./.github/actions/setup
 
       - name: Build artifacts
+        id: maven
         run: mvn --batch-mode clean verify
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Rapporter Maven-tester
+        if: always()
+        uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
+        with:
+          check_name: Backend og libs (Maven)
+          report_paths: |
+            **/target/surefire-reports/TEST-*.xml
+            **/target/failsafe-reports/TEST-*.xml
+          annotate_only: true
+          skip_annotations: true
+          job_summary: true
+          detailed_summary: true
+          fail_on_failure: true
+          fail_on_parse_error: true
+          require_tests: ${{ steps.maven.outcome == 'success' }}
+
+      - name: Last opp Maven-testresultater
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: maven-test-results
+          path: |
+            **/target/surefire-reports/TEST-*.xml
+            **/target/failsafe-reports/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 3
 
       - name: Bygg Docker-image uten publisering
         if: ${{ !inputs.publish-image }}

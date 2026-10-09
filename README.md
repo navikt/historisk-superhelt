@@ -165,6 +165,8 @@ Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.
 
 Pull requests kjører bygg, tester, E2E og CodeQL. Biome, Vitest og TypeScript-typekontroll kjører i hver sin jobb parallelt med backend-bygget. Alle jobbene må lykkes før deploy. Docker-imaget bygges, men publiseres ikke på PR-er. Main og manuell dev-deploy bygger og publiserer egne images til GAR. Main deployer til dev etter bygg og E2E, deretter til prod.
 
+Workflow-sammendraget viser testresultater for Maven, Vitest og Playwright, med navn på feilede tester. JUnit XML-rapporter og Playwright HTML-rapporten kan lastes ned som artifacts i tre dager. Rapporteringen kjører også når tester feiler og krever ingen ekstra GitHub-tilganger.
+
 Pågående main-kjøringer fullfører; bare nyeste ventende kjøring beholdes. Manuell og automatisk backend-deploy til dev bruker samme concurrency-gruppe. Endringer i felles Nais-vars trigger også pdfgen- og Kafka-workflowene.
 
 
