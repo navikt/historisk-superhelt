@@ -1,14 +1,14 @@
-import type {JournalforDokument, Journalpost, OppgaveMedSak, Person} from "@generated";
-import {Radio, RadioGroup, VStack} from "@navikt/ds-react";
-import {useRef, useState} from "react";
-import {Card} from "~/common/card/Card";
-import type {StonadType} from "~/common/sak/sak.types";
-import {hasSize, isValidFnr} from "~/common/validation.utils";
-import {AnnetInnholdCombobox} from "./AnnetInnholdCombobox";
-import {DokumentTittelFelt} from "./DokumentTittelFelt";
-import {EksisterendeSakAction} from "./EksisterendeSakAction";
-import {NySakAction} from "./NySakAction";
-import {type PersonValue, PersonVelger} from "./PersonVelger";
+import type { JournalforDokument, Journalpost, OppgaveMedSak, Person } from "@generated";
+import { Radio, RadioGroup, VStack } from "@navikt/ds-react";
+import { useRef, useState } from "react";
+import { Card } from "~/common/card/Card";
+import type { StonadType } from "~/common/sak/sak.types";
+import { hasSize, isValidFnr } from "~/common/validation.utils";
+import { AnnetInnholdCombobox } from "./AnnetInnholdCombobox";
+import { DokumentTittelFelt } from "./DokumentTittelFelt";
+import { EksisterendeSakAction } from "./EksisterendeSakAction";
+import { NySakAction } from "./NySakAction";
+import { type PersonValue, PersonVelger } from "./PersonVelger";
 
 type SakModus = "ny" | "eksisterende";
 

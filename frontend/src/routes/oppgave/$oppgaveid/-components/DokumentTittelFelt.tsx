@@ -1,4 +1,4 @@
-import {TextField, VStack} from "@navikt/ds-react";
+import { TextField, VStack } from "@navikt/ds-react";
 
 interface Props {
     value?: string | null;

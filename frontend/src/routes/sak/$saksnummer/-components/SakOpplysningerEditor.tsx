@@ -69,6 +69,7 @@ export default function SakOpplysningerEditor({ sak }: Props) {
 
     const klasseKoder = stonadstype(updateSakData.type)?.klasseKoder ?? [];
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Fungerer foreløpig ikke med useDebounce, så vi ignorerer denne regelen her
     useEffect(() => {
         // Lagrer etter siste endring
         if (debouncedSak && hasChanged) {

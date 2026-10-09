@@ -1,10 +1,10 @@
-import type {Sak} from "@generated";
-import {Box, Detail, Heading, HGrid, HStack, Tag, VStack} from "@navikt/ds-react";
-import {isoTilLokal} from "~/common/dato.utils";
-import {isSakFerdig, utbetalingText, vedtakAvslatt} from "~/common/sak/sak.utils";
-import {useSakVedtakNavn} from "~/common/sak/useSakVedtakNavn";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
-import {formatertValuta} from "~/common/string.utils";
+import type { Sak } from "@generated";
+import { Box, Detail, Heading, HGrid, HStack, Tag, VStack } from "@navikt/ds-react";
+import { isoTilLokal } from "~/common/dato.utils";
+import { isSakFerdig, utbetalingText, vedtakAvslatt } from "~/common/sak/sak.utils";
+import { useSakVedtakNavn } from "~/common/sak/useSakVedtakNavn";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
+import { formatertValuta } from "~/common/string.utils";
 import styles from "~/routes/sak/$saksnummer/-components/SakOppsummering.module.css";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 

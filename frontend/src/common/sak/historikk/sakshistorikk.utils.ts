@@ -1,5 +1,5 @@
-import type {InfotrygdHistorikk, Sak} from "@generated";
-import type {HistorikkRad} from "./sakshistorikk.types";
+import type { InfotrygdHistorikk, Sak } from "@generated";
+import type { HistorikkRad } from "./sakshistorikk.types";
 
 export function sakTilHistorikkRad(sak: Sak, kategoriNavn: string): HistorikkRad {
     return {
@@ -20,7 +20,7 @@ export function infotrygdTilHistorikkRad(h: InfotrygdHistorikk, index: number): 
         id: `infotrygd-${index}`,
         kategori: h.kontonavn,
         beskrivelse: h.tekst ?? undefined,
-        dato: h.dato ?? h.fom?? undefined,
+        dato: h.dato ?? h.fom ?? undefined,
         belop: h.belop != null ? Number(h.belop) : undefined,
         strekedGjennom: false,
     };

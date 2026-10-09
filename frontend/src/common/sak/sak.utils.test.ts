@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import type { Sak } from "@generated";
+import { describe, expect, it } from "vitest";
 import { isSakFerdig, utbetalingText, vedtakAvslatt } from "./sak.utils";
 
 function createSak(overrides: Partial<Sak> = {}): Sak {

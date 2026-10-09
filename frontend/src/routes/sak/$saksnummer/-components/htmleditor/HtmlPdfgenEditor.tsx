@@ -1,5 +1,6 @@
 import "./aksel-brev.css";
 import { ReadMore, VStack } from "@navikt/ds-react";
+import { Card } from "~/common/card/Card";
 import { FixedHtml } from "~/routes/sak/$saksnummer/-components/htmleditor/FixedHtml";
 import {
     finnRedigerbartInnhold,
@@ -8,7 +9,6 @@ import {
     utledPrefiksInnhold,
 } from "~/routes/sak/$saksnummer/-components/htmleditor/pdfgen.utils";
 import TiptapEditor from "~/routes/sak/$saksnummer/-components/htmleditor/TiptapEditor";
-import { Card } from "~/common/card/Card";
 
 interface HtmlEditorProps {
     html: string;
