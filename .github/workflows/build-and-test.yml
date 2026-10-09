@@ -117,7 +117,7 @@ jobs:
 
       - name: Bygg og push docker image til GAR
         if: inputs.publish-image
-        uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a #v0
+        uses: nais/docker-build-push@bfe52e3ad6d0e96fd1056a03acb7b619aaffb39d #v0
         id: docker-build-push
         with:
           team: historisk
