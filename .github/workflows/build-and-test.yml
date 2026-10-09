@@ -58,17 +58,15 @@ jobs:
         if: ${{ always() && matrix.check == 'test' }}
         uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
         with:
+          check_name: Frontend (Vitest)
           report_paths: frontend/test-results/junit.xml
-          comment: true
+          comment: ${{ github.event_name == 'pull_request' }}
 
   build:
     name: "Bygg backend"
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      contents: read
-      checks: write
-      pull-requests: write
+    # Arver callerens tilganger, inkludert OIDC bare ved image-publisering.
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
       telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
@@ -86,10 +84,11 @@ jobs:
         if: always()
         uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
         with:
+          check_name: Backend og libs (Maven)
           report_paths: |
             **/target/surefire-reports/TEST-*.xml
             **/target/failsafe-reports/TEST-*.xml
-          comment: true
+          comment: ${{ github.event_name == 'pull_request' }}
 
       - name: Last opp Maven-testresultater
         if: always()

@@ -69,8 +69,9 @@ jobs:
         if: always()
         uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
         with:
+          check_name: E2E (Playwright)
           report_paths: e2e/test-results/junit.xml
-          comment: true
+          comment: ${{ github.event_name == 'pull_request' }}
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

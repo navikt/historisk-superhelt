@@ -17,12 +17,16 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      checks: write
+      pull-requests: write
   e2e:
     uses: ./.github/workflows/e2e.yaml
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
       contents: read
+      checks: write
+      pull-requests: write
   deploy_dev:
     needs:
       - build

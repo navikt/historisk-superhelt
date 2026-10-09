@@ -11,6 +11,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      checks: write
+      pull-requests: write
   deploy_dev:
     needs:
       - build
