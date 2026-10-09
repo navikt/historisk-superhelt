@@ -10,29 +10,28 @@ on:
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
-      packages: write
-      id-token: write
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-        with:
-          node-auth-token: ${{ secrets.READER_TOKEN }}
      
       - name: Add host.docker.internal to /etc/hosts
         run: echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
 
-      - name: Build mock server
-        run: mvn --batch-mode  -pl mocks/mock-server -am -DskipTests verify
+      - name: Build backend and mock server
+        run: mvn --batch-mode -pl backend,mocks/mock-server -am -DskipTests clean package
 
       - name: Start Docker stack
         run: docker compose up --build -d --wait
 
       - name: Start backend
         run: |
-          nohup mvn --batch-mode -pl backend -am -DskipTests -Dspring-boot.run.profiles=dev clean package spring-boot:run  > backend.log 2>&1 &
+          nohup java -jar backend/target/*.jar --spring.profiles.active=dev > backend.log 2>&1 &
           echo $! > backend.pid
 
       - name: Installer node moduler

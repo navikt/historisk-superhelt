@@ -90,8 +90,8 @@ root (Maven multi-module)
 | Verktøy | Versjon |
 |---------|---------|
 | Java | 25 |
-| Node.js | ≥ 24 |
-| pnpm | ≥ 10 |
+| Node.js | ≥ 26 |
+| pnpm | ≥ 12 |
 | Docker | nyeste stabile |
 
 > **Java 25** er påkrevd. Sett `JAVA_HOME` via sdkman (`sdk use java 25-...`) eller tilsvarende.
@@ -160,6 +160,12 @@ Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
 ### Testpersoner
 
 Mock-serveren har forhåndsdefinerte testpersoner. Se [mocks/mock-server/README.md](./mocks/mock-server/README.md) for fullstendig oversikt.
+
+### GitHub Actions
+
+Pull requests kjører bygg, tester, E2E og CodeQL. Biome, Vitest og TypeScript-typekontroll kjører i hver sin jobb parallelt med backend-bygget. Alle jobbene må lykkes før deploy. Docker-imaget bygges, men publiseres ikke på PR-er. Main og manuell dev-deploy bygger og publiserer egne images til GAR. Main deployer til dev etter bygg og E2E, deretter til prod.
+
+Pågående main-kjøringer fullfører; bare nyeste ventende kjøring beholdes. Manuell og automatisk backend-deploy til dev bruker samme concurrency-gruppe. Endringer i felles Nais-vars trigger også pdfgen- og Kafka-workflowene.
 
 
 ### Formatering og linting (frontend)

@@ -8,11 +8,18 @@ on:
       - 'pdfgen/**'
       - '.nais/app/pdfgen.yaml'
       - '.github/workflows/pdfgen.yml'
+      - '.nais/dev.json'
+      - '.nais/prod.json'
+
+concurrency:
+  group: pdfgen-release
+  cancel-in-progress: false
 
 jobs:
   build:
     name: "Bygg pdfgen"
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
       id-token: write
@@ -22,7 +29,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Verify: curl -s https://api.github.com/repos/nais/docker-build-push/git/refs/tags/v0 | jq -r '.object.sha'
       - name: Bygg og push docker image til GAR
         uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a #v0
         id: docker-build-push
@@ -34,13 +40,13 @@ jobs:
     needs: [build]
     name: "Deploy til dev"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
       - name: Deploy pdfgen til dev-gcp
         uses: nais/deploy/actions/deploy@7ad7c2b833e1db74a80954e3ee6bb6ac060a8ae7 #v2
         env:
@@ -54,13 +60,13 @@ jobs:
     needs: [build, deploy_dev]
     name: "Deploy til prod"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Verify: curl -s https://api.github.com/repos/nais/deploy/git/refs/tags/v2 | jq -r '.object.sha'
       - name: Deploy pdfgen til prod-gcp
         uses: nais/deploy/actions/deploy@7ad7c2b833e1db74a80954e3ee6bb6ac060a8ae7 #v2
         env:

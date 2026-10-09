@@ -1,10 +1,15 @@
-name: Build and Test reusable workflow
+name: Bygg, test og pakk image
 on:
   workflow_call:
+    inputs:
+      publish-image:
+        type: boolean
+        default: true
+        description: 'Publiser image til GAR'
     secrets:
       READER_TOKEN:
         required: true
-        description: 'Token with read access to the repository'
+        description: 'Token for npm-registry'
     outputs:
       image:
         description: 'Docker image '
@@ -14,28 +19,61 @@ on:
         value: ${{ jobs.build.outputs.telemetry }}
 
 jobs:
+  frontend:
+    name: Frontend (${{ matrix.check }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - check: Biome
+            command: pnpm run biome
+          - check: Vitest
+            command: pnpm test
+          - check: TypeScript
+            command: pnpm run typecheck
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+
+      - name: Installer frontend-avhengigheter
+        working-directory: ./frontend
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: ${{ matrix.check }}
+        working-directory: ./frontend
+        env:
+          CI: true
+        run: ${{ matrix.command }}
+
   build:
     name: "Bygg backend"
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-      id-token: write
+    timeout-minutes: 30
+    # Kalleren gir OIDC-tilgang bare når imaget skal publiseres.
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
       telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-        with:
-          node-auth-token: ${{ secrets.READER_TOKEN }}
 
       - name: Build artifacts
         run: mvn --batch-mode clean verify
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
+      - name: Bygg Docker-image uten publisering
+        if: ${{ !inputs.publish-image }}
+        run: docker build --tag superhelt:pr ./backend
+
       - name: Bygg og push docker image til GAR
+        if: inputs.publish-image
         uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a #v0
         id: docker-build-push
         with:

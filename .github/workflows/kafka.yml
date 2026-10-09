@@ -7,6 +7,12 @@ on:
     paths:
       - ".nais/app/topics.yaml"
       - ".github/workflows/kafka.yml"
+      - ".nais/dev.json"
+      - ".nais/prod.json"
+
+concurrency:
+  group: kafka-release
+  cancel-in-progress: false
 
 jobs:
   create-kafka-topics-dev:
@@ -15,6 +21,7 @@ jobs:
       id-token: write
     name: Create or update Kafka topics in dev
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: nais/deploy/actions/deploy@7ad7c2b833e1db74a80954e3ee6bb6ac060a8ae7 #v2
@@ -30,6 +37,7 @@ jobs:
       id-token: write
     name: Create or update Kafka topics in prod
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: nais/deploy/actions/deploy@7ad7c2b833e1db74a80954e3ee6bb6ac060a8ae7 #v2

@@ -7,6 +7,7 @@
         "dev": "vite --port 3000",
         "start": "vite --port 3000",
         "build": "vite build && tsc",
+        "typecheck": "tsc --noEmit",
         "serve": "vite preview",
         "test": "vitest run",
         "biome": "biome ci",
