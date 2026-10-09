@@ -32,7 +32,7 @@ jobs:
           - check: biome
             command: pnpm run biome
           - check: test
-            command: pnpm test --reporter=default --reporter=junit --outputFile=test-results/junit.xml
+            command: pnpm run test --reporter=default --reporter=junit --outputFile=test-results/junit.xml
           - check: typecheck
             command: pnpm run typecheck
     steps:
