@@ -66,7 +66,12 @@ jobs:
         run: pnpm playwright:test
 
       - name: Rapporter E2E-tester
-        if: always()
+        if: >-
+          always() &&
+          (github.event_name != 'pull_request' ||
+          (github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.user.login != 'dependabot[bot]' &&
+          github.actor != 'dependabot[bot]'))
         uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
         with:
           check_name: E2E (Playwright)
