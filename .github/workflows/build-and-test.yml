@@ -25,6 +25,8 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      checks: write
+      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
@@ -56,30 +58,17 @@ jobs:
         if: ${{ always() && matrix.check == 'test' }}
         uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
         with:
-          check_name: Frontend (Vitest)
           report_paths: frontend/test-results/junit.xml
-          annotate_only: true
-          skip_annotations: true
-          job_summary: true
-          detailed_summary: true
-          fail_on_failure: true
-          fail_on_parse_error: true
-          require_tests: ${{ steps.frontend-check.outcome == 'success' }}
-
-      - name: Last opp frontend-testresultater
-        if: ${{ always() && matrix.check == 'test' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: frontend-test-results
-          path: frontend/test-results/junit.xml
-          if-no-files-found: warn
-          retention-days: 3
+          comment: true
 
   build:
     name: "Bygg backend"
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Kalleren gir OIDC-tilgang bare når imaget skal publiseres.
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
       telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
@@ -97,17 +86,10 @@ jobs:
         if: always()
         uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
         with:
-          check_name: Backend og libs (Maven)
           report_paths: |
             **/target/surefire-reports/TEST-*.xml
             **/target/failsafe-reports/TEST-*.xml
-          annotate_only: true
-          skip_annotations: true
-          job_summary: true
-          detailed_summary: true
-          fail_on_failure: true
-          fail_on_parse_error: true
-          require_tests: ${{ steps.maven.outcome == 'success' }}
+          comment: true
 
       - name: Last opp Maven-testresultater
         if: always()
