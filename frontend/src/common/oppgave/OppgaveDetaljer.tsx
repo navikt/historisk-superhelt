@@ -1,6 +1,6 @@
-import type {OppgaveMedSak} from "@generated";
-import {BodyLong, BodyShort, Label, List, Tag, VStack} from "@navikt/ds-react";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import type { OppgaveMedSak } from "@generated";
+import { BodyLong, BodyShort, Label, List, Tag, VStack } from "@navikt/ds-react";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 
 export function OppgaveDetaljer({ oppgave }: { oppgave: OppgaveMedSak }) {
     const getStonadsTypeNavn = useStonadsTypeNavn();

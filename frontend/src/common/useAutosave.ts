@@ -8,6 +8,7 @@ export function useAutoSave<T>(value: T, saveFunction: (value: T) => void, delay
     const debouncedValue = useDebounce<T>(value, delay);
     const initialValue = useRef(value);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Fungerer foreløpig ikke med useDebounce, så vi ignorerer denne regelen her
     useEffect(() => {
         if (debouncedValue === initialValue.current) {
             return;

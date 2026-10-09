@@ -1,9 +1,9 @@
-import type {Sak} from "@generated";
-import {findSakerForPersonOptions} from "@generated/@tanstack/react-query.gen";
-import {CheckmarkCircleIcon} from "@navikt/aksel-icons";
-import {Alert, BodyShort, Box, Label, Table} from "@navikt/ds-react";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {useStonadsTypeNavn} from "~/common/sak/useStonadsTypeNavn";
+import type { Sak } from "@generated";
+import { findSakerForPersonOptions } from "@generated/@tanstack/react-query.gen";
+import { CheckmarkCircleIcon } from "@navikt/aksel-icons";
+import { Alert, BodyShort, Box, Label, Table } from "@navikt/ds-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";
 
 interface Props {
@@ -15,16 +15,14 @@ interface Props {
 }
 
 export function EksisterendeSakVelger({ maskertPersonIdent, valgtSaksnummer, error, onVelgSak, readOnly }: Props) {
-    const { data } = useSuspenseQuery(
-        findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }),
-    );
+    const { data } = useSuspenseQuery(findSakerForPersonOptions({ query: { maskertPersonId: maskertPersonIdent } }));
     const getStonadsTypeNavn = useStonadsTypeNavn();
     const sakOppsummering = (sak: Sak) => {
         const stonadsTypeNavn = getStonadsTypeNavn(sak.type);
-        return `${stonadsTypeNavn} - ${sak.beskrivelse??""}`;
-    }
+        return `${stonadsTypeNavn} - ${sak.beskrivelse ?? ""}`;
+    };
 
-    const valgbareSaker = data.filter((sak) => sak.status !== "FEILREGISTRERT" );
+    const valgbareSaker = data.filter((sak) => sak.status !== "FEILREGISTRERT");
 
     if (valgbareSaker.length === 0) {
         return <BodyShort>Ingen åpne saker funnet for denne personen.</BodyShort>;

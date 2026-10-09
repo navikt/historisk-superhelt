@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import type { InfotrygdHistorikk, Sak } from "@generated";
+import { describe, expect, it } from "vitest";
 import { infotrygdTilHistorikkRad, sakTilHistorikkRad } from "./sakshistorikk.utils";
 
 function createSak(overrides: Partial<Sak> = {}): Sak {

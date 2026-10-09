@@ -1,4 +1,3 @@
-import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
     createMemoryHistory,
@@ -7,6 +6,7 @@ import {
     createRouter,
     RouterProvider,
 } from "@tanstack/react-router";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ProcessMenu } from "./ProcessMenu";
 import { StepType } from "./StepType";

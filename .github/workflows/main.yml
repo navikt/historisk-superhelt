@@ -5,31 +5,39 @@ on:
     branches:
       - main
 
+concurrency:
+  group: main-release
+  cancel-in-progress: false
+
 jobs:
   build:
     uses: ./.github/workflows/build-and-test.yml
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
-      packages: write
       contents: read
       id-token: write
+      checks: write
+      pull-requests: write
   e2e:
     uses: ./.github/workflows/e2e.yaml
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
-      packages: write
       contents: read
-      id-token: write
+      checks: write
+      pull-requests: write
   deploy_dev:
     needs:
       - build
       - e2e
     name: "Deploy til dev"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: deploy-backend-dev
+      cancel-in-progress: false
     permissions:
-      packages: read
       contents: read
       id-token: write
     steps:
@@ -49,8 +57,8 @@ jobs:
       - deploy_dev
     name: "Deploy til prod"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
-      packages: read
       contents: read
       id-token: write
     steps:

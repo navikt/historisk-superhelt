@@ -25,7 +25,9 @@ export default defineConfig({
     // TODO: parallellkjøring lokalt kan gi innloggingsproblemer — vurder å sette til 1 ved behov
     workers: process.env.CI ? 1 : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: [["list"], ["html", { open: "never" }]],
+    reporter: process.env.CI
+        ? [["list"], ["html", { open: "never" }], ["junit", { outputFile: "test-results/junit.xml" }]]
+        : [["list"], ["html", { open: "never" }]],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
         baseURL: baseURL,

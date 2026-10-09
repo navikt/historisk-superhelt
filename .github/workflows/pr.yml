@@ -3,18 +3,26 @@ name: Bygg og test PR
 on:
   pull_request
 
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   build:
     uses: ./.github/workflows/build-and-test.yml
-    secrets: inherit
+    with:
+      publish-image: false
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
-      packages: write
       contents: read
-      id-token: write
+      checks: write
+      pull-requests: write
   e2e:
     uses: ./.github/workflows/e2e.yaml
-    secrets: inherit
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
-      packages: write
       contents: read
-      id-token: write
+      checks: write
+      pull-requests: write

@@ -8,7 +8,9 @@ describe("useAutoSave", () => {
         const save = vi.fn();
 
         renderHook(() => useAutoSave("initial", save, 500));
-        act(() => { vi.advanceTimersByTime(1000); });
+        act(() => {
+            vi.advanceTimersByTime(1000);
+        });
 
         expect(save).not.toHaveBeenCalled();
         vi.useRealTimers();
@@ -23,7 +25,9 @@ describe("useAutoSave", () => {
         });
 
         rerender({ value: "changed" });
-        act(() => { vi.advanceTimersByTime(500); });
+        act(() => {
+            vi.advanceTimersByTime(500);
+        });
 
         expect(save).toHaveBeenCalledWith("changed");
         expect(save).toHaveBeenCalledTimes(1);
@@ -39,7 +43,9 @@ describe("useAutoSave", () => {
         });
 
         rerender({ value: "changed" });
-        act(() => { vi.advanceTimersByTime(300); });
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
 
         expect(save).not.toHaveBeenCalled();
         vi.useRealTimers();
@@ -54,10 +60,14 @@ describe("useAutoSave", () => {
         });
 
         rerender({ value: "change1" });
-        act(() => { vi.advanceTimersByTime(200); });
+        act(() => {
+            vi.advanceTimersByTime(200);
+        });
 
         rerender({ value: "change2" });
-        act(() => { vi.advanceTimersByTime(500); });
+        act(() => {
+            vi.advanceTimersByTime(500);
+        });
 
         expect(save).toHaveBeenCalledWith("change2");
         expect(save).toHaveBeenCalledTimes(1);
