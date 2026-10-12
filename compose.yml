@@ -80,7 +80,7 @@ services:
       KAFKA_NUM_PARTITIONS: 3
 
   postgres:
-    image: "postgres:17-alpine"
+    image: "postgres:18-alpine"
     restart: on-failure
     ports:
       - "5032:5432"
@@ -95,7 +95,7 @@ services:
       retries: 5
       start_period: 10s
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
 
 volumes:
   postgres_data:
