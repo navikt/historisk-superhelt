@@ -32,10 +32,10 @@ updates:
           - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
+    exclude-paths:
+      - ".github/workflows/**/*.lock.yml"
     schedule:
       interval: "weekly"
-    ignore:
-      - dependency-name: "github/gh-aw/*"
     groups:
       github:
         patterns:
