@@ -175,6 +175,16 @@ gh aw compile pr-summary --strict
 
 Versjoner kilden og de genererte filene sammen. Ikke håndrediger `pr-summary.lock.yml`.
 
+Ved oppgradering av gh-aw velger du en eksakt release-tag og bruker samme versjon for kompilatoren og runtime-actionene:
+
+```shell
+# Erstatt v0.89.21 med ønsket release.
+gh extension install github/gh-aw --pin v0.89.21
+gh aw compile pr-summary --strict --action-mode release --action-tag v0.89.21
+```
+
+Review og versjoner endringene i `pr-summary.lock.yml` og `.github/aw/actions-lock.json` i samme PR. Dependabot ignorerer `github/gh-aw/*` fordi disse actionene skal oppdateres sammen med kompilatoren.
+
 Workflow-sammendraget viser testresultater for Maven, Vitest og Playwright, med navn på feilede tester. JUnit XML-rapporter og Playwright HTML-rapporten kan lastes ned som artifacts i tre dager. Rapporteringen kjører også når tester feiler og krever ingen ekstra GitHub-tilganger.
 
 Pågående main-kjøringer fullfører; bare nyeste ventende kjøring beholdes. Manuell og automatisk backend-deploy til dev bruker samme concurrency-gruppe. Endringer i felles Nais-vars trigger også pdfgen- og Kafka-workflowene.
