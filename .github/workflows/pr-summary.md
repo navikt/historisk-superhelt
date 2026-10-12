@@ -2,7 +2,7 @@
 name: Oppsummer pull request
 description: Oppsummer hele PR-diffen på norsk i en avgrenset seksjon i beskrivelsen.
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened, synchronize]
 if: >-
   github.event.pull_request.head.repo.full_name == github.repository &&
