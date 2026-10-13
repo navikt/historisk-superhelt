@@ -1,5 +1,5 @@
-import type { OppgaveMedSak } from "@generated";
 import { BodyLong, BodyShort, Label, List, Tag, VStack } from "@navikt/ds-react";
+import type { OppgaveMedSak } from "@superhelt/api";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 
 export function OppgaveDetaljer({ oppgave }: { oppgave: OppgaveMedSak }) {

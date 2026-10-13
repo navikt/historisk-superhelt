@@ -3,15 +3,6 @@
     "extends": "//",
 
     "files": {
-        "includes": [
-            "**",
-            "!!**/playwright-report",
-            "!!**/test-results",
-            "!!**/node",
-            "!!**/node_modules",
-            "!!**/target",
-            "!!package-lock.json",
-            "!!pnpm-lock.yaml"
-        ]
+        "includes": ["**", "!!**/playwright-report", "!!**/test-results"]
     }
 }

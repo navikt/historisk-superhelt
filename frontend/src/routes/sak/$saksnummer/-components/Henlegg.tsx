@@ -1,6 +1,6 @@
-import { henleggSakMutation } from "@generated/@tanstack/react-query.gen";
 import { Dialog, Textarea, VStack } from "@navikt/ds-react";
 import { BreakpointXl } from "@navikt/ds-tokens/dist/tokens";
+import { henleggSakMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";

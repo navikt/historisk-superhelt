@@ -1,6 +1,6 @@
-import type { Sak } from "@generated";
-import { sendTilAttesteringMutation } from "@generated/@tanstack/react-query.gen";
 import { BodyLong, Button, ErrorSummary, Heading, VStack } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
+import { sendTilAttesteringMutation } from "@superhelt/api/react-query.gen";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
 

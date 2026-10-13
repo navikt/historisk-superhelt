@@ -100,23 +100,15 @@ PWDEBUG=1 pnpm playwright:test
 
 ## Kodingstil og Linting (Biome)
 
-Prosjektet bruker **Biome** for formattering og linting i `/e2e`.
+Prosjektet bruker **Biome** for formatering og linting. Kommandoene kan kjøres felles fra rot (`pnpm biome` / `pnpm biome:write`), eller lokalt i pakken:
 
-- Kjør lint-sjekk:
+- Kjør sjekk:
     ```bash
-    pnpm lint
+    pnpm biome
     ```
-- Forsøk automatisk fiksing av lint-regler:
+- Sjekk og skriv endringer:
     ```bash
-    pnpm lint:fix
-    ```
-- Formater filer uten å skrive endringer:
-    ```bash
-    pnpm format
-    ```
-- Formater og skriv endringer til disk:
-    ```bash
-    pnpm format:write
+    pnpm biome:write
     ```
 
-Konfigurasjonen finnes i `biome.json`. Scriptene er definert i `package.json` i denne mappen.
+Konfigurasjonen finnes i `biome.json` (arver fra rot). Scriptene er definert i `package.json`.

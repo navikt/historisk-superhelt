@@ -1,5 +1,5 @@
-import type { Sak } from "@generated";
 import { Box, Detail, Heading, HGrid, HStack, Tag, VStack } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
 import { isoTilLokal } from "~/common/dato.utils";
 import { isSakFerdig, utbetalingText, vedtakAvslatt } from "~/common/sak/sak.utils";
 import { useSakVedtakNavn } from "~/common/sak/useSakVedtakNavn";

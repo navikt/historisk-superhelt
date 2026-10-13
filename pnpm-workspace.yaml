@@ -1,0 +1,25 @@
+packages:
+  - 'frontend'
+  - 'packages/*'
+  - 'e2e'
+
+# Alle pakker, også @navikt, hentes fra npmjs. Overstyrer lokal ~/.npmrc med @navikt:registry.
+registries:
+  default: https://registry.npmjs.org/
+  '@navikt': https://registry.npmjs.org/
+
+catalog:
+  react: ^19.3.0
+  react-dom: ^19.3.0
+  '@types/react': ^19.3.0
+  '@types/react-dom': ^19.3.0
+  '@navikt/ds-react': ^8.18.0
+  '@navikt/aksel-icons': ^8.18.0
+  '@biomejs/biome': 2.5.15
+  vitest: ^4.1.11
+  typescript: ^5.9.3
+  '@tanstack/react-query': ^5.104.1
+
+allowBuilds:
+  esbuild: true
+minimumReleaseAge: 10080 # 10080 minutter = 7 dager

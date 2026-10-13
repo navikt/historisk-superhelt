@@ -1,5 +1,5 @@
-import { getOppgaveOptions, getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
 import { Heading, VStack } from "@navikt/ds-react";
+import { getOppgaveOptions, getUserInfoOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { finnPersonQuery } from "~/common/person/person.query";

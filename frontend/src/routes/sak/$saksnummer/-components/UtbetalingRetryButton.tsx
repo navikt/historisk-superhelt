@@ -1,7 +1,7 @@
-import type { Sak } from "@generated";
-import { getSakStatusOptions, retryFeiletUtbetalingMutation } from "@generated/@tanstack/react-query.gen";
 import { ArrowCirclepathReverseIcon } from "@navikt/aksel-icons";
 import { Button, VStack } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
+import { getSakStatusOptions, retryFeiletUtbetalingMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";

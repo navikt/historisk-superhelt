@@ -15,9 +15,6 @@ jobs:
       contents: read
       checks: write
       pull-requests: write
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
@@ -37,19 +34,14 @@ jobs:
           echo $! > backend.pid
 
       - name: Installer node moduler
-        working-directory: ./e2e
         run: pnpm install --frozen-lockfile
-
-      - name: Biome check
-        working-directory: ./e2e
-        run: pnpm lint
 
       # --- Caching av Playwright-browsere ---
       - name: Cache Playwright browsers
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
-          key: ${{ runner.os }}-playwright-${{ hashFiles('./e2e/pnpm-lock.yaml') }} # Endres hvis Playwright-versjonen i pnpm-lock.yaml endres
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }} # Endres hvis Playwright-versjonen i pnpm-lock.yaml endres
           restore-keys: |
             ${{ runner.os }}-playwright-
 

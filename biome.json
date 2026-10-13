@@ -1,4 +1,8 @@
 {
+    "files": {
+        "includes": ["frontend/**", "packages/**", "e2e/**"]
+    },
+
     "vcs": {
         "enabled": true,
         "clientKind": "git"

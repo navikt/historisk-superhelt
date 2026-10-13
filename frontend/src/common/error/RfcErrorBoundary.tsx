@@ -1,4 +1,4 @@
-import type { ProblemDetail } from "@generated";
+import type { ProblemDetail } from "@superhelt/api";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 

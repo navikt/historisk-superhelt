@@ -1,5 +1,5 @@
-import type { Journalpost } from "@generated";
 import { InlineMessage, Select, Skeleton, VStack } from "@navikt/ds-react";
+import type { Journalpost } from "@superhelt/api";
 import { useState } from "react";
 import { EmbeddedPdf } from "~/common/pdf/EmbeddedPdf";
 

@@ -1,4 +1,4 @@
-import type { InfotrygdHistorikk, Sak } from "@generated";
+import type { InfotrygdHistorikk, Sak } from "@superhelt/api";
 import { describe, expect, it } from "vitest";
 import { infotrygdTilHistorikkRad, sakTilHistorikkRad } from "./sakshistorikk.utils";
 

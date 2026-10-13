@@ -1,6 +1,6 @@
-import { findPersonByFnr as findPerson } from "@generated";
 import { PersonIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, HStack, Label, Loader, TextField, VStack } from "@navikt/ds-react";
+import { findPersonByFnr as findPerson } from "@superhelt/api";
 import { useState } from "react";
 
 export type PersonValue = {

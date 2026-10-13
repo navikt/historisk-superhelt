@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help all build test up down
+.PHONY: help all build test up down test-all typecheck biome biome-write frontend-start frontend-build e2e-test e2e-test-ui
 
 MVN ?= $(shell command -v mvnd >/dev/null 2>&1 && echo mvnd || echo mvn) # Bruk mvnd hvis tilgjengelig, ellers fallback til mvn
 
@@ -23,10 +23,14 @@ build: ## Bygger applikasjonen og Docker images
 	docker compose -f compose.yml build
 
 test: ## Kjører tester
-	$(MVN) test -T 1C
+	$(MVN) test
+	pnpm run typecheck
+	pnpm run biome
+	pnpm test
 
 up: ## Starter alle avhengigheter
 	docker compose -f compose.yml up --wait -d
 
 down: ## Stopper og fjerner alle avhengigheter
 	docker compose -f compose.yml down
+

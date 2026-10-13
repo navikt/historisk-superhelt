@@ -1,4 +1,3 @@
-import type { InfotrygdHistorikk, Sak } from "@generated";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import {
     BodyShort,
@@ -13,6 +12,7 @@ import {
     Tag,
     VStack,
 } from "@navikt/ds-react";
+import type { InfotrygdHistorikk, Sak } from "@superhelt/api";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { isoTilLokal } from "~/common/dato.utils";

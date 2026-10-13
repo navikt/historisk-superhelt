@@ -1,6 +1,6 @@
-import type { Sak } from "@generated";
-import { getSakStatusOptions } from "@generated/@tanstack/react-query.gen";
 import { InfoCard, VStack } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
+import { getSakStatusOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import RetryFerdigstillSakButton from "~/routes/sak/$saksnummer/-components/RetryFerdigstillSakButton";
 import UtbetalingRetryButton from "~/routes/sak/$saksnummer/-components/UtbetalingRetryButton";

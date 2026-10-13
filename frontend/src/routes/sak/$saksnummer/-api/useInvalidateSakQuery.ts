@@ -1,4 +1,4 @@
-import { hentEndringsloggForSakQueryKey } from "@generated/@tanstack/react-query.gen";
+import { hentEndringsloggForSakQueryKey } from "@superhelt/api/react-query.gen";
 import { useQueryClient } from "@tanstack/react-query";
 import { sakQueryKey } from "~/common/sak/sak.query";
 import { apiFinnJournalposterForSakOptions } from "./journalpost.query";

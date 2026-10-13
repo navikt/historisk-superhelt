@@ -1,4 +1,3 @@
-import type { Sak } from "@generated";
 import {
     ArrowUndoIcon,
     ChevronDownIcon,
@@ -9,6 +8,7 @@ import {
     TrashIcon,
 } from "@navikt/aksel-icons";
 import { ActionMenu, Button } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
 import { useState } from "react";
 import type { RettighetType } from "~/common/sak/sak.types";
 import { Feilregistrer } from "./Feilregistrer";

@@ -1,7 +1,4 @@
-import {
-    finnJournalposterForBrukerOptions,
-    finnJournalposterForSakOptions,
-} from "@generated/@tanstack/react-query.gen";
+import { finnJournalposterForBrukerOptions, finnJournalposterForSakOptions } from "@superhelt/api/react-query.gen";
 import type { TemaType } from "~/common/sak/sak.types";
 
 export const apiFinnJournalposterForSakOptions = (saksnummer: string) => ({

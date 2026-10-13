@@ -1,6 +1,6 @@
-import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
 import { Box, GlobalAlert, Page } from "@navikt/ds-react";
 import { Theme } from "@navikt/ds-react/Theme";
+import { getUserInfoOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";

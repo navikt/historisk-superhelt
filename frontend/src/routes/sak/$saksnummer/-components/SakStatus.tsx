@@ -1,6 +1,6 @@
-import type { Sak } from "@generated";
-import { getSakStatusOptions } from "@generated/@tanstack/react-query.gen";
 import { HStack, Tag } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
+import { getSakStatusOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SakStatusTag } from "~/common/sak/SakStatusTag";
 import { useSakVedtakNavn } from "~/common/sak/useSakVedtakNavn";

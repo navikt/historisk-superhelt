@@ -1,6 +1,6 @@
-import type { Journalpost, OppgaveMedSak, ProblemDetail } from "@generated";
-import { getUserInfoOptions, journalforNySakMutation } from "@generated/@tanstack/react-query.gen";
 import { Button, VStack } from "@navikt/ds-react";
+import type { Journalpost, OppgaveMedSak, ProblemDetail } from "@superhelt/api";
+import { getUserInfoOptions, journalforNySakMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";

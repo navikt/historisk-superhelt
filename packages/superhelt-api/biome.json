@@ -1,0 +1,8 @@
+{
+    "root": false,
+    "extends": "//",
+
+    "files": {
+        "includes": ["!**/*.gen.ts", "!src"]
+    }
+}

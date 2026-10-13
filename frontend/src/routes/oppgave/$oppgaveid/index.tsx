@@ -1,5 +1,5 @@
-import { getOppgaveOptions } from "@generated/@tanstack/react-query.gen";
 import { BodyShort, Heading, VStack } from "@navikt/ds-react";
+import { getOppgaveOptions } from "@superhelt/api/react-query.gen";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/oppgave/$oppgaveid/")({
