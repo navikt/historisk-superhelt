@@ -3,6 +3,11 @@ packages:
   - 'packages/*'
   - 'e2e'
 
+# Alle pakker, også @navikt, hentes fra npmjs. Overstyrer lokal ~/.npmrc med @navikt:registry.
+registries:
+  default: https://registry.npmjs.org/
+  '@navikt': https://registry.npmjs.org/
+
 catalog:
   react: ^19.3.0
   react-dom: ^19.3.0
