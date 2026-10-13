@@ -69,21 +69,28 @@ make down                         # stopp docker-avhengigheter
 ```
 > Backend-tester krever Docker kjørende (Testcontainers). For Colima på Mac: https://golang.testcontainers.org/system_requirements/using_colima/
 
-### Frontend (kjør fra `frontend/`)
+### Felles sjekker (kjør fra repo-rot)
 ```bash
-pnpm start             # dev-server på :3000
-pnpm run test          # Vitest
-pnpm run biome:write   # lint + format
-pnpm run openapi-ts    # generer typer (backend må kjøre)
+pnpm test                         # tester i alle workspaces (eller: make test-all)
+pnpm typecheck                    # typecheck i alle workspaces (eller: make typecheck)
+pnpm biome                        # biome sjekk i hele prosjektet (eller: make biome)
+pnpm biome:write                  # biome fiks i hele prosjektet (eller: make biome-write)
 ```
 
-### E2E (kjør fra `e2e/` — krever at hele appen kjører)
+### Frontend (kjør fra repo-rot)
 ```bash
-pnpm playwright:install                            # første gang
-pnpm playwright:test                               # headless
-pnpm playwright:test:ui                            # med UI
-pnpm playwright:snapshot-update                    # oppdater snapshots
-pnpm playwright:codegen http://localhost:4000       # opptak av ny test
+pnpm frontend:start             # dev-server på :3000 (eller: make frontend-start)
+pnpm frontend:build             # bygg produksjonsbundle (eller: make frontend-build)
+pnpm --filter super-frontend openapi-ts # generer typer (backend må kjøre)
+```
+
+### E2E (krever at hele appen kjører)
+```bash
+pnpm e2e:test                                      # headless (eller: make e2e-test)
+pnpm e2e:test:ui                                   # med UI (eller: make e2e-test-ui)
+pnpm --filter e2e-tests playwright:install         # første gang – installer nettlesere
+pnpm --filter e2e-tests playwright:snapshot-update # oppdater snapshots
+pnpm e2e:codegen http://localhost:4000             # opptak av ny test
 ```
 
 ## Requirements
@@ -91,8 +98,8 @@ pnpm playwright:codegen http://localhost:4000       # opptak av ny test
 | Verktøy | Versjon |
 |---------|---------|
 | Java    | 25      |
-| Node.js | ≥ 24    |
-| pnpm    | ≥ 10    |
+| Node.js | ≥ 26    |
+| pnpm    | ≥ 12    |
 | Docker  | nyeste stabile |
 
 ## Testpersoner (mock-server)

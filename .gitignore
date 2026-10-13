@@ -19,6 +19,7 @@ local.env
 
 
 test-coverage-suggestions.md
+*.tsbuildinfo
 
 ### Playwright ###
 frontend/playwright-report/

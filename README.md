@@ -115,8 +115,9 @@ Appen er tilgjengelig på http://localhost:4000 (gjennom Wonderwall med mock-aut
 
 **3. Start frontend:**
 ```shell
-# i /frontend
-pnpm start
+pnpm frontend:start
+# eller:
+make frontend-start
 ```
 
 Frontend er tilgjengelig på http://localhost:3000 med hot reload.  
@@ -125,11 +126,19 @@ Innlogging skjer via http://localhost:4000 (Wonderwall håndterer auth – `:300
 ### Make-kommandoer
 
 ```shell
-make up      # start alle avhengigheter
-make down    # stopp alle avhengigheter
-make test    # kjør alle tester
-make build   # bygg applikasjon og Docker-images
-make all     # bygg, test og bygg Docker-images
+make up             # start alle avhengigheter
+make down           # stopp alle avhengigheter
+make test           # kjør alle tester (backend + workspaces)
+make test-all       # kjør tester i alle workspaces
+make typecheck      # kjør typecheck i alle workspaces
+make biome          # sjekk formatering og linting i hele prosjektet
+make biome-write    # sjekk og rett formatering og linting
+make build          # bygg applikasjon og Docker-images
+make all            # bygg, test og bygg Docker-images
+make frontend-start # start frontend dev-server
+make frontend-build # bygg frontend produksjonsbundle
+make e2e-test       # kjør E2E-tester (Playwright)
+make e2e-test-ui    # kjør E2E-tester med UI
 ```
 
 ### Tester
@@ -142,18 +151,17 @@ make test
 ```
 For Colima på Mac, se https://golang.testcontainers.org/system_requirements/using_colima/
 
-**Frontend:**
+**Workspaces (frontend, packages):**
 ```shell
-# i /frontend
-pnpm run test
+pnpm test
+# eller:
+make test-all
 ```
 
 **E2E** – krever at hele appen kjører:
 ```shell
-# i /e2e
-pnpm playwright:install     # første gang – installer nettlesere
-pnpm playwright:test        # headless
-pnpm playwright:test:ui     # med UI
+pnpm e2e:test        # headless (eller: make e2e-test)
+pnpm e2e:test:ui     # med UI (eller: make e2e-test-ui)
 ```
 Se [e2e/README.md](./e2e/README.md) for mer om Playwright-oppsett.
 
@@ -190,10 +198,18 @@ Workflow-sammendraget viser testresultater for Maven, Vitest og Playwright, med 
 Pågående main-kjøringer fullfører; bare nyeste ventende kjøring beholdes. Manuell og automatisk backend-deploy til dev bruker samme concurrency-gruppe. Endringer i felles Nais-vars trigger også pdfgen- og Kafka-workflowene.
 
 
-### Formatering og linting (frontend)
+### Felles sjekker (kjøres fra rot)
 
 ```shell
-# i /frontend
-pnpm run biome        # sjekk
-pnpm run biome:write  # sjekk og skriv endringer
+pnpm test        # kjører tester i alle workspaces (eller: make test-all)
+pnpm typecheck   # kjører typecheck for hele prosjektet (eller: make typecheck)
+pnpm biome       # sjekker formatering og linting i hele prosjektet (eller: make biome)
+pnpm biome:write # sjekker og retter formatering og linting (eller: make biome-write)
+```
+
+### Formatering og linting
+
+```shell
+pnpm biome        # sjekk hele prosjektet (eller: make biome)
+pnpm biome:write  # sjekk og skriv endringer (eller: make biome-write)
 ```

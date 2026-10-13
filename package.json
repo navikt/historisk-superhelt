@@ -1,5 +1,26 @@
 {
+    "name": "historisk-superhelt",
+    "private": true,
+    "packageManager": "pnpm@12.8.1",
+    "engines": {
+        "node": ">=26",
+        "pnpm": ">=12"
+    },
+    "scripts": {
+        "start": "pnpm frontend:start",
+        "test": "pnpm --recursive run --if-present test",
+        "typecheck": "pnpm --recursive run typecheck",
+        "biome": "biome ci .",
+        "biome:write": "biome check --write .",
+        "frontend:start": "pnpm --filter super-frontend start",
+        "frontend:build": "pnpm --filter super-frontend build",
+        "e2e:test": "pnpm --filter e2e-tests playwright:test",
+        "e2e:test:ui": "pnpm --filter e2e-tests playwright:test:ui"
+    },
     "devDependencies": {
-        "@biomejs/biome": "2.5.15"
+        "@biomejs/biome": "catalog:",
+        "@types/react": "catalog:",
+        "@types/react-dom": "catalog:",
+        "typescript": "catalog:"
     }
 }

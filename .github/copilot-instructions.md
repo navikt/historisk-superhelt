@@ -35,24 +35,28 @@ mvn compile                       # kompiler (kjøres fra rot for å bygge libs 
 Backend startes lokalt via `DevApplication.kt` i `backend/src/test/kotlin/`.
 Krever `docker compose up` for Postgres, Kafka, mock-oidc og Wonderwall.
 
+### Felles frontend- og workspace-kommandoer
+```bash
+pnpm test                     # kjør tester på tvers av alle workspaces (eller: make test-all)
+pnpm typecheck                # kjør TypeScript typecheck i hele repoet (eller: make typecheck)
+pnpm biome                    # kjør Biome på hele prosjektet (eller: make biome)
+pnpm biome:write              # kjør Biome og skriv endringer (eller: make biome-write)
+```
+
 ### Frontend
 ```bash
-# i /frontend
-pnpm start           # dev-server på :3000 (hot reload)
-pnpm run test        # Vitest
-pnpm run biome       # lint + format (Biome)
-pnpm run biome:write # lint + format, skriv endringer
-pnpm run openapi-ts  # generer typer fra backend-API (backend må kjøre)
+pnpm frontend:start           # dev-server på :3000 (hot reload)
+pnpm frontend:build           # bygg produksjonsbundle
+pnpm --filter super-frontend openapi-ts # generer typer fra backend-API (backend må kjøre)
 ```
 
 Når Biome kjøres for å validere endringer: kjør kun på filer som er endret i sesjonen (`npx biome check <fil>`), ikke hele prosjektet.
 
 ### E2E
 ```bash
-# i /e2e
-pnpm playwright:test              # headless
-pnpm playwright:test:ui           # med UI
-pnpm playwright:snapshot-update   # oppdater snapshots
+pnpm e2e:test                 # headless
+pnpm e2e:test:ui              # med UI
+pnpm --filter e2e-tests playwright:snapshot-update   # oppdater snapshots
 ```
 
 ## Backend-konvensjoner
@@ -105,7 +109,7 @@ pnpm playwright:snapshot-update   # oppdater snapshots
 ```bash
 docker compose up          # Postgres, Kafka, Wonderwall, texas, mock-oidc
 # Start DevApplication.kt i IDE (spring profile: dev)
-cd frontend && pnpm start   # :3000 med hot reload
+pnpm frontend:start        # :3000 med hot reload (eller: make frontend-start)
 # Appen tilgjengelig på :4000 (gjennom Wonderwall med mock-auth)
 ```
 
