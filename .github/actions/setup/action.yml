@@ -1,6 +1,6 @@
 name: 'Setup'
 description: 'Sett opp Java, Node, pnpm og dependency-cache'
-    
+
 runs:
   using: 'composite'
   steps:
@@ -10,7 +10,8 @@ runs:
         java-version: '25'
         cache: maven
 
-    - uses: pnpm/setup@v3
+    - uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
       with:
-        registry: "https://npm.pkg.github.com"
         cache: true
+        install: false
+

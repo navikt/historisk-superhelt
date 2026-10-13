@@ -43,8 +43,6 @@ jobs:
 
       - name: Installer avhengigheter
         run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: ${{ matrix.check }}
         id: frontend-check
@@ -81,8 +79,6 @@ jobs:
       - name: Build artifacts
         id: maven
         run: mvn --batch-mode clean verify
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Rapporter Maven-tester
         if: >-
