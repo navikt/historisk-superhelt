@@ -3,16 +3,6 @@
     "extends": "//",
 
     "files": {
-        "includes": [
-            "**",
-            "!!**/dist",
-            "!!**/generated",
-            "!!**/node",
-            "!!**/node_modules",
-            "!!**/target",
-            "!!package-lock.json",
-            "!!pnpm-lock.yaml",
-            "!**/*.gen.ts"
-        ]
+        "includes": ["**", "!!**/dist", "!!**/node", "!!**/node_modules", "!!**/target", "!**/*.gen.ts"]
     }
 }
