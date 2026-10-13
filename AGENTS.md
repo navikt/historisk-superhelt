@@ -81,7 +81,7 @@ pnpm biome:write                  # biome fiks i hele prosjektet (eller: make bi
 ```bash
 pnpm frontend:start             # dev-server på :3000 (eller: make frontend-start)
 pnpm frontend:build             # bygg produksjonsbundle (eller: make frontend-build)
-pnpm --filter super-frontend openapi-ts # generer typer (backend må kjøre)
+pnpm api:generate               # generer typer og API-klient i @superhelt/api (backend må kjøre)
 ```
 
 ### E2E (krever at hele appen kjører)

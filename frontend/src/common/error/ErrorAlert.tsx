@@ -1,5 +1,5 @@
-import type { ProblemDetail } from "@generated";
 import { LocalAlert } from "@navikt/ds-react";
+import type { ProblemDetail } from "@superhelt/api";
 
 type ErrorAlertType = Error | ProblemDetail;
 

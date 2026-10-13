@@ -3,7 +3,7 @@ import {
     getKodeverkStonadTypeOptions,
     getKodeverkVedtaksResultatOptions as getKodeverkVedtaksResultatQueryOptions,
     getSakBySaksnummerOptions,
-} from "@generated/@tanstack/react-query.gen";
+} from "@superhelt/api/react-query.gen";
 
 export const getSakOptions = (saksnummer: string) => ({
     ...getSakBySaksnummerOptions({ path: { saksnummer: saksnummer } }),

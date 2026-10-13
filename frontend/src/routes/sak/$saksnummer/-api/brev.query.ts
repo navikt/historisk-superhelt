@@ -1,4 +1,4 @@
-import { hentEllerOpprettBrev } from "@generated";
+import { hentEllerOpprettBrev } from "@superhelt/api";
 import type { BrevMottakerType, BrevType } from "~/routes/sak/$saksnummer/-types/brev.types";
 
 export const getOrCreateBrevQueryKey = (saksnummer: string, type: BrevType, mottaker: BrevMottakerType) => {

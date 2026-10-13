@@ -1,0 +1,18 @@
+{
+    "root": false,
+    "extends": "//",
+
+    "files": {
+        "includes": [
+            "**",
+            "!!**/dist",
+            "!!**/node",
+            "!!**/node_modules",
+            "!!**/target",
+            "!!package-lock.json",
+            "!!pnpm-lock.yaml",
+            "!**/*.gen.ts",
+            "!src"
+        ]
+    }
+}

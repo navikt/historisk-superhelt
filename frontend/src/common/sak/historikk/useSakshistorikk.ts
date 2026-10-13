@@ -1,5 +1,5 @@
-import type { Sak } from "@generated";
-import { hentSakshistorikkForPersonOptions } from "@generated/@tanstack/react-query.gen";
+import type { Sak } from "@superhelt/api";
+import { hentSakshistorikkForPersonOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { SakshistorikkResult } from "~/common/sak/historikk/sakshistorikk.types";
 import type { TemaType } from "~/common/sak/sak.types";

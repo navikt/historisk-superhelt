@@ -1,0 +1,26 @@
+{
+    "name": "@superhelt/api",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./react-query.gen": "./src/@tanstack/react-query.gen.ts"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "biome": "biome ci",
+        "biome:write": "biome check --write",
+        "generate": "openapi-ts",
+        "openapi-ts": "openapi-ts"
+    },
+    "peerDependencies": {
+        "@tanstack/react-query": "catalog:"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "catalog:",
+        "@hey-api/openapi-ts": "0.99.0",
+        "@tanstack/react-query": "catalog:",
+        "typescript": "catalog:"
+    }
+}

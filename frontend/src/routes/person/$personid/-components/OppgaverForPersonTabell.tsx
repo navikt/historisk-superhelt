@@ -1,5 +1,5 @@
-import { hentOppgaverForPersonOptions } from "@generated/@tanstack/react-query.gen";
 import { InfoCard, VStack } from "@navikt/ds-react";
+import { hentOppgaverForPersonOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { OppgaveTabell } from "~/common/oppgave/OppgaveTabell";
 import { SakshistorikkKombinertTabell } from "~/common/sak/historikk/SakshistorikkKombinertTabell";

@@ -1,5 +1,5 @@
-import type { JournalforDokument, Journalpost, OppgaveMedSak, Person } from "@generated";
 import { Radio, RadioGroup, VStack } from "@navikt/ds-react";
+import type { JournalforDokument, Journalpost, OppgaveMedSak, Person } from "@superhelt/api";
 import { useRef, useState } from "react";
 import { Card } from "~/common/card/Card";
 import type { StonadType } from "~/common/sak/sak.types";

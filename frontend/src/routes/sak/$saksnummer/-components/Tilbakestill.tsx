@@ -1,5 +1,5 @@
-import { tilbakestillGjenapningMutation } from "@generated/@tanstack/react-query.gen";
 import { BodyLong, Button, Dialog, Textarea, VStack } from "@navikt/ds-react";
+import { tilbakestillGjenapningMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";

@@ -1,6 +1,6 @@
-import type { OppgaveMedSak } from "@generated";
-import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
 import { BodyShort, HStack, Link, Pagination, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
+import type { OppgaveMedSak } from "@superhelt/api";
+import { getUserInfoOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { useState } from "react";

@@ -1,5 +1,3 @@
-import type { Sak } from "@generated";
-import { hentEndringsloggForSakOptions } from "@generated/@tanstack/react-query.gen";
 import {
     ArrowCirclepathReverseIcon,
     ArrowRightIcon,
@@ -16,6 +14,8 @@ import {
     XMarkIcon,
 } from "@navikt/aksel-icons";
 import { BodyLong, Process } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
+import { hentEndringsloggForSakOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isoTilLokal } from "~/common/dato.utils";
 import type { EndringsloggType } from "~/routes/sak/$saksnummer/-types/endringslogg.types";

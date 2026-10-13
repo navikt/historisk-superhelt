@@ -1,4 +1,4 @@
-import type { Sak } from "@generated";
+import type { Sak } from "@superhelt/api";
 import { describe, expect, it } from "vitest";
 import { isSakFerdig, utbetalingText, vedtakAvslatt } from "./sak.utils";
 

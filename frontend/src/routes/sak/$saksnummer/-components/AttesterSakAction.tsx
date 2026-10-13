@@ -1,6 +1,6 @@
-import type { Sak } from "@generated";
-import { attersterSakMutation } from "@generated/@tanstack/react-query.gen";
 import { BodyLong, Button, Dialog, Heading, Radio, RadioGroup, Textarea } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
+import { attersterSakMutation } from "@superhelt/api/react-query.gen";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";

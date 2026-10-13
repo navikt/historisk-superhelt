@@ -1,7 +1,7 @@
-import { findPersonByFnr as findPerson } from "@generated";
-import { getUserInfoOptions } from "@generated/@tanstack/react-query.gen";
 import { LeaveIcon } from "@navikt/aksel-icons";
 import { Bleed, Detail, Dropdown, HStack, InternalHeader, Link, Page, Search, Spacer } from "@navikt/ds-react";
+import { findPersonByFnr as findPerson } from "@superhelt/api";
+import { getUserInfoOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";

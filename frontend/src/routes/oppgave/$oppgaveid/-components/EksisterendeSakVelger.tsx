@@ -1,7 +1,7 @@
-import type { Sak } from "@generated";
-import { findSakerForPersonOptions } from "@generated/@tanstack/react-query.gen";
 import { CheckmarkCircleIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Box, Label, Table } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
+import { findSakerForPersonOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useStonadsTypeNavn } from "~/common/sak/useStonadsTypeNavn";
 import SakStatus from "~/routes/sak/$saksnummer/-components/SakStatus";

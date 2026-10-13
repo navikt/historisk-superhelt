@@ -47,7 +47,7 @@ pnpm biome:write              # kjør Biome og skriv endringer (eller: make biom
 ```bash
 pnpm frontend:start           # dev-server på :3000 (hot reload)
 pnpm frontend:build           # bygg produksjonsbundle
-pnpm --filter super-frontend openapi-ts # generer typer fra backend-API (backend må kjøre)
+pnpm api:generate             # generer typer og API-klient i @superhelt/api (backend må kjøre)
 ```
 
 Når Biome kjøres for å validere endringer: kjør kun på filer som er endret i sesjonen (`npx biome check <fil>`), ikke hele prosjektet.
@@ -90,8 +90,9 @@ pnpm --filter e2e-tests playwright:snapshot-update   # oppdater snapshots
 ## Frontend-konvensjoner
 
 ### Typing
-- Typer genereres automatisk fra backend OpenAPI-spec med `pnpm run openapi-ts` → `generated/`
-- Importer genererte typer via `@generated`-alias (eks. `import type { Sak } from "@generated"`)
+- Typer genereres automatisk fra backend OpenAPI-spec til `@superhelt/api` med `pnpm api:generate` (eller `pnpm --filter @superhelt/api generate`)
+- Importer typer og SDK-funksjoner direkte fra `@superhelt/api` (eks. `import type { Sak } from "@superhelt/api"`)
+- Importer React Query-opsjoner og mutasjoner fra `@superhelt/api/react-query.gen` (eks. `import { getSakStatusOptions } from "@superhelt/api/react-query.gen"`)
 - Lokale utility-typer utledes fra genererte typer: `type SakStatusType = Sak['status']`
 
 ### Routing og datahenting

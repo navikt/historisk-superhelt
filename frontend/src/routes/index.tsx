@@ -1,5 +1,5 @@
-import { hentOppgaverForSaksbehandlerOptions } from "@generated/@tanstack/react-query.gen";
 import { Detail, Heading, Page, VStack } from "@navikt/ds-react";
+import { hentOppgaverForSaksbehandlerOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { OppgaveTabell } from "~/common/oppgave/OppgaveTabell";

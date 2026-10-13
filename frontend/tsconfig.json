@@ -6,9 +6,7 @@
         "allowJs": true,
         "baseUrl": ".",
         "paths": {
-            "~/*": ["./src/*"],
-            "@generated": ["./generated"],
-            "@generated/*": ["./generated/*"]
+            "~/*": ["./src/*"]
         }
     }
 }

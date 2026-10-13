@@ -1,4 +1,4 @@
-import type { Sak, SakTilstand } from "@generated";
+import type { Sak, SakTilstand } from "@superhelt/api";
 
 export type SakStatusType = Sak["status"];
 export type SakVedtakType = Sak["vedtaksResultat"];

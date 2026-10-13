@@ -1,4 +1,4 @@
-import { hentJournalpostMetaDataOptions } from "@generated/@tanstack/react-query.gen";
+import { hentJournalpostMetaDataOptions } from "@superhelt/api/react-query.gen";
 
 export const hentJournalpostMetadataQuery = (journalpostId?: string | null) => ({
     ...hentJournalpostMetaDataOptions({

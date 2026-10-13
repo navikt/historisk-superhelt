@@ -1,6 +1,6 @@
-import type { Journalpost } from "@generated/types.gen";
 import { ArrowDownRightIcon, ExternalLinkIcon } from "@navikt/aksel-icons";
 import { HStack, Link, Pagination, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
+import type { Journalpost } from "@superhelt/api";
 import { useState } from "react";
 import { isoTilLokalTid } from "~/common/dato.utils";
 

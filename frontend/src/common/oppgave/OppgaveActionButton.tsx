@@ -1,5 +1,5 @@
-import type { OppgaveMedSak } from "@generated";
 import { Button, HStack } from "@navikt/ds-react";
+import type { OppgaveMedSak } from "@superhelt/api";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { FerdigstillOppgaveDialogButton } from "~/common/oppgave/FerdigstillOppgaveDialogButton";
 

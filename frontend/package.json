@@ -11,8 +11,7 @@
         "serve": "vite preview",
         "test": "vitest run",
         "biome": "biome ci",
-        "biome:write": "biome check --write",
-        "openapi-ts": "openapi-ts"
+        "biome:write": "biome check --write"
     },
     "dependencies": {
         "@grafana/faro-web-sdk": "^2.12.1",
@@ -20,7 +19,8 @@
         "@navikt/ds-css": "^8.18.0",
         "@navikt/ds-react": "catalog:",
         "@navikt/ds-tokens": "^8.18.0",
-        "@tanstack/react-query": "^5.104.1",
+        "@superhelt/api": "workspace:*",
+        "@tanstack/react-query": "catalog:",
         "@tanstack/react-query-devtools": "^5.104.1",
         "@tanstack/react-router": "^1.170.41",
         "@tanstack/react-router-devtools": "^1.167.2",
@@ -31,7 +31,6 @@
     },
     "devDependencies": {
         "@biomejs/biome": "catalog:",
-        "@hey-api/openapi-ts": "0.99.0",
         "@tanstack/router-plugin": "^1.168.42",
         "@testing-library/react": "^16.3.3",
         "@types/css-modules": "^1.0.5",

@@ -1,9 +1,4 @@
 import {
-    getKodeverkHjemlerForStonadOptions,
-    getUserInfoOptions,
-    sendKlageTilKabalMutation,
-} from "@generated/@tanstack/react-query.gen";
-import {
     Button,
     DatePicker,
     Dialog,
@@ -15,6 +10,11 @@ import {
     VStack,
 } from "@navikt/ds-react";
 import { BreakpointMd } from "@navikt/ds-tokens/dist/tokens";
+import {
+    getKodeverkHjemlerForStonadOptions,
+    getUserInfoOptions,
+    sendKlageTilKabalMutation,
+} from "@superhelt/api/react-query.gen";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";

@@ -1,12 +1,12 @@
-import type { Brev, Sak } from "@generated";
+import { HtmlPdfgenEditor } from "@historisk-superhelt/htmleditor";
+import { Button, ErrorSummary, HStack, InfoCard, TextField, VStack } from "@navikt/ds-react";
+import type { Brev, Sak } from "@superhelt/api";
 import {
     hentBrevOptions,
     hentBrevQueryKey,
     htmlBrevOptions,
     oppdaterBrevMutation,
-} from "@generated/@tanstack/react-query.gen";
-import { HtmlPdfgenEditor } from "@historisk-superhelt/htmleditor";
-import { Button, ErrorSummary, HStack, InfoCard, TextField, VStack } from "@navikt/ds-react";
+} from "@superhelt/api/react-query.gen";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoSave } from "~/common/useAutosave";

@@ -1,5 +1,5 @@
-import type { Sak } from "@generated";
 import { FormSummary } from "@navikt/ds-react";
+import type { Sak } from "@superhelt/api";
 import { isoTilLokal } from "~/common/dato.utils";
 import { utbetalingText } from "~/common/sak/sak.utils";
 import { useSakStatusNavn } from "~/common/sak/useSakStatusNavn";

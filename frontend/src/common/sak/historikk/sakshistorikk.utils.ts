@@ -1,4 +1,4 @@
-import type { InfotrygdHistorikk, Sak } from "@generated";
+import type { InfotrygdHistorikk, Sak } from "@superhelt/api";
 import type { HistorikkRad } from "./sakshistorikk.types";
 
 export function sakTilHistorikkRad(sak: Sak, kategoriNavn: string): HistorikkRad {

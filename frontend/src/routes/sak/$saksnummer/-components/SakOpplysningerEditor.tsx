@@ -1,5 +1,3 @@
-import type { Sak, SakUpdateRequestDto } from "@generated";
-import { oppdaterSakMutation } from "@generated/@tanstack/react-query.gen";
 import {
     Button,
     DatePicker,
@@ -13,6 +11,8 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
+import type { Sak, SakUpdateRequestDto } from "@superhelt/api";
+import { oppdaterSakMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";

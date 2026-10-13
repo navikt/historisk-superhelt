@@ -1,4 +1,4 @@
-import type { Sak } from "@generated";
+import type { Sak } from "@superhelt/api";
 import type { SakStatusType, SakVedtakType, UtbetalingsType } from "~/common/sak/sak.types";
 
 const ferdigStatus: Array<SakStatusType> = ["FERDIG", "FEILREGISTRERT"];

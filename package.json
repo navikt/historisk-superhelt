@@ -8,12 +8,14 @@
     },
     "scripts": {
         "start": "pnpm frontend:start",
+        "build": "pnpm frontend:build",
         "test": "pnpm --recursive run --if-present test",
         "typecheck": "pnpm --recursive run typecheck",
         "biome": "biome ci .",
         "biome:write": "biome check --write .",
         "frontend:start": "pnpm --filter super-frontend start",
         "frontend:build": "pnpm --filter super-frontend build",
+        "api:generate": "pnpm --filter @superhelt/api generate",
         "e2e:test": "pnpm --filter e2e-tests playwright:test",
         "e2e:test:ui": "pnpm --filter e2e-tests playwright:test:ui"
     },

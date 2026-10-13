@@ -1,6 +1,6 @@
-import { sendBrevMutation } from "@generated/@tanstack/react-query.gen";
 import { Dialog, ErrorSummary } from "@navikt/ds-react";
 import { BreakpointXl } from "@navikt/ds-tokens/dist/tokens";
+import { sendBrevMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { getSakOptions } from "~/common/sak/sak.query";

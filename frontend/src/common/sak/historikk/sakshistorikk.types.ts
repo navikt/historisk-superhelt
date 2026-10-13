@@ -1,4 +1,4 @@
-import type { InfotrygdHistorikk, ProblemDetail, Sak } from "@generated";
+import type { InfotrygdHistorikk, ProblemDetail, Sak } from "@superhelt/api";
 
 export type HistorikkRad = {
     kilde: "SAK" | "INFOTRYGD";
