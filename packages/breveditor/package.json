@@ -1,5 +1,5 @@
 {
-    "name": "@historisk-superhelt/htmleditor",
+    "name": "@superhelt/breveditor",
     "private": true,
     "type": "module",
     "exports": {
