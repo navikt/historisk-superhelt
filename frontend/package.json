@@ -30,11 +30,7 @@
         "@tanstack/react-router": "^1.170.41",
         "@tanstack/react-router-devtools": "^1.167.2",
         "@tanstack/router-core": "1.171.34",
-        "@tiptap/extension-highlight": "^3.31.4",
-        "@tiptap/pm": "^3.31.4",
-        "@tiptap/react": "^3.31.4",
-        "@tiptap/starter-kit": "^3.31.4",
-        "dompurify": "^3.4.16",
+        "@historisk-superhelt/htmleditor": "workspace:*",
         "react": "^19.3.0",
         "react-dom": "^19.3.0"
     },

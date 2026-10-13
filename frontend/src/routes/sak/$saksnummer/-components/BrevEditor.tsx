@@ -5,12 +5,12 @@ import {
     htmlBrevOptions,
     oppdaterBrevMutation,
 } from "@generated/@tanstack/react-query.gen";
+import { HtmlPdfgenEditor } from "@historisk-superhelt/htmleditor";
 import { Button, ErrorSummary, HStack, InfoCard, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoSave } from "~/common/useAutosave";
 import { getOrCreateBrevQueryKey } from "~/routes/sak/$saksnummer/-api/brev.query";
-import { HtmlPdfgenEditor } from "~/routes/sak/$saksnummer/-components/htmleditor/HtmlPdfgenEditor";
 
 interface BrevEditorProps {
     sak: Sak;
