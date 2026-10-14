@@ -1,21 +1,5 @@
-#import "style.typ": brevstil
-#import "standardtekster.typ": standardtekster
-
-#let seksjon(body, redigerbar: false) = context {
-  if target() == "html" {
-    html.elem("section")[
-      #if redigerbar {
-        html.elem("div", attrs: (class: "data-editable"), body)
-      } else {
-        body
-      }
-    ]
-  } else {
-    body
-  }
-}
-
 #let personalia(data) = {
+  // HTML-eksporten utelater grid, så personalia får egen HTML-struktur.
   context if target() == "html" {
     html.elem("div", attrs: (class: "brev-logo"))[
       #image("/resources/NAV_logo_digital_Red.svg", height: 16pt, alt: "Nav logo")
@@ -55,6 +39,7 @@
 }
 
 #let signaturnavn(data, dobbel) = context {
+  // HTML og PDF deler navnerekkefølge, men trenger ulikt kolonneoppsett.
   if target() == "html" {
     html.elem("div", attrs: (class: if dobbel { "brev-signaturnavn brev-signaturnavn-dobbel" } else { "brev-signaturnavn" }))[
       #if dobbel {
@@ -83,39 +68,5 @@
     #signaturnavn(data, dobbel)
     #v(26pt)
     #data.kontor
-  ]
-}
-
-#let brev(data) = {
-  assert("innhold_typst" in data, message: "innhold_typst er påkrevd")
-  assert(type(data.innhold_typst) == str, message: "innhold_typst må være en streng")
-  let innhold = eval(data.innhold_typst, mode: "markup")
-  let vedtak = data.at("brevtype", default: "") == "VEDTAKSBREV"
-  let bruker = data.at("mottaker", default: "") == "BRUKER"
-  let tekster = standardtekster(data.at("målform", default: "") == "NN")
-  let beslutter = data.at("beslutterNavn", default: "")
-  let dobbel-signatur = vedtak and beslutter != none and beslutter != ""
-
-  brevstil(data)[
-    #seksjon[
-      #personalia(data)
-    ]
-    #seksjon(redigerbar: true)[
-      #innhold
-    ]
-
-    #seksjon[
-      #if bruker {
-        if vedtak {
-          tekster.klagerett
-          tekster.innsynsrett
-        }
-        tekster.personopplysningsrett
-        tekster.veiledningsrett
-        tekster.sporsmal
-      }
-
-      #signatur(data, dobbel-signatur)
-    ]
   ]
 }

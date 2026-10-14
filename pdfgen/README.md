@@ -4,7 +4,9 @@ Typst-maler for brev i Superhelt, kjørt med [pdfgenrs](https://github.com/navik
 Dockerfile bruker en fast release fra [pdfgenrs-releases](https://github.com/navikt/pdfgenrs/releases).
 pdfgenrs laster API-malene `superhelt/brev` og `nav-brev/brev` fra `templates/`.
 Superhelt importerer felles `.typ`-hjelpmaler fra `resources/lib/`.
-`brev.typ` setter sammen brevet, `style.typ` definerer layouten, og
+`aksel-brev.typ` setter sammen brevet, og `brev-elementer.typ` inneholder personalia
+og signatur. `style.typ` definerer layouten, `editor-html.typ` tilpasser HTML til
+breveditoren, og `pdf-ua.typ` normaliserer PDF-overskrifter.
 `standardtekster.typ` inneholder standardtekster på bokmål og nynorsk.
 Gamle HBS-maler, den ubrukte endringer-malen og Helsetjenester-inngangen ligger
 i `til_sletting/` for senere sletting. Denne mappen kopieres ikke inn i imaget.

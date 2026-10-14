@@ -2,6 +2,7 @@ packages:
   - 'frontend'
   - 'packages/*'
   - 'e2e'
+  - 'pdfgen'
 
 # Alle pakker, også @navikt, hentes fra npmjs. Overstyrer lokal ~/.npmrc med @navikt:registry.
 registries:

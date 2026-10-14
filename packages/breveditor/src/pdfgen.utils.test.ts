@@ -20,6 +20,24 @@ describe("PDF-gen HTML-uttak", () => {
         expect(innhold).not.toContain("Etter redigerbart felt");
     });
 
+    it("beholder opprinnelige overskriftsnivåer og formatering ved gjentatt uttak", () => {
+        const innhold = "<h2>Vedtak</h2><p>Tekst</p><h4><strong>Begrunnelse</strong> <mark>viktig</mark></h4>";
+        let html = `<section><div class="data-editable">${innhold}</div></section>`;
+
+        for (let runde = 0; runde < 3; runde++) {
+            const redigerbart = finnRedigerbartInnhold(html);
+            const doc = new DOMParser().parseFromString(redigerbart, "text/html");
+
+            expect(Array.from(doc.querySelectorAll("h1, h2, h3, h4, h5, h6"), (el) => el.tagName)).toEqual([
+                "H2",
+                "H4",
+            ]);
+            expect(doc.querySelector("h4 strong")?.textContent).toBe("Begrunnelse");
+            expect(doc.querySelector("h4 mark")?.textContent).toBe("viktig");
+            html = `<section><div class="data-editable">${doc.body.innerHTML}</div></section>`;
+        }
+    });
+
     it("håndterer manglende redigerbart felt og skjulte seksjoner", () => {
         expect(finnRedigerbartInnhold("<p>Vanlig tekst</p>")).toBe(toXhtml(""));
 

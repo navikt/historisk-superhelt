@@ -24,24 +24,25 @@
       set text(size: 9pt)
       grid(
         columns: (1fr, auto),
-        [Behandlingsnummer: #data.behandlingsnummer],
+        [Saksnummer: #data.behandlingsnummer],
         [side #counter(page).get().first() av #counter(page).final().first()],
       )
     },
   )
   set heading(numbering: none)
-  show heading.where(level: 1): set text(size: 16pt, weight: "bold", tracking: 0.3pt)
-  show heading.where(level: 1): set par(leading: 7.2pt)
-  show heading.where(level: 1): set block(above: 40pt, below: 26pt)
-  show heading.where(level: 2): set text(size: 13pt, weight: "bold", tracking: 0.25pt)
-  show heading.where(level: 2): set par(leading: 5.6pt)
-  show heading.where(level: 3): set text(size: 12pt, weight: "bold", tracking: 0.2pt)
-  show heading.where(level: 3): set par(leading: 6.4pt)
-  show heading.where(level: 4): set text(size: 11pt, weight: "bold", tracking: 0.1pt)
-  show heading.where(level: 4): set par(leading: 7.2pt)
-  show heading.where(level: 2): set block(above: 26pt, below: 6pt)
-  show heading.where(level: 3): set block(above: 26pt, below: 6pt)
-  show heading.where(level: 4): set block(above: 26pt, below: 6pt)
+  // Depth styrer utseendet, mens level kan være normalisert for PDF/UA.
+  show heading.where(depth: 1): set text(size: 16pt, weight: "bold", tracking: 0.3pt)
+  show heading.where(depth: 1): set par(leading: 7.2pt)
+  show heading.where(depth: 1): set block(above: 40pt, below: 26pt)
+  show heading.where(depth: 2): set text(size: 13pt, weight: "bold", tracking: 0.25pt)
+  show heading.where(depth: 2): set par(leading: 5.6pt)
+  show heading.where(depth: 3): set text(size: 12pt, weight: "bold", tracking: 0.2pt)
+  show heading.where(depth: 3): set par(leading: 6.4pt)
+  show heading.where(depth: 4): set text(size: 11pt, weight: "bold", tracking: 0.1pt)
+  show heading.where(depth: 4): set par(leading: 7.2pt)
+  show heading.where(depth: 2): set block(above: 26pt, below: 6pt)
+  show heading.where(depth: 3): set block(above: 26pt, below: 6pt)
+  show heading.where(depth: 4): set block(above: 26pt, below: 6pt)
   set list(indent: 0pt, body-indent: 16pt, spacing: 7.2pt)
   set enum(indent: 0pt, body-indent: 16pt, spacing: 7.2pt)
   body
