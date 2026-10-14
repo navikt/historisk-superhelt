@@ -1,6 +1,6 @@
-FROM --platform=linux/amd64 ghcr.io/navikt/pdfgen:2.0.122
+FROM ghcr.io/navikt/pdfgenrs:1.0.44
+
 COPY templates /app/templates
-COPY fonts /app/fonts
 COPY resources /app/resources
-ENV ENABLE_HTML_ENDPOINT=true
-ENV DISABLE_PDF_GET=false
+COPY data /app/data
+COPY fonts /app/fonts

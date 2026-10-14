@@ -1,0 +1,32 @@
+{
+  "tittel": "Du får innvilget arbeidsavklaringspenger",
+  "dato": "5. september 2026",
+  "saksnummer": "12345678",
+  "mottaker": {
+    "navn": "Ola Nordmann",
+    "adresse": "Eksempelgata 1",
+    "postnummer": "0123",
+    "poststed": "Oslo"
+  },
+  "avsender": {
+    "navn": "Nav",
+    "adresse": "Postboks 354",
+    "postnummer": "8601",
+    "poststed": "Mo i Rana",
+    "enhet": "Nav Arbeid og ytelser",
+    "saksbehandler": "Kari Saksbehandler"
+  },
+  "innhold": [
+    "Du får arbeidsavklaringspenger fra 1. oktober 2026.",
+    "Du har rett på arbeidsavklaringspenger fordi arbeidsevnen din er nedsatt på grunn av sykdom eller skade. Vi vurderer at du trenger hjelp fra Nav for å komme i eller beholde arbeid.",
+    "Du må sende meldekort hver 14. dag for å få utbetaling. Du finner meldekortet på nav.no."
+  ],
+  "referanser": [
+    "Folketrygdloven §§ 11-5 og 11-6"
+  ],
+  "kontakt": {
+    "telefon": "55 55 33 33",
+    "aapningstid": "Hverdager kl. 9–15",
+    "nettside": "nav.no/kontaktoss"
+  }
+}
