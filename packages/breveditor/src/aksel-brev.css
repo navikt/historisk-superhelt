@@ -54,6 +54,66 @@
         margin-bottom: 2.5rem;
     }
 
+    .brev-logo {
+        margin-bottom: var(--ax-space-24);
+    }
+
+    .brev-logo img {
+        display: block;
+        height: 1.25rem;
+        width: auto;
+        max-width: 100%;
+    }
+
+    .brev-personalia {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: var(--ax-space-24);
+    }
+
+    .brev-personalia dl {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: var(--ax-space-24);
+        margin: 0;
+        min-width: 0;
+    }
+
+    .brev-personalia dt,
+    .brev-personalia dd,
+    .brev-dato,
+    .brev-signatur p {
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .brev-personalia dt {
+        font-weight: normal;
+    }
+
+    .brev-signatur {
+        margin-top: var(--ax-space-24);
+    }
+
+    .brev-signaturnavn-dobbel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--ax-space-24);
+    }
+
+    .brev-signatur .brev-kontor {
+        margin-top: var(--ax-space-24);
+    }
+
+    @media (max-width: 30rem) {
+        .brev-signaturnavn-dobbel {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0;
+        }
+    }
+
     #pagenumber:before {
         content: counter(page);
     }

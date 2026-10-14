@@ -1,7 +1,0 @@
-#let veiledningsrett_NN = [
-  == Du har rett til rettleiing frå Nav
-
-  Vi har plikt til å rettleie deg om rettane og pliktene dine i saka, både før, under og etter saksbehandlinga.
-  Dette følger av forvaltningslova § 11. Ta kontakt på telefon 55 55 33 33 eller på nav.no/kontakt dersom
-  du har spørsmål.
-]

@@ -4,6 +4,8 @@ Typst-maler for brev i Superhelt, kjørt med [pdfgenrs](https://github.com/navik
 Dockerfile bruker en fast release fra [pdfgenrs-releases](https://github.com/navikt/pdfgenrs/releases).
 pdfgenrs laster API-malene `superhelt/brev` og `nav-brev/brev` fra `templates/`.
 Superhelt importerer felles `.typ`-hjelpmaler fra `resources/lib/`.
+`brev.typ` setter sammen brevet, `style.typ` definerer layouten, og
+`standardtekster.typ` inneholder standardtekster på bokmål og nynorsk.
 Gamle HBS-maler, den ubrukte endringer-malen og Helsetjenester-inngangen ligger
 i `til_sletting/` for senere sletting. Denne mappen kopieres ikke inn i imaget.
 
@@ -89,7 +91,13 @@ Manglende felt, feil datatype eller ugyldig Typst gir en renderingsfeil, ikke HT
 Ikke send reelle personopplysninger ved lokal testing.
 
 Brukerbrev får standardtekster på valgt målform. Klage- og innsynstekst inkluderes
-bare i vedtaksbrev til brukere. Samhandlerbrev får ikke disse standardtekstene.
+bare i vedtaksbrev til brukere. Begge brevvariantene får personopplysningsrett,
+veiledningsrett og kontaktinformasjon. Kontaktinformasjonen står etter signaturen.
+Samhandlerbrev får ingen standardtekster.
+
+`VEDTAKSBREV` får dobbel signatur når beslutter er oppgitt, ellers enkel signatur.
+`BREV`, `INNHENTINGSBREV` og `INFORMASJONSBREV` er fritekstbrev og får alltid
+bare saksbehandlerens signatur, også når `beslutterNavn` finnes i input.
 
 ## Drift
 

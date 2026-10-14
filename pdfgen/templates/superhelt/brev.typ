@@ -1,3 +1,3 @@
-#import "/resources/lib/base.typ": brev
+#import "/resources/lib/brev.typ": brev
 
 #brev(json("/data/superhelt/brev.json"))

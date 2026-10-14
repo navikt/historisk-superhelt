@@ -1,7 +1,0 @@
-#let sporsmal_NN = [
-  == Har du spørsmål?
-
-  Du finn meir informasjon på nav.no.
-  På nav.no/kontakt kan du chatte eller skrive til oss.
-  Dersom du ikkje finn svar på nav.no kan du ringe oss på telefon 55 55 33 33, kvardagar 09.00–15.00.
-]

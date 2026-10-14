@@ -14,6 +14,7 @@ data class PdfgenRequest(
     val beslutterNavn: String?,
     val kontor: String,
     val html: String,
+    val innhold_typst: String?,
     val brevtype: PdfgenBrevtype,
     val mottaker: PdfgenMottakerType,
 )

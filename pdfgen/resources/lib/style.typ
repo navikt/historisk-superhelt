@@ -1,23 +1,27 @@
 #let brevstil(data, body) = {
   set document(
-    title: "Brev fra NAV",
+    title: "Brev fra Nav",
     author: "Nav",
     description: "",
   )
   set text(
     font: "Source Sans Pro",
-    size: 9pt,
+    size: 11pt,
     lang: "no",
+    top-edge: 0.8em,
+    bottom-edge: 0.2em,
   )
-  set par(leading: 3pt, spacing: 9pt)
+  // Typst måler linjeavstanden fra tekstens top-edge til neste baseline.
+  set par(leading: 7.2pt, spacing: 23.2pt)
   set page(
     paper: "a4",
-    margin: (top: 48pt, right: 48pt, bottom: 48pt, left: 55.5pt),
+    margin: (top: 64pt, right: 64pt, bottom: 74pt, left: 64pt),
+    footer-descent: 40.8pt,
     header: if data.at("forhandsvisning", default: false) {
       align(right, text(fill: red, weight: "bold", size: 13.5pt)[Forhåndsvisning])
     },
     footer: context {
-      set text(size: 6.75pt)
+      set text(size: 9pt)
       grid(
         columns: (1fr, auto),
         [Behandlingsnummer: #data.behandlingsnummer],
@@ -26,19 +30,19 @@
     },
   )
   set heading(numbering: none)
-  show heading.where(level: 1): it => block(above: 30pt, below: 19.5pt)[
-    #text(size: 12pt, weight: "bold", tracking: 0.225pt, it.body)
-  ]
-  show heading.where(level: 2): it => block(above: 19.5pt, below: 4.5pt)[
-    #text(size: 9.75pt, weight: "bold", tracking: 0.1875pt, it.body)
-  ]
-  show heading.where(level: 3): it => block(above: 19.5pt, below: 4.5pt)[
-    #text(size: 9pt, weight: "bold", tracking: 0.15pt, it.body)
-  ]
-  show heading.where(level: 4): it => block(above: 19.5pt, below: 4.5pt)[
-    #text(size: 8.25pt, weight: "bold", tracking: 0.075pt, it.body)
-  ]
-  set list(indent: 0pt, body-indent: 12pt, spacing: 3pt)
-  set enum(indent: 0pt, body-indent: 12pt, spacing: 3pt)
+  show heading.where(level: 1): set text(size: 16pt, weight: "bold", tracking: 0.3pt)
+  show heading.where(level: 1): set par(leading: 7.2pt)
+  show heading.where(level: 1): set block(above: 40pt, below: 26pt)
+  show heading.where(level: 2): set text(size: 13pt, weight: "bold", tracking: 0.25pt)
+  show heading.where(level: 2): set par(leading: 5.6pt)
+  show heading.where(level: 3): set text(size: 12pt, weight: "bold", tracking: 0.2pt)
+  show heading.where(level: 3): set par(leading: 6.4pt)
+  show heading.where(level: 4): set text(size: 11pt, weight: "bold", tracking: 0.1pt)
+  show heading.where(level: 4): set par(leading: 7.2pt)
+  show heading.where(level: 2): set block(above: 26pt, below: 6pt)
+  show heading.where(level: 3): set block(above: 26pt, below: 6pt)
+  show heading.where(level: 4): set block(above: 26pt, below: 6pt)
+  set list(indent: 0pt, body-indent: 16pt, spacing: 7.2pt)
+  set enum(indent: 0pt, body-indent: 16pt, spacing: 7.2pt)
   body
 }
