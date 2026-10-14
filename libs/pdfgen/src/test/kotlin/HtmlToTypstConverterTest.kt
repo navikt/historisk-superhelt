@@ -80,10 +80,26 @@ class HtmlToTypstConverterTest {
     }
 
     @Test
-    fun `markering fra Highlight og WordHighlight fjernes uten å miste tekst`() {
+    fun `markering fra Highlight og WordHighlight beholdes med nestet formatering`() {
         val html = "<p>Dette er <mark><strong>viktig</strong> informasjon</mark> til deg.</p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("Dette er *viktig* informasjon til deg.")
+        assertThat(htmlToTypst(html)).isEqualTo("Dette er #highlight[*viktig* informasjon] til deg.")
+    }
+
+    @Test
+    fun `markering bruker standardfarge uten å ta med HTML-attributter`() {
+        val html = """<p><mark data-color="#ff0000" style="background-color: red">Viktig</mark></p>"""
+
+        assertThat(htmlToTypst(html)).isEqualTo("#highlight[Viktig]")
+    }
+
+    @Test
+    fun `markering i listepunkter beholder lenker og linjeskift`() {
+        val html =
+            """<ul><li><p><mark><a href="https://www.nav.no">Les mer</a><br><em>Frist</em></mark></p></li></ul>"""
+
+        assertThat(htmlToTypst(html))
+            .isEqualTo("- #highlight[#link(\"https://www.nav.no\")[Les mer]\\\n  _Frist_]")
     }
 
     @ParameterizedTest

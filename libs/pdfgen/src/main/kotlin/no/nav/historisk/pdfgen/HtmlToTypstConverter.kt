@@ -51,6 +51,12 @@ fun htmlToTypst(html: String): String {
 
                         "br" -> builder.append("\\\n")
 
+                        "mark" -> {
+                            builder.append("#highlight[")
+                            convertNode(node)
+                            builder.append("]")
+                        }
+
                         "b", "strong" -> {
                             builder.append("*");
                             convertNode(node)
