@@ -1,13 +1,12 @@
-import assert from "node:assert/strict";
 import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import test from "node:test";
+import { expect, test } from "vitest";
 import { NodeCompiler } from "@myriaddreamin/typst-ts-node-compiler";
 
 const workspace = fileURLToPath(new URL("../", import.meta.url));
-const tests = readdirSync(new URL("./", import.meta.url)).filter((name) => name.endsWith(".typ")).sort();
+const tests = readdirSync(new URL("./", import.meta.url)).filter((name) => name.endsWith(".test.typ")).sort();
 
-assert.ok(tests.length > 0, "No Typst tests found");
+expect(tests.length, "No Typst tests found").toBeGreaterThan(0);
 
 for (const name of tests) {
     test(name, () => {
@@ -16,9 +15,9 @@ for (const name of tests) {
 
         if (result.hasError()) {
             result.printErrors();
-            assert.fail(`Typst assertions failed in ${name}`);
+            expect.fail(`Typst assertions failed in ${name}`);
         }
-        assert.ok(result.result, `No compiled document for ${name}`);
+        expect(result.result, `No compiled document for ${name}`).not.toBeNull();
     });
 }
 
@@ -26,6 +25,6 @@ test("failed Typst assertions are reported as errors", () => {
     const compiler = NodeCompiler.create({ workspace });
     const result = compiler.compile({ mainFileContent: "#assert.eq(1, 2)" });
 
-    assert.equal(result.hasError(), true);
-    assert.equal(result.result, null);
+    expect(result.hasError()).toBe(true);
+    expect(result.result).toBeNull();
 });
