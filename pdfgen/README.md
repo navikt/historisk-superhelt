@@ -19,26 +19,19 @@ Workflowen deployer automatisk fra main. Backend og editor bruker fortsatt den g
 Kjør fra repository-roten:
 
 ```bash
-./pdfgen/run_development.sh
+docker compose up --watch --build
 ```
 
 Tjenesten kjører på port 8086. `DEV_MODE=true` aktiverer GET-endpointet med
 [eksempeldata](data/superhelt/brev.json):
 
 http://localhost:8086/api/v1/genpdf/superhelt/brev
+http://localhost:8086/api/v1/genhtml/superhelt/brev
 
-pdfgenrs laster maler, fonter og eksempeldata ved oppstart. Restart etter endringer:
-
-```bash
-docker compose -f pdfgen/compose.yml restart pdfgen
-```
-
-`DEV_MODE` skal ikke aktiveres i produksjon.
 
 ## Brevdata og API
 
 `superhelt/brev` bruker kontrakten under.
-`nav-brev/brev` er en selvstendig mal med [egne eksempeldata](data/nav-brev/brev.json).
 Send JSON med POST til `/api/v1/genpdf/{malnavn}` for å få en PDF:
 
 ```bash
@@ -101,7 +94,3 @@ Samhandlerbrev får ingen standardtekster.
 `BREV`, `INNHENTINGSBREV` og `INFORMASJONSBREV` er fritekstbrev og får alltid
 bare saksbehandlerens signatur, også når `beslutterNavn` finnes i input.
 
-## Drift
-
-Health checks ligger på `/internal/is_alive` og `/internal/is_ready`.
-Prometheus-metrikker ligger på `/internal/metrics`. Nais bruker SDK-autoinstrumentering.
