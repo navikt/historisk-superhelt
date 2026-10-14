@@ -33,7 +33,7 @@ spec:
     limits:
       memory: 1024Mi
     requests:
-      memory: 512Mi
+      memory: 128Mi
   observability:
     autoInstrumentation:
       enabled: true
