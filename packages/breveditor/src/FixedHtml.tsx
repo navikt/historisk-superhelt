@@ -8,7 +8,7 @@ export function FixedHtml({ html }: FixedHtmlProps) {
     const sanitizedHtml = DOMPurify.sanitize(html);
     return (
         <div>
-            <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+            <div className="brev-innhold" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
         </div>
     );
 }
