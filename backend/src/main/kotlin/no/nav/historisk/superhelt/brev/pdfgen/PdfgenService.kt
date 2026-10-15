@@ -6,7 +6,6 @@ import no.nav.historisk.pdfgen.PdfgenMottakerType
 import no.nav.historisk.pdfgen.PdfgenRequest
 import no.nav.historisk.pdfgen.Personalia
 import no.nav.historisk.pdfgen.htmlToTypst
-import no.nav.historisk.pdfgen.htmlToXhtml
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
@@ -43,7 +42,6 @@ class PdfgenService(
             beslutterNavn = beslutterNavn,
             kontor = "Nav Arbeid og ytelser",
             innhold_typst = htmlToTypst(brev.innhold ?: ""),
-            html = htmlToXhtml(brev.innhold ?: ""),
             brevtype = brev.type.asPdfGenBrevType(),
             mottaker = brev.mottakerType.asPdfgenMottakerType(),
         )
