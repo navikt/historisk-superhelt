@@ -170,6 +170,9 @@ catalogs:
     '@navikt/aksel-icons':
       specifier: ^8.18.0
       version: 8.18.0
+    '@navikt/ds-css':
+      specifier: ^8.18.0
+      version: 8.18.0
     '@navikt/ds-react':
       specifier: ^8.18.0
       version: 8.18.0
@@ -245,7 +248,7 @@ importers:
         specifier: 'catalog:'
         version: 8.18.0
       '@navikt/ds-css':
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.18.0
       '@navikt/ds-react':
         specifier: 'catalog:'
@@ -348,6 +351,9 @@ importers:
       '@biomejs/biome':
         specifier: 'catalog:'
         version: 2.5.15
+      '@navikt/ds-css':
+        specifier: 'catalog:'
+        version: 8.18.0
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0

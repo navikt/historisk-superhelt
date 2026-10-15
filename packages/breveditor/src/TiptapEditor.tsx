@@ -40,7 +40,7 @@ function TiptapEditor({
     // Oppdater editor-innhold når initialContentHtml endres
     useEffect(() => {
         if (!editor) return;
-        editor.chain().setContent(initialContentHtml, { emitUpdate: false });
+        editor.chain().setContent(initialContentHtml, { emitUpdate: false }).run();
     }, [editor, initialContentHtml]);
 
     const providerValue = useMemo(() => ({ editor }), [editor]);

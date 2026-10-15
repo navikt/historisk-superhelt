@@ -16,7 +16,7 @@
     "dependencies": {
         "@grafana/faro-web-sdk": "^2.12.1",
         "@navikt/aksel-icons": "catalog:",
-        "@navikt/ds-css": "^8.18.0",
+        "@navikt/ds-css": "catalog:",
         "@navikt/ds-react": "catalog:",
         "@navikt/ds-tokens": "^8.18.0",
         "@superhelt/api": "workspace:*",
