@@ -9,6 +9,72 @@ import org.junit.jupiter.params.provider.ValueSource
 class HtmlToTypstConverterTest {
 
     @ParameterizedTest
+    @ValueSource(
+        strings = ["\\", "#", "*", "_", "`", "$", "@", "<", ">", "[", "]", "{", "}", "=", "+", "-", "/", "~", ":", ".", "\"", "'"]
+    )
+    fun `Typst-tegn i fritekst escapes etter HTML-dekoding`(char: String) {
+        val encoded = char.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+        assertThat(htmlToTypst("<p>$encoded</p>")).isEqualTo("\\$char")
+    }
+
+    @Test
+    fun `Typst-kode i fritekst forblir tekst inne i HTML-formatering`() {
+        val html = """<h2>= Tittel</h2><p><mark><strong>#panic("test")</strong></mark> ${'$'}x${'$'} [tekst]</p>"""
+        val expected = """
+            == \= Tittel
+
+            #highlight[*\#panic(\"test\")*] \${'$'}x\${'$'} \[tekst\]
+        """.trimIndent()
+
+        assertThat(htmlToTypst(html)).isEqualTo(expected)
+    }
+
+    @Test
+    fun `fritekst kan ikke avslutte formateringsblokker`() {
+        val html = """<p><mark>]\#panic("test")[</mark><a href="https://nav.no">]#panic("test")[</a></p>"""
+
+        assertThat(htmlToTypst(html))
+            .isEqualTo("""#highlight[\]\\\#panic(\"test\")\[]#link("https://nav.no")[\]\#panic(\"test\")\[]""")
+    }
+
+    @Test
+    fun `Typst-tegn fordelt over HTML-noder escapes hver for seg`() {
+        assertThat(htmlToTypst("<p>1<span>.</span> Punkt <span>#</span>panic(&quot;test&quot;)</p>"))
+            .isEqualTo("""1\. Punkt \#panic(\"test\")""")
+    }
+
+    @Test
+    fun `kommentarer og formatering skrevet som tekst escapes`() {
+        val html = """<p>// /* */ *fet* _kursiv_ `kode` -- --- ... \</p>"""
+
+        assertThat(htmlToTypst(html))
+            .isEqualTo("""\/\/ \/\* \*\/ \*fet\* \_kursiv\_ \`kode\` \-\- \-\-\- \.\.\. \\""")
+    }
+
+    @Test
+    fun `liste og referanse skrevet som tekst blir ikke Typst-struktur`() {
+        assertThat(htmlToTypst("<p>1. Punkt</p><p>- Punkt</p><p>@ref &lt;etikett&gt;</p>"))
+            .isEqualTo("1\\. Punkt\n\n\\- Punkt\n\n\\@ref \\<etikett\\>")
+    }
+
+    @Test
+    fun `lenkeadresse kan ikke avslutte Typst-strengen`() {
+        val html = """<p><a href="https://example.com/&quot;); panic(&quot;test&quot;); //\sti">Test</a></p>"""
+
+        assertThat(htmlToTypst(html))
+            .isEqualTo("""#link("https://example.com/\"); panic(\"test\"); //\\sti")[Test]""")
+    }
+
+    @Test
+    fun `kontrolltegn i lenkeadresse escapes som Typst-kodepunkter`() {
+        val html = "<p><a href=\"https://example.com/\n\r\t\">Test</a></p>"
+
+        assertThat(htmlToTypst(html))
+            .isEqualTo("""#link("https://example.com/\u{a}\u{d}\u{9}")[Test]""")
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = ["", "<p></p>"])
     fun `tom editor gir tom Typst-tekst`(html: String) {
         assertThat(htmlToTypst(html)).isEmpty()
@@ -19,7 +85,7 @@ class HtmlToTypstConverterTest {
         val html = "<p>Vi viser til søknaden din.</p><p>Du får dekket utgiftene.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("Vi viser til søknaden din.\n\nDu får dekket utgiftene.")
+            .isEqualTo("Vi viser til søknaden din\\.\n\nDu får dekket utgiftene\\.")
     }
 
     @ParameterizedTest
@@ -28,7 +94,7 @@ class HtmlToTypstConverterTest {
         val html = "<h$level>Begrunnelse</h$level><p>Du oppfyller vilkårene.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("$marker Begrunnelse\n\nDu oppfyller vilkårene.")
+            .isEqualTo("$marker Begrunnelse\n\nDu oppfyller vilkårene\\.")
     }
 
     @Test
@@ -36,7 +102,7 @@ class HtmlToTypstConverterTest {
         val html = "<p>Dette er <strong>viktig</strong> og <em>utdypende</em> tekst.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("Dette er *viktig* og _utdypende_ tekst.")
+            .isEqualTo("Dette er *viktig* og _utdypende_ tekst\\.")
     }
 
     @Test
@@ -59,7 +125,7 @@ class HtmlToTypstConverterTest {
             """<p>Les mer på <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.nav.no/helse">nav.no</a>.</p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""Les mer på #link("https://www.nav.no/helse")[nav.no].""")
+            .isEqualTo("""Les mer på #link("https://www.nav.no/helse")[nav\.no]\.""")
     }
 
     @Test
@@ -76,14 +142,14 @@ class HtmlToTypstConverterTest {
             """<p>Vilkår &amp; rettigheter: <a href="https://www.nav.no/sok?side=1&amp;antall=10">Søk &amp; finn</a></p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""Vilkår & rettigheter: #link("https://www.nav.no/sok?side=1&antall=10")[Søk & finn]""")
+            .isEqualTo("""Vilkår & rettigheter\: #link("https://www.nav.no/sok?side=1&antall=10")[Søk & finn]""")
     }
 
     @Test
     fun `markering fra Highlight og WordHighlight beholdes med nestet formatering`() {
         val html = "<p>Dette er <mark><strong>viktig</strong> informasjon</mark> til deg.</p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("Dette er #highlight[*viktig* informasjon] til deg.")
+        assertThat(htmlToTypst(html)).isEqualTo("Dette er #highlight[*viktig* informasjon] til deg\\.")
     }
 
     @Test
@@ -107,14 +173,14 @@ class HtmlToTypstConverterTest {
     fun `ukjente tagger beholder tekst og formatering uten å ta med attributter`(tag: String) {
         val html = """<$tag class="innhold" style="color: red">Dette er <strong>viktig</strong> og <em>nyttig</em>.</$tag>"""
 
-        assertThat(htmlToTypst(html)).isEqualTo("Dette er *viktig* og _nyttig_.")
+        assertThat(htmlToTypst(html)).isEqualTo("Dette er *viktig* og _nyttig_\\.")
     }
 
     @Test
     fun `span inne i avsnitt beholder mellomrom rundt teksten`() {
         val html = "<p>Tekst før <span>innhold</span> og etter.</p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("Tekst før innhold og etter.")
+        assertThat(htmlToTypst(html)).isEqualTo("Tekst før innhold og etter\\.")
     }
 
     @Test
@@ -184,7 +250,7 @@ class HtmlToTypstConverterTest {
         val html = "<p>Du må sende inn:</p><ul><li><p>Kvittering</p></li></ul><p>Fristen er fire uker.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("Du må sende inn:\n\n- Kvittering\n\nFristen er fire uker.")
+            .isEqualTo("Du må sende inn\\:\n\n- Kvittering\n\nFristen er fire uker\\.")
     }
 
     @Test

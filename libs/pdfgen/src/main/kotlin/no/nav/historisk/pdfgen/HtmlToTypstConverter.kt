@@ -11,7 +11,7 @@ fun htmlToTypst(html: String): String {
     fun convertNode(element: Element) {
         for (node in element.childNodes()) {
             when (node) {
-                is TextNode -> builder.append(node.text())
+                is TextNode -> builder.append(escapeTypstMarkup(node.text()))
                 is Element -> {
                     when (node.tagName()) {
                         "h1" -> {
@@ -21,19 +21,19 @@ fun htmlToTypst(html: String): String {
                         }
 
                         "h2" -> {
-                            builder.append("\n== ");
+                            builder.append("\n== ")
                             convertNode(node)
                             builder.append("\n")
                         }
 
                         "h3" -> {
-                            builder.append("\n=== ");
+                            builder.append("\n=== ")
                             convertNode(node)
                             builder.append("\n")
                         }
 
                         "h4" -> {
-                            builder.append("\n==== ");
+                            builder.append("\n==== ")
                             convertNode(node)
                             builder.append("\n")
                         }
@@ -58,13 +58,13 @@ fun htmlToTypst(html: String): String {
                         }
 
                         "b", "strong" -> {
-                            builder.append("*");
+                            builder.append("*")
                             convertNode(node)
                             builder.append("*")
                         }
 
                         "i", "em" -> {
-                            builder.append("_");
+                            builder.append("_")
                             convertNode(node)
                             builder.append("_")
                         }
@@ -85,7 +85,7 @@ fun htmlToTypst(html: String): String {
                         }
 
                         "a" -> {
-                            val href = node.attr("href")
+                            val href = escapeTypstString(node.attr("href"))
                             builder.append("#link(\"$href\")[")
                             convertNode(node)
                             builder.append("]")
@@ -100,4 +100,22 @@ fun htmlToTypst(html: String): String {
 
     convertNode(doc.body())
     return builder.toString().trim()
+}
+
+private fun escapeTypstMarkup(text: String): String = buildString {
+    for (char in text) {
+        if (char in "\\#*_`$@<>[]{}=+-/~:.\"'") append('\\')
+        append(char)
+    }
+}
+
+private fun escapeTypstString(text: String): String = buildString {
+    for (char in text) {
+        when (char) {
+            '\\' -> append("\\\\")
+            '"' -> append("\\\"")
+            in '\u0000'..'\u001f' -> append("\\u{${char.code.toString(16)}}")
+            else -> append(char)
+        }
+    }
 }
