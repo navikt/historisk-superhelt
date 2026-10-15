@@ -1,4 +1,4 @@
-name: Bygg og deploy pdfgen
+name: Bygg, test og deploy pdfgen
 
 on:
   push:
@@ -10,13 +10,80 @@ on:
       - '.github/workflows/pdfgen.yml'
       - '.nais/dev.json'
       - '.nais/prod.json'
+  pull_request:
+    paths:
+      - 'pdfgen/**'
+      - '.github/workflows/pdfgen.yml'
 
 concurrency:
-  group: pdfgen-release
+  group: pdfgen-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  test:
+    name: "Test pdfgen"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+
+      - name: Installer avhengigheter
+        run: pnpm install --frozen-lockfile
+
+      - name: Kjør lokale tester
+        working-directory: ./pdfgen
+        run: pnpm test --reporter=default --reporter=junit --outputFile=test-results/unit.xml
+
+      - name: Start pdfgen
+        run: docker compose -f pdfgen/compose.yml up --build -d --wait
+
+      - name: Vent på pdfgen
+        run: >-
+          curl --fail --silent --show-error --output /dev/null
+          --retry 30 --retry-connrefused --retry-delay 2 --retry-max-time 120 --max-time 10
+          http://localhost:8086/internal/is_alive
+
+      - name: Kjør integrasjonstester
+        working-directory: ./pdfgen
+        run: pnpm test:integration --reporter=default --reporter=junit --outputFile=test-results/integration.xml
+
+      - name: Rapporter pdfgen-tester
+        if: >-
+          always() &&
+          (github.event_name != 'pull_request' ||
+          (github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.user.login != 'dependabot[bot]' &&
+          github.actor != 'dependabot[bot]'))
+        uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
+        with:
+          check_name: Pdfgen (Vitest)
+          report_paths: pdfgen/test-results/*.xml
+          comment: ${{ github.event_name == 'pull_request' }}
+
+      - name: Last opp testresultater
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: pdfgen-test-results
+          path: pdfgen/test-results/
+          retention-days: 3
+
+      - name: Vis pdfgen-logger ved feil
+        if: failure()
+        run: docker compose -f pdfgen/compose.yml logs
+
+      - name: Stopp pdfgen
+        if: always()
+        run: docker compose -f pdfgen/compose.yml down
+
   build:
+    needs: [test]
+    if: github.event_name == 'push'
     name: "Bygg pdfgen"
     runs-on: ubuntu-latest
     timeout-minutes: 20

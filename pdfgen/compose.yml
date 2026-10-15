@@ -5,11 +5,20 @@ services:
       dockerfile: Dockerfile
     image: superhelt-pdfgen:latest
     ports:
-      - "8086:8080"
-    volumes:
-      - ./templates:/app/templates
-      - ./fonts:/app/fonts
-      - ./data:/app/data
-      - ./resources:/app/resources
-#    environment:
-#      JDK_JAVA_OPTIONS: ${JDK_JAVA_OPTIONS}
+      - "${PDFGEN_PORT:-8086}:8080"
+    environment:
+      DEV_MODE: "true"
+    develop:
+      watch:
+        - path: ./templates
+          target: /app/templates
+          action: sync+restart
+        - path: ./data
+          target: /app/data
+          action: sync+restart
+        - path: ./fonts
+          target: /app/fonts
+          action: sync+restart
+        - path: ./resources
+          target: /app/resources
+          action: sync+restart

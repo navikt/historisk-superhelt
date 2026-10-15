@@ -1,6 +1,11 @@
 package no.nav.historisk.superhelt.brev.pdfgen
 
-import no.nav.historisk.pdfgen.*
+import no.nav.historisk.pdfgen.PdfgenBrevtype
+import no.nav.historisk.pdfgen.PdfgenClient
+import no.nav.historisk.pdfgen.PdfgenMottakerType
+import no.nav.historisk.pdfgen.PdfgenRequest
+import no.nav.historisk.pdfgen.Personalia
+import no.nav.historisk.pdfgen.htmlToTypst
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevType
@@ -36,7 +41,7 @@ class PdfgenService(
             saksbehandlerNavn = sak.saksbehandler.navn,
             beslutterNavn = beslutterNavn,
             kontor = "Nav Arbeid og ytelser",
-            html = htmlToXhtml(brev.innhold ?: ""),
+            innhold_typst = htmlToTypst(brev.innhold ?: ""),
             brevtype = brev.type.asPdfGenBrevType(),
             mottaker = brev.mottakerType.asPdfgenMottakerType(),
         )

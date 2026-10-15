@@ -23,13 +23,12 @@ export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly, save
     return (
         <Box
             className="htmleditor"
-            padding="space-24"
             background="neutral-soft"
             borderWidth="1"
             borderRadius="8"
             borderColor="neutral-subtle"
         >
-            <VStack gap="space-16">
+            <VStack gap="space-16" className="brev-layout">
                 <VStack gap="space-24" paddingBlock="space-16">
                     <FixedHtml html={prefix} />
                     <TiptapEditor

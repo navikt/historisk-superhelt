@@ -1,0 +1,17 @@
+{
+    "name": "@superhelt/pdfgen",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test": "vitest run --project unit",
+        "test:integration": "vitest run --project integration",
+        "test:all": "pnpm run test && pnpm run test:integration"
+    },
+    "devDependencies": {
+        "@myriaddreamin/typst-ts-node-compiler": "0.7.0",
+        "@types/jsdom": "^30.0.0",
+        "jsdom": "^30.1.2",
+        "pdfjs-dist": "^6.4.299",
+        "vitest": "catalog:"
+    }
+}

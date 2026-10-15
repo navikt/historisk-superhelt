@@ -1,5 +1,5 @@
 import { Dialog, Textarea, VStack } from "@navikt/ds-react";
-import { BreakpointXl } from "@navikt/ds-tokens/dist/tokens";
+import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { henleggSakMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
@@ -61,7 +61,7 @@ export function Henlegg({ open, onOpenChange }: HenleggProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointXl, resize: "both", overflow: "auto" }}>
+            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg, resize: "both", overflow: "auto" }}>
                 <Dialog.Header>
                     <Dialog.Title>Henlegg sak</Dialog.Title>
                 </Dialog.Header>

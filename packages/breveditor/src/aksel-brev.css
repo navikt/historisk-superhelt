@@ -1,114 +1,160 @@
-.htmleditor {
-    font-family: "Source Sans Pro", SourceSansPro, Source_Sans_Pro, ArialSystem, sans-serif;
-    font-size: 12pt;
-    margin-left: 0;
-    margin-right: 0;
+/*
+** Styling under her følger (omtrent) aksel sine anbefalinger
+** https://aksel.nav.no/monster-maler/brev/visuelle-retningslinjer-for-brev
+*/
 
-    /*
-    ** Styling under her følger (omtrent) aksel sine anbefalinger
-    ** https://aksel.nav.no/monster-maler/brev/visuelle-retningslinjer-for-brev
-    */
+.htmleditor {
+    container: brev / inline-size;
+    min-width: 0;
+}
+
+.htmleditor .brev-layout,
+.htmleditor .brev-editor {
+    padding: var(--ax-space-12);
+    min-width: 0;
+}
+
+.htmleditor .brev-editor-ramme {
+    min-width: 0;
+}
+
+.htmleditor :is(.brev-innhold, .brev-editor .tiptap) {
+    font-family: "Source Sans 3", Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    max-inline-size: 80ch;
+    margin-inline: auto;
+    overflow-wrap: anywhere;
+
+    :is(h1, h2, h3, h4) {
+        font-weight: 700;
+        margin-block: var(--ax-space-24) var(--ax-space-8);
+    }
 
     h1 {
-        font-size: 18pt;
+        font-size: 1.5rem;
+        line-height: 1.25;
         letter-spacing: 0.3px;
-        margin-top: 2rem;
-        margin-bottom: 1.5rem;
+        margin-block-end: var(--ax-space-24);
     }
 
     h2 {
-        font-size: 14pt;
+        font-size: 1.1875rem;
+        line-height: 1.5;
         letter-spacing: 0.25px;
     }
 
     h3 {
-        font-size: 13pt;
+        font-size: 1.125rem;
+        line-height: 1.5;
         letter-spacing: 0.2px;
     }
 
     h4 {
-        font-size: 12pt;
+        font-size: 1rem;
+        line-height: 1.5;
         letter-spacing: 0.1px;
     }
 
-    h2,
-    h3,
-    h4 {
-        margin-top: 1.25rem;
-        margin-bottom: 0.5rem;
+    p,
+    ul,
+    ol {
+        margin-block: 0 var(--ax-space-16);
+    }
+
+    ul,
+    ol {
+        padding-inline-start: var(--ax-space-24);
     }
 
     li {
-        margin-top: -0.5rem;
+        margin-block: var(--ax-space-4);
     }
 
-    mark {
-        background-color: var(--ax-bg-warning-moderate-hoverA);
-        color: var(--ax-bg-warning-strong);
-        padding: 0 0.25rem;
-        border-radius: var(--ax-radius-4);
-    }
-
-    .navLogo {
-        height: 1.25rem;
-        margin-bottom: 2.5rem;
-    }
-
-    #pagenumber:before {
-        content: counter(page);
-    }
-
-    #pagecount:before {
-        content: counter(pages);
-    }
-
-    header {
-        height: 4rem;
-        position: relative;
-    }
-
-    .personalia {
-        margin-right: 10%;
-        float: left;
-    }
-
-    .personalia p {
-        margin: 0;
-    }
-
-    .dato {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        margin: 0;
-    }
-
-    .hilsen {
-        margin-top: 32px;
-    }
-
-    .hilsen p {
-        margin: 0;
-    }
-
-    .signatur {
-        margin-top: 26px;
-    }
-
-    .beslutter {
-        float: left;
-        margin-right: 50%;
-    }
-
-    .venstrestill {
-        float: left;
-    }
-
-    .right-align {
-        text-align: right;
+    li > p,
+    li > ul,
+    li > ol {
+        margin-block: 0;
     }
 
     a {
-        text-decoration: none;
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
+    }
+
+    .brev-logo {
+        margin-bottom: var(--ax-space-32);
+    }
+
+    .brev-logo img {
+        display: block;
+        height: 1.5rem;
+        width: auto;
+        max-width: 100%;
+    }
+
+    .brev-personalia {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--ax-space-16);
+    }
+
+    .brev-personalia dl {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: var(--ax-space-16);
+        margin: 0;
+        max-width: 100%;
+    }
+
+    .brev-personalia dt,
+    .brev-personalia dd,
+    .brev-dato,
+    .brev-signatur p {
+        margin: 0;
+    }
+
+    .brev-personalia dt {
+        font-weight: normal;
+    }
+
+    .brev-signatur {
+        margin-top: var(--ax-space-32);
+    }
+
+    .brev-signaturnavn-dobbel {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--ax-space-8);
+    }
+
+    .brev-signatur .brev-kontor {
+        margin-top: var(--ax-space-24);
+    }
+}
+
+@container brev (min-width: 40rem) {
+    .htmleditor .brev-layout,
+    .htmleditor .brev-editor {
+        padding: var(--ax-space-24);
+    }
+
+    .htmleditor :is(.brev-innhold, .brev-editor .tiptap) {
+        .brev-logo {
+            margin-bottom: var(--ax-space-48);
+        }
+
+        .brev-personalia {
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .brev-signaturnavn-dobbel {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--ax-space-24);
+        }
     }
 }

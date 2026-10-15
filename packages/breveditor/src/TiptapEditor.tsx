@@ -40,7 +40,7 @@ function TiptapEditor({
     // Oppdater editor-innhold når initialContentHtml endres
     useEffect(() => {
         if (!editor) return;
-        editor.chain().setContent(initialContentHtml, { emitUpdate: false });
+        editor.chain().setContent(initialContentHtml, { emitUpdate: false }).run();
     }, [editor, initialContentHtml]);
 
     const providerValue = useMemo(() => ({ editor }), [editor]);
@@ -62,13 +62,12 @@ function TiptapEditor({
     return (
         <Box
             background="raised"
-            paddingInline="space-24"
             borderRadius="8"
             borderWidth="1"
             borderColor="neutral-subtle"
-            className={error ? styles.errorBorder : ""}
+            className={`brev-editor-ramme ${error ? styles.errorBorder : ""}`}
         >
-            <Bleed marginInline="space-28" marginBlock="space-1 space-0">
+            <Bleed marginBlock="space-1 space-0">
                 {!readOnly && editor && (
                     <MenuBar editor={editor} onSave={onSave}>
                         <Box marginInline="auto space-8">
@@ -80,7 +79,7 @@ function TiptapEditor({
             <EditorContext.Provider value={providerValue}>
                 <EditorContent
                     editor={editor}
-                    className={styles.editor}
+                    className={`brev-editor ${styles.editor}`}
                     data-testid="tiptapeditor"
                     onClick={() => editor?.commands.focus()}
                 />
