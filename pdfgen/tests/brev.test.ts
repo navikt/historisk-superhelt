@@ -111,6 +111,38 @@ test("eksplisitte funksjoner bevarer originalnivåer, formatering og nestede lis
     expect(editable.querySelector("ol > li > p")?.textContent).toBe("Underpunkt");
 });
 
+for (const [html, markup] of [
+    ["<p></p>", "#par[]"],
+    ["<p>A</p><p></p><p>B</p>", "#par[A]#par[]#par[B]"],
+    ["<p></p><p>A</p>", "#par[]#par[A]"],
+    ["<p>A</p><p></p>", "#par[A]#par[]"],
+    ["<p></p><p></p>", "#par[]#par[]"],
+    ["<p>A</p><p></p><p></p><p>B</p>", "#par[A]#par[]#par[]#par[B]"],
+] as const) {
+    test(`HTML-eksport bevarer avsnittsblokkene i ${html}`, () => {
+        const doc = render(brevdata({ innhold_typst: markup }));
+        const editable = doc.querySelector(".data-editable");
+        if (!editable) throw new Error("Mangler redigerbart innhold");
+        const expected = new JSDOM(html).window.document.body;
+        expect([...editable.children].map((el) => el.outerHTML))
+            .toEqual([...expected.children].map((el) => el.outerHTML));
+    });
+}
+
+test("HTML-eksport bevarer tomme avsnitt i listepunkter", () => {
+    const doc = render(brevdata({
+        innhold_typst: "#list(tight: true,\n[#par[A]#par[]#par[B]],\n[#par[]],\n)",
+    }));
+    const items = [...doc.querySelectorAll(".data-editable ul > li")];
+    expect(items.map((item) => [...item.querySelectorAll("p")].map((p) => p.textContent)))
+        .toEqual([["A", "", "B"], [""]]);
+});
+
+test("tomt dokument gir ingen avsnittsblokker i HTML-eksport", () => {
+    const doc = render(brevdata({ innhold_typst: "" }));
+    expect(doc.querySelector(".data-editable")?.children).toHaveLength(0);
+});
+
 for (const [name, change] of [
     ["manglende innhold", (data: Record<string, unknown>) => { delete data.innhold_typst; }],
     ["feil datatype", (data: Record<string, unknown>) => { data.innhold_typst = 42; }],

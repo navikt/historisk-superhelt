@@ -14,7 +14,7 @@ fun htmlToTypst(html: String): String {
                 val listPrefix = if (element.tagName() == "li") "\n" else "\n\n"
                 when (node.tagName()) {
                     "h1", "h2", "h3", "h4" -> "\n#heading(depth: ${node.tagName().last()})[$content]\n"
-                    "p" -> if (node.childNodeSize() == 0) "" else "#par[$content]"
+                    "p" -> "#par[$content]"
                     "br" -> "#linebreak()"
                     "mark" -> "#highlight[$content]"
                     "b", "strong" -> "#strong[$content]"

@@ -3,6 +3,7 @@ package no.nav.historisk.pdfgen
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 
 class HtmlToTypstConverterTest {
@@ -73,9 +74,36 @@ class HtmlToTypstConverterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["", "<p></p>"])
-    fun `tom editor gir tom Typst-tekst`(html: String) {
+    @ValueSource(strings = ["", " \n "])
+    fun `tom input gir tom Typst-tekst`(html: String) {
         assertThat(htmlToTypst(html)).isEmpty()
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["<p></p>", " \n<p></p>\n "])
+    fun `ett tomt avsnitt beholdes`(html: String) {
+        assertThat(htmlToTypst(html)).isEqualTo("#par[]")
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        delimiter = '|',
+        value = [
+            "<p>A</p><p></p><p>B</p>|#par[A]#par[]#par[B]",
+            "<p></p><p>A</p>|#par[]#par[A]",
+            "<p>A</p><p></p>|#par[A]#par[]",
+            "<p></p><p></p>|#par[]#par[]",
+            "<p>A</p><p></p><p></p><p>B</p>|#par[A]#par[]#par[]#par[B]",
+        ]
+    )
+    fun `tomme avsnitt beholdes sammen med andre avsnitt`(html: String, expected: String) {
+        assertThat(htmlToTypst(html)).isEqualTo(expected)
+    }
+
+    @Test
+    fun `tomme avsnitt i listepunkter beholdes`() {
+        assertThat(htmlToTypst("<ul><li><p>A</p><p></p><p>B</p></li><li><p></p></li></ul>"))
+            .isEqualTo("#list(tight: true,\n[#par[A]#par[]#par[B]],\n[#par[]],\n)")
     }
 
     @Test
