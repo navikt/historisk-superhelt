@@ -5,7 +5,7 @@
     description: "",
   )
   set text(
-    font: "Source Sans Pro",
+    font: "Source Sans 3",
     size: 11pt,
     lang: "no",
     top-edge: 0.8em,

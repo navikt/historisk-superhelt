@@ -2,14 +2,12 @@
 
 Typst-maler for brev i Superhelt, kjørt med [pdfgenrs](https://github.com/navikt/pdfgenrs).
 Dockerfile bruker en fast release fra [pdfgenrs-releases](https://github.com/navikt/pdfgenrs/releases).
-pdfgenrs laster API-malene `superhelt/brev` og `nav-brev/brev` fra `templates/`.
+pdfgenrs laster API-malen `superhelt/brev` fra `templates/`.
 Superhelt importerer felles `.typ`-hjelpmaler fra `resources/lib/`.
 `aksel-brev.typ` setter sammen brevet, og `brev-elementer.typ` inneholder personalia
 og signatur. `style.typ` definerer layouten, `editor-html.typ` tilpasser HTML til
 breveditoren, og `pdf-ua.typ` normaliserer PDF-overskrifter.
 `standardtekster.typ` inneholder standardtekster på bokmål og nynorsk.
-Gamle HBS-maler, den ubrukte endringer-malen og Helsetjenester-inngangen ligger
-i `til_sletting/` for senere sletting. Denne mappen kopieres ikke inn i imaget.
 
 **Ikke merge til main eller deploy før klienten er migrert til `innhold_typst`.**
 Workflowen deployer automatisk fra main. Backend og editor bruker fortsatt den gamle HTML-kontrakten.
@@ -93,4 +91,3 @@ Samhandlerbrev får ingen standardtekster.
 `VEDTAKSBREV` får dobbel signatur når beslutter er oppgitt, ellers enkel signatur.
 `BREV`, `INNHENTINGSBREV` og `INFORMASJONSBREV` er fritekstbrev og får alltid
 bare saksbehandlerens signatur, også når `beslutterNavn` finnes i input.
-
