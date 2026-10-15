@@ -85,9 +85,4 @@ Ikke send reelle personopplysninger ved lokal testing.
 
 Brukerbrev får standardtekster på valgt målform. Klage- og innsynstekst inkluderes
 bare i vedtaksbrev til brukere. Begge brevvariantene får personopplysningsrett,
-veiledningsrett og kontaktinformasjon. Kontaktinformasjonen står etter signaturen.
-Samhandlerbrev får ingen standardtekster.
-
-`VEDTAKSBREV` får dobbel signatur når beslutter er oppgitt, ellers enkel signatur.
-`BREV`, `INNHENTINGSBREV` og `INFORMASJONSBREV` er fritekstbrev og får alltid
-bare saksbehandlerens signatur, også når `beslutterNavn` finnes i input.
+veiledningsrett og kontaktinformasjon. 

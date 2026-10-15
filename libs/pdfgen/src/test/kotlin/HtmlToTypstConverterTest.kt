@@ -3,7 +3,6 @@ package no.nav.historisk.pdfgen
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 
 class HtmlToTypstConverterTest {
@@ -15,16 +14,15 @@ class HtmlToTypstConverterTest {
     fun `Typst-tegn i fritekst escapes etter HTML-dekoding`(char: String) {
         val encoded = char.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-        assertThat(htmlToTypst("<p>$encoded</p>")).isEqualTo("\\$char")
+        assertThat(htmlToTypst("<p>$encoded</p>")).isEqualTo("#par[\\$char]")
     }
 
     @Test
     fun `Typst-kode i fritekst forblir tekst inne i HTML-formatering`() {
         val html = """<h2>= Tittel</h2><p><mark><strong>#panic("test")</strong></mark> ${'$'}x${'$'} [tekst]</p>"""
         val expected = """
-            == \= Tittel
-
-            #highlight[*\#panic(\"test\")*] \${'$'}x\${'$'} \[tekst\]
+            #heading(depth: 2)[\= Tittel]
+            #par[#highlight[#strong[\#panic(\"test\")]] \${'$'}x\${'$'} \[tekst\]]
         """.trimIndent()
 
         assertThat(htmlToTypst(html)).isEqualTo(expected)
@@ -35,13 +33,13 @@ class HtmlToTypstConverterTest {
         val html = """<p><mark>]\#panic("test")[</mark><a href="https://nav.no">]#panic("test")[</a></p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""#highlight[\]\\\#panic(\"test\")\[]#link("https://nav.no")[\]\#panic(\"test\")\[]""")
+            .isEqualTo("""#par[#highlight[\]\\\#panic(\"test\")\[]#link("https://nav.no")[\]\#panic(\"test\")\[]]""")
     }
 
     @Test
     fun `Typst-tegn fordelt over HTML-noder escapes hver for seg`() {
         assertThat(htmlToTypst("<p>1<span>.</span> Punkt <span>#</span>panic(&quot;test&quot;)</p>"))
-            .isEqualTo("""1\. Punkt \#panic(\"test\")""")
+            .isEqualTo("""#par[1\. Punkt \#panic(\"test\")]""")
     }
 
     @Test
@@ -49,13 +47,13 @@ class HtmlToTypstConverterTest {
         val html = """<p>// /* */ *fet* _kursiv_ `kode` -- --- ... \</p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""\/\/ \/\* \*\/ \*fet\* \_kursiv\_ \`kode\` \-\- \-\-\- \.\.\. \\""")
+            .isEqualTo("""#par[\/\/ \/\* \*\/ \*fet\* \_kursiv\_ \`kode\` \-\- \-\-\- \.\.\. \\]""")
     }
 
     @Test
     fun `liste og referanse skrevet som tekst blir ikke Typst-struktur`() {
         assertThat(htmlToTypst("<p>1. Punkt</p><p>- Punkt</p><p>@ref &lt;etikett&gt;</p>"))
-            .isEqualTo("1\\. Punkt\n\n\\- Punkt\n\n\\@ref \\<etikett\\>")
+            .isEqualTo("#par[1\\. Punkt]#par[\\- Punkt]#par[\\@ref \\<etikett\\>]")
     }
 
     @Test
@@ -63,7 +61,7 @@ class HtmlToTypstConverterTest {
         val html = """<p><a href="https://example.com/&quot;); panic(&quot;test&quot;); //\sti">Test</a></p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""#link("https://example.com/\"); panic(\"test\"); //\\sti")[Test]""")
+            .isEqualTo("""#par[#link("https://example.com/\"); panic(\"test\"); //\\sti")[Test]]""")
     }
 
     @Test
@@ -71,7 +69,7 @@ class HtmlToTypstConverterTest {
         val html = "<p><a href=\"https://example.com/\n\r\t\">Test</a></p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""#link("https://example.com/\u{a}\u{d}\u{9}")[Test]""")
+            .isEqualTo("""#par[#link("https://example.com/\u{a}\u{d}\u{9}")[Test]]""")
     }
 
     @ParameterizedTest
@@ -81,20 +79,20 @@ class HtmlToTypstConverterTest {
     }
 
     @Test
-    fun `avsnitt skilles med en tom linje`() {
+    fun `avsnitt bruker eksplisitte par-kall uten tomme skillelinjer`() {
         val html = "<p>Vi viser til søknaden din.</p><p>Du får dekket utgiftene.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("Vi viser til søknaden din\\.\n\nDu får dekket utgiftene\\.")
+            .isEqualTo("#par[Vi viser til søknaden din\\.]#par[Du får dekket utgiftene\\.]")
     }
 
     @ParameterizedTest
-    @CsvSource("1, =", "2, ==", "3, ===", "4, ====")
-    fun `overskrifter fra verktøylinjen beholder nivået`(level: Int, marker: String) {
+    @ValueSource(ints = [1, 2, 3, 4])
+    fun `overskrifter fra verktøylinjen beholder nivået`(level: Int) {
         val html = "<h$level>Begrunnelse</h$level><p>Du oppfyller vilkårene.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("$marker Begrunnelse\n\nDu oppfyller vilkårene\\.")
+            .isEqualTo("#heading(depth: $level)[Begrunnelse]\n#par[Du oppfyller vilkårene\\.]")
     }
 
     @Test
@@ -102,21 +100,21 @@ class HtmlToTypstConverterTest {
         val html = "<p>Dette er <strong>viktig</strong> og <em>utdypende</em> tekst.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("Dette er *viktig* og _utdypende_ tekst\\.")
+            .isEqualTo("#par[Dette er #strong[viktig] og #emph[utdypende] tekst\\.]")
     }
 
     @Test
     fun `tekst kan være både fet og kursiv`() {
         val html = "<p><strong><em>Viktig informasjon</em></strong></p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("*_Viktig informasjon_*")
+        assertThat(htmlToTypst(html)).isEqualTo("#par[#strong[#emph[Viktig informasjon]]]")
     }
 
     @Test
     fun `formatering i overskrifter beholdes`() {
         val html = "<h2>Din <em>rett til støtte</em></h2>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("== Din _rett til støtte_")
+        assertThat(htmlToTypst(html)).isEqualTo("#heading(depth: 2)[Din #emph[rett til støtte]]")
     }
 
     @Test
@@ -125,7 +123,7 @@ class HtmlToTypstConverterTest {
             """<p>Les mer på <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.nav.no/helse">nav.no</a>.</p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""Les mer på #link("https://www.nav.no/helse")[nav\.no]\.""")
+            .isEqualTo("""#par[Les mer på #link("https://www.nav.no/helse")[nav\.no]\.]""")
     }
 
     @Test
@@ -133,7 +131,7 @@ class HtmlToTypstConverterTest {
         val html = """<p><a href="https://www.nav.no"><strong>Les mer</strong></a></p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""#link("https://www.nav.no")[*Les mer*]""")
+            .isEqualTo("""#par[#link("https://www.nav.no")[#strong[Les mer]]]""")
     }
 
     @Test
@@ -142,21 +140,21 @@ class HtmlToTypstConverterTest {
             """<p>Vilkår &amp; rettigheter: <a href="https://www.nav.no/sok?side=1&amp;antall=10">Søk &amp; finn</a></p>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("""Vilkår & rettigheter\: #link("https://www.nav.no/sok?side=1&antall=10")[Søk & finn]""")
+            .isEqualTo("""#par[Vilkår & rettigheter\: #link("https://www.nav.no/sok?side=1&antall=10")[Søk & finn]]""")
     }
 
     @Test
     fun `markering fra Highlight og WordHighlight beholdes med nestet formatering`() {
         val html = "<p>Dette er <mark><strong>viktig</strong> informasjon</mark> til deg.</p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("Dette er #highlight[*viktig* informasjon] til deg\\.")
+        assertThat(htmlToTypst(html)).isEqualTo("#par[Dette er #highlight[#strong[viktig] informasjon] til deg\\.]")
     }
 
     @Test
     fun `markering bruker standardfarge uten å ta med HTML-attributter`() {
         val html = """<p><mark data-color="#ff0000" style="background-color: red">Viktig</mark></p>"""
 
-        assertThat(htmlToTypst(html)).isEqualTo("#highlight[Viktig]")
+        assertThat(htmlToTypst(html)).isEqualTo("#par[#highlight[Viktig]]")
     }
 
     @Test
@@ -165,7 +163,7 @@ class HtmlToTypstConverterTest {
             """<ul><li><p><mark><a href="https://www.nav.no">Les mer</a><br><em>Frist</em></mark></p></li></ul>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("- #highlight[#link(\"https://www.nav.no\")[Les mer]\\\n  _Frist_]")
+            .isEqualTo("#list(tight: true,\n[#par[#highlight[#link(\"https://www.nav.no\")[Les mer]#linebreak()#emph[Frist]]]],\n)")
     }
 
     @ParameterizedTest
@@ -173,14 +171,14 @@ class HtmlToTypstConverterTest {
     fun `ukjente tagger beholder tekst og formatering uten å ta med attributter`(tag: String) {
         val html = """<$tag class="innhold" style="color: red">Dette er <strong>viktig</strong> og <em>nyttig</em>.</$tag>"""
 
-        assertThat(htmlToTypst(html)).isEqualTo("Dette er *viktig* og _nyttig_\\.")
+        assertThat(htmlToTypst(html)).isEqualTo("Dette er #strong[viktig] og #emph[nyttig]\\.")
     }
 
     @Test
     fun `span inne i avsnitt beholder mellomrom rundt teksten`() {
         val html = "<p>Tekst før <span>innhold</span> og etter.</p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("Tekst før innhold og etter\\.")
+        assertThat(htmlToTypst(html)).isEqualTo("#par[Tekst før innhold og etter\\.]")
     }
 
     @Test
@@ -189,7 +187,7 @@ class HtmlToTypstConverterTest {
             """<div><div><p><span>Første <strong>avsnitt</strong></span></p></div><p><span><a href="https://www.nav.no">Les mer</a></span></p></div>"""
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("Første *avsnitt*\n\n#link(\"https://www.nav.no\")[Les mer]")
+            .isEqualTo("#par[Første #strong[avsnitt]]#par[#link(\"https://www.nav.no\")[Les mer]]")
     }
 
     @ParameterizedTest
@@ -205,35 +203,35 @@ class HtmlToTypstConverterTest {
     fun `linjeskift fra Shift Enter beholdes`(br: String) {
         val html = "<p>Første linje${br}Andre linje</p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("Første linje\\\nAndre linje")
+        assertThat(htmlToTypst(html)).isEqualTo("#par[Første linje#linebreak()Andre linje]")
     }
 
     @Test
     fun `flere linjeskift etter hverandre beholdes`() {
         val html = "<p>Første linje<br><br>Etter tom linje</p>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("Første linje\\\n\\\nEtter tom linje")
+        assertThat(htmlToTypst(html)).isEqualTo("#par[Første linje#linebreak()#linebreak()Etter tom linje]")
     }
 
     @Test
     fun `punktliste med avsnitt i listepunktene gir sammenhengende Typst-liste`() {
         val html = "<ul><li><p>Første punkt</p></li><li><p>Andre punkt</p></li></ul>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("- Første punkt\n- Andre punkt")
+        assertThat(htmlToTypst(html)).isEqualTo("#list(tight: true,\n[#par[Første punkt]],\n[#par[Andre punkt]],\n)")
     }
 
     @Test
     fun `nummerert liste med avsnitt i listepunktene gir sammenhengende Typst-liste`() {
         val html = "<ol><li><p>Første punkt</p></li><li><p>Andre punkt</p></li></ol>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("+ Første punkt\n+ Andre punkt")
+        assertThat(htmlToTypst(html)).isEqualTo("#enum(tight: true,\n[#par[Første punkt]],\n[#par[Andre punkt]],\n)")
     }
 
     @Test
     fun `formatering i listepunkter beholdes`() {
         val html = "<ul><li><p><strong>Viktig</strong> punkt</p></li><li><p><em>Mer informasjon</em></p></li></ul>"
 
-        assertThat(htmlToTypst(html)).isEqualTo("- *Viktig* punkt\n- _Mer informasjon_")
+        assertThat(htmlToTypst(html)).isEqualTo("#list(tight: true,\n[#par[#strong[Viktig] punkt]],\n[#par[#emph[Mer informasjon]]],\n)")
     }
 
     @Test
@@ -242,7 +240,7 @@ class HtmlToTypstConverterTest {
             "<ul><li><p>Hovedpunkt</p><ol><li><p>Underpunkt</p></li></ol></li><li><p>Neste hovedpunkt</p></li></ul>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("- Hovedpunkt\n  + Underpunkt\n- Neste hovedpunkt")
+            .isEqualTo("#list(tight: true,\n[#par[Hovedpunkt]\n#enum(tight: true,\n[#par[Underpunkt]],\n)\n],\n[#par[Neste hovedpunkt]],\n)")
     }
 
     @Test
@@ -250,23 +248,23 @@ class HtmlToTypstConverterTest {
         val html = "<p>Du må sende inn:</p><ul><li><p>Kvittering</p></li></ul><p>Fristen er fire uker.</p>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("Du må sende inn\\:\n\n- Kvittering\n\nFristen er fire uker\\.")
+            .isEqualTo("#par[Du må sende inn\\:]\n\n#list(tight: true,\n[#par[Kvittering]],\n)\n#par[Fristen er fire uker\\.]")
     }
 
     @Test
-    fun `linjeskift i listepunkter beholder innrykket`() {
+    fun `linjeskift beholdes inne i listepunktet`() {
         val html = "<ul><li><p>Første linje<br>Andre linje</p></li><li><p>Neste punkt</p></li></ul>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("- Første linje\\\n  Andre linje\n- Neste punkt")
+            .isEqualTo("#list(tight: true,\n[#par[Første linje#linebreak()Andre linje]],\n[#par[Neste punkt]],\n)")
     }
 
     @Test
-    fun `flere avsnitt i samme listepunkt beholder innrykket`() {
+    fun `flere avsnitt beholdes inne i samme listepunkt`() {
         val html = "<ul><li><p>Første avsnitt</p><p>Andre avsnitt</p></li><li><p>Neste punkt</p></li></ul>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("- Første avsnitt\n  \n  Andre avsnitt\n- Neste punkt")
+            .isEqualTo("#list(tight: true,\n[#par[Første avsnitt]#par[Andre avsnitt]],\n[#par[Neste punkt]],\n)")
     }
 
     @Test
@@ -274,14 +272,26 @@ class HtmlToTypstConverterTest {
         val html = "<ul><li><p>Hovedpunkt</p><ul><li><p>Underpunkt</p></li></ul><p>Fortsettelse</p></li></ul>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("- Hovedpunkt\n  - Underpunkt\n  \n  Fortsettelse")
+            .isEqualTo("#list(tight: true,\n[#par[Hovedpunkt]\n#list(tight: true,\n[#par[Underpunkt]],\n)\n#par[Fortsettelse]],\n)")
     }
 
     @Test
-    fun `lister med tre nivåer beholder innrykket på hvert nivå`() {
+    fun `lister med tre nivåer beholder strukturen på hvert nivå`() {
         val html = "<ol><li><p>Nivå en</p><ul><li><p>Nivå to</p><ol><li><p>Nivå tre</p></li></ol></li></ul></li></ol>"
 
         assertThat(htmlToTypst(html))
-            .isEqualTo("+ Nivå en\n  - Nivå to\n    + Nivå tre")
+            .isEqualTo("#enum(tight: true,\n[#par[Nivå en]\n#list(tight: true,\n[#par[Nivå to]\n#enum(tight: true,\n[#par[Nivå tre]],\n)\n],\n)\n],\n)")
+    }
+
+    @Test
+    fun `separate lister forblir separate uten mellomliggende avsnitt`() {
+        assertThat(htmlToTypst("<ul><li><p>A</p></li></ul><ul><li><p>B</p></li></ul>"))
+            .isEqualTo("#list(tight: true,\n[#par[A]],\n)\n\n\n#list(tight: true,\n[#par[B]],\n)")
+    }
+
+    @Test
+    fun `formatering midt i et ord bruker eksplisitte funksjoner`() {
+        assertThat(htmlToTypst("<p>før<strong>fet</strong>etter<em>kursiv</em>slutt</p>"))
+            .isEqualTo("#par[før#strong[fet]etter#emph[kursiv]slutt]")
     }
 }

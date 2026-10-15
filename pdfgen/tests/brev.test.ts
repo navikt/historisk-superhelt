@@ -80,6 +80,37 @@ test("HTML skiller personalia, redigerbart innhold og standardtekster", () => {
     expect(prefix?.textContent).toContain("14. oktober 2026");
 });
 
+test("eksplisitte funksjoner bevarer originalnivåer, formatering og nestede lister i HTML", () => {
+    const doc = render(brevdata({
+        innhold_typst: `#heading(depth: 2)[Tittel]
+#heading(depth: 4)[Detalj]
+
+#par[før#strong[fet]etter#emph[kursiv]slutt#linebreak()Ny linje]
+
+#list(tight: true,
+[#par[Hovedpunkt]
+#enum(tight: true,
+[#par[Underpunkt]],
+)
+
+#par[Fortsettelse]],
+[#par[Neste punkt]],
+)`,
+    }));
+    const editable = doc.querySelector(".data-editable");
+    if (!editable) throw new Error("Mangler redigerbart innhold");
+    expect([...editable.querySelectorAll("h1,h2,h3,h4")].map((el) => el.tagName)).toEqual(["H2", "H4"]);
+    expect(editable.querySelector("strong")?.textContent).toBe("fet");
+    expect(editable.querySelector("em")?.textContent).toBe("kursiv");
+    expect(editable.querySelector("br")).not.toBeNull();
+    expect(editable.querySelectorAll("ul > li")).toHaveLength(2);
+    expect(editable.querySelectorAll("ul > li > ol > li")).toHaveLength(1);
+    expect(editable.querySelector("ul > li")?.textContent).toContain("Fortsettelse");
+    expect([...editable.querySelectorAll("ul > li > p")].map((el) => el.textContent))
+        .toEqual(["Hovedpunkt", "Fortsettelse", "Neste punkt"]);
+    expect(editable.querySelector("ol > li > p")?.textContent).toBe("Underpunkt");
+});
+
 for (const [name, change] of [
     ["manglende innhold", (data: Record<string, unknown>) => { delete data.innhold_typst; }],
     ["feil datatype", (data: Record<string, unknown>) => { data.innhold_typst = 42; }],

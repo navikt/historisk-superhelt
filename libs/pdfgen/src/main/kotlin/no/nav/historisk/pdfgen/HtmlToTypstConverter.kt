@@ -6,100 +6,31 @@ import org.jsoup.nodes.TextNode
 
 fun htmlToTypst(html: String): String {
     val doc = Jsoup.parseBodyFragment(html)
-    val builder = StringBuilder()
-
-    fun convertNode(element: Element) {
-        for (node in element.childNodes()) {
-            when (node) {
-                is TextNode -> builder.append(escapeTypstMarkup(node.text()))
-                is Element -> {
-                    when (node.tagName()) {
-                        "h1" -> {
-                            builder.append("\n= ")
-                            convertNode(node)
-                            builder.append("\n")
-                        }
-
-                        "h2" -> {
-                            builder.append("\n== ")
-                            convertNode(node)
-                            builder.append("\n")
-                        }
-
-                        "h3" -> {
-                            builder.append("\n=== ")
-                            convertNode(node)
-                            builder.append("\n")
-                        }
-
-                        "h4" -> {
-                            builder.append("\n==== ")
-                            convertNode(node)
-                            builder.append("\n")
-                        }
-
-                        "p" -> {
-                            if (node.parent()?.tagName() == "li") {
-                                if (node.previousElementSibling() != null) builder.append("\n\n")
-                                convertNode(node)
-                            } else {
-                                builder.append("\n")
-                                convertNode(node)
-                                builder.append("\n")
-                            }
-                        }
-
-                        "br" -> builder.append("\\\n")
-
-                        "mark" -> {
-                            builder.append("#highlight[")
-                            convertNode(node)
-                            builder.append("]")
-                        }
-
-                        "b", "strong" -> {
-                            builder.append("*")
-                            convertNode(node)
-                            builder.append("*")
-                        }
-
-                        "i", "em" -> {
-                            builder.append("_")
-                            convertNode(node)
-                            builder.append("_")
-                        }
-
-                        "ul", "ol" -> {
-                            convertNode(node)
-                            if (node.parent()?.tagName() != "li") builder.append("\n")
-                        }
-
-                        "li" -> {
-                            val marker = if (node.parent()?.tagName() == "ol") "+" else "-"
-                            val start = builder.length
-                            convertNode(node)
-                            val content = builder.substring(start).trim()
-                            builder.setLength(start)
-                            builder.append("\n$marker ")
-                            builder.append(content.replace("\n", "\n  "))
-                        }
-
-                        "a" -> {
-                            val href = escapeTypstString(node.attr("href"))
-                            builder.append("#link(\"$href\")[")
-                            convertNode(node)
-                            builder.append("]")
-                        }
-
-                        else -> convertNode(node) // Fallback for container elements like div/span
-                    }
+    fun convertNode(element: Element): String = element.childNodes().joinToString("") { node ->
+        when (node) {
+            is TextNode -> escapeTypstMarkup(node.text())
+            is Element -> {
+                val content = convertNode(node)
+                val listPrefix = if (element.tagName() == "li") "\n" else "\n\n"
+                when (node.tagName()) {
+                    "h1", "h2", "h3", "h4" -> "\n#heading(depth: ${node.tagName().last()})[$content]\n"
+                    "p" -> if (node.childNodeSize() == 0) "" else "#par[$content]"
+                    "br" -> "#linebreak()"
+                    "mark" -> "#highlight[$content]"
+                    "b", "strong" -> "#strong[$content]"
+                    "i", "em" -> "#emph[$content]"
+                    "ul" -> "${listPrefix}#list(tight: true,$content\n)\n"
+                    "ol" -> "${listPrefix}#enum(tight: true,$content\n)\n"
+                    "li" -> "\n[$content],"
+                    "a" -> "#link(\"${escapeTypstString(node.attr("href"))}\")[$content]"
+                    else -> content
                 }
             }
+            else -> ""
         }
     }
 
-    convertNode(doc.body())
-    return builder.toString().trim()
+    return convertNode(doc.body()).trim()
 }
 
 private fun escapeTypstMarkup(text: String): String = buildString {
