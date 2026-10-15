@@ -152,6 +152,10 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
         setLoading(false);
     }
 
+    async function onSave(manuelt = false) {
+        await lagreBrev(manuelt);
+    }
+
     const hasError: boolean = showValidation && (!!oppdaterBrev?.error || hasValidationErrors);
 
     return (
@@ -169,8 +173,9 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
                 onChange={editorChanged}
                 readOnly={readOnly}
                 error={getErrorMessage("innhold")}
-                onBlur={() => lagreBrev()}
-                onSave={() => lagreBrev(true)}
+                onBlur={() => onSave()}
+                onSave={() => onSave(true)}
+                previewUrl={`/api/sak/${saksnummer}/brev/${brevId}/pdf`}
                 saveStatus={saveStatus}
             />
             <HStack gap="space-32" align="start">

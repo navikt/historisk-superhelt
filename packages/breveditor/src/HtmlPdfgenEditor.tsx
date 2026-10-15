@@ -4,17 +4,27 @@ import { FixedHtml } from "./FixedHtml";
 import { finnRedigerbartInnhold, toXhtml, utledPostfixInnhold, utledPrefiksInnhold } from "./pdfgen.utils";
 import TiptapEditor from "./TiptapEditor";
 
-interface HtmlEditorProps {
+interface HtmlPdfgenEditorProps {
     html: string;
     onChange: (html: string) => void;
     onBlur?: () => void;
     error?: string | undefined;
     readOnly?: boolean;
     saveStatus?: "idle" | "saving" | "saved" | "error";
-    onSave?: () => void;
+    onSave?: () => Promise<void>;
+    previewUrl?: string;
 }
 
-export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly, saveStatus, onSave }: HtmlEditorProps) {
+export function HtmlPdfgenEditor({
+    html,
+    onChange,
+    onBlur,
+    error,
+    readOnly,
+    saveStatus,
+    onSave,
+    previewUrl,
+}: HtmlPdfgenEditorProps) {
     const xhtml = toXhtml(html);
     const prefix = utledPrefiksInnhold(xhtml);
     const postfix = utledPostfixInnhold(xhtml);
@@ -39,6 +49,7 @@ export function HtmlPdfgenEditor({ html, onChange, onBlur, error, readOnly, save
                         readOnly={readOnly}
                         saveStatus={saveStatus}
                         onSave={onSave}
+                        previewUrl={previewUrl}
                     />
                     <ReadMore header="Standardtekster og signatur" variant="moderate" data-color="neutral">
                         <FixedHtml html={postfix} />
