@@ -1,6 +1,9 @@
 package no.nav.historisk.superhelt.brev.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.validation.Valid
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.brev.Brev
@@ -19,6 +22,11 @@ import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakRettighet
 import no.nav.historisk.superhelt.sak.SakValidator
 import org.slf4j.LoggerFactory
+import org.springframework.http.CacheControl
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -74,13 +82,43 @@ class BrevController(
     }
 
     @Operation(operationId = "htmlBrev")
-    @GetMapping("{brevId}/html", produces = ["text/html"])
+    @GetMapping("{brevId}/html", produces = [MediaType.TEXT_HTML_VALUE])
     fun htmlBrev(@PathVariable saksnummer: Saksnummer, @PathVariable brevId: BrevId): ByteArray {
         val sak = sakRepository.getSak(saksnummer)
         val brev = brevRepository.getByUUid(brevId)
         val html = pdfgenService.genererHtml(sak, brev)
         sak.auditLog("Henter htmlbrev ${brev.uuid} for sak")
         return html
+    }
+
+    @Operation(
+        operationId = "pdfBrev",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                content = [Content(mediaType = "application/pdf", schema = Schema(type = "string", format = "binary"))]
+            )
+        ]
+    )
+    @GetMapping("{brevId}/pdf", produces = [MediaType.APPLICATION_PDF_VALUE])
+    fun pdfBrev(
+        @PathVariable saksnummer: Saksnummer,
+        @PathVariable brevId: BrevId,
+    ): ResponseEntity<ByteArray> {
+        val sak = sakRepository.getSak(saksnummer)
+        val brev = brevRepository.getByUUid(brevId)
+        if (brev.saksnummer != saksnummer) {
+            throw IkkeFunnetException("Brev ikke funnet")
+        }
+
+        val pdf = pdfgenService.genererPdf(sak, brev)
+        sak.auditLog("Henter pdfbrev ${brev.uuid} for sak")
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_PDF)
+            .cacheControl(CacheControl.noStore())
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+            .body(pdf)
     }
 
     @Operation(operationId = "oppdaterBrev")
@@ -98,6 +136,10 @@ class BrevController(
         SakValidator(sak)
             .checkAnyRettighet(SakRettighet.SAKSBEHANDLE, SakRettighet.FRITEKSTBREV)
             .validate()
+        val brev = brevRepository.getByUUid(brevId)
+        if (brev.saksnummer != saksnummer) {
+            throw IkkeFunnetException("Brev ikke funnet")
+        }
         return brevRepository.oppdater(brevId, oppdatertBrev)
     }
 

@@ -4,6 +4,7 @@ import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo, useRef } from "react";
 import { MenuBar } from "./MenuBar";
+import { PdfPreview } from "./PdfPreview";
 import styles from "./TiptapEditor.module.css";
 import { WordHighlight } from "./WordHighlight";
 
@@ -15,7 +16,8 @@ interface TiptapEditorProps {
     error: string | undefined;
     readOnly?: boolean;
     saveStatus?: "idle" | "saving" | "saved" | "error";
-    onSave?: () => void;
+    onSave?: () => Promise<void>;
+    previewUrl?: string;
 }
 
 function TiptapEditor({
@@ -26,6 +28,7 @@ function TiptapEditor({
     readOnly,
     saveStatus,
     onSave,
+    previewUrl,
 }: TiptapEditorProps) {
     const editor = useEditor({
         extensions,
@@ -59,6 +62,10 @@ function TiptapEditor({
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, []);
 
+    async function saveBeforePreview() {
+        onChange(editor.getHTML());
+        await onSaveRef.current?.();
+    }
     return (
         <Box
             background="raised"
@@ -73,6 +80,7 @@ function TiptapEditor({
                         <Box marginInline="auto space-8">
                             <BrevStatus status={saveStatus} />
                         </Box>
+                        <PdfPreview previewUrl={previewUrl} onBeforePreview={saveBeforePreview} readOnly={readOnly} />
                     </MenuBar>
                 )}
             </Bleed>

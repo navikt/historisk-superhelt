@@ -3,14 +3,6 @@
 Typst-maler for brev i Superhelt, kjørt med [pdfgenrs](https://github.com/navikt/pdfgenrs).
 Dockerfile bruker en fast release fra [pdfgenrs-releases](https://github.com/navikt/pdfgenrs/releases).
 pdfgenrs laster API-malen `superhelt/brev` fra `templates/`.
-Superhelt importerer felles `.typ`-hjelpmaler fra `resources/lib/`.
-`aksel-brev.typ` setter sammen brevet, og `brev-elementer.typ` inneholder personalia
-og signatur. `style.typ` definerer layouten, `editor-html.typ` tilpasser HTML til
-breveditoren, og `pdf-ua.typ` normaliserer PDF-overskrifter.
-`standardtekster.typ` inneholder standardtekster på bokmål og nynorsk.
-
-**Ikke merge til main eller deploy før klienten er migrert til `innhold_typst`.**
-Workflowen deployer automatisk fra main. Backend og editor bruker fortsatt den gamle HTML-kontrakten.
 
 ## Lokal utvikling
 
@@ -83,6 +75,3 @@ Klienten må derfor sende kontrollert innhold og escape fritekst ved konverterin
 Manglende felt, feil datatype eller ugyldig Typst gir en renderingsfeil, ikke HTML-fallback.
 Ikke send reelle personopplysninger ved lokal testing.
 
-Brukerbrev får standardtekster på valgt målform. Klage- og innsynstekst inkluderes
-bare i vedtaksbrev til brukere. Begge brevvariantene får personopplysningsrett,
-veiledningsrett og kontaktinformasjon. 
