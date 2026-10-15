@@ -42,11 +42,6 @@
         margin-top: -0.5rem;
     }
 
-    .navLogo {
-        height: 1.25rem;
-        margin-bottom: 2.5rem;
-    }
-
     .brev-logo {
         margin-bottom: var(--ax-space-24);
     }
@@ -105,60 +100,6 @@
             grid-template-columns: minmax(0, 1fr);
             gap: 0;
         }
-    }
-
-    #pagenumber:before {
-        content: counter(page);
-    }
-
-    #pagecount:before {
-        content: counter(pages);
-    }
-
-    header {
-        height: 4rem;
-        position: relative;
-    }
-
-    .personalia {
-        margin-right: 10%;
-        float: left;
-    }
-
-    .personalia p {
-        margin: 0;
-    }
-
-    .dato {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        margin: 0;
-    }
-
-    .hilsen {
-        margin-top: 32px;
-    }
-
-    .hilsen p {
-        margin: 0;
-    }
-
-    .signatur {
-        margin-top: 26px;
-    }
-
-    .beslutter {
-        float: left;
-        margin-right: 50%;
-    }
-
-    .venstrestill {
-        float: left;
-    }
-
-    .right-align {
-        text-align: right;
     }
 
     a {
