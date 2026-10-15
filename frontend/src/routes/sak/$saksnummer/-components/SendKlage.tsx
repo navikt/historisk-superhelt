@@ -9,7 +9,6 @@ import {
     useDatepicker,
     VStack,
 } from "@navikt/ds-react";
-import { BreakpointMd } from "@navikt/ds-tokens/dist/tokens";
 import {
     getKodeverkHjemlerForStonadOptions,
     getUserInfoOptions,
@@ -115,7 +114,7 @@ export function SendKlage({ open, onOpenChange }: SendKlageProps) {
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointMd, resize: "both", overflow: "auto" }}>
+            <Dialog.Popup closeOnOutsideClick={false} width={"large"}>
                 <Dialog.Header>
                     <Dialog.Title>Send klage til Kabal</Dialog.Title>
                 </Dialog.Header>

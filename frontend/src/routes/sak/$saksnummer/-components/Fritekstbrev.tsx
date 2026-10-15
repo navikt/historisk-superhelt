@@ -1,5 +1,4 @@
 import { Dialog, ErrorSummary } from "@navikt/ds-react";
-import { BreakpointLg } from "@navikt/ds-tokens/dist/tokens";
 import { sendBrevMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
@@ -40,7 +39,7 @@ export function FritekstBrev({ open, onOpenChange }: FritekstBrevProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointLg, resize: "both", overflow: "auto" }}>
+            <Dialog.Popup closeOnOutsideClick={false} width={"large"}>
                 <Dialog.Header>
                     <Dialog.Title>Skriv brev til bruker</Dialog.Title>
                 </Dialog.Header>
