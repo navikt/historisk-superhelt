@@ -18,7 +18,7 @@
         "@navikt/aksel-icons": "catalog:",
         "@navikt/ds-css": "catalog:",
         "@navikt/ds-react": "catalog:",
-        "@navikt/ds-tokens": "^8.18.0",
+        "@navikt/ds-tokens": "^8.19.0",
         "@superhelt/api": "workspace:*",
         "@superhelt/breveditor": "workspace:*",
         "@tanstack/react-query": "catalog:",
@@ -37,9 +37,9 @@
         "@types/node": "^25.9.9",
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
-        "@vitejs/plugin-react": "^6.1.1",
+        "@vitejs/plugin-react": "^6.1.2",
         "typescript": "catalog:",
-        "vite": "^8.3.2",
+        "vite": "^8.3.4",
         "vitest": "catalog:"
     }
 }
