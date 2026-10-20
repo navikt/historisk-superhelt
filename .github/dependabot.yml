@@ -17,8 +17,6 @@ updates:
   - package-ecosystem: "npm"
     directories:
       - "/"
-      - "/frontend"
-      - "/e2e"
     schedule:
       interval: "weekly"
     cooldown:
