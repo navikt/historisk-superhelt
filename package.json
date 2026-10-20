@@ -17,6 +17,8 @@
         "start": "pnpm frontend:start",
         "build": "pnpm frontend:build",
         "test": "pnpm --recursive run --if-present test",
+        "test:browser": "pnpm --recursive run --if-present test:browser",
+        "test:browser:install": "playwright install chromium --with-deps",
         "typecheck": "pnpm --recursive run typecheck",
         "biome": "biome ci .",
         "biome:write": "biome check --write .",
@@ -30,6 +32,7 @@
         "@biomejs/biome": "catalog:",
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
+        "playwright": "^1.63.0",
         "typescript": "catalog:"
     }
 }

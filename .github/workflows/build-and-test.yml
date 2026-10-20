@@ -32,11 +32,17 @@ jobs:
       matrix:
         include:
           - check: biome
-            command: pnpm run biome
+            command: pnpm --filter super-frontend run biome
           - check: test
             command: pnpm run test --reporter=default --reporter=junit --outputFile=test-results/junit.xml
+            report-name: Tester (Vitest)
+            report-path: '**/test-results/junit.xml'
+          - check: test:browser
+            command: pnpm run test:browser --reporter=default --reporter=junit --outputFile=test-results/browser-junit.xml
+            report-name: Browser (Vitest Chromium)
+            report-path: '**/test-results/browser-junit.xml'
           - check: typecheck
-            command: pnpm run typecheck
+            command: pnpm --filter super-frontend run typecheck
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
@@ -44,24 +50,27 @@ jobs:
       - name: Installer avhengigheter
         run: pnpm install --frozen-lockfile
 
+      - name: Installer Chromium
+        if: matrix.check == 'test:browser'
+        run: pnpm test:browser:install
+
       - name: ${{ matrix.check }}
         id: frontend-check
-        working-directory: ./frontend
         env:
           CI: true
         run: ${{ matrix.command }}
 
-      - name: Rapporter frontend-tester
+      - name: Rapporter testresultater
         if: >-
-          always() && matrix.check == 'test' &&
+          always() && matrix.report-path != '' &&
           (github.event_name != 'pull_request' ||
           (github.event.pull_request.head.repo.full_name == github.repository &&
           github.event.pull_request.user.login != 'dependabot[bot]' &&
           github.actor != 'dependabot[bot]'))
         uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
         with:
-          check_name: Frontend (Vitest)
-          report_paths: frontend/test-results/junit.xml
+          check_name: ${{ matrix.report-name }}
+          report_paths: ${{ matrix.report-path }}
           comment: ${{ github.event_name == 'pull_request' }}
 
   build:

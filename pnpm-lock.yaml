@@ -211,6 +211,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.3.0(@types/react@19.3.0)
+      playwright:
+        specifier: ^1.63.0
+        version: 1.63.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -316,7 +319,7 @@ importers:
         version: 8.3.2(@types/node@25.9.9)(jiti@2.7.0)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
 
   packages/breveditor:
     dependencies:
@@ -363,15 +366,15 @@ importers:
       '@vitest/browser-playwright':
         specifier: 4.1.11
         version: 4.1.11(playwright@1.63.0)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))(vitest@4.1.11)
-      jsdom:
-        specifier: ^30.1.2
-        version: 30.1.2
+      '@vitest/ui':
+        specifier: 4.1.11
+        version: 4.1.11(vitest@4.1.11)
       playwright:
         specifier: ^1.63.0
         version: 1.63.0
       vitest:
         specifier: 'catalog:'
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
       vitest-browser-react:
         specifier: ^2.3.0
         version: 2.3.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@4.1.11)
@@ -407,7 +410,7 @@ importers:
         version: 6.4.299
       vitest:
         specifier: 'catalog:'
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
 
 packages:
 
@@ -1467,6 +1470,11 @@ packages:
   '@vitest/spy@4.1.11':
     resolution: {integrity: sha512-apNa/prQy2qCeywhnixOHPRCgGNhvg7T4Dapfl1GahLp/R+uhBm5cPyFoNVyqsNd2h1nJxL6BqqdIjiABL60YA==}
 
+  '@vitest/ui@4.1.11':
+    resolution: {integrity: sha512-r/rwyKoev21mWdRGSEkZOqkQ2BYy68mwjihg9M90nNRbf4NGrgzZ4cj6JNCEwlOGJkbKeMgsjlykvwKUbRr7gw==}
+    peerDependencies:
+      vitest: 4.1.11
+
   '@vitest/utils@4.1.11':
     resolution: {integrity: sha512-zTCVGpyFsGWBhllOyKlTw/vnr6D9qxsfSDyfbyZmTyjHw5N/VuvzHpHoQjm2ZJzn4RJgx5w4r7V0er69CmLgPQ==}
 
@@ -1673,6 +1681,12 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
+
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
+
+  flatted@3.4.4:
+    resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
 
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
@@ -3400,7 +3414,7 @@ snapshots:
       '@vitest/mocker': 4.1.11(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
       playwright: 1.63.0
       tinyrainbow: 3.2.0
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -3416,7 +3430,7 @@ snapshots:
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.2.0
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
       ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
@@ -3458,6 +3472,17 @@ snapshots:
       pathe: 2.0.3
 
   '@vitest/spy@4.1.11': {}
+
+  '@vitest/ui@4.1.11(vitest@4.1.11)':
+    dependencies:
+      '@vitest/utils': 4.1.11
+      fflate: 0.8.3
+      flatted: 3.4.4
+      pathe: 2.0.3
+      sirv: 3.0.2
+      tinyglobby: 0.2.17
+      tinyrainbow: 3.2.0
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
 
   '@vitest/utils@4.1.11':
     dependencies:
@@ -3625,6 +3650,10 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
       picomatch: 4.0.7
+
+  fflate@0.8.3: {}
+
+  flatted@3.4.4: {}
 
   fsevents@2.3.3:
     optional: true
@@ -4115,12 +4144,12 @@ snapshots:
     dependencies:
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
     optionalDependencies:
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
 
-  vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0)):
+  vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@25.9.9)(@vitest/browser-playwright@4.1.11)(@vitest/ui@4.1.11)(jsdom@30.1.2)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0)):
     dependencies:
       '@vitest/expect': 4.1.11
       '@vitest/mocker': 4.1.11(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))
@@ -4146,6 +4175,7 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@types/node': 25.9.9
       '@vitest/browser-playwright': 4.1.11(playwright@1.63.0)(vite@8.3.2(@types/node@25.9.9)(jiti@2.7.0))(vitest@4.1.11)
+      '@vitest/ui': 4.1.11(vitest@4.1.11)
       jsdom: 30.1.2
     transitivePeerDependencies:
       - msw
