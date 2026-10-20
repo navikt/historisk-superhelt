@@ -8,6 +8,8 @@ services:
       - "${PDFGEN_PORT:-8086}:8080"
     environment:
       DEV_MODE: "true"
+    volumes:
+      - ./data:/app/data:ro
     develop:
       watch:
         - path: ./templates

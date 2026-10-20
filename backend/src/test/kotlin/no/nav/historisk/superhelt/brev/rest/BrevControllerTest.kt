@@ -23,11 +23,14 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
@@ -186,6 +189,64 @@ class BrevControllerTest {
 
     @WithSaksbehandler
     @Nested
+    inner class `pdf brev` {
+
+
+        @Test
+        fun `brev som tilhoerer en annen sak skal ikke genereres`() {
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+            val annenSak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+            val brev = BrevTestdata.lagreBrev(brevRepository, annenSak.saksnummer)
+
+            assertThat(pdfBrev(sak.saksnummer, brev.uuid))
+                .hasStatus(HttpStatus.NOT_FOUND)
+                .bodyAsProblemDetail()
+            verify(pdfgenService, never()).genererPdf(any(), any())
+        }
+
+        @Test
+        fun `manglende brev med pdf accept skal fortsatt gi 404`() {
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+
+            assertThat(pdfBrev(sak.saksnummer, BrevId.random()))
+                .hasStatus(HttpStatus.NOT_FOUND)
+                .bodyAsProblemDetail()
+            verify(pdfgenService, never()).genererPdf(any(), any())
+        }
+
+        @Test
+        fun `manglende lesetilgang skal hindre pdf generering`() {
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+            whenever(tilgangsmaskinService.sjekkKomplettTilgang(sak.fnr)) doReturn
+                TilgangsmaskinClient.TilgangResult(harTilgang = false)
+
+            assertThat(pdfBrev(sak.saksnummer, brev.uuid))
+                .hasStatus(HttpStatus.FORBIDDEN)
+                .bodyAsProblemDetail()
+            verify(pdfgenService, never()).genererPdf(any(), any())
+        }
+
+        @Test
+        fun `pdfgen feil med pdf accept skal ikke bli en pdf 200 respons`() {
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
+            whenever(pdfgenService.genererPdf(any(), any()))
+                .thenThrow(IllegalStateException("pdf generation failed"))
+
+            assertThat(pdfBrev(sak.saksnummer, brev.uuid))
+                .hasStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .bodyAsProblemDetail()
+        }
+
+        private fun pdfBrev(saksnummer: Saksnummer, brevId: BrevId): MockMvcTester.MockMvcRequestBuilder =
+            mockMvc.get()
+                .uri("/api/sak/{saksnummer}/brev/{brevId}/pdf", saksnummer, brevId)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_PDF_VALUE)
+    }
+
+    @WithSaksbehandler
+    @Nested
     inner class `oppdater brev` {
         @Test
         fun `oppdater brev ok`() {
@@ -222,6 +283,17 @@ class BrevControllerTest {
                 .satisfies ({
                     assertThat(it.valideringsfeil).isNotEmpty
                 })
+        }
+
+        @Test
+        fun `oppdater brev fra feil sak skal ikke endre brevet`() {
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+            val annenSak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+            val brev = BrevTestdata.lagreBrev(brevRepository, annenSak.saksnummer)
+            val request = OppdaterBrevRequest(tittel = "Uautorisert tittel", innhold = "Uautorisert innhold")
+
+            assertThat(oppdaterBrev(sak.saksnummer, brev.uuid, request))
+                .hasStatus(HttpStatus.NOT_FOUND)
         }
 
         @WithLeseBruker

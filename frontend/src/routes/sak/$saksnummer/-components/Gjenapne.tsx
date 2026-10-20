@@ -1,9 +1,8 @@
 import { BodyLong, Button, Dialog, Textarea, VStack } from "@navikt/ds-react";
-import { BreakpointMd } from "@navikt/ds-tokens/dist/tokens";
 import { gjenapneSakMutation } from "@superhelt/api/react-query.gen";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ErrorAlert } from "~/common/error/ErrorAlert";
 import { getSakOptions } from "~/common/sak/sak.query";
 import { useInvalidateSakQuery } from "../-api/useInvalidateSakQuery";
@@ -19,6 +18,7 @@ export function Gjenapne({ open, onOpenChange }: GjenapneProps) {
     const invalidateSakQuery = useInvalidateSakQuery();
     const [aarsak, setAarsak] = useState("");
     const [error, setError] = useState<string | undefined>();
+    const inputRef = useRef<HTMLTextAreaElement>(null);
 
     const gjenapne = useMutation({
         ...gjenapneSakMutation(),
@@ -53,7 +53,7 @@ export function Gjenapne({ open, onOpenChange }: GjenapneProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <Dialog.Popup closeOnOutsideClick={false} style={{ width: BreakpointMd, resize: "both", overflow: "auto" }}>
+            <Dialog.Popup closeOnOutsideClick={false} initialFocusTo={inputRef}>
                 <Dialog.Header>
                     <Dialog.Title>Gjenåpne sak</Dialog.Title>
                 </Dialog.Header>
@@ -70,6 +70,7 @@ export function Gjenapne({ open, onOpenChange }: GjenapneProps) {
                             value={aarsak}
                             onChange={(e) => setAarsak(e.target.value)}
                             error={error}
+                            ref={inputRef}
                         />
                         <ErrorAlert error={gjenapne.error} />
                     </VStack>
