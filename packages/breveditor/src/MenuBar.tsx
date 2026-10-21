@@ -2,12 +2,14 @@ import {
     ArrowRedoIcon,
     ArrowUndoIcon,
     BulletListIcon,
+    ClipboardIcon,
     FloppydiskIcon,
     NumberListIcon,
     PencilIcon,
 } from "@navikt/aksel-icons";
 import { ActionMenu, BodyShort, Box, Button, Detail, HelpText, HStack, Tooltip, VStack } from "@navikt/ds-react";
 import { type Editor, useEditorState } from "@tiptap/react";
+import { useEffect, useRef, useState } from "react";
 import { Bold, Italic } from "./Icons";
 import styles from "./MenuBar.module.css";
 import type { StandardtekstSearch } from "./Standardtekst.types";
@@ -24,6 +26,49 @@ export function MenuBar({
     onSave?: () => void;
     searchStandardtekster: StandardtekstSearch;
 }) {
+    const [openStandardText, setOpenStandardText] = useState(false);
+    const standardTextSelection = useRef<{ from: number; to: number } | null>(null);
+    const openStandardTextModal = () => {
+        standardTextSelection.current = {
+            from: editor.state.selection.from,
+            to: editor.state.selection.to,
+        };
+        setOpenStandardText(true);
+    };
+
+    useEffect(() => {
+        // Hurtigtaster for å åpne standardtekst-modal: Ctrl + Shift + Y
+        if (openStandardText) return;
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (!event.ctrlKey || !event.shiftKey || event.altKey || event.key.toLowerCase() !== "y") return;
+
+            event.preventDefault();
+            event.stopPropagation();
+            openStandardTextModal();
+        };
+
+        let editorDom: HTMLElement | undefined;
+        const detach = () => {
+            editorDom?.removeEventListener("keydown", handleKeyDown);
+            editorDom = undefined;
+        };
+        const attach = () => {
+            detach();
+            editorDom = editor.view.dom;
+            editorDom.addEventListener("keydown", handleKeyDown);
+        };
+
+        editor.on("mount", attach);
+        editor.on("unmount", detach);
+        if (!editor.isDestroyed) attach();
+
+        return () => {
+            editor.off("mount", attach);
+            editor.off("unmount", detach);
+            detach();
+        };
+    }, [editor, openStandardText]);
+
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
         editor,
@@ -220,7 +265,24 @@ export function MenuBar({
                             }
                         />
                     </Tooltip>
-                    <StandardtekstModal editor={editor} searchStandardtekster={searchStandardtekster} />
+                    <Tooltip content="Sett inn standardtekster" keys={["Ctrl", "Shift", "Y"]} placement="top">
+                        <Button
+                            type="button"
+                            variant="tertiary"
+                            data-color="neutral"
+                            size="small"
+                            aria-label="Standardtekster"
+                            onClick={openStandardTextModal}
+                            icon={<ClipboardIcon aria-hidden fontSize="1.25rem" />}
+                        />
+                    </Tooltip>
+                    <StandardtekstModal
+                        editor={editor}
+                        searchStandardtekster={searchStandardtekster}
+                        open={openStandardText}
+                        onOpenChange={setOpenStandardText}
+                        selection={standardTextSelection.current}
+                    />
                 </HStack>
                 {children}
                 <HelpText title="Hvordan redigere brev">

@@ -1,7 +1,11 @@
+import { Editor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { describe, expect, test, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { HtmlPdfgenEditor, type Standardtekst, type StandardtekstSearchFilter } from "./HtmlPdfgenEditor";
+import { HtmlPdfgenEditor } from "./HtmlPdfgenEditor";
+import { MenuBar } from "./MenuBar";
+import type { Standardtekst, StandardtekstSearchFilter } from "./Standardtekst.types";
 
 describe("HtmlPdfgenEditor", () => {
     const testHtml =
@@ -146,6 +150,56 @@ describe("HtmlPdfgenEditor", () => {
         await expect.element(page.getByRole("button", { name: /Innvilgelse Parykk/ })).toBeVisible();
         await expect.element(page.getByRole("button", { name: "Utbetaling" })).not.toBeInTheDocument();
         expect(searchStandardtekster).toHaveBeenLastCalledWith({ query: "hodeform" });
+    });
+
+    test("viser standardtekstmodalen fra ikonknappen i menylinja", async () => {
+        renderEditor();
+
+        const standardtekstButton = page.getByRole("button", { name: "Standardtekster", exact: true });
+        await userEvent.hover(standardtekstButton);
+        await expect.element(page.getByRole("tooltip")).toHaveTextContent("Sett inn standardtekster");
+
+        await userEvent.click(standardtekstButton);
+        await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
+    });
+
+    test("åpner standardtekstmodalen med Ctrl+Shift+Y fra editoren", async () => {
+        renderEditor();
+
+        await userEvent.click(page.getByRole("textbox"));
+        await userEvent.keyboard("{Control>}{Shift>}y{/Shift}{/Control}");
+
+        await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
+    });
+
+    test("håndterer montering og avmontering av editoren uten å lese en utilgjengelig view", async () => {
+        const editor = new Editor({ element: null, extensions: [StarterKit] });
+        const host = document.createElement("div");
+        document.body.append(host);
+        try {
+            const screen = await render(<MenuBar editor={editor} searchStandardtekster={async () => []} />);
+
+            editor.mount(host);
+            editor.view.dom.dispatchEvent(
+                new KeyboardEvent("keydown", { key: "Y", ctrlKey: true, shiftKey: true, bubbles: true }),
+            );
+            await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
+            await userEvent.keyboard("{Escape}");
+
+            editor.unmount();
+            editor.mount(host);
+            editor.view.dom.dispatchEvent(
+                new KeyboardEvent("keydown", { key: "Y", ctrlKey: true, shiftKey: true, bubbles: true }),
+            );
+            await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
+            await userEvent.keyboard("{Escape}");
+
+            editor.destroy();
+            await screen.unmount();
+        } finally {
+            editor.destroy();
+            host.remove();
+        }
     });
 
     test("forhåndsviser og setter inn valgt HTML ved markøren med markeringer og onChange", async () => {

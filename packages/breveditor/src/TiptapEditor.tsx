@@ -102,18 +102,6 @@ function TiptapEditor({
 }
 
 function BrevStatus({ status }: { status: "idle" | "saving" | "saved" | "error" | undefined }) {
-    const savedAtRef = useRef("");
-    const prevStatusRef = useRef(status);
-
-    if (status === "saved" && prevStatusRef.current !== "saved") {
-        savedAtRef.current = new Date().toLocaleTimeString("no-NO", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-        });
-    }
-    prevStatusRef.current = status;
-
     switch (status) {
         case "idle":
             return null;
@@ -127,7 +115,7 @@ function BrevStatus({ status }: { status: "idle" | "saving" | "saved" | "error" 
         case "saved":
             return (
                 <InlineMessage size="small" status="success">
-                    Lagret kl. {savedAtRef.current}
+                    Lagret
                 </InlineMessage>
             );
         case "error":
