@@ -6,6 +6,8 @@ import { render } from "vitest-browser-react";
 import { HtmlPdfgenEditor } from "./HtmlPdfgenEditor";
 import { MenuBar } from "./MenuBar";
 import type { Standardtekst, StandardtekstSearchFilter } from "./Standardtekst.types";
+import { StandardtekstExtension, standardtekstPluginKey } from "./StandardtekstExtension";
+import { StandardtekstModal } from "./StandardtekstModal";
 
 describe("HtmlPdfgenEditor", () => {
     const testHtml =
@@ -172,24 +174,30 @@ describe("HtmlPdfgenEditor", () => {
         await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
     });
 
-    test("håndterer montering og avmontering av editoren uten å lese en utilgjengelig view", async () => {
-        const editor = new Editor({ element: null, extensions: [StarterKit] });
+    test("håndterer montering og avmontering av editoren med hurtigtasten", async () => {
+        const editor = new Editor({ element: null, extensions: [StarterKit, StandardtekstExtension] });
         const host = document.createElement("div");
         document.body.append(host);
         try {
-            const screen = await render(<MenuBar editor={editor} searchStandardtekster={async () => []} />);
+            const screen = await render(
+                <>
+                    <MenuBar editor={editor} />
+                    <StandardtekstModal editor={editor} searchStandardtekster={async () => []} />
+                </>,
+            );
 
             editor.mount(host);
             editor.view.dom.dispatchEvent(
-                new KeyboardEvent("keydown", { key: "Y", ctrlKey: true, shiftKey: true, bubbles: true }),
+                new KeyboardEvent("keydown", { key: "y", ctrlKey: true, shiftKey: true, bubbles: true }),
             );
             await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
             await userEvent.keyboard("{Escape}");
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(false);
 
             editor.unmount();
             editor.mount(host);
             editor.view.dom.dispatchEvent(
-                new KeyboardEvent("keydown", { key: "Y", ctrlKey: true, shiftKey: true, bubbles: true }),
+                new KeyboardEvent("keydown", { key: "y", ctrlKey: true, shiftKey: true, bubbles: true }),
             );
             await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
             await userEvent.keyboard("{Escape}");
@@ -199,6 +207,113 @@ describe("HtmlPdfgenEditor", () => {
         } finally {
             editor.destroy();
             host.remove();
+        }
+    });
+
+    test("kartlegger lagret markering gjennom dokumentendringer og isolerer editorenes tilstand", () => {
+        const editor = new Editor({
+            element: document.createElement("div"),
+            extensions: [StarterKit, StandardtekstExtension],
+            content: "<p>abcdef</p>",
+        });
+        const otherEditor = new Editor({
+            element: document.createElement("div"),
+            extensions: [StarterKit, StandardtekstExtension],
+            content: "<p>separat</p>",
+        });
+
+        try {
+            editor.commands.setTextSelection(4);
+            expect(editor.commands.openStandardtekstModal()).toBe(true);
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(true);
+            expect(standardtekstPluginKey.getState(otherEditor.state)?.isOpen).toBe(false);
+
+            editor.commands.insertContentAt(1, "X");
+            editor.commands.setTextSelection(2);
+            editor.commands.insertStandardtekst("<strong>Y</strong>");
+
+            expect(editor.getText()).toBe("XabcYdef");
+            expect(editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to)).toBe("Y");
+            expect(standardtekstPluginKey.getState(editor.state)).toEqual({ isOpen: false, bookmark: null });
+            expect(standardtekstPluginKey.getState(otherEditor.state)?.isOpen).toBe(false);
+        } finally {
+            editor.destroy();
+            otherEditor.destroy();
+        }
+    });
+
+    test("erstatter ikke-tom markering og markerer den innsatte teksten", () => {
+        const onUpdate = vi.fn();
+        const editor = new Editor({
+            element: document.createElement("div"),
+            extensions: [StarterKit, StandardtekstExtension],
+            content: "<p>abcdef</p>",
+            onUpdate,
+        });
+
+        try {
+            editor.commands.setTextSelection({ from: 2, to: 5 });
+            editor.commands.openStandardtekstModal();
+            expect(onUpdate).not.toHaveBeenCalled();
+
+            editor.commands.insertStandardtekst("<strong>XY</strong>");
+
+            expect(editor.getText()).toBe("aXYef");
+            expect(editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to)).toBe("XY");
+            expect(editor.getHTML()).toContain("<strong>XY</strong>");
+            expect(onUpdate).toHaveBeenCalledTimes(1);
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(false);
+        } finally {
+            editor.destroy();
+        }
+    });
+
+    test("can tester kommandoer uten å endre editor- eller plugin-tilstand", () => {
+        const editor = new Editor({
+            element: document.createElement("div"),
+            extensions: [StarterKit, StandardtekstExtension],
+            content: "<p>innhold</p>",
+        });
+
+        try {
+            const originalDocument = editor.state.doc;
+            expect(editor.can().openStandardtekstModal()).toBe(true);
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(false);
+
+            editor.commands.openStandardtekstModal();
+            expect(editor.can().insertStandardtekst("<p>nytt</p>")).toBe(true);
+
+            expect(editor.state.doc).toBe(originalDocument);
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(true);
+            expect(editor.can().closeStandardtekstModal()).toBe(true);
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(true);
+        } finally {
+            editor.destroy();
+        }
+    });
+
+    test("avviser åpning og innsetting i read-only-modus", () => {
+        const editor = new Editor({
+            element: document.createElement("div"),
+            extensions: [StarterKit, StandardtekstExtension],
+            content: "<p>innhold</p>",
+        });
+
+        try {
+            editor.setEditable(false);
+            expect(editor.commands.openStandardtekstModal()).toBe(false);
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(false);
+
+            editor.setEditable(true);
+            editor.commands.openStandardtekstModal();
+            editor.setEditable(false);
+            const originalDocument = editor.state.doc;
+
+            expect(editor.commands.insertStandardtekst("<p>nytt</p>")).toBe(false);
+            expect(editor.state.doc).toBe(originalDocument);
+            expect(standardtekstPluginKey.getState(editor.state)?.isOpen).toBe(true);
+        } finally {
+            editor.destroy();
         }
     });
 

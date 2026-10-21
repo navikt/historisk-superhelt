@@ -11,25 +11,23 @@ import {
     Tag,
     VStack,
 } from "@navikt/ds-react";
-import { TextSelection } from "@tiptap/pm/state";
-import type { Editor } from "@tiptap/react";
+import { type Editor, useEditorState } from "@tiptap/react";
 import DOMPurify from "dompurify";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Standardtekst, StandardtekstSearch } from "./Standardtekst.types";
+import { standardtekstPluginKey } from "./StandardtekstExtension";
 
 export function StandardtekstModal({
     editor,
     searchStandardtekster,
-    open,
-    onOpenChange,
-    selection,
 }: {
     editor: Editor;
     searchStandardtekster: StandardtekstSearch;
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    selection: { from: number; to: number } | null;
 }) {
+    const open = useEditorState({
+        editor,
+        selector: ({ editor }) => standardtekstPluginKey.getState(editor.state)?.isOpen ?? false,
+    });
     const [query, setQuery] = useState("");
     const [standardtekster, setStandardtekster] = useState<Standardtekst[]>([]);
     const [selectedStandardtekst, setSelectedStandardtekst] = useState<Standardtekst | null>(null);
@@ -43,7 +41,7 @@ export function StandardtekstModal({
         isOpen.current = false;
         latestSearch.current += 1;
         setLoading(false);
-        onOpenChange(false);
+        editor.commands.closeStandardtekstModal();
     }
 
     const search = useCallback(
@@ -93,7 +91,7 @@ export function StandardtekstModal({
             open={open}
             onOpenChange={(nextOpen) => {
                 if (nextOpen) {
-                    onOpenChange(true);
+                    editor.commands.openStandardtekstModal();
                 } else {
                     closeModal();
                 }
@@ -101,7 +99,11 @@ export function StandardtekstModal({
         >
             <Dialog.Popup
                 width="large"
-                returnFocusTo={() => (focusEditorAfterClose.current ? editor.view.dom : undefined)}
+                returnFocusTo={() =>
+                    focusEditorAfterClose.current && !editor.isDestroyed && editor.isInitialized
+                        ? editor.view.dom
+                        : undefined
+                }
             >
                 <Dialog.Header>
                     <Dialog.Title>Sett inn standardtekst</Dialog.Title>
@@ -181,44 +183,12 @@ export function StandardtekstModal({
                         disabled={!selectedStandardtekst}
                         onClick={() => {
                             if (!selectedStandardtekst) return;
-                            const chain = editor.chain().focus();
-                            if (selection) chain.setTextSelection(selection);
-                            chain
-                                .insertContent(DOMPurify.sanitize(selectedStandardtekst.html))
-                                .command(({ tr }) => {
-                                    const insertedContentEnd = tr.selection.from;
-                                    if (selection && selection.from < insertedContentEnd) {
-                                        let insertedTextStart: number | null = null;
-                                        let insertedTextEnd: number | null = null;
-
-                                        tr.doc.nodesBetween(selection.from, insertedContentEnd, (node, position) => {
-                                            if (!node.isText) return;
-
-                                            const textStart = Math.max(position, selection.from);
-                                            const textEnd = Math.min(position + node.nodeSize, insertedContentEnd);
-                                            if (textStart < textEnd) {
-                                                insertedTextStart =
-                                                    insertedTextStart === null
-                                                        ? textStart
-                                                        : Math.min(insertedTextStart, textStart);
-                                                insertedTextEnd =
-                                                    insertedTextEnd === null
-                                                        ? textEnd
-                                                        : Math.max(insertedTextEnd, textEnd);
-                                            }
-                                        });
-
-                                        if (insertedTextStart !== null && insertedTextEnd !== null) {
-                                            tr.setSelection(
-                                                TextSelection.create(tr.doc, insertedTextStart, insertedTextEnd),
-                                            );
-                                        }
-                                    }
-                                    return true;
-                                })
-                                .run();
-                            focusEditorAfterClose.current = true;
-                            closeModal();
+                            if (editor.chain().focus().insertStandardtekst(selectedStandardtekst.html).run()) {
+                                focusEditorAfterClose.current = true;
+                                isOpen.current = false;
+                                latestSearch.current += 1;
+                                setLoading(false);
+                            }
                         }}
                     >
                         Sett inn tekst

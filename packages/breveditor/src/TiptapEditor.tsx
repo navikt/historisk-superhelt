@@ -6,10 +6,12 @@ import { useEffect, useMemo, useRef } from "react";
 import { MenuBar } from "./MenuBar";
 import { PdfPreview } from "./PdfPreview";
 import type { StandardtekstSearch } from "./Standardtekst.types";
+import { StandardtekstExtension } from "./StandardtekstExtension";
+import { StandardtekstModal } from "./StandardtekstModal";
 import styles from "./TiptapEditor.module.css";
 import { WordHighlight } from "./WordHighlight";
 
-const extensions = [StarterKit, Highlight, WordHighlight];
+const extensions = [StarterKit, Highlight, WordHighlight, StandardtekstExtension];
 
 interface TiptapEditorProps {
     initialContentHtml: string;
@@ -80,12 +82,19 @@ function TiptapEditor({
         >
             <Bleed marginBlock="space-1 space-0">
                 {!readOnly && editor && (
-                    <MenuBar editor={editor} onSave={onSave} searchStandardtekster={searchStandardtekster}>
-                        <Box marginInline="auto space-8">
-                            <BrevStatus status={saveStatus} />
-                        </Box>
-                        <PdfPreview previewUrl={previewUrl} onBeforePreview={saveBeforePreview} readOnly={readOnly} />
-                    </MenuBar>
+                    <>
+                        <MenuBar editor={editor} onSave={onSave}>
+                            <Box marginInline="auto space-8">
+                                <BrevStatus status={saveStatus} />
+                            </Box>
+                            <PdfPreview
+                                previewUrl={previewUrl}
+                                onBeforePreview={saveBeforePreview}
+                                readOnly={readOnly}
+                            />
+                        </MenuBar>
+                        <StandardtekstModal editor={editor} searchStandardtekster={searchStandardtekster} />
+                    </>
                 )}
             </Bleed>
             <EditorContext.Provider value={providerValue}>
