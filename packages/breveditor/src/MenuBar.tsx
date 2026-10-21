@@ -10,15 +10,19 @@ import { ActionMenu, BodyShort, Box, Button, Detail, HelpText, HStack, Tooltip, 
 import { type Editor, useEditorState } from "@tiptap/react";
 import { Bold, Italic } from "./Icons";
 import styles from "./MenuBar.module.css";
+import type { StandardtekstSearch } from "./Standardtekst.types";
+import { StandardtekstModal } from "./StandardtekstModal";
 
 export function MenuBar({
     editor,
     children,
     onSave,
+    searchStandardtekster,
 }: {
     editor: Editor;
     children?: React.ReactNode;
     onSave?: () => void;
+    searchStandardtekster: StandardtekstSearch;
 }) {
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
@@ -216,6 +220,7 @@ export function MenuBar({
                             }
                         />
                     </Tooltip>
+                    <StandardtekstModal editor={editor} searchStandardtekster={searchStandardtekster} />
                 </HStack>
                 {children}
                 <HelpText title="Hvordan redigere brev">

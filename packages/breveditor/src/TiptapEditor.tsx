@@ -5,10 +5,12 @@ import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo, useRef } from "react";
 import { MenuBar } from "./MenuBar";
 import { PdfPreview } from "./PdfPreview";
+import type { StandardtekstSearch } from "./Standardtekst.types";
 import styles from "./TiptapEditor.module.css";
 import { WordHighlight } from "./WordHighlight";
 
 const extensions = [StarterKit, Highlight, WordHighlight];
+
 interface TiptapEditorProps {
     initialContentHtml: string;
     onChange: (html: string) => void;
@@ -18,6 +20,7 @@ interface TiptapEditorProps {
     saveStatus?: "idle" | "saving" | "saved" | "error";
     onSave?: () => Promise<void>;
     previewUrl?: string;
+    searchStandardtekster: StandardtekstSearch;
 }
 
 function TiptapEditor({
@@ -29,6 +32,7 @@ function TiptapEditor({
     saveStatus,
     onSave,
     previewUrl,
+    searchStandardtekster,
 }: TiptapEditorProps) {
     const editor = useEditor({
         extensions,
@@ -76,7 +80,7 @@ function TiptapEditor({
         >
             <Bleed marginBlock="space-1 space-0">
                 {!readOnly && editor && (
-                    <MenuBar editor={editor} onSave={onSave}>
+                    <MenuBar editor={editor} onSave={onSave} searchStandardtekster={searchStandardtekster}>
                         <Box marginInline="auto space-8">
                             <BrevStatus status={saveStatus} />
                         </Box>

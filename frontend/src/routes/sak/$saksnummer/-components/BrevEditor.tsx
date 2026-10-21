@@ -11,6 +11,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoSave } from "~/common/useAutosave";
 import { getOrCreateBrevQueryKey } from "~/routes/sak/$saksnummer/-api/brev.query";
+import { useStandardTekster } from "./useStandardTekster";
 
 interface BrevEditorProps {
     sak: Sak;
@@ -40,6 +41,7 @@ interface BrevEditorInternalProps extends BrevEditorProps {
 
 function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: BrevEditorInternalProps) {
     const saksnummer = sak.saksnummer;
+    const searchStandardtekster = useStandardTekster(sak.type);
     const { data: brev } = useSuspenseQuery({
         ...hentBrevOptions({
             path: {
@@ -177,6 +179,7 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
                 onSave={() => onSave(true)}
                 previewUrl={`/api/sak/${saksnummer}/brev/${brevId}/pdf`}
                 saveStatus={saveStatus}
+                searchStandardtekster={searchStandardtekster}
             />
             <HStack gap="space-32" align="start">
                 <Button type="submit" variant="primary" onClick={onActionClick} disabled={readOnly} loading={loading}>
