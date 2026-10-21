@@ -14,12 +14,12 @@ import styles from "./MenuBar.module.css";
 
 export function MenuBar({
     editor,
-    children,
     onSave,
+    children,
 }: {
     editor: Editor;
-    children?: React.ReactNode;
     onSave?: () => void;
+    children?: React.ReactNode;
 }) {
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
@@ -30,8 +30,6 @@ export function MenuBar({
                 canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
                 isItalic: ctx.editor.isActive("italic") ?? false,
                 canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
-                canClearMarks: ctx.editor.can().chain().unsetAllMarks().run() ?? false,
-                isParagraph: ctx.editor.isActive("paragraph") ?? false,
                 activeHeading:
                     ([1, 2, 3, 4] as const).find((level) => ctx.editor.isActive("heading", { level })) ?? null,
                 isBulletList: ctx.editor.isActive("bulletList") ?? false,
@@ -75,7 +73,7 @@ export function MenuBar({
                             size="small"
                             aria-label="Angre"
                             onClick={() => editor.chain().focus().undo().run()}
-                            disabled={!editor.can().undo()}
+                            disabled={!editorState.canUndo}
                             icon={<ArrowUndoIcon fontSize="1.25rem" />}
                         />
                     </Tooltip>
@@ -88,7 +86,7 @@ export function MenuBar({
                             size="small"
                             aria-label="Gjør om igjen"
                             onClick={() => editor.chain().focus().redo().run()}
-                            disabled={!editor.can().redo()}
+                            disabled={!editorState.canRedo}
                             icon={<ArrowRedoIcon fontSize="1.25rem" />}
                         />
                     </Tooltip>
@@ -101,6 +99,7 @@ export function MenuBar({
                             size="small"
                             aria-label="Lagre"
                             onClick={onSave}
+                            disabled={!onSave}
                             icon={<FloppydiskIcon fontSize="1.25rem" />}
                         />
                     </Tooltip>

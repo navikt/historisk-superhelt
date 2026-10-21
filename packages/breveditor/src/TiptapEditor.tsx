@@ -2,7 +2,7 @@ import { Bleed, Box, ErrorMessage, HStack, InlineMessage, Loader } from "@navikt
 import Highlight from "@tiptap/extension-highlight";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { MenuBar } from "./MenuBar";
 import { PdfPreview } from "./PdfPreview";
 import type { StandardtekstSearch } from "./Standardtekst.types";
@@ -54,23 +54,13 @@ function TiptapEditor({
 
     const providerValue = useMemo(() => ({ editor }), [editor]);
 
-    const onSaveRef = useRef(onSave);
-    onSaveRef.current = onSave;
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-                e.preventDefault();
-                onSaveRef.current?.();
-            }
-        };
-        document.addEventListener("keydown", handleKeyDown);
-        return () => document.removeEventListener("keydown", handleKeyDown);
-    }, []);
+    async function handleManualSave() {
+        await onSave?.();
+    }
 
     async function saveBeforePreview() {
         onChange(editor.getHTML());
-        await onSaveRef.current?.();
+        await onSave?.();
     }
     return (
         <Box
@@ -83,7 +73,7 @@ function TiptapEditor({
             <Bleed marginBlock="space-1 space-0">
                 {!readOnly && editor && (
                     <>
-                        <MenuBar editor={editor} onSave={onSave}>
+                        <MenuBar editor={editor} onSave={onSave ? handleManualSave : undefined}>
                             <Box marginInline="auto space-8">
                                 <BrevStatus status={saveStatus} />
                             </Box>
@@ -103,6 +93,22 @@ function TiptapEditor({
                     className={`brev-editor ${styles.editor}`}
                     data-testid="tiptapeditor"
                     onClick={() => editor?.commands.focus()}
+                    onKeyDown={(event) => {
+                        if (
+                            event.key.toLowerCase() !== "s" ||
+                            (!event.ctrlKey && !event.metaKey) ||
+                            event.altKey ||
+                            event.shiftKey ||
+                            readOnly ||
+                            !editor?.isEditable ||
+                            !onSave
+                        ) {
+                            return;
+                        }
+
+                        event.preventDefault();
+                        handleManualSave();
+                    }}
                 />
             </EditorContext.Provider>
             {error && <ErrorMessage showIcon>{error}</ErrorMessage>}

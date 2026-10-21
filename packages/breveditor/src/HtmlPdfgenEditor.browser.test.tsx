@@ -1,5 +1,6 @@
 import { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { useState } from "react";
 import { describe, expect, test, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
@@ -66,9 +67,184 @@ describe("HtmlPdfgenEditor", () => {
         const onSave = vi.fn(async () => {});
         renderEditor({ onSave });
 
+        await userEvent.click(page.getByRole("textbox"));
         await userEvent.keyboard("{Control>}s{/Control}");
 
         expect(onSave).toHaveBeenCalledTimes(1);
+    });
+
+    test("Meta+S kaller onSave én gang", async () => {
+        const onSave = vi.fn(async () => {});
+        renderEditor({ onSave });
+
+        await userEvent.click(page.getByRole("textbox"));
+        await userEvent.keyboard("{Meta>}s{/Meta}");
+
+        expect(onSave).toHaveBeenCalledTimes(1);
+    });
+
+    test("lagringshurtigtasten ikke virker utenfor editoren", () => {
+        const onSave = vi.fn(async () => {});
+        renderEditor({ onSave });
+
+        const event = new KeyboardEvent("keydown", { key: "s", ctrlKey: true, bubbles: true, cancelable: true });
+        document.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(false);
+        expect(onSave).not.toHaveBeenCalled();
+    });
+
+    test("lagringshurtigtasten håndteres ikke uten lagringsfunksjon", () => {
+        const onSave = vi.fn(async () => {});
+        renderEditor();
+
+        const editor = document.querySelector('[data-testid="tiptapeditor"]');
+        const withoutCallback = new KeyboardEvent("keydown", {
+            key: "s",
+            ctrlKey: true,
+            bubbles: true,
+            cancelable: true,
+        });
+        editor?.dispatchEvent(withoutCallback);
+
+        expect(withoutCallback.defaultPrevented).toBe(false);
+        expect(onSave).not.toHaveBeenCalled();
+    });
+
+    test("lagringshurtigtasten håndteres ikke i read-only-modus", () => {
+        const onSave = vi.fn(async () => {});
+        renderEditor({ readOnly: true, onSave });
+        const readOnlyEditor = document.querySelector('[data-testid="tiptapeditor"]');
+        const readOnlyShortcut = new KeyboardEvent("keydown", {
+            key: "s",
+            metaKey: true,
+            bubbles: true,
+            cancelable: true,
+        });
+        readOnlyEditor?.dispatchEvent(readOnlyShortcut);
+
+        expect(readOnlyShortcut.defaultPrevented).toBe(false);
+        expect(onSave).not.toHaveBeenCalled();
+    });
+
+    test("lagringshurtigtasten ignorerer Alt- og Shift-kombinasjoner", () => {
+        const onSave = vi.fn(async () => {});
+        renderEditor({ onSave });
+
+        const editor = document.querySelector('[data-testid="tiptapeditor"]');
+        for (const modifier of [{ altKey: true }, { shiftKey: true }]) {
+            const event = new KeyboardEvent("keydown", {
+                key: "s",
+                ctrlKey: true,
+                bubbles: true,
+                cancelable: true,
+                ...modifier,
+            });
+            editor?.dispatchEvent(event);
+            expect(event.defaultPrevented).toBe(false);
+        }
+
+        expect(onSave).not.toHaveBeenCalled();
+    });
+
+    test("lagreknappen kaller onSave én gang uten å kalle onChange", async () => {
+        const onChange = vi.fn();
+        const onSave = vi.fn(async () => {});
+        renderEditor({ onChange, onSave });
+
+        await userEvent.click(page.getByRole("button", { name: "Lagre", exact: true }));
+
+        expect(onSave).toHaveBeenCalledTimes(1);
+        expect(onChange).not.toHaveBeenCalled();
+    });
+
+    test("lagreknappen er deaktivert uten onSave", async () => {
+        renderEditor();
+
+        await expect.element(page.getByRole("button", { name: "Lagre" })).toBeDisabled();
+    });
+
+    test("viser konsumentens lagringsstatus for avvist lagring og senere statusendringer", async () => {
+        const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+        function EditorWithSaveStatus() {
+            const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">("idle");
+            const [shouldReject, setShouldReject] = useState(true);
+            const onSave = async () => {
+                if (shouldReject) {
+                    setSaveStatus("error");
+                    throw new Error("private letter contents");
+                }
+                setSaveStatus("saved");
+            };
+
+            return (
+                <>
+                    <button type="button" onClick={() => setShouldReject(false)}>
+                        Lagre neste gang
+                    </button>
+                    <button type="button" onClick={() => setSaveStatus("idle")}>
+                        Nullstill status
+                    </button>
+                    <HtmlPdfgenEditor
+                        html={testHtml}
+                        onChange={vi.fn()}
+                        searchStandardtekster={async () => []}
+                        onSave={onSave}
+                        saveStatus={saveStatus}
+                    />
+                </>
+            );
+        }
+
+        render(<EditorWithSaveStatus />);
+        await userEvent.click(page.getByRole("button", { name: "Lagre", exact: true }));
+        await expect.element(page.getByText("Feil ved lagring")).toBeVisible();
+        expect(consoleError).toHaveBeenCalledExactlyOnceWith("Brevlagring feilet.");
+
+        await userEvent.click(page.getByRole("button", { name: "Lagre neste gang" }));
+        await userEvent.click(page.getByRole("button", { name: "Lagre", exact: true }));
+        await expect.element(page.getByText("Lagret")).toBeVisible();
+        await userEvent.click(page.getByRole("button", { name: "Nullstill status" }));
+        await expect.element(page.getByText("Lagret")).not.toBeInTheDocument();
+        await expect.element(page.getByText("Feil ved lagring")).not.toBeInTheDocument();
+
+        expect(consoleError).toHaveBeenCalledExactlyOnceWith("Brevlagring feilet.");
+        consoleError.mockRestore();
+    });
+
+    test("bruker nyeste onSave etter rerender uten å miste editorinnhold", async () => {
+        const firstOnSave = vi.fn(async () => {});
+        const latestOnSave = vi.fn(async () => {});
+        const initialProps = {
+            html: testHtml,
+            onChange: vi.fn(),
+            searchStandardtekster: async () => [],
+            onSave: firstOnSave,
+        };
+        function EditorWithReplaceableSave() {
+            const [saveCallback, setSaveCallback] = useState(() => firstOnSave);
+            return (
+                <>
+                    <button type="button" onClick={() => setSaveCallback(() => latestOnSave)}>
+                        Bytt lagringsfunksjon
+                    </button>
+                    <HtmlPdfgenEditor {...initialProps} onSave={saveCallback} />
+                </>
+            );
+        }
+        render(<EditorWithReplaceableSave />);
+
+        const editor = page.getByRole("textbox");
+        await userEvent.click(editor);
+        await userEvent.keyboard("{End} Behold dette");
+        await userEvent.click(page.getByRole("button", { name: "Bytt lagringsfunksjon" }));
+        await userEvent.click(editor);
+        await userEvent.keyboard("{Control>}s{/Control}");
+
+        expect(latestOnSave).toHaveBeenCalledTimes(1);
+        expect(firstOnSave).not.toHaveBeenCalled();
+        await expect.element(page.getByText("Behold dette")).toBeVisible();
     });
 
     test("read-only skjuler lagring og forhåndsvisning og låser editoren", async () => {
@@ -89,9 +265,15 @@ describe("HtmlPdfgenEditor", () => {
             .not.toBeInTheDocument();
     });
 
-    test("lagrer og viser PDF-forhåndsvisning, og Escape lukker dialogen med fokusretur", async () => {
+    test("venter på lagring før PDF-forhåndsvisning, og Escape lukker dialogen med fokusretur", async () => {
         const onChange = vi.fn();
-        const onSave = vi.fn(async () => {});
+        let resolveSave: (() => void) | undefined;
+        const onSave = vi.fn(
+            () =>
+                new Promise<void>((resolve) => {
+                    resolveSave = resolve;
+                }),
+        );
         const previewUrl = "/test-brev.pdf";
         renderEditor({ onChange, onSave, previewUrl });
 
@@ -104,6 +286,8 @@ describe("HtmlPdfgenEditor", () => {
         expect(onChange).toHaveBeenLastCalledWith(expect.stringContaining("Ny tekst"));
         expect(onSave).toHaveBeenCalledTimes(1);
         expect(onChange.mock.invocationCallOrder.at(-1)).toBeLessThan(onSave.mock.invocationCallOrder[0]);
+        await expect.element(page.getByRole("dialog", { name: "Forhåndsvis dokumentet" })).not.toBeInTheDocument();
+        resolveSave?.();
         await expect.element(page.getByRole("dialog", { name: "Forhåndsvis dokumentet" })).toBeVisible();
         const embed = page.getByTitle("PDF-forhåndsvisning av brevet");
         await expect.element(embed).toBeVisible();
@@ -112,6 +296,37 @@ describe("HtmlPdfgenEditor", () => {
         await userEvent.keyboard("{Escape}");
         await expect.element(page.getByRole("dialog", { name: "Forhåndsvis dokumentet" })).not.toBeInTheDocument();
         await expect.element(previewButton).toHaveFocus();
+    });
+
+    test("viser konsumentens lagringsfeil og holder forhåndsvisningen lukket ved avvist lagring", async () => {
+        const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+        function EditorWithRejectedPreviewSave() {
+            const [saveStatus, setSaveStatus] = useState<"idle" | "error">("idle");
+            const onSave = async () => {
+                setSaveStatus("error");
+                throw new Error("private letter contents");
+            };
+
+            return (
+                <HtmlPdfgenEditor
+                    html={testHtml}
+                    onChange={vi.fn()}
+                    searchStandardtekster={async () => []}
+                    onSave={onSave}
+                    saveStatus={saveStatus}
+                    previewUrl="/test-brev.pdf"
+                />
+            );
+        }
+
+        render(<EditorWithRejectedPreviewSave />);
+        await userEvent.click(page.getByRole("button", { name: "Forhåndsvis dokumentet som PDF" }));
+
+        await expect.element(page.getByText("Feil ved lagring")).toBeVisible();
+        await expect.element(page.getByRole("dialog", { name: "Forhåndsvis dokumentet" })).not.toBeInTheDocument();
+        expect(consoleError).toHaveBeenCalledExactlyOnceWith("Brevlagring feilet.");
+        consoleError.mockRestore();
     });
 
     test("søker i tittel, HTML og tags uten å kjenne sakstypefiltrering", async () => {
@@ -175,7 +390,10 @@ describe("HtmlPdfgenEditor", () => {
     });
 
     test("håndterer montering og avmontering av editoren med hurtigtasten", async () => {
-        const editor = new Editor({ element: null, extensions: [StarterKit, StandardtekstExtension] });
+        const editor = new Editor({
+            element: null,
+            extensions: [StarterKit, StandardtekstExtension],
+        });
         const host = document.createElement("div");
         document.body.append(host);
         try {
