@@ -36,21 +36,20 @@ describe("StandardtekstModal", () => {
                 title: "Utbetaling",
                 html: "<p>Generell tekst</p>",
                 tags: ["betaling"],
-                target: "general",
             },
             {
                 id: "parykk",
                 title: "Innvilgelse",
                 html: "<p>Hodeform</p>",
                 tags: ["Parykk", "avvikende hodeform"],
-                target: "stondad",
+                stonadstype: "Parykk/hodeplagg",
             },
             {
                 id: "bryst",
                 title: "Brystprotese",
                 html: "<p>Støtte til brystprotese</p>",
                 tags: ["Brystprotese"],
-                target: "stondad",
+                stonadstype: "Brystprotese/spesial-bh",
             },
         ];
         const editor = createEditor();
@@ -64,7 +63,16 @@ describe("StandardtekstModal", () => {
 
             await userEvent.click(page.getByRole("button", { name: /Innvilgelse Parykk/ }));
             await expect.element(page.getByText("avvikende hodeform", { exact: true })).toBeVisible();
+            await expect
+                .element(page.getByText("Parykk/hodeplagg", { exact: true }))
+                .toHaveAttribute("data-color", "meta-purple");
+            await expect.element(page.getByText("Parykk", { exact: true })).toHaveAttribute("data-color", "neutral");
             await expect.element(page.getByText("Hodeform", { exact: true })).toBeVisible();
+            await expect
+                .element(
+                    page.getByRole("button", { name: "Utbetaling" }).getByText("Parykk/hodeplagg", { exact: true }),
+                )
+                .not.toBeInTheDocument();
 
             const search = page.getByRole("searchbox", { name: "Søk etter standardtekst" });
             await userEvent.type(search, "hodeform");
@@ -103,7 +111,6 @@ describe("StandardtekstModal", () => {
             title: "Innvilgelse",
             html: "<p>Innhold</p>",
             tags: [],
-            target: "general",
         };
         const editor = createEditor();
         let updateResponse: (nextResponse: StandardtekstResponse) => void = () => {};
@@ -136,7 +143,6 @@ describe("StandardtekstModal", () => {
             title: "Skal ikke vises",
             html: "<p>Utdatert</p>",
             tags: [],
-            target: "general",
         };
         const editor = createEditor();
         const screen = await render(
@@ -169,7 +175,6 @@ describe("StandardtekstModal", () => {
             title: "Innvilgelse",
             html: "<p>Skal ikke settes inn</p>",
             tags: [],
-            target: "general",
         };
         const editor = createEditor();
         let updateResponse: (nextResponse: StandardtekstResponse) => void = () => {};
@@ -203,7 +208,7 @@ describe("StandardtekstModal", () => {
             title: "Parykk",
             html: "<p>Stønad</p>",
             tags: ["Innvilgelse"],
-            target: "stondad",
+            stonadstype: "Parykk/hodeplagg",
         };
         const editor = createEditor();
         const screen = await render(<StandardtekstModal editor={editor} standardtekster={response([standardtekst])} />);

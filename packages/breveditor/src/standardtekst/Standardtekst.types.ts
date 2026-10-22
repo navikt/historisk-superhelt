@@ -3,7 +3,7 @@ export interface Standardtekst {
     title: string;
     html: string;
     tags: string[];
-    target: "general" | "stondad";
+    stonadstype?: string;
 }
 
 export interface StandardtekstResponse {

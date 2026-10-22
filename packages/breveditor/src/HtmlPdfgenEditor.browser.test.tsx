@@ -305,7 +305,7 @@ describe("HtmlPdfgenEditor", () => {
                     title: "Innvilgelse parykk",
                     html: "<p>Stønad på <mark>6 265 kroner</mark>.</p>",
                     tags: ["Parykk"],
-                    target: "stondad",
+                    stonadstype: "Parykk/hodeplagg",
                 };
                 renderEditor({ onChange, standardtekster: response([standardtekst]) });
 

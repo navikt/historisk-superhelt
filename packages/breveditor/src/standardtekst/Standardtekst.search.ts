@@ -23,8 +23,8 @@ export function searchStandardtekster(standardtekster: Standardtekst[], query: s
         .filter(({ relevance }) => relevance > 0)
         .sort(
             (a, b) =>
+                Number(Boolean(b.standardtekst.stonadstype)) - Number(Boolean(a.standardtekst.stonadstype)) ||
                 b.relevance - a.relevance ||
-                Number(b.standardtekst.target === "stondad") - Number(a.standardtekst.target === "stondad") ||
                 a.index - b.index,
         )
         .map(({ standardtekst }) => standardtekst);

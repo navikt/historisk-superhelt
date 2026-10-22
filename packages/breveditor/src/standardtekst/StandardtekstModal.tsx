@@ -117,9 +117,17 @@ export function StandardtekstModal({ editor, standardtekster }: StandardtekstMod
                                         <Accordion.Header>
                                             <HStack justify={"space-between"} gap={"space-8"}>
                                                 <Label>{standardtekst.title}</Label>
+                                                <Tag size="small" variant="outline" data-color="meta-purple">
+                                                    {standardtekst.stonadstype ?? "Generell"}
+                                                </Tag>
                                                 <HStack gap="space-8">
                                                     {standardtekst.tags.map((tag) => (
-                                                        <Tag key={tag} size="small" variant={"moderate"}>
+                                                        <Tag
+                                                            key={tag}
+                                                            size="small"
+                                                            variant="moderate"
+                                                            data-color="neutral"
+                                                        >
                                                             {tag}
                                                         </Tag>
                                                     ))}

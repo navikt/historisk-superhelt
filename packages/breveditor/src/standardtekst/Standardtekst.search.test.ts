@@ -10,28 +10,24 @@ describe("searchStandardtekster", () => {
                 title: "Utbetaling",
                 html: "<p>Generell tekst</p>",
                 tags: [],
-                target: "general",
             },
             {
                 id: "tag",
                 title: "Innvilgelse",
                 html: "<p>Generell tekst</p>",
                 tags: ["Parykk"],
-                target: "general",
             },
             {
                 id: "content",
                 title: "Avslag",
                 html: "<p>Hodeform</p>",
                 tags: [],
-                target: "general",
             },
             {
                 id: "missing",
                 title: "Annet",
                 html: "<p>Urelatert</p>",
                 tags: ["Annet"],
-                target: "general",
             },
         ];
 
@@ -40,58 +36,54 @@ describe("searchStandardtekster", () => {
         expect(searchStandardtekster(catalog, "hodeform")).toEqual([catalog[2]]);
     });
 
-    test("prioriterer relevans og saksspesifikke tekster, og beholder stabil rekkefølge", () => {
+    test("prioriterer stønadstype, relevans og stabil rekkefølge uten å søke i stønadstype", () => {
         const catalog: Standardtekst[] = [
             {
                 id: "generell-innhold",
                 title: "Generell",
                 html: "<p>treff her</p>",
                 tags: [],
-                target: "general",
             },
             {
                 id: "generell-tag",
                 title: "Generell",
                 html: "<p>Innhold</p>",
                 tags: ["treff"],
-                target: "general",
             },
             {
                 id: "generell-tittel-1",
                 title: "Treff tittel 1",
                 html: "<p>Innhold</p>",
                 tags: [],
-                target: "general",
             },
             {
                 id: "saksspesifikk-innhold",
                 title: "Saksspesifikk",
                 html: "<p>treff her</p>",
                 tags: [],
-                target: "stondad",
+                stonadstype: "Parykk/hodeplagg",
             },
             {
                 id: "saksspesifikk-tittel",
                 title: "Treff tittel",
                 html: "<p>Innhold</p>",
                 tags: [],
-                target: "stondad",
+                stonadstype: "Parykk/hodeplagg",
             },
             {
                 id: "generell-tittel-2",
                 title: "Treff tittel 2",
                 html: "<p>Innhold</p>",
                 tags: [],
-                target: "general",
             },
         ];
 
         expect(searchStandardtekster(catalog, " treff ")).toEqual([
             catalog[4],
+            catalog[3],
             catalog[2],
             catalog[5],
             catalog[1],
-            catalog[3],
             catalog[0],
         ]);
         expect(searchStandardtekster(catalog, "")).toEqual([
@@ -102,5 +94,26 @@ describe("searchStandardtekster", () => {
             catalog[2],
             catalog[5],
         ]);
+        expect(searchStandardtekster(catalog, "parykk/hodeplagg")).toEqual([]);
+    });
+
+    test("empty stønadstype does not receive priority", () => {
+        const catalog: Standardtekst[] = [
+            {
+                id: "empty-stonadstype",
+                title: "Treff med tom stønadstype",
+                html: "",
+                tags: [],
+                stonadstype: "",
+            },
+            {
+                id: "general",
+                title: "Treff generell",
+                html: "",
+                tags: [],
+            },
+        ];
+
+        expect(searchStandardtekster(catalog, "treff")).toEqual(catalog);
     });
 });
