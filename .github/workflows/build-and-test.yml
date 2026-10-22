@@ -50,9 +50,11 @@ jobs:
       - name: Installer avhengigheter
         run: pnpm install --frozen-lockfile
 
-      - name: Installer Chromium
+      - name: Setup Playwright
         if: matrix.check == 'test:browser'
-        run: pnpm test:browser:install
+        uses: ./.github/actions/setup-playwright
+        with:
+          only-shell: 'true'
 
       - name: ${{ matrix.check }}
         id: frontend-check
