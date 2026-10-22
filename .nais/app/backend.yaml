@@ -65,7 +65,9 @@ spec:
     path: /actuator/prometheus
 
   ingresses:
-    - {{appIngress}}
+  {{#each ingresses as |ingress|}}
+     - {{ingress}}
+  {{/each}}
 
   observability:
     autoInstrumentation:
