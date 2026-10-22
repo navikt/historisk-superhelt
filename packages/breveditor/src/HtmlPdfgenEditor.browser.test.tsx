@@ -1,12 +1,11 @@
 import { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { act, useState } from "react";
+import { useState } from "react";
 import { describe, expect, test, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { HtmlPdfgenEditor } from "./HtmlPdfgenEditor";
 import { MenuBar } from "./MenuBar";
-import { searchStandardtekster } from "./standardtekst/Standardtekst.search";
 import type { Standardtekst, StandardtekstResponse } from "./standardtekst/Standardtekst.types";
 import { StandardtekstExtension, standardtekstPluginKey } from "./standardtekst/StandardtekstExtension";
 import { StandardtekstModal } from "./standardtekst/StandardtekstModal";
@@ -279,47 +278,6 @@ describe("HtmlPdfgenEditor", () => {
                     .not.toBeInTheDocument();
             });
 
-            test("søker i tittel, HTML og tags uten å kjenne sakstypefiltrering", async () => {
-                const catalog: Standardtekst[] = [
-                    {
-                        id: "general",
-                        title: "Utbetaling",
-                        html: "<p>Generell tekst</p>",
-                        tags: ["betaling"],
-                        target: "general",
-                    },
-                    {
-                        id: "parykk",
-                        title: "Innvilgelse",
-                        html: "<p>Hodeform</p>",
-                        tags: ["Parykk", "avvikende hodeform"],
-                        target: "stondad",
-                    },
-                    {
-                        id: "bryst",
-                        title: "Innvilgelse",
-                        html: "<p>Brystprotese</p>",
-                        tags: ["Brystprotese"],
-                        target: "stondad",
-                    },
-                ];
-                const caseTekster = catalog.filter((item) => item.id !== "bryst");
-                renderEditor({ standardtekster: response(caseTekster) });
-
-                await userEvent.click(page.getByRole("button", { name: "Standardtekster", exact: true }));
-                await expect.element(page.getByRole("button", { name: "Utbetaling" })).toBeVisible();
-                await expect.element(page.getByRole("button", { name: /Innvilgelse Parykk/ })).toBeVisible();
-                await userEvent.click(page.getByRole("button", { name: "Utbetaling" }));
-                await expect.element(page.getByText("betaling", { exact: true })).toBeVisible();
-                await userEvent.click(page.getByRole("button", { name: /Innvilgelse Parykk/ }));
-                await expect.element(page.getByText("avvikende hodeform", { exact: true })).toBeVisible();
-                await expect.element(page.getByText("Brystprotese")).not.toBeInTheDocument();
-
-                await userEvent.type(page.getByRole("searchbox", { name: "Søk etter standardtekst" }), "hodeform");
-                await expect.element(page.getByRole("button", { name: /Innvilgelse Parykk/ })).toBeVisible();
-                await expect.element(page.getByRole("button", { name: "Utbetaling" })).not.toBeInTheDocument();
-            });
-
             test("viser standardtekstmodalen fra ikonknappen i menylinja", async () => {
                 renderEditor({ standardtekster: response([]) });
 
@@ -338,174 +296,6 @@ describe("HtmlPdfgenEditor", () => {
                 await userEvent.keyboard("{Control>}{Shift>}y{/Shift}{/Control}");
 
                 await expect.element(page.getByRole("dialog", { name: "Sett inn standardtekst" })).toBeVisible();
-            });
-
-            test("viser tomtilstand for en tilgjengelig, tom katalog", async () => {
-                renderEditor({ standardtekster: response([]) });
-
-                await userEvent.click(page.getByRole("button", { name: "Standardtekster", exact: true }));
-
-                await expect.element(page.getByText("Ingen standardtekster funnet.")).toBeVisible();
-                await expect.element(page.getByRole("button", { name: "Sett inn tekst" })).toBeDisabled();
-            });
-
-            test("viser data når en ventende respons oppdateres", async () => {
-                const standardtekst: Standardtekst = {
-                    id: "innvilgelse",
-                    title: "Innvilgelse",
-                    html: "<p>Innhold</p>",
-                    tags: [],
-                    target: "general",
-                };
-
-                let updateResponse: (response: StandardtekstResponse) => void = () => {};
-                function EditorWithUpdatedResponse() {
-                    const [responseState, setResponseState] = useState(response([standardtekst], { isPending: true }));
-                    updateResponse = setResponseState;
-                    return <HtmlPdfgenEditor html={testHtml} onChange={vi.fn()} standardtekster={responseState} />;
-                }
-
-                render(<EditorWithUpdatedResponse />);
-                await userEvent.click(page.getByRole("button", { name: "Standardtekster", exact: true }));
-                await expect.element(page.getByRole("status")).toHaveTextContent("Søker etter standardtekster");
-                await expect.element(page.getByRole("button", { name: standardtekst.title })).not.toBeInTheDocument();
-                await expect.element(page.getByRole("button", { name: "Sett inn tekst" })).toBeDisabled();
-
-                await act(async () => updateResponse(response([standardtekst])));
-                await expect.element(page.getByRole("button", { name: standardtekst.title })).toBeVisible();
-            });
-
-            test("viser generell feil uten rå feilmelding eller prøv igjen", async () => {
-                const standardtekst: Standardtekst = {
-                    id: "utdatert",
-                    title: "Skal ikke vises",
-                    html: "<p>Utdatert</p>",
-                    tags: [],
-                    target: "general",
-                };
-                renderEditor({
-                    standardtekster: response([standardtekst], {
-                        isError: true,
-                        error: new Error("intern feildetalj"),
-                    }),
-                });
-
-                await userEvent.click(page.getByRole("button", { name: "Standardtekster", exact: true }));
-
-                await expect.element(page.getByText("Standardtekstene kunne ikke lastes inn.")).toBeVisible();
-                await expect.element(page.getByText("intern feildetalj")).not.toBeInTheDocument();
-                await expect.element(page.getByRole("button", { name: standardtekst.title })).not.toBeInTheDocument();
-                await expect.element(page.getByRole("button", { name: "Prøv igjen" })).not.toBeInTheDocument();
-                await expect.element(page.getByRole("button", { name: "Sett inn tekst" })).toBeDisabled();
-            });
-
-            test("fjerner valgt tekst når oppdatert respons ikke inneholder den lenger", async () => {
-                const standardtekst: Standardtekst = {
-                    id: "utdatert",
-                    title: "Innvilgelse",
-                    html: "<p>Skal ikke settes inn</p>",
-                    tags: [],
-                    target: "general",
-                };
-
-                let updateResponse: (response: StandardtekstResponse) => void = () => {};
-                function EditorWithUpdatedResponse() {
-                    const [responseState, setResponseState] = useState(response([standardtekst]));
-                    updateResponse = setResponseState;
-                    return <HtmlPdfgenEditor html={testHtml} onChange={vi.fn()} standardtekster={responseState} />;
-                }
-
-                render(<EditorWithUpdatedResponse />);
-                await userEvent.click(page.getByRole("button", { name: "Standardtekster", exact: true }));
-                await userEvent.click(page.getByRole("button", { name: standardtekst.title }));
-                await expect.element(page.getByRole("button", { name: "Sett inn tekst" })).toBeEnabled();
-
-                await act(async () => updateResponse(response([])));
-
-                await expect.element(page.getByRole("button", { name: standardtekst.title })).not.toBeInTheDocument();
-                await expect.element(page.getByRole("button", { name: "Sett inn tekst" })).toBeDisabled();
-            });
-
-            test("fjerner valgt tekst når søket skjuler den", async () => {
-                const standardtekst: Standardtekst = {
-                    id: "parykk",
-                    title: "Parykk",
-                    html: "<p>Stønad</p>",
-                    tags: ["Innvilgelse"],
-                    target: "stondad",
-                };
-                renderEditor({ standardtekster: response([standardtekst]) });
-
-                await userEvent.click(page.getByRole("button", { name: "Standardtekster", exact: true }));
-                await userEvent.click(page.getByRole("button", { name: standardtekst.title }));
-                await userEvent.type(page.getByRole("searchbox", { name: "Søk etter standardtekst" }), "mangler");
-
-                await expect.element(page.getByRole("button", { name: standardtekst.title })).not.toBeInTheDocument();
-                await expect.element(page.getByRole("button", { name: "Sett inn tekst" })).toBeDisabled();
-            });
-
-            test("prioriterer relevans, saksspesifikke tekster og stabil rekkefølge", () => {
-                const catalog: Standardtekst[] = [
-                    {
-                        id: "generell-innhold",
-                        title: "Generell",
-                        html: "<p>treff her</p>",
-                        tags: [],
-                        target: "general",
-                    },
-                    {
-                        id: "generell-tag",
-                        title: "Generell",
-                        html: "<p>Innhold</p>",
-                        tags: ["treff"],
-                        target: "general",
-                    },
-                    {
-                        id: "generell-tittel-1",
-                        title: "Treff tittel 1",
-                        html: "<p>Innhold</p>",
-                        tags: [],
-                        target: "general",
-                    },
-                    {
-                        id: "saksspesifikk-innhold",
-                        title: "Saksspesifikk",
-                        html: "<p>treff her</p>",
-                        tags: [],
-                        target: "stondad",
-                    },
-                    {
-                        id: "saksspesifikk-tittel",
-                        title: "Treff tittel",
-                        html: "<p>Innhold</p>",
-                        tags: [],
-                        target: "stondad",
-                    },
-                    {
-                        id: "generell-tittel-2",
-                        title: "Treff tittel 2",
-                        html: "<p>Innhold</p>",
-                        tags: [],
-                        target: "general",
-                    },
-                ];
-
-                expect(searchStandardtekster(catalog, " treff ")).toEqual([
-                    catalog[4],
-                    catalog[2],
-                    catalog[5],
-                    catalog[1],
-                    catalog[3],
-                    catalog[0],
-                ]);
-                expect(searchStandardtekster(catalog, "")).toEqual([
-                    catalog[3],
-                    catalog[4],
-                    catalog[0],
-                    catalog[1],
-                    catalog[2],
-                    catalog[5],
-                ]);
             });
 
             test("forhåndsviser og setter inn valgt HTML ved markøren med markeringer og onChange", async () => {

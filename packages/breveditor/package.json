@@ -9,8 +9,10 @@
         "**/*.css"
     ],
     "scripts": {
+        "test": "vitest run --project unit",
         "test:browser": "vitest run --project browser",
         "test:browser:ui": "vitest watch --project browser --ui --browser.headless=false",
+        "test:all": "vitest run",
         "typecheck": "tsc --noEmit",
         "biome": "biome ci",
         "biome:write": "biome check --write"
