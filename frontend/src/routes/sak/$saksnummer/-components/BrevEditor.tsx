@@ -11,7 +11,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAutoSave } from "~/common/useAutosave";
 import { getOrCreateBrevQueryKey } from "~/routes/sak/$saksnummer/-api/brev.query";
-import { useStandardTekster } from "./useStandardTekster";
+import { useStandardTekster } from "../../../../common/standardtekster/useStandardTekster";
 
 interface BrevEditorProps {
     sak: Sak;
