@@ -1,6 +1,6 @@
 import type { Standardtekst } from "@superhelt/breveditor";
 
-export type StandardtekstForSakstype = Standardtekst & { caseType?: string };
+export type StandardtekstForSakstype = Omit<Standardtekst, "target"> & { caseType?: string };
 
 export const standardtekster: StandardtekstForSakstype[] = [
     {

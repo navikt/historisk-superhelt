@@ -2,7 +2,7 @@ import "./aksel-brev.css";
 import { Box, ReadMore, VStack } from "@navikt/ds-react";
 import { FixedHtml } from "./FixedHtml";
 import { finnRedigerbartInnhold, toXhtml, utledPostfixInnhold, utledPrefiksInnhold } from "./pdfgen.utils";
-import type { StandardtekstSearch } from "./Standardtekst.types";
+import type { StandardtekstResponse } from "./standardtekst/Standardtekst.types";
 import TiptapEditor from "./TiptapEditor";
 
 interface HtmlPdfgenEditorProps {
@@ -14,7 +14,7 @@ interface HtmlPdfgenEditorProps {
     saveStatus?: "idle" | "saving" | "saved" | "error";
     onSave?: () => Promise<void>;
     previewUrl?: string;
-    searchStandardtekster?: StandardtekstSearch;
+    standardtekster?: StandardtekstResponse;
 }
 
 export function HtmlPdfgenEditor({
@@ -26,7 +26,7 @@ export function HtmlPdfgenEditor({
     saveStatus,
     onSave,
     previewUrl,
-    searchStandardtekster,
+    standardtekster,
 }: HtmlPdfgenEditorProps) {
     const xhtml = toXhtml(html);
     const prefix = utledPrefiksInnhold(xhtml);
@@ -53,7 +53,7 @@ export function HtmlPdfgenEditor({
                         saveStatus={saveStatus}
                         onSave={onSave}
                         previewUrl={previewUrl}
-                        searchStandardtekster={searchStandardtekster}
+                        standardtekster={standardtekster}
                     />
                     <ReadMore header="Standardtekster og signatur" variant="moderate" data-color="neutral">
                         <FixedHtml html={postfix} />

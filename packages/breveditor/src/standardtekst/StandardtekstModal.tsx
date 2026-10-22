@@ -13,77 +13,51 @@ import {
 } from "@navikt/ds-react";
 import { type Editor, useEditorState } from "@tiptap/react";
 import DOMPurify from "dompurify";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { Standardtekst, StandardtekstSearch } from "./Standardtekst.types";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { searchStandardtekster } from "./Standardtekst.search";
+import type { StandardtekstResponse } from "./Standardtekst.types";
 import { standardtekstPluginKey } from "./StandardtekstExtension";
 
 interface StandardtekstModalProps {
     editor: Editor;
-    searchStandardtekster: StandardtekstSearch;
+    standardtekster?: StandardtekstResponse;
 }
 
-export function StandardtekstModal({ editor, searchStandardtekster }: StandardtekstModalProps) {
+export function StandardtekstModal({ editor, standardtekster }: StandardtekstModalProps) {
     const open = useEditorState({
         editor,
         selector: ({ editor }) => standardtekstPluginKey.getState(editor.state)?.isOpen ?? false,
     });
     const [query, setQuery] = useState("");
-    const [standardtekster, setStandardtekster] = useState<Standardtekst[]>([]);
-    const [selectedStandardtekst, setSelectedStandardtekst] = useState<Standardtekst | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [hasError, setHasError] = useState(false);
-    const latestSearch = useRef(0);
-    const isOpen = useRef(false);
+    const [selectedStandardtekstId, setSelectedStandardtekstId] = useState<string | null>(null);
     const focusEditorAfterClose = useRef(false);
 
     function closeModal() {
-        isOpen.current = false;
-        latestSearch.current += 1;
-        setLoading(false);
         editor.commands.closeStandardtekstModal();
     }
 
-    const search = useCallback(
-        async (query: string) => {
-            const searchNumber = ++latestSearch.current;
-            setLoading(true);
-            setStandardtekster([]);
-            setHasError(false);
-            setSelectedStandardtekst(null);
-
-            try {
-                const results = await searchStandardtekster({ query });
-                if (isOpen.current && searchNumber === latestSearch.current) {
-                    setStandardtekster(results);
-                }
-            } catch {
-                if (isOpen.current && searchNumber === latestSearch.current) {
-                    setStandardtekster([]);
-                    setHasError(true);
-                }
-            } finally {
-                if (isOpen.current && searchNumber === latestSearch.current) {
-                    setLoading(false);
-                }
-            }
-        },
-        [searchStandardtekster],
+    const results = useMemo(
+        () =>
+            standardtekster?.isPending || standardtekster?.isError || !standardtekster?.data
+                ? []
+                : searchStandardtekster(standardtekster.data, query),
+        [standardtekster, query],
     );
+    const selectedStandardtekst = results.find((result) => result.id === selectedStandardtekstId);
 
     useEffect(() => {
         if (!open) return;
 
-        isOpen.current = true;
         focusEditorAfterClose.current = false;
         setQuery("");
-        setSelectedStandardtekst(null);
-        void search("");
+        setSelectedStandardtekstId(null);
+    }, [open]);
 
-        return () => {
-            isOpen.current = false;
-            latestSearch.current += 1;
-        };
-    }, [open, search]);
+    useEffect(() => {
+        if (selectedStandardtekstId && !selectedStandardtekst) {
+            setSelectedStandardtekstId(null);
+        }
+    }, [selectedStandardtekst, selectedStandardtekstId]);
 
     return (
         <Dialog
@@ -115,34 +89,29 @@ export function StandardtekstModal({ editor, searchStandardtekster }: Standardte
                             value={query}
                             onChange={(nextQuery) => {
                                 setQuery(nextQuery);
-                                void search(nextQuery);
+                                setSelectedStandardtekstId(null);
                             }}
                         />
-                        {loading && (
+                        {standardtekster?.isPending && (
                             <HStack gap="space-8" align="center" role="status">
                                 <Loader size="small" />
                                 Søker etter standardtekster …
                             </HStack>
                         )}
-                        {hasError && (
-                            <VStack gap="space-8">
-                                <ErrorMessage showIcon>Standardtekstene kunne ikke lastes inn.</ErrorMessage>
-                                <Button type="button" variant="secondary" onClick={() => void search(query)}>
-                                    Prøv igjen
-                                </Button>
-                            </VStack>
+                        {standardtekster?.isError && (
+                            <ErrorMessage showIcon>Standardtekstene kunne ikke lastes inn.</ErrorMessage>
                         )}
-                        {!loading && !hasError && standardtekster.length === 0 && (
+                        {!standardtekster?.isPending && !standardtekster?.isError && results.length === 0 && (
                             <BodyShort>Ingen standardtekster funnet.</BodyShort>
                         )}
-                        {standardtekster.length > 0 && (
+                        {results.length > 0 && (
                             <Accordion>
-                                {standardtekster.map((standardtekst) => (
+                                {results.map((standardtekst) => (
                                     <Accordion.Item
                                         key={standardtekst.id}
-                                        open={selectedStandardtekst?.id === standardtekst.id}
+                                        open={selectedStandardtekstId === standardtekst.id}
                                         onOpenChange={(itemOpen) =>
-                                            setSelectedStandardtekst(itemOpen ? standardtekst : null)
+                                            setSelectedStandardtekstId(itemOpen ? standardtekst.id : null)
                                         }
                                     >
                                         <Accordion.Header>
@@ -184,9 +153,6 @@ export function StandardtekstModal({ editor, searchStandardtekster }: Standardte
                             if (!selectedStandardtekst) return;
                             if (editor.chain().focus().insertStandardtekst(selectedStandardtekst.html).run()) {
                                 focusEditorAfterClose.current = true;
-                                isOpen.current = false;
-                                latestSearch.current += 1;
-                                setLoading(false);
                             }
                         }}
                     >

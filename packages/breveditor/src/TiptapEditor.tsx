@@ -2,12 +2,12 @@ import { Bleed, Box, ErrorMessage, HStack, InlineMessage, Loader } from "@navikt
 import Highlight from "@tiptap/extension-highlight";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MenuBar } from "./MenuBar";
 import { PdfPreview } from "./PdfPreview";
-import type { StandardtekstSearch } from "./Standardtekst.types";
-import { StandardtekstExtension } from "./StandardtekstExtension";
-import { StandardtekstModal } from "./StandardtekstModal";
+import type { StandardtekstResponse } from "./standardtekst/Standardtekst.types";
+import { StandardtekstExtension } from "./standardtekst/StandardtekstExtension";
+import { StandardtekstModal } from "./standardtekst/StandardtekstModal";
 import styles from "./TiptapEditor.module.css";
 import { WordHighlight } from "./WordHighlight";
 
@@ -20,7 +20,7 @@ interface TiptapEditorProps {
     saveStatus?: "idle" | "saving" | "saved" | "error";
     onSave?: () => Promise<void>;
     previewUrl?: string;
-    searchStandardtekster?: StandardtekstSearch;
+    standardtekster?: StandardtekstResponse;
 }
 
 function TiptapEditor({
@@ -32,9 +32,9 @@ function TiptapEditor({
     saveStatus,
     onSave,
     previewUrl,
-    searchStandardtekster,
+    standardtekster,
 }: TiptapEditorProps) {
-    const enableStandardTekster = !!searchStandardtekster;
+    const enableStandardTekster = useRef(standardtekster !== undefined).current;
     const editor = useEditor({
         extensions: [StarterKit, Highlight, WordHighlight, ...(enableStandardTekster ? [StandardtekstExtension] : [])],
         content: initialContentHtml,
@@ -86,8 +86,8 @@ function TiptapEditor({
                                 readOnly={readOnly}
                             />
                         </MenuBar>
-                        {searchStandardtekster && (
-                            <StandardtekstModal editor={editor} searchStandardtekster={searchStandardtekster} />
+                        {enableStandardTekster && (
+                            <StandardtekstModal editor={editor} standardtekster={standardtekster} />
                         )}
                     </>
                 )}

@@ -1,2 +1,2 @@
 export { HtmlPdfgenEditor } from "./HtmlPdfgenEditor";
-export type { Standardtekst, StandardtekstSearch, StandardtekstSearchFilter } from "./Standardtekst.types";
+export type { Standardtekst, StandardtekstResponse } from "./standardtekst/Standardtekst.types";

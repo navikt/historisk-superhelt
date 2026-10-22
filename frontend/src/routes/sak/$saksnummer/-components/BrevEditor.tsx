@@ -41,7 +41,7 @@ interface BrevEditorInternalProps extends BrevEditorProps {
 
 function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: BrevEditorInternalProps) {
     const saksnummer = sak.saksnummer;
-    const searchStandardtekster = useStandardTekster(sak.type);
+    const standardtekster = useStandardTekster(sak.type);
     const { data: brev } = useSuspenseQuery({
         ...hentBrevOptions({
             path: {
@@ -179,7 +179,7 @@ function BrevEditorInternal({ sak, brevId, readOnly, onSuccess, buttonText }: Br
                 onSave={() => onSave(true)}
                 previewUrl={`/api/sak/${saksnummer}/brev/${brevId}/pdf`}
                 saveStatus={saveStatus}
-                searchStandardtekster={searchStandardtekster}
+                standardtekster={standardtekster}
             />
             <HStack gap="space-32" align="start">
                 <Button type="submit" variant="primary" onClick={onActionClick} disabled={readOnly} loading={loading}>
