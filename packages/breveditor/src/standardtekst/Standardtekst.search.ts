@@ -7,7 +7,7 @@ export function searchStandardtekster(standardtekster: Standardtekst[], query: s
         .map((standardtekst, index) => {
             const title = standardtekst.title.toLocaleLowerCase("nb-NO");
             const tags = standardtekst.tags.map((tag) => tag.toLocaleLowerCase("nb-NO"));
-            const content = standardtekst.html.toLocaleLowerCase("nb-NO");
+            const content = standardtekst.html.replace(/<[^>]*>/g, "").toLocaleLowerCase("nb-NO");
             const relevance = !normalizedQuery
                 ? 1
                 : title.includes(normalizedQuery)

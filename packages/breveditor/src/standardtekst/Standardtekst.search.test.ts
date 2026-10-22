@@ -36,6 +36,21 @@ describe("searchStandardtekster", () => {
         expect(searchStandardtekster(catalog, "hodeform")).toEqual([catalog[2]]);
     });
 
+    test("søker i teksten uten HTML-tagger og attributter", () => {
+        const catalog: Standardtekst[] = [
+            {
+                id: "content",
+                title: "Innvilgelse",
+                html: '<p class="brevtekst">Du får <mark>utvidet</mark> stønad.</p>',
+                tags: [],
+            },
+        ];
+
+        expect(searchStandardtekster(catalog, "du får utvidet stønad")).toEqual(catalog);
+        expect(searchStandardtekster(catalog, "mark")).toEqual([]);
+        expect(searchStandardtekster(catalog, "brevtekst")).toEqual([]);
+    });
+
     test("prioriterer stønadstype, relevans og stabil rekkefølge uten å søke i stønadstype", () => {
         const catalog: Standardtekst[] = [
             {
