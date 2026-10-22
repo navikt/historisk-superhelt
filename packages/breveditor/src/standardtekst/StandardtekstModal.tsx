@@ -1,9 +1,11 @@
 import {
     Accordion,
     BodyShort,
+    Box,
     Button,
     Dialog,
     ErrorMessage,
+    Heading,
     HStack,
     Label,
     Loader,
@@ -87,6 +89,7 @@ export function StandardtekstModal({ editor, standardtekster }: StandardtekstMod
                             label="Søk etter standardtekst"
                             variant="simple"
                             value={query}
+                            autoFocus={true}
                             onChange={(nextQuery) => {
                                 setQuery(nextQuery);
                                 setSelectedStandardtekstId(null);
@@ -115,11 +118,16 @@ export function StandardtekstModal({ editor, standardtekster }: StandardtekstMod
                                         }
                                     >
                                         <Accordion.Header>
-                                            <HStack justify={"space-between"} gap={"space-8"}>
-                                                <Label>{standardtekst.title}</Label>
-                                                <Tag size="small" variant="outline" data-color="meta-purple">
-                                                    {standardtekst.stonadstype ?? "Generell"}
-                                                </Tag>
+                                            <VStack gap="space-4" width="100%">
+                                                <HStack justify={"space-between"} gap={"space-16"}>
+                                                    <Heading size={"xsmall"} level={"2"}>
+                                                        {standardtekst.title}
+                                                    </Heading>
+                                                    <Tag size="small" variant="outline" data-color="meta-purple">
+                                                        {standardtekst.stonadstype ?? "Generell"}
+                                                    </Tag>
+                                                </HStack>
+
                                                 <HStack gap="space-8">
                                                     {standardtekst.tags.map((tag) => (
                                                         <Tag
@@ -132,7 +140,7 @@ export function StandardtekstModal({ editor, standardtekster }: StandardtekstMod
                                                         </Tag>
                                                     ))}
                                                 </HStack>
-                                            </HStack>
+                                            </VStack>
                                         </Accordion.Header>
                                         <Accordion.Content>
                                             <div
