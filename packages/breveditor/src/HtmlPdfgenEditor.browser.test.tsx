@@ -17,7 +17,6 @@ describe("HtmlPdfgenEditor", () => {
     function renderEditor({
         html = testHtml,
         onChange = vi.fn(),
-        searchStandardtekster = async () => [],
         ...props
     }: {
         html?: string;
@@ -30,14 +29,7 @@ describe("HtmlPdfgenEditor", () => {
         onSave?: () => Promise<void>;
         previewUrl?: string;
     } = {}) {
-        render(
-            <HtmlPdfgenEditor
-                html={html}
-                onChange={onChange}
-                searchStandardtekster={searchStandardtekster}
-                {...props}
-            />,
-        );
+        render(<HtmlPdfgenEditor html={html} onChange={onChange} {...props} />);
     }
 
     describe("Innhold og skrivebeskyttelse", () => {
@@ -300,7 +292,7 @@ describe("HtmlPdfgenEditor", () => {
             });
 
             test("viser standardtekstmodalen fra ikonknappen i menylinja", async () => {
-                renderEditor();
+                renderEditor({ searchStandardtekster: async () => [] });
 
                 const standardtekstButton = page.getByRole("button", { name: "Standardtekster", exact: true });
                 await userEvent.hover(standardtekstButton);
@@ -311,7 +303,7 @@ describe("HtmlPdfgenEditor", () => {
             });
 
             test("åpner standardtekstmodalen med Ctrl+Shift+Y fra editoren", async () => {
-                renderEditor();
+                renderEditor({ searchStandardtekster: async () => [] });
 
                 await userEvent.click(page.getByRole("textbox"));
                 await userEvent.keyboard("{Control>}{Shift>}y{/Shift}{/Control}");
@@ -355,7 +347,7 @@ describe("HtmlPdfgenEditor", () => {
                 try {
                     const screen = await render(
                         <>
-                            <MenuBar editor={editor} />
+                            <MenuBar editor={editor} enableStandardTekster={true} />
                             <StandardtekstModal editor={editor} searchStandardtekster={async () => []} />
                         </>,
                     );

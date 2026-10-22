@@ -17,13 +17,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Standardtekst, StandardtekstSearch } from "./Standardtekst.types";
 import { standardtekstPluginKey } from "./StandardtekstExtension";
 
-export function StandardtekstModal({
-    editor,
-    searchStandardtekster,
-}: {
+interface StandardtekstModalProps {
     editor: Editor;
     searchStandardtekster: StandardtekstSearch;
-}) {
+}
+
+export function StandardtekstModal({ editor, searchStandardtekster }: StandardtekstModalProps) {
     const open = useEditorState({
         editor,
         selector: ({ editor }) => standardtekstPluginKey.getState(editor.state)?.isOpen ?? false,
@@ -151,7 +150,7 @@ export function StandardtekstModal({
                                                 <Label>{standardtekst.title}</Label>
                                                 <HStack gap="space-8">
                                                     {standardtekst.tags.map((tag) => (
-                                                        <Tag size="small" variant={"moderate"}>
+                                                        <Tag key={tag} size="small" variant={"moderate"}>
                                                             {tag}
                                                         </Tag>
                                                     ))}

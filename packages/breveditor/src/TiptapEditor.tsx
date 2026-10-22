@@ -11,8 +11,6 @@ import { StandardtekstModal } from "./StandardtekstModal";
 import styles from "./TiptapEditor.module.css";
 import { WordHighlight } from "./WordHighlight";
 
-const extensions = [StarterKit, Highlight, WordHighlight, StandardtekstExtension];
-
 interface TiptapEditorProps {
     initialContentHtml: string;
     onChange: (html: string) => void;
@@ -22,7 +20,7 @@ interface TiptapEditorProps {
     saveStatus?: "idle" | "saving" | "saved" | "error";
     onSave?: () => Promise<void>;
     previewUrl?: string;
-    searchStandardtekster: StandardtekstSearch;
+    searchStandardtekster?: StandardtekstSearch;
 }
 
 function TiptapEditor({
@@ -36,8 +34,9 @@ function TiptapEditor({
     previewUrl,
     searchStandardtekster,
 }: TiptapEditorProps) {
+    const enableStandardTekster = !!searchStandardtekster;
     const editor = useEditor({
-        extensions,
+        extensions: [StarterKit, Highlight, WordHighlight, ...(enableStandardTekster ? [StandardtekstExtension] : [])],
         content: initialContentHtml,
         editable: !readOnly,
         onUpdate: (editorState) => {
@@ -73,7 +72,11 @@ function TiptapEditor({
             <Bleed marginBlock="space-1 space-0">
                 {!readOnly && editor && (
                     <>
-                        <MenuBar editor={editor} onSave={onSave ? handleManualSave : undefined}>
+                        <MenuBar
+                            editor={editor}
+                            onSave={onSave ? handleManualSave : undefined}
+                            enableStandardTekster={enableStandardTekster}
+                        >
                             <Box marginInline="auto space-8">
                                 <BrevStatus status={saveStatus} />
                             </Box>
@@ -83,7 +86,9 @@ function TiptapEditor({
                                 readOnly={readOnly}
                             />
                         </MenuBar>
-                        <StandardtekstModal editor={editor} searchStandardtekster={searchStandardtekster} />
+                        {searchStandardtekster && (
+                            <StandardtekstModal editor={editor} searchStandardtekster={searchStandardtekster} />
+                        )}
                     </>
                 )}
             </Bleed>
@@ -116,7 +121,11 @@ function TiptapEditor({
     );
 }
 
-function BrevStatus({ status }: { status: "idle" | "saving" | "saved" | "error" | undefined }) {
+interface BrevStatusProps {
+    status: TiptapEditorProps["saveStatus"];
+}
+
+function BrevStatus({ status }: BrevStatusProps) {
     switch (status) {
         case "idle":
             return null;

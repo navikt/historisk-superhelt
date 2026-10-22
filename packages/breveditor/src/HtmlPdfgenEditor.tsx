@@ -14,7 +14,7 @@ interface HtmlPdfgenEditorProps {
     saveStatus?: "idle" | "saving" | "saved" | "error";
     onSave?: () => Promise<void>;
     previewUrl?: string;
-    searchStandardtekster: StandardtekstSearch;
+    searchStandardtekster?: StandardtekstSearch;
 }
 
 export function HtmlPdfgenEditor({

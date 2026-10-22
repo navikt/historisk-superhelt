@@ -12,15 +12,14 @@ import { type Editor, useEditorState } from "@tiptap/react";
 import { Bold, Italic } from "./Icons";
 import styles from "./MenuBar.module.css";
 
-export function MenuBar({
-    editor,
-    onSave,
-    children,
-}: {
+interface MenuBarProps {
     editor: Editor;
     onSave?: () => void;
+    enableStandardTekster: boolean;
     children?: React.ReactNode;
-}) {
+}
+
+export function MenuBar({ editor, onSave, enableStandardTekster, children }: MenuBarProps) {
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
         editor,
@@ -216,17 +215,19 @@ export function MenuBar({
                             }
                         />
                     </Tooltip>
-                    <Tooltip content="Sett inn standardtekster" keys={["Ctrl", "Shift", "Y"]} placement="top">
-                        <Button
-                            type="button"
-                            variant="tertiary"
-                            data-color="neutral"
-                            size="small"
-                            aria-label="Standardtekster"
-                            onClick={() => editor.commands.openStandardtekstModal()}
-                            icon={<ClipboardIcon aria-hidden fontSize="1.25rem" />}
-                        />
-                    </Tooltip>
+                    {enableStandardTekster && (
+                        <Tooltip content="Sett inn standardtekster" keys={["Ctrl", "Shift", "Y"]} placement="top">
+                            <Button
+                                type="button"
+                                variant="tertiary"
+                                data-color="neutral"
+                                size="small"
+                                aria-label="Standardtekster"
+                                onClick={() => editor.commands.openStandardtekstModal()}
+                                icon={<ClipboardIcon aria-hidden fontSize="1.25rem" />}
+                            />
+                        </Tooltip>
+                    )}
                 </HStack>
                 {children}
                 <HelpText title="Hvordan redigere brev">
