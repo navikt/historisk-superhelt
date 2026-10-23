@@ -12,14 +12,15 @@ import { OppgaveActionButton } from "./OppgaveActionButton";
 
 type Props = {
     oppgaver: OppgaveMedSak[];
-    dineOppgaver?: boolean;
+    visTilordnet: boolean;
+    visBruker: boolean;
 };
 
 type ScopedSortState = {
     orderBy: keyof OppgaveMedSak;
 } & SortState;
 
-export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
+export function OppgaveTabell({ oppgaver, visTilordnet, visBruker }: Props) {
     const [sort, setSort] = useState<ScopedSortState | undefined>({
         orderBy: "fristFerdigstillelse",
         direction: "ascending",
@@ -115,12 +116,12 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                             <Table.ColumnHeader sortKey="fristFerdigstillelse" sortable>
                                 Frist
                             </Table.ColumnHeader>
-                            {dineOppgaver && (
+                            {visBruker && (
                                 <Table.ColumnHeader sortKey="personident" sortable>
                                     Bruker
                                 </Table.ColumnHeader>
                             )}
-                            {!dineOppgaver && <Table.ColumnHeader>Tildelt</Table.ColumnHeader>}
+                            {visTilordnet && <Table.ColumnHeader>Tildelt</Table.ColumnHeader>}
                             <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
@@ -136,7 +137,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                     {oppgave.sakStatus && <SakStatusTag status={oppgave.sakStatus} />}
                                 </Table.DataCell>
                                 <Table.DataCell>{isoTilLokal(oppgave.fristFerdigstillelse)}</Table.DataCell>
-                                {dineOppgaver && (
+                                {visBruker && (
                                     <Table.DataCell>
                                         {oppgave.fnr ? (
                                             <Link
@@ -151,7 +152,7 @@ export function OppgaveTabell({ oppgaver, dineOppgaver }: Props) {
                                         )}
                                     </Table.DataCell>
                                 )}
-                                {!dineOppgaver && <Table.DataCell>{oppgave.tilordnetRessurs ?? ""}</Table.DataCell>}
+                                {visTilordnet && <Table.DataCell>{oppgave.tilordnetRessurs ?? ""}</Table.DataCell>}
                                 <Table.DataCell>
                                     <OppgaveActionButton oppgave={oppgave} saksbehandlerIdent={saksbehandler.ident} />
                                 </Table.DataCell>
