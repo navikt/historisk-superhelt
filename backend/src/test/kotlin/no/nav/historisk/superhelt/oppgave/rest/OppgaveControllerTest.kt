@@ -3,7 +3,12 @@ package no.nav.historisk.superhelt.oppgave.rest
 import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema.HEL
 import no.nav.common.consts.FellesKodeverkTema.HJE
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
+import no.nav.entraproxy.Enhet
+import no.nav.entraproxy.EntraProxyClient
+import no.nav.historisk.superhelt.ansatt.NavAnsattTestdata
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
@@ -16,18 +21,25 @@ import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveClient
+import no.nav.oppgave.OppgaveType
+import no.nav.oppgave.model.FinnOppgaverParams
+import no.nav.oppgave.model.PatchOppgaveRequest
 import no.nav.oppgave.model.SokOppgaverResponse
 import no.nav.oppgave.type
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.check
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
 import tools.jackson.databind.ObjectMapper
@@ -43,6 +55,9 @@ class OppgaveControllerTest {
 
     @MockitoBean
     private lateinit var oppgaveClient: OppgaveClient
+
+    @MockitoBean
+    private lateinit var entraProxyClient: EntraProxyClient
 
     @Autowired
     private lateinit var oppgaveService: OppgaveService
@@ -81,6 +96,92 @@ class OppgaveControllerTest {
             assertThat(it.statuskategori).isEqualTo("AAPEN")
         })
 
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `finner attesteringsoppgaver per enhet og filtrerer bort egne plukkede og irrelevante oppgaver`() {
+        val enhet1 = Enhetsnummer("1234")
+        val enhet2 = Enhetsnummer("5678")
+        whenever(entraProxyClient.hentEnheter()) doReturn listOf(
+            Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
+            Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+        )
+
+        val saksbehandler = "ZATTEST1"
+        val oppgave1 = attesteringsOppgave(enhet1)
+        val egenOppgave = attesteringsOppgave(enhet1).copy(opprettetAv = saksbehandler)
+        val plukketOppgave = attesteringsOppgave(enhet2).copy(tilordnetRessurs = NavIdent("Z654321"))
+        val irrelevantOppgave = attesteringsOppgave(enhet2).copy(behandlesAvApplikasjon = "ANNEN_APP")
+        val oppgave2 = attesteringsOppgave(enhet2)
+
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            when (invocation.getArgument<FinnOppgaverParams>(0).tildeltEnhetsnr) {
+                enhet1 -> SokOppgaverResponse(oppgaver = listOf(oppgave1, egenOppgave))
+                enhet2 -> SokOppgaverResponse(oppgaver = listOf(plukketOppgave, irrelevantOppgave, oppgave2))
+                else -> throw IllegalStateException("Unexpected unit in oppgave search")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactly(oppgave1.id, oppgave2.id)
+            })
+
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues).containsExactly(
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet1,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 50L,
+            ),
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet2,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 50L,
+            ),
+        )
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST2", tema = [HEL])
+    @Test
+    fun `attesteringsoppgaver returnerer tom liste når Gosys ikke har oppgaver`() {
+        whenever(entraProxyClient.hentEnheter()) doReturn NavAnsattTestdata.createEnheter(1)
+        whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(oppgaver = null)
+
+        assertThat(mockMvc.get().uri("/api/oppgave/attestering"))
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it).isEmpty()
+            })
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner oppgave til innlogget saksbehandler`() {
+        val oppgave = attesteringsOppgave(Enhetsnummer("1234"))
+            .copy(versjon = 7)
+        whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
+
+        assertThat(mockMvc.patch().uri("/api/oppgave/${oppgave.id}").with(csrf()))
+            .hasStatus(HttpStatus.OK)
+
+        val requestCaptor = argumentCaptor<PatchOppgaveRequest>()
+        verify(oppgaveClient).patchOppgave(eq(oppgave.id), requestCaptor.capture())
+        assertThat(requestCaptor.firstValue.versjon).isEqualTo(7)
+        assertThat(requestCaptor.firstValue.tilordnetRessurs).isEqualTo(NavIdent("ZATTEST3"))
     }
 
     @WithSaksbehandler(navIdent = "Z123456", tema = [HEL])
@@ -169,4 +270,12 @@ class OppgaveControllerTest {
 
             })
     }
+
+    private fun attesteringsOppgave(enhet: Enhetsnummer) =
+        OppgaveTestdata.opprettOppgave().copy(
+            tildeltEnhetsnr = enhet,
+            tilordnetRessurs = null,
+            oppgavetype = OppgaveType.GOD_VED.oppgavetype,
+            behandlesAvApplikasjon = APP_NAVN,
+        )
 }

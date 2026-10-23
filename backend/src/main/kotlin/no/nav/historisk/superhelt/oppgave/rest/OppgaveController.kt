@@ -7,6 +7,7 @@ import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -28,10 +29,23 @@ class OppgaveController(private val oppgaveService: OppgaveService) {
         return oppgaveService.hentOppgaverForPerson(maskertPersonIdent.toFnr())
     }
 
+    @Operation(operationId = "finnAttesteringsOppgaverForSaksbehandler")
+    @GetMapping("attestering")
+    fun finnAttesteringsOppgaverForSaksbehandler(): List<OppgaveMedSak> {
+        return oppgaveService.finnAttesteringsOppgaverForSaksbehandler()
+    }
+
     @Operation(operationId = "getOppgave")
     @GetMapping("{oppgaveId}")
     fun getOppgave(@PathVariable oppgaveId: EksternOppgaveId): OppgaveMedSak {
         return oppgaveService.getOppgave(oppgaveId)
+    }
+
+    @Operation(operationId = "tilordneOppaveTilSaksbehandler")
+    @PatchMapping("{oppgaveId}")
+    fun tilordneOppaveTilSaksbehandler(@PathVariable oppgaveId: EksternOppgaveId) {
+        val navident = getAuthenticatedUser().navIdent
+        oppgaveService.tilordneOppgave(oppgaveId = oppgaveId, tilordneTil = navident)
     }
 
 
