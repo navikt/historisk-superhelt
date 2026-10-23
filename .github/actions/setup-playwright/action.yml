@@ -1,0 +1,48 @@
+name: 'Setup Playwright'
+description: 'Cache and install Playwright Chromium'
+
+inputs:
+  working-directory:
+    description: 'Directory containing the Playwright package'
+    required: false
+    default: '.'
+  only-shell:
+    description: 'Install only the Chromium headless shell'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get Playwright version
+      id: playwright-version
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        ONLY_SHELL: ${{ inputs.only-shell }}
+      run: |
+        echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+        echo "image=$ImageOS" >> "$GITHUB_OUTPUT"
+        if [[ "$ONLY_SHELL" == "true" ]]; then
+          echo "variant=chromium-headless" >> "$GITHUB_OUTPUT"
+        else
+          echo "variant=chromium" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Cache Playwright browsers
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright-version.outputs.image }}-${{ steps.playwright-version.outputs.variant }}-${{ steps.playwright-version.outputs.version }}
+
+    - name: Install Playwright Chromium
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        ONLY_SHELL: ${{ inputs.only-shell }}
+      run: |
+        args=(--with-deps)
+        if [[ "$ONLY_SHELL" == "true" ]]; then
+          args+=(--only-shell)
+        fi
+        pnpm exec playwright install "${args[@]}" chromium

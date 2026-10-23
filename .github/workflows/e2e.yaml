@@ -36,18 +36,10 @@ jobs:
       - name: Installer node moduler
         run: pnpm install --frozen-lockfile
 
-      # --- Caching av Playwright-browsere ---
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Setup Playwright
+        uses: ./.github/actions/setup-playwright
         with:
-          path: ~/.cache/ms-playwright # Standardsti for Playwright-browsere
-          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }} # Endres hvis Playwright-versjonen i pnpm-lock.yaml endres
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Playwright browsers
-        working-directory: ./e2e
-        run: pnpm playwright:install
+          working-directory: ./e2e
 
       - name: Vent på backend
         run: timeout 300 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 2; done'

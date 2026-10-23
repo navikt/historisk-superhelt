@@ -2,6 +2,7 @@ import {
     ArrowRedoIcon,
     ArrowUndoIcon,
     BulletListIcon,
+    ClipboardIcon,
     FloppydiskIcon,
     NumberListIcon,
     PencilIcon,
@@ -11,15 +12,14 @@ import { type Editor, useEditorState } from "@tiptap/react";
 import { Bold, Italic } from "./Icons";
 import styles from "./MenuBar.module.css";
 
-export function MenuBar({
-    editor,
-    children,
-    onSave,
-}: {
+interface MenuBarProps {
     editor: Editor;
-    children?: React.ReactNode;
     onSave?: () => void;
-}) {
+    enableStandardTekster: boolean;
+    children?: React.ReactNode;
+}
+
+export function MenuBar({ editor, onSave, enableStandardTekster, children }: MenuBarProps) {
     // Read the current editor's state, and re-render the component when it changes
     const editorState = useEditorState({
         editor,
@@ -29,8 +29,6 @@ export function MenuBar({
                 canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
                 isItalic: ctx.editor.isActive("italic") ?? false,
                 canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
-                canClearMarks: ctx.editor.can().chain().unsetAllMarks().run() ?? false,
-                isParagraph: ctx.editor.isActive("paragraph") ?? false,
                 activeHeading:
                     ([1, 2, 3, 4] as const).find((level) => ctx.editor.isActive("heading", { level })) ?? null,
                 isBulletList: ctx.editor.isActive("bulletList") ?? false,
@@ -74,7 +72,7 @@ export function MenuBar({
                             size="small"
                             aria-label="Angre"
                             onClick={() => editor.chain().focus().undo().run()}
-                            disabled={!editor.can().undo()}
+                            disabled={!editorState.canUndo}
                             icon={<ArrowUndoIcon fontSize="1.25rem" />}
                         />
                     </Tooltip>
@@ -87,7 +85,7 @@ export function MenuBar({
                             size="small"
                             aria-label="Gjør om igjen"
                             onClick={() => editor.chain().focus().redo().run()}
-                            disabled={!editor.can().redo()}
+                            disabled={!editorState.canRedo}
                             icon={<ArrowRedoIcon fontSize="1.25rem" />}
                         />
                     </Tooltip>
@@ -100,6 +98,7 @@ export function MenuBar({
                             size="small"
                             aria-label="Lagre"
                             onClick={onSave}
+                            disabled={!onSave}
                             icon={<FloppydiskIcon fontSize="1.25rem" />}
                         />
                     </Tooltip>
@@ -216,6 +215,19 @@ export function MenuBar({
                             }
                         />
                     </Tooltip>
+                    {enableStandardTekster && (
+                        <Tooltip content="Sett inn standardtekster" keys={["Ctrl", "Shift", "Y"]} placement="top">
+                            <Button
+                                type="button"
+                                variant="tertiary"
+                                data-color="neutral"
+                                size="small"
+                                aria-label="Standardtekster"
+                                onClick={() => editor.commands.openStandardtekstModal()}
+                                icon={<ClipboardIcon aria-hidden fontSize="1.25rem" />}
+                            />
+                        </Tooltip>
+                    )}
                 </HStack>
                 {children}
                 <HelpText title="Hvordan redigere brev">

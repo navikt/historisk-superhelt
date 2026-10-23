@@ -5,10 +5,12 @@ import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useMemo, useRef } from "react";
 import { MenuBar } from "./MenuBar";
 import { PdfPreview } from "./PdfPreview";
+import type { StandardtekstResponse } from "./standardtekst/Standardtekst.types";
+import { StandardtekstExtension } from "./standardtekst/StandardtekstExtension";
+import { StandardtekstModal } from "./standardtekst/StandardtekstModal";
 import styles from "./TiptapEditor.module.css";
 import { WordHighlight } from "./WordHighlight";
 
-const extensions = [StarterKit, Highlight, WordHighlight];
 interface TiptapEditorProps {
     initialContentHtml: string;
     onChange: (html: string) => void;
@@ -18,6 +20,7 @@ interface TiptapEditorProps {
     saveStatus?: "idle" | "saving" | "saved" | "error";
     onSave?: () => Promise<void>;
     previewUrl?: string;
+    standardtekster?: StandardtekstResponse;
 }
 
 function TiptapEditor({
@@ -29,9 +32,11 @@ function TiptapEditor({
     saveStatus,
     onSave,
     previewUrl,
+    standardtekster,
 }: TiptapEditorProps) {
+    const enableStandardTekster = useRef(standardtekster !== undefined).current;
     const editor = useEditor({
-        extensions,
+        extensions: [StarterKit, Highlight, WordHighlight, ...(enableStandardTekster ? [StandardtekstExtension] : [])],
         content: initialContentHtml,
         editable: !readOnly,
         onUpdate: (editorState) => {
@@ -48,23 +53,13 @@ function TiptapEditor({
 
     const providerValue = useMemo(() => ({ editor }), [editor]);
 
-    const onSaveRef = useRef(onSave);
-    onSaveRef.current = onSave;
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-                e.preventDefault();
-                onSaveRef.current?.();
-            }
-        };
-        document.addEventListener("keydown", handleKeyDown);
-        return () => document.removeEventListener("keydown", handleKeyDown);
-    }, []);
+    async function handleManualSave() {
+        await onSave?.();
+    }
 
     async function saveBeforePreview() {
         onChange(editor.getHTML());
-        await onSaveRef.current?.();
+        await onSave?.();
     }
     return (
         <Box
@@ -76,12 +71,25 @@ function TiptapEditor({
         >
             <Bleed marginBlock="space-1 space-0">
                 {!readOnly && editor && (
-                    <MenuBar editor={editor} onSave={onSave}>
-                        <Box marginInline="auto space-8">
-                            <BrevStatus status={saveStatus} />
-                        </Box>
-                        <PdfPreview previewUrl={previewUrl} onBeforePreview={saveBeforePreview} readOnly={readOnly} />
-                    </MenuBar>
+                    <>
+                        <MenuBar
+                            editor={editor}
+                            onSave={onSave ? handleManualSave : undefined}
+                            enableStandardTekster={enableStandardTekster}
+                        >
+                            <Box marginInline="auto space-8">
+                                <BrevStatus status={saveStatus} />
+                            </Box>
+                            <PdfPreview
+                                previewUrl={previewUrl}
+                                onBeforePreview={saveBeforePreview}
+                                readOnly={readOnly}
+                            />
+                        </MenuBar>
+                        {enableStandardTekster && (
+                            <StandardtekstModal editor={editor} standardtekster={standardtekster} />
+                        )}
+                    </>
                 )}
             </Bleed>
             <EditorContext.Provider value={providerValue}>
@@ -90,6 +98,22 @@ function TiptapEditor({
                     className={`brev-editor ${styles.editor}`}
                     data-testid="tiptapeditor"
                     onClick={() => editor?.commands.focus()}
+                    onKeyDown={(event) => {
+                        if (
+                            event.key.toLowerCase() !== "s" ||
+                            (!event.ctrlKey && !event.metaKey) ||
+                            event.altKey ||
+                            event.shiftKey ||
+                            readOnly ||
+                            !editor?.isEditable ||
+                            !onSave
+                        ) {
+                            return;
+                        }
+
+                        event.preventDefault();
+                        handleManualSave();
+                    }}
                 />
             </EditorContext.Provider>
             {error && <ErrorMessage showIcon>{error}</ErrorMessage>}
@@ -97,19 +121,11 @@ function TiptapEditor({
     );
 }
 
-function BrevStatus({ status }: { status: "idle" | "saving" | "saved" | "error" | undefined }) {
-    const savedAtRef = useRef("");
-    const prevStatusRef = useRef(status);
+interface BrevStatusProps {
+    status: TiptapEditorProps["saveStatus"];
+}
 
-    if (status === "saved" && prevStatusRef.current !== "saved") {
-        savedAtRef.current = new Date().toLocaleTimeString("no-NO", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-        });
-    }
-    prevStatusRef.current = status;
-
+function BrevStatus({ status }: BrevStatusProps) {
     switch (status) {
         case "idle":
             return null;
@@ -123,7 +139,7 @@ function BrevStatus({ status }: { status: "idle" | "saving" | "saved" | "error" 
         case "saved":
             return (
                 <InlineMessage size="small" status="success">
-                    Lagret kl. {savedAtRef.current}
+                    Lagret
                 </InlineMessage>
             );
         case "error":
