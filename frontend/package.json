@@ -9,7 +9,7 @@
         "build": "vite build && tsc",
         "typecheck": "tsc --noEmit",
         "serve": "vite preview",
-        "test": "vitest run",
+        "test": "vitest run --project unit",
         "biome": "biome ci",
         "biome:write": "biome check --write"
     },

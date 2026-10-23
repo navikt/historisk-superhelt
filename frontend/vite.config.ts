@@ -1,5 +1,3 @@
-/// <reference types="vitest/config" />
-
 import path from "node:path";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
@@ -19,10 +17,6 @@ export default defineConfig({
         alias: {
             "~": path.resolve(import.meta.dirname, "src"),
         },
-    },
-    test: {
-        globals: true,
-        environment: "jsdom",
     },
     server: {
         // Proxy til wonderwall
