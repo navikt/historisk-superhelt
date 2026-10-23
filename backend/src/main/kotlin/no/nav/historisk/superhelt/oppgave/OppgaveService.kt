@@ -41,15 +41,15 @@ class OppgaveService(
 
     /** Hent åpne oppgaver tilordnet en saksbehandler som kan saksbehandles i denne appen */
     @PreAuthorize("hasAuthority('READ')")
-    fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
+    fun hentOppgaverForSaksbehandler(): List<OppgaveMedSak> {
 
-        val temaForSaksbehandler = navAnsattService.hentNavAnsatt().tema
+        val navAnsatt = navAnsattService.hentNavAnsatt()
 
         val oppgaver = oppgaveClient.finnOppgaver(
             FinnOppgaverParams(
-                tilordnetRessurs = navident,
+                tilordnetRessurs = navAnsatt.ident,
                 statuskategori = "AAPEN",
-                tema = temaForSaksbehandler,
+                tema = navAnsatt.tema,
                 limit = 50L
             )
         ).oppgaver ?: emptyList()

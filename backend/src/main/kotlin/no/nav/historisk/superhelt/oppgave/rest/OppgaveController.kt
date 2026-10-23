@@ -19,8 +19,7 @@ class OppgaveController(private val oppgaveService: OppgaveService) {
     @Operation(operationId = "hentOppgaverForSaksbehandler")
     @GetMapping("saksbehandler")
     fun hentOppgaverForSaksbehandler(): List<OppgaveMedSak> {
-        val navident = getAuthenticatedUser().navIdent
-        return oppgaveService.hentOppgaverForSaksbehandler(navident)
+        return oppgaveService.hentOppgaverForSaksbehandler()
     }
 
     @Operation(operationId = "hentOppgaverForPerson")
