@@ -1,6 +1,7 @@
 {
     "name": "historisk-superhelt",
     "private": true,
+    "type": "module",
     "devEngines": {
         "runtime": {
             "name": "node",
@@ -32,7 +33,9 @@
         "@biomejs/biome": "catalog:",
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
+        "@vitest/browser-playwright": "4.1.11",
         "playwright": "^1.63.0",
-        "typescript": "catalog:"
+        "typescript": "catalog:",
+        "vitest": "catalog:"
     }
 }

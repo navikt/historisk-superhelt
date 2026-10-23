@@ -1,24 +1,17 @@
-import { defineConfig } from "vitest/config";
+import { defineProject, mergeConfig } from "vitest/config";
+import baseConfig from "../vitest.shared.ts";
 
-export default defineConfig({
+export default mergeConfig(baseConfig, {
     test: {
         projects: [
-            {
-                test: {
-                    name: "unit",
-                    environment: "node",
-                    include: ["tests/**/*.test.ts"],
-                    exclude: ["tests/**/*.integration.test.ts"],
-                },
-            },
-            {
+            defineProject({
                 test: {
                     name: "integration",
-                    environment: "node",
                     include: ["tests/**/*.integration.test.ts"],
+                    environment: "node",
                     testTimeout: 35000,
                 },
-            },
+            }),
         ],
     },
 });
