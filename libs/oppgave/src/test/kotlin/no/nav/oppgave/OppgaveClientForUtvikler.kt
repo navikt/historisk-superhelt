@@ -3,6 +3,7 @@ package no.nav.oppgave
 import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema
 import no.nav.common.types.EksternOppgaveId
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.NavIdent
 import no.nav.oppgave.model.FinnOppgaverParams
 import no.nav.oppgave.model.OpprettOppgaveRequest
@@ -21,6 +22,8 @@ class OppgaveClientForUtvikler {
 
     /**
      * Genereres i Ida  auth token med client id dev-fss.oppgavehandtering.oppgave
+     *
+     * https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-fss:oppgavehandtering:oppgave
      */
 
     val accessToken =
@@ -43,6 +46,28 @@ class OppgaveClientForUtvikler {
             )
         )
         println(hentet.oppgaver?.joinToString(separator = "\n\n"))
+    }
+
+    @Test // IntelliJ bryr seg ikke om @Disabled derfor må denne kommenteres inn før kjøring
+    fun `test hent saksbehandlers attesteringsoppgaver`() {
+        val hentet = client.finnOppgaver(
+            FinnOppgaverParams(
+                tildeltEnhetsnr = Enhetsnummer("4485"),
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(FellesKodeverkTema.HEL, FellesKodeverkTema.HJE),
+                limit = 500L
+            )
+        )
+        val navAnsatt = "Z990749"
+        val oppgaver = hentet.oppgaver ?: emptyList()
+        val filtert = oppgaver
+            .filter { it.behandlesAvApplikasjon == "SUPERHELT" } // Relevante oppgaver
+            .filter { it.opprettetAv != navAnsatt } // Ikke attester egne saker
+            .filter { it.tilordnetRessurs == null || it.tilordnetRessurs.value == navAnsatt } // Plukk oppgaver som  er ufordelt eller tilordnet saksbehandler
+
+        println(hentet.antallTreffTotalt)
+        println(filtert.joinToString(separator = "\n\n"))
     }
 
     @Test

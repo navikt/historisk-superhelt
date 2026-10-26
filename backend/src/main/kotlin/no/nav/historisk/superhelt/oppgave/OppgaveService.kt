@@ -103,7 +103,7 @@ class OppgaveService(
                     oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
                     statuskategori = "AAPEN",
                     tema = navAnsatt.tema,
-                    limit = 50L
+                    limit = 100L
                 )
             ).oppgaver ?: emptyList()
         }

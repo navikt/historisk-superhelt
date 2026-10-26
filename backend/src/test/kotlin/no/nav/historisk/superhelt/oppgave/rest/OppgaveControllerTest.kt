@@ -142,14 +142,14 @@ class OppgaveControllerTest {
                 oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
                 statuskategori = "AAPEN",
                 tema = listOf(HEL),
-                limit = 50L,
+                limit = 100L,
             ),
             FinnOppgaverParams(
                 tildeltEnhetsnr = enhet2,
                 oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
                 statuskategori = "AAPEN",
                 tema = listOf(HEL),
-                limit = 50L,
+                limit = 100L,
             ),
         )
     }
