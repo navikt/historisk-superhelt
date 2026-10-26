@@ -41,7 +41,7 @@ class OppgaveController(private val oppgaveService: OppgaveService) {
     }
 
     @Operation(operationId = "tilordneOppaveTilSaksbehandler")
-    @PatchMapping("{oppgaveId}")
+    @PatchMapping("{oppgaveId}/tilordnet")
     fun tilordneOppaveTilSaksbehandler(@PathVariable oppgaveId: EksternOppgaveId) {
         val navident = getAuthenticatedUser().navIdent
         oppgaveService.tilordneOppgave(oppgaveId = oppgaveId, tilordneTil = navident)

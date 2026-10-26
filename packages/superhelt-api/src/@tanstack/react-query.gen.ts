@@ -363,21 +363,6 @@ export const gjenopprettOppgaverMutation = (options?: Partial<Options<Gjenoppret
     return mutationOptions;
 };
 
-export const getOppgaveQueryKey = (options: Options<GetOppgaveData>) => createQueryKey('getOppgave', options);
-
-export const getOppgaveOptions = (options: Options<GetOppgaveData>) => queryOptions<GetOppgaveResponse, GetOppgaveError, GetOppgaveResponse, ReturnType<typeof getOppgaveQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getOppgave({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getOppgaveQueryKey(options)
-});
-
 export const tilordneOppaveTilSaksbehandlerMutation = (options?: Partial<Options<TilordneOppaveTilSaksbehandlerData>>): UseMutationOptions<unknown, TilordneOppaveTilSaksbehandlerError, Options<TilordneOppaveTilSaksbehandlerData>> => {
     const mutationOptions: UseMutationOptions<unknown, TilordneOppaveTilSaksbehandlerError, Options<TilordneOppaveTilSaksbehandlerData>> = {
         mutationFn: async (fnOptions) => {
@@ -561,6 +546,21 @@ export const getPersonByMaskertIdentOptions = (options: Options<GetPersonByMaske
         return data;
     },
     queryKey: getPersonByMaskertIdentQueryKey(options)
+});
+
+export const getOppgaveQueryKey = (options: Options<GetOppgaveData>) => createQueryKey('getOppgave', options);
+
+export const getOppgaveOptions = (options: Options<GetOppgaveData>) => queryOptions<GetOppgaveResponse, GetOppgaveError, GetOppgaveResponse, ReturnType<typeof getOppgaveQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getOppgave({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getOppgaveQueryKey(options)
 });
 
 export const hentOppgaverForSaksbehandlerQueryKey = (options?: Options<HentOppgaverForSaksbehandlerData>) => createQueryKey('hentOppgaverForSaksbehandler', options);

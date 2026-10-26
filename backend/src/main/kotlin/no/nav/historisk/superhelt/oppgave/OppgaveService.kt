@@ -89,7 +89,7 @@ class OppgaveService(
             }
     }
 
-    /** Finn attesteringsoppgaver på tema og enhet, Egne saker og oppgaver som er plukket blir ikke med  */
+    /** Finn attesteringsoppgaver på tema og enhet, Egne saker og oppgaver som er plukket av andre blir ikke med  */
     @PreAuthorize("hasAuthority('READ')")
     fun finnAttesteringsOppgaverForSaksbehandler(): List<OppgaveMedSak> {
 
@@ -112,7 +112,7 @@ class OppgaveService(
         return oppgaver
             .filter(relevanteOppgaverPredicate)
             .filter { it.opprettetAv != navAnsatt.ident.value } // Ikke attester egne saker
-            .filter { it.tilordnetRessurs == null } // Ikke plukk oppaver som er tatt
+            .filter { it.tilordnetRessurs == null || it.tilordnetRessurs == navAnsatt.ident } // Plukk oppgaver som  er ufordelt eller tilordnet saksbehandler
             .map {
                 it.toOppgaveMedSak(
                     sak = oppgaveRepository.finnSakForOppgave(it.id)

@@ -64,13 +64,13 @@ export type Sak = {
     klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     vedtaksbrevBruker?: Brev | null;
     enhet: string;
-    readonly maskertPersonIdent: string;
-    readonly tilstand: SakTilstand;
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly kanUtbetales: boolean;
-    readonly gjenapnet: boolean;
     readonly tema: 'HEL' | 'HJE';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
+    readonly gjenapnet: boolean;
+    readonly kanUtbetales: boolean;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly tilstand: SakTilstand;
+    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
@@ -183,8 +183,8 @@ export type Utbetaling = {
     utbetalingsUuid: string;
     utbetalingStatus: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
     utbetalingTidspunkt?: string | null;
-    annulleres: boolean;
     loggId$superhelt_backend: string;
+    annulleres: boolean;
 };
 
 export type Enhet = {
@@ -273,8 +273,8 @@ export type OppgaveMedSak = {
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
     tema?: 'HEL' | 'HJE';
-    readonly oppgaveTypeTekst: string;
     readonly maskertPersonIdent: string;
+    readonly oppgaveTypeTekst: string;
 };
 
 export type HjemmelDto = {
@@ -1101,48 +1101,13 @@ export type GjenopprettOppgaverResponses = {
 
 export type GjenopprettOppgaverResponse = GjenopprettOppgaverResponses[keyof GjenopprettOppgaverResponses];
 
-export type GetOppgaveData = {
-    body?: never;
-    path: {
-        oppgaveId: number;
-    };
-    query?: never;
-    url: '/api/oppgave/{oppgaveId}';
-};
-
-export type GetOppgaveErrors = {
-    /**
-     * Bad Request
-     */
-    400: ProblemDetail;
-    /**
-     * Forbidden
-     */
-    403: ProblemDetail;
-    /**
-     * Internal Server Error
-     */
-    500: ProblemDetail;
-};
-
-export type GetOppgaveError = GetOppgaveErrors[keyof GetOppgaveErrors];
-
-export type GetOppgaveResponses = {
-    /**
-     * OK
-     */
-    200: OppgaveMedSak;
-};
-
-export type GetOppgaveResponse = GetOppgaveResponses[keyof GetOppgaveResponses];
-
 export type TilordneOppaveTilSaksbehandlerData = {
     body?: never;
     path: {
         oppgaveId: number;
     };
     query?: never;
-    url: '/api/oppgave/{oppgaveId}';
+    url: '/api/oppgave/{oppgaveId}/tilordnet';
 };
 
 export type TilordneOppaveTilSaksbehandlerErrors = {
@@ -1549,6 +1514,41 @@ export type GetPersonByMaskertIdentResponses = {
 };
 
 export type GetPersonByMaskertIdentResponse = GetPersonByMaskertIdentResponses[keyof GetPersonByMaskertIdentResponses];
+
+export type GetOppgaveData = {
+    body?: never;
+    path: {
+        oppgaveId: number;
+    };
+    query?: never;
+    url: '/api/oppgave/{oppgaveId}';
+};
+
+export type GetOppgaveErrors = {
+    /**
+     * Bad Request
+     */
+    400: ProblemDetail;
+    /**
+     * Forbidden
+     */
+    403: ProblemDetail;
+    /**
+     * Internal Server Error
+     */
+    500: ProblemDetail;
+};
+
+export type GetOppgaveError = GetOppgaveErrors[keyof GetOppgaveErrors];
+
+export type GetOppgaveResponses = {
+    /**
+     * OK
+     */
+    200: OppgaveMedSak;
+};
+
+export type GetOppgaveResponse = GetOppgaveResponses[keyof GetOppgaveResponses];
 
 export type HentOppgaverForSaksbehandlerData = {
     body?: never;

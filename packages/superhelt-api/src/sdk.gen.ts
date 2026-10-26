@@ -223,15 +223,9 @@ export const gjenopprettOppgaver = <ThrowOnError extends boolean = false>(option
     ...options
 });
 
-export const getOppgave = <ThrowOnError extends boolean = false>(options: Options<GetOppgaveData, ThrowOnError>): RequestResult<GetOppgaveResponses, GetOppgaveErrors, ThrowOnError> => (options.client ?? client).get<GetOppgaveResponses, GetOppgaveErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/oppgave/{oppgaveId}',
-    ...options
-});
-
 export const tilordneOppaveTilSaksbehandler = <ThrowOnError extends boolean = false>(options: Options<TilordneOppaveTilSaksbehandlerData, ThrowOnError>): RequestResult<TilordneOppaveTilSaksbehandlerResponses, TilordneOppaveTilSaksbehandlerErrors, ThrowOnError> => (options.client ?? client).patch<TilordneOppaveTilSaksbehandlerResponses, TilordneOppaveTilSaksbehandlerErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/oppgave/{oppgaveId}',
+    url: '/api/oppgave/{oppgaveId}/tilordnet',
     ...options
 });
 
@@ -304,6 +298,12 @@ export const getKodeverkSakStatus = <ThrowOnError extends boolean = false>(optio
 export const getPersonByMaskertIdent = <ThrowOnError extends boolean = false>(options: Options<GetPersonByMaskertIdentData, ThrowOnError>): RequestResult<GetPersonByMaskertIdentResponses, GetPersonByMaskertIdentErrors, ThrowOnError> => (options.client ?? client).get<GetPersonByMaskertIdentResponses, GetPersonByMaskertIdentErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/person/{maskertPersonident}',
+    ...options
+});
+
+export const getOppgave = <ThrowOnError extends boolean = false>(options: Options<GetOppgaveData, ThrowOnError>): RequestResult<GetOppgaveResponses, GetOppgaveErrors, ThrowOnError> => (options.client ?? client).get<GetOppgaveResponses, GetOppgaveErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/oppgave/{oppgaveId}',
     ...options
 });
 

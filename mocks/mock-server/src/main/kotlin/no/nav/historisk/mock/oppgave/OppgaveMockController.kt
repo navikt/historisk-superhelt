@@ -61,16 +61,18 @@ class OppgaveMockController() {
             .toMutableList()
 
         // Lager en default jfr oppgave om det er tomt
-        val jfrOppgaver = aktiveOppgaver
-            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
-        if (jfrOppgaver.isEmpty()) {
-            val fnr = aktoerId?.let { fnrFromAktoerId(it) }
-            val oppgave =
-                generateOppgave(fnr = fnr, tilordnetRessurs = NavIdent(tilordnetRessurs ?: defaultSaksbehandler)).copy(
-                    oppgavetype = OppgaveType.JFR.oppgavetype,
-                )
-            aktiveOppgaver.add(oppgave)
-            repository[oppgave.id] = oppgave
+        if (oppgavetype == null) {
+            val jfrOppgaver = aktiveOppgaver
+                .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
+            if (jfrOppgaver.isEmpty()) {
+                val fnr = aktoerId?.let { fnrFromAktoerId(it) }
+                val oppgave =
+                    generateOppgave(fnr = fnr, tilordnetRessurs = tilordnetRessurs?.let { NavIdent(it) }).copy(
+                        oppgavetype = OppgaveType.JFR.oppgavetype,
+                    )
+                aktiveOppgaver.add(oppgave)
+                repository[oppgave.id] = oppgave
+            }
         }
 
         return SokOppgaverResponse(antallTreffTotalt = aktiveOppgaver.size.toLong(), oppgaver = aktiveOppgaver)

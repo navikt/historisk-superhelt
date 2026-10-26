@@ -110,6 +110,7 @@ class OppgaveControllerTest {
 
         val saksbehandler = "ZATTEST1"
         val oppgave1 = attesteringsOppgave(enhet1)
+        val oppgaveTilordnetSaksbehandler = attesteringsOppgave(enhet1).copy(tilordnetRessurs = NavIdent(saksbehandler))
         val egenOppgave = attesteringsOppgave(enhet1).copy(opprettetAv = saksbehandler)
         val plukketOppgave = attesteringsOppgave(enhet2).copy(tilordnetRessurs = NavIdent("Z654321"))
         val irrelevantOppgave = attesteringsOppgave(enhet2).copy(behandlesAvApplikasjon = "ANNEN_APP")
@@ -117,7 +118,7 @@ class OppgaveControllerTest {
 
         whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
             when (invocation.getArgument<FinnOppgaverParams>(0).tildeltEnhetsnr) {
-                enhet1 -> SokOppgaverResponse(oppgaver = listOf(oppgave1, egenOppgave))
+                enhet1 -> SokOppgaverResponse(oppgaver = listOf(oppgave1, egenOppgave, oppgaveTilordnetSaksbehandler))
                 enhet2 -> SokOppgaverResponse(oppgaver = listOf(plukketOppgave, irrelevantOppgave, oppgave2))
                 else -> throw IllegalStateException("Unexpected unit in oppgave search")
             }
@@ -130,7 +131,7 @@ class OppgaveControllerTest {
             .bodyJson()
             .convertTo(Array<OppgaveMedSak>::class.java)
             .satisfies({
-                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactly(oppgave1.id, oppgave2.id)
+                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactly(oppgave1.id, oppgaveTilordnetSaksbehandler.id, oppgave2.id)
             })
 
         val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
@@ -175,7 +176,7 @@ class OppgaveControllerTest {
             .copy(versjon = 7)
         whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
 
-        assertThat(mockMvc.patch().uri("/api/oppgave/${oppgave.id}").with(csrf()))
+        assertThat(mockMvc.patch().uri("/api/oppgave/${oppgave.id}/tilordnet").with(csrf()))
             .hasStatus(HttpStatus.OK)
 
         val requestCaptor = argumentCaptor<PatchOppgaveRequest>()
