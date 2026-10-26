@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 import type { AuthUtils } from "./auth.utils";
 import type { JournalforingPage } from "./journalforing.page";
+import { velgOppgave } from "./oppgave.utils";
 import type { SakPage } from "./sak.page";
 import type { SokPage } from "./sok.page";
 import { test } from "./test.fixtures";
@@ -55,7 +56,7 @@ export async function attesterSakGodkjenn({ page, auth, sok, sak }: AtleFixtures
     });
 
     await test.step("Velg sak til attestering", async () => {
-        await page.getByRole("button", { name: "Attester" }).click();
+        await velgOppgave(page, "Godkjenne vedtak", "Attester");
     });
 
     await test.step("Velg Godkjenning", async () => {

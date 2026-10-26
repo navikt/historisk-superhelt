@@ -1,8 +1,22 @@
-import { request } from "@playwright/test";
+import { expect, type Page, request } from "@playwright/test";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
 const mockBaseURL = "http://localhost:9080";
+
+export async function velgOppgave(page: Page, oppgavetekst: string, handling: string) {
+    const oppgave = page.getByRole("row").filter({ hasText: oppgavetekst }).first();
+    const plukk = oppgave.getByRole("button", { name: "Plukk oppgave", exact: true });
+    const handlingKnapp = oppgave.getByRole("button", { name: handling, exact: true });
+
+    await expect(plukk.or(handlingKnapp)).toBeVisible();
+
+    if (await plukk.isVisible()) {
+        await plukk.click();
+    }
+
+    await handlingKnapp.click();
+}
 
 export async function opprettJFR(personIdent: string): Promise<number> {
     const context = await request.newContext({
