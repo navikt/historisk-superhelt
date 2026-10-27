@@ -19,6 +19,7 @@ import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithAttestant
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveClient
 import no.nav.oppgave.OppgaveType
@@ -33,12 +34,15 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.check
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ProblemDetail
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
@@ -98,7 +102,7 @@ class OppgaveControllerTest {
 
     }
 
-    @WithSaksbehandler(navIdent = "ZATTEST1", tema = [HEL])
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
     @Test
     fun `finner attesteringsoppgaver per enhet og filtrerer bort egne plukkede og irrelevante oppgaver`() {
         val enhet1 = Enhetsnummer("1234")
@@ -154,9 +158,9 @@ class OppgaveControllerTest {
         )
     }
 
-    @WithSaksbehandler(navIdent = "ZATTEST2", tema = [HEL])
+    @WithAttestant(navIdent = "ZATTEST2")
     @Test
-    fun `attesteringsoppgaver returnerer tom liste når Gosys ikke har oppgaver`() {
+    fun `attesteringsoppgaver returnerer tom liste når det ikke er noen oppgaver`() {
         whenever(entraProxyClient.hentEnheter()) doReturn NavAnsattTestdata.createEnheter(1)
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(oppgaver = null)
 
@@ -167,6 +171,21 @@ class OppgaveControllerTest {
             .satisfies({
                 assertThat(it).isEmpty()
             })
+        verify(oppgaveClient).finnOppgaver(any())
+    }
+
+    @WithSaksbehandler(navIdent = "ZSAKSBEH1", tema = [HEL])
+    @Test
+    fun `attesteringsoppgaver returnerer tom liste uten attestantrolle`() {
+        assertThat(mockMvc.get().uri("/api/oppgave/attestering"))
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it).isEmpty()
+            })
+
+        verify(oppgaveClient, never()).finnOppgaver(any())
     }
 
     @WithSaksbehandler(navIdent = "ZATTEST3")
@@ -174,7 +193,9 @@ class OppgaveControllerTest {
     fun `tilordner oppgave til innlogget saksbehandler`() {
         val oppgave = attesteringsOppgave(Enhetsnummer("1234"))
             .copy(versjon = 7)
+        val oppdatertOppgave = oppgave.copy(tilordnetRessurs = NavIdent("ZATTEST3"))
         whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
+        whenever(oppgaveClient.patchOppgave(eq(oppgave.id), any())) doReturn oppdatertOppgave
 
         assertThat(mockMvc.patch().uri("/api/oppgave/${oppgave.id}/tilordnet").with(csrf()))
             .hasStatus(HttpStatus.OK)
@@ -183,6 +204,52 @@ class OppgaveControllerTest {
         verify(oppgaveClient).patchOppgave(eq(oppgave.id), requestCaptor.capture())
         assertThat(requestCaptor.firstValue.versjon).isEqualTo(7)
         assertThat(requestCaptor.firstValue.tilordnetRessurs).isEqualTo(NavIdent("ZATTEST3"))
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner ikke oppgave på nytt når den allerede er tilordnet innlogget saksbehandler`() {
+        val oppgave = attesteringsOppgave(Enhetsnummer("1234"))
+            .copy(tilordnetRessurs = NavIdent("ZATTEST3"))
+        whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
+
+        assertThat(mockMvc.patch().uri("/api/oppgave/${oppgave.id}/tilordnet").with(csrf()))
+            .hasStatus(HttpStatus.OK)
+
+        verify(oppgaveClient, never()).patchOppgave(any(), any())
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner ikke oppgave når den allerede er tilordnet en annen saksbehandler`() {
+        val oppgave = attesteringsOppgave(Enhetsnummer("1234"))
+            .copy(tilordnetRessurs = NavIdent("ZANNEN1"))
+        whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
+
+        val response = mockMvc.patch().uri("/api/oppgave/${oppgave.id}/tilordnet").with(csrf())
+
+        assertThat(response)
+            .hasStatus(HttpStatus.CONFLICT)
+            .hasContentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON)
+            .bodyJson()
+            .convertTo(ProblemDetail::class.java)
+            .satisfies({
+                assertThat(it.status).isEqualTo(HttpStatus.CONFLICT.value())
+            })
+
+        verify(oppgaveClient, never()).patchOppgave(any(), any())
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner ikke oppgave som ikke finnes`() {
+        val oppgaveId = OppgaveTestdata.opprettOppgave().id
+        whenever(oppgaveClient.hentOppgave(oppgaveId)) doReturn null
+
+        assertThat(mockMvc.patch().uri("/api/oppgave/$oppgaveId/tilordnet").with(csrf()))
+            .hasStatus(HttpStatus.NOT_FOUND)
+
+        verify(oppgaveClient, never()).patchOppgave(any(), any())
     }
 
     @WithSaksbehandler(navIdent = "Z123456", tema = [HEL])

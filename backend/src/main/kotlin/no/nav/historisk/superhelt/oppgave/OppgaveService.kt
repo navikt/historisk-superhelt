@@ -8,6 +8,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.ansatt.NavAnsattService
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
@@ -20,9 +21,11 @@ import no.nav.oppgave.model.OpprettOppgaveRequest
 import no.nav.oppgave.model.PatchOppgaveRequest
 import no.nav.oppgave.type
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 
 @Service
@@ -92,6 +95,11 @@ class OppgaveService(
     /** Finn attesteringsoppgaver på tema og enhet, Egne saker og oppgaver som er plukket av andre blir ikke med  */
     @PreAuthorize("hasAuthority('READ')")
     fun finnAttesteringsOppgaverForSaksbehandler(): List<OppgaveMedSak> {
+
+        if (!getAuthenticatedUser().hasRole(Role.ATTESTANT)) {
+            logger.debug("Bruker har ikke rollen ATTESTANT, ingen attesteringsoppgaver vil bli returnert")
+            return emptyList()
+        }
 
         val navAnsatt = navAnsattService.hentNavAnsatt()
         val saksBehandlersEnheter = navAnsatt.enheter.map { it.enhetnummer }
@@ -223,17 +231,22 @@ class OppgaveService(
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun tilordneOppgave(oppgaveId: EksternOppgaveId, tilordneTil: NavIdent) {
-        val dto = oppgaveClient.hentOppgave(oppgaveId)
-            ?: throw IkkeFunnetException("Fant ikke oppgave med id $oppgaveId")
+        val dto = oppgaveClient.hentOppgave(oppgaveId) ?: throw IkkeFunnetException("Fant ikke oppgave med id $oppgaveId")
         if (dto.tilordnetRessurs != null) {
-            logger.warn("Oppgave {} er allerede tilordnet {}, kan ikke tilordne til {}", oppgaveId, dto.tilordnetRessurs, tilordneTil)
-            return
+            if (dto.tilordnetRessurs == tilordneTil) {
+                logger.debug("Oppgave {} er allerede tilordnet {}, ingen endring", oppgaveId, dto.tilordnetRessurs)
+                return
+            }
+            throw ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "Oppgave $oppgaveId er allerede tilordnet ${dto.tilordnetRessurs}, kan ikke tilordne til $tilordneTil"
+            )
         }
         tilordne(dto, tilordneTil)
     }
 
-    private fun tilordne(oppgave: OppgaveDto, tilordneTil: NavIdent) {
-        oppgaveClient.patchOppgave(
+    private fun tilordne(oppgave: OppgaveDto, tilordneTil: NavIdent): OppgaveDto {
+        return oppgaveClient.patchOppgave(
             oppgaveId = oppgave.id,
             request = PatchOppgaveRequest(
                 versjon = oppgave.versjon,

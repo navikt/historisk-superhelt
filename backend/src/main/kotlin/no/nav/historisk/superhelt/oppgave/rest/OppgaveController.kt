@@ -1,11 +1,15 @@
 package no.nav.historisk.superhelt.oppgave.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import no.nav.common.types.EksternOppgaveId
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.person.MaskertPersonIdent
+import org.springframework.http.ProblemDetail
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -40,7 +44,18 @@ class OppgaveController(private val oppgaveService: OppgaveService) {
         return oppgaveService.getOppgave(oppgaveId)
     }
 
-    @Operation(operationId = "tilordneOppaveTilSaksbehandler")
+    @Operation(
+        operationId = "tilordneOppaveTilSaksbehandler", responses =
+            [ApiResponse(responseCode = "200", description = "Oppgave tilordnet saksbehandler"),
+                ApiResponse(
+                    responseCode = "409",
+                    description = "Oppgaven er allerede tilordnet en annen saksbehandler",
+                    content = [Content(
+                        mediaType = "application/problem+json",
+                        schema = Schema(implementation = ProblemDetail::class)
+                    )]
+                )]
+    )
     @PatchMapping("{oppgaveId}/tilordnet")
     fun tilordneOppaveTilSaksbehandler(@PathVariable oppgaveId: EksternOppgaveId) {
         val navident = getAuthenticatedUser().navIdent

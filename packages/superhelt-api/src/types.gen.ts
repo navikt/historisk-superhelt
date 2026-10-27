@@ -64,19 +64,19 @@ export type Sak = {
     klasseKode?: 'TILSKUDD_SMÅHJELPEMIDLER' | 'REISEUTGIFTER' | 'ORTOPEDISK_PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'PARYKK' | 'ANSIKTSDEFEKTPROTESE' | 'BRYSTPROTESE' | 'ØYEPROTESE' | 'VANLIGE_SKO' | 'FOTSENG' | 'HØREAPPARAT_ANSKAFFELSE' | 'HØREAPPARAT_REPARASJON' | 'HØREAPPARAT_EGENBETALING' | 'LEGEERKLÆRING_SPESIALIST' | 'LEGEERKLÆRING_ALLMENN' | 'ARBEIDSPLASSVURDERING_FYSIOTERAPEUT' | 'OPPLÆRING_TILPASNING_KURS_SYN' | 'OPPLÆRING_TILPASNING_KURS_HØRSEL' | 'OPPLÆRING_TILPASNING_KURS_DØVBLIND' | 'OPPLÆRING_TILPASNING_FOLKEHØGSKOLE' | 'OPPLÆRING_TILPASNING_BRISKEBY' | 'TINNITUSMASKERER' | 'HJELPEMIDLER_SELVSTENDIG_NÆRINGSDRIVENDE' | 'HJELPEMIDLER_ARBEID_UTDANNING' | 'HJELPEMIDLER_ATTFØRING' | 'HJELPEMIDLER_GRUNNMØNSTER' | 'HJELPEMIDLER_ANNET' | 'SEKSUALTEKNISKE_HJELPEMIDLER' | 'REISE_OPPHOLD' | 'REISE_OPPHOLD_BIL' | 'REISE_OPPHOLD_HJELPEMIDLER' | 'REISE_OPPHOLD_ORTOPEDISKE_HJELPEMIDLER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER' | 'TAPT_ARBEIDSFORTJENESTE_LEDSAGER_IOP' | 'REPARASJON_HJELPEMIDLER_UTLAND' | 'SYNSHJELPEMIDLER' | 'BOLIGTILSKUDD' | 'FØRERHUND_VETERINÆR' | 'ØREPROPPER' | 'BILTILSKUDD_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_1' | 'KJØREOPPLÆRING_GRUPPE_2' | 'BILTILSKUDD_GRUPPE_2' | 'DATAUTSTYR' | 'SERVICEHUND_REISEUTGIFTER' | 'SERVICEHUND_VETERINÆR' | 'APP_KOGNISJON' | 'APP_KOMMUNIKASJON' | 'APP_LESE_OG_SKRIVESTØTTE' | 'APP_SYN' | 'BEHANDLINGSBRILLE_SATS_1' | 'BEHANDLINGSBRILLE_SATS_2' | 'BEHANDLINGSBRILLE_INDIVIDUELL' | 'KONTAKTLINSER_BEHANDLING' | 'REPARASJON_BEHANDLINGSBRILLE';
     vedtaksbrevBruker?: Brev | null;
     enhet: string;
+    readonly valideringsfeil: Array<ValidationFieldError>;
+    readonly maskertPersonIdent: string;
+    readonly tilstand: SakTilstand;
+    readonly kanUtbetales: boolean;
     readonly tema: 'HEL' | 'HJE';
     readonly rettigheter: Array<'LES' | 'SAKSBEHANDLE' | 'ATTESTERE' | 'GJENAPNE' | 'FEILREGISTERE' | 'HENLEGGE' | 'TILBAKESTILL_GJENAPNING' | 'SEND_KLAGE' | 'FRITEKSTBREV'>;
     readonly gjenapnet: boolean;
-    readonly kanUtbetales: boolean;
-    readonly valideringsfeil: Array<ValidationFieldError>;
-    readonly tilstand: SakTilstand;
-    readonly maskertPersonIdent: string;
 };
 
 export type SakTilstand = {
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type ValidationFieldError = {
@@ -273,8 +273,8 @@ export type OppgaveMedSak = {
     stonadsType?: 'PARYKK' | 'ANSIKT_PROTESE' | 'OYE_PROTESE' | 'BRYSTPROTESE' | 'FOTTOY' | 'REISEUTGIFTER' | 'FOTSENG' | 'PROTESE' | 'ORTOSE' | 'SPESIALSKO' | 'ARBEID_UTDANNING' | 'HOREAPPARAT';
     sakBeskrivelse?: string | null;
     tema?: 'HEL' | 'HJE';
-    readonly maskertPersonIdent: string;
     readonly oppgaveTypeTekst: string;
+    readonly maskertPersonIdent: string;
 };
 
 export type HjemmelDto = {
@@ -360,9 +360,9 @@ export type SakWritable = {
 
 export type SakTilstandWritable = {
     sak?: SakWritable;
-    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
-    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
     opplysninger: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    oppsummering: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
+    vedtaksbrevBruker: 'IKKE_STARTET' | 'OK' | 'VALIDERING_FEILET';
 };
 
 export type SakshistorikkResponseWritable = {
@@ -1120,6 +1120,10 @@ export type TilordneOppaveTilSaksbehandlerErrors = {
      */
     403: ProblemDetail;
     /**
+     * Oppgaven er allerede tilordnet en annen saksbehandler
+     */
+    409: ProblemDetail;
+    /**
      * Internal Server Error
      */
     500: ProblemDetail;
@@ -1129,7 +1133,7 @@ export type TilordneOppaveTilSaksbehandlerError = TilordneOppaveTilSaksbehandler
 
 export type TilordneOppaveTilSaksbehandlerResponses = {
     /**
-     * OK
+     * Oppgave tilordnet saksbehandler
      */
     200: unknown;
 };
