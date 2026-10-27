@@ -37,7 +37,10 @@ class OppgaveMockController() {
     fun finnOppgaver(
         @RequestParam tilordnetRessurs: String?,
         @RequestParam aktoerId: String?,
-        @RequestParam tema: List<String>?): SokOppgaverResponse {
+        @RequestParam tema: List<String>?,
+        @RequestParam oppgavetype: List<String>?,
+        @RequestParam tildeltEnhetsnr: String?
+    ): SokOppgaverResponse {
         val aktiveOppgaver = repository.values
             .filter { it.status != OppgaveDto.Status.FERDIGSTILT }
             .filter {
@@ -49,19 +52,27 @@ class OppgaveMockController() {
             .filter {
                 tema?.contains(it.tema) ?: true
             }
+            .filter {
+                oppgavetype?.contains(it.oppgavetype) ?: true
+            }
+            .filter {
+                tildeltEnhetsnr?.equals(it.tildeltEnhetsnr.value) ?: true
+            }
             .toMutableList()
 
         // Lager en default jfr oppgave om det er tomt
-        val jfrOppgaver = aktiveOppgaver
-            .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
-        if (jfrOppgaver.isEmpty()) {
-            val fnr = aktoerId?.let { fnrFromAktoerId(it) }
-            val oppgave =
-                generateOppgave(fnr = fnr, tilordnetRessurs = NavIdent(tilordnetRessurs ?: defaultSaksbehandler)).copy(
-                    oppgavetype = OppgaveType.JFR.oppgavetype,
-                )
-            aktiveOppgaver.add(oppgave)
-            repository[oppgave.id] = oppgave
+        if (oppgavetype == null) {
+            val jfrOppgaver = aktiveOppgaver
+                .filter { it.oppgavetype == OppgaveType.JFR.oppgavetype }
+            if (jfrOppgaver.isEmpty()) {
+                val fnr = aktoerId?.let { fnrFromAktoerId(it) }
+                val oppgave =
+                    generateOppgave(fnr = fnr, tilordnetRessurs = tilordnetRessurs?.let { NavIdent(it) }).copy(
+                        oppgavetype = OppgaveType.JFR.oppgavetype,
+                    )
+                aktiveOppgaver.add(oppgave)
+                repository[oppgave.id] = oppgave
+            }
         }
 
         return SokOppgaverResponse(antallTreffTotalt = aktiveOppgaver.size.toLong(), oppgaver = aktiveOppgaver)
@@ -88,7 +99,7 @@ class OppgaveMockController() {
             fristFerdigstillelse = request.fristFerdigstillelse,
             behandlesAvApplikasjon = request.behandlesAvApplikasjon,
             saksreferanse = request.saksreferanse,
-            tildeltEnhetsnr = request.tildeltEnhetsnr?.let { Enhetsnummer(it) } ?: Enhetsnummer("1234"),
+            tildeltEnhetsnr = request.tildeltEnhetsnr?.let { Enhetsnummer(it) } ?: Enhetsnummer("4485"),
             opprettetTidspunkt = OffsetDateTime.now(),
         )
         repository.put(nyOppgave.id, nyOppgave)

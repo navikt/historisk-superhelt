@@ -41,7 +41,7 @@ export function OppgaverForPersonTabell({ maskertPersonIdent }: SakerTableProps)
 
     return (
         <VStack gap={"space-16"}>
-            <OppgaveTabell oppgaver={oppgaver} />
+            <OppgaveTabell oppgaver={oppgaver} visTilordnet={true} visBruker={false} />
             {sakerUnderBehandlingUtenOppgave.length > 0 ? (
                 <InfoCard data-color="warning">
                     <InfoCard.Header>

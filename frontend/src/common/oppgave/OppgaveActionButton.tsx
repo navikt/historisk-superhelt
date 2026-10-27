@@ -1,7 +1,10 @@
 import { Button, HStack } from "@navikt/ds-react";
 import type { OppgaveMedSak } from "@superhelt/api";
+import { tilordneOppaveTilSaksbehandlerMutation } from "@superhelt/api/react-query.gen";
+import { useMutation } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { FerdigstillOppgaveDialogButton } from "~/common/oppgave/FerdigstillOppgaveDialogButton";
+import { useInvalidateOppgaveQuery } from "~/common/oppgave/useInvalidateOppgaveQuery.ts";
 
 interface Props {
     oppgave: OppgaveMedSak;
@@ -9,16 +12,40 @@ interface Props {
 }
 
 export function OppgaveActionButton({ oppgave, saksbehandlerIdent }: Props) {
+    const invalidateOppgaveQuery = useInvalidateOppgaveQuery();
     const saksnummer = oppgave.saksnummer;
-    const tildeltOppgave = !!saksbehandlerIdent && oppgave.tilordnetRessurs === saksbehandlerIdent;
+    const ufordelt = !oppgave.tilordnetRessurs;
+    const erTildeltSaksbehandler = !!saksbehandlerIdent && oppgave.tilordnetRessurs === saksbehandlerIdent;
+
+    const tilOrdneOppgaveMutation = useMutation({
+        ...tilordneOppaveTilSaksbehandlerMutation(),
+        onSuccess: () => invalidateOppgaveQuery(oppgave.maskertPersonIdent),
+    });
+
+    const plukkOppgave = () => tilOrdneOppgaveMutation.mutate({ path: { oppgaveId: oppgave.oppgaveId } });
 
     const ukjentOppgave = () => {
         return <div />;
     };
 
     const actionButton = (to: string, title: string) => {
+        if (ufordelt) {
+            return (
+                <Button variant="secondary" size="small" onClick={plukkOppgave}>
+                    Plukk oppgave
+                </Button>
+            );
+        }
+        if (!erTildeltSaksbehandler) {
+            return (
+                <Button as={RouterLink} to={to} variant={"secondary-neutral"} size="small">
+                    Se på
+                </Button>
+            );
+        }
+
         return (
-            <Button as={RouterLink} to={to} variant={tildeltOppgave ? "primary" : "secondary"} size="small">
+            <Button as={RouterLink} to={to} variant={"primary"} size="small">
                 {title}
             </Button>
         );
@@ -28,6 +55,7 @@ export function OppgaveActionButton({ oppgave, saksbehandlerIdent }: Props) {
         if (!saksnummer) {
             return ukjentOppgave();
         }
+
         return actionButton(to, title);
     };
 

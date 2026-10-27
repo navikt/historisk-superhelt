@@ -53,7 +53,7 @@ fun generateOppgave(fnr:String?= null, tilordnetRessurs: NavIdent?= null): Oppga
     val behandlingstype=randomBehandlingstype(behandlingstema)
     return OppgaveDto(
         id = EksternOppgaveId(faker.number().positive().toLong()),
-        tildeltEnhetsnr = Enhetsnummer("1234"),
+        tildeltEnhetsnr = Enhetsnummer("4485"),
         tilordnetRessurs = tilordnetRessurs,
         opprettetAvEnhetsnr = "5678",
         journalpostId = EksternJournalpostId(faker.internet().uuid()),

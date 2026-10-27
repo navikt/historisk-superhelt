@@ -3,7 +3,14 @@ package no.nav.historisk.superhelt.oppgave.rest
 import no.nav.common.consts.APP_NAVN
 import no.nav.common.consts.FellesKodeverkTema.HEL
 import no.nav.common.consts.FellesKodeverkTema.HJE
+import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
+import no.nav.common.types.NavIdent
+import no.nav.entraproxy.Enhet
+import no.nav.historisk.superhelt.ansatt.NavAnsatt
+import no.nav.historisk.superhelt.ansatt.NavAnsattService
+import no.nav.historisk.superhelt.ansatt.NavAnsattTestdata
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
@@ -14,20 +21,31 @@ import no.nav.historisk.superhelt.person.toMaskertPersonIdent
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
+import no.nav.historisk.superhelt.test.WithAttestant
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import no.nav.oppgave.OppgaveClient
+import no.nav.oppgave.OppgaveType
+import no.nav.oppgave.model.FinnOppgaverParams
+import no.nav.oppgave.model.PatchOppgaveRequest
 import no.nav.oppgave.model.SokOppgaverResponse
 import no.nav.oppgave.type
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.check
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ProblemDetail
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.assertj.MockMvcTester
 import tools.jackson.databind.ObjectMapper
@@ -44,6 +62,9 @@ class OppgaveControllerTest {
     @MockitoBean
     private lateinit var oppgaveClient: OppgaveClient
 
+    @MockitoBean
+    private lateinit var navAnsattService: NavAnsattService
+
     @Autowired
     private lateinit var oppgaveService: OppgaveService
 
@@ -57,6 +78,7 @@ class OppgaveControllerTest {
     @WithSaksbehandler(navIdent = "Z1111111", tema = [HJE, HEL])
     @Test
     fun `Hent oppgaver for saksbehandler filterer ut oppgaver som ikke kan behandles `() {
+        mockNavAnsatt()
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
             antallTreffTotalt = 4,
             oppgaver = listOf(
@@ -83,10 +105,295 @@ class OppgaveControllerTest {
 
     }
 
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `finner attesteringsoppgaver per enhet og filtrerer bort egne plukkede og irrelevante oppgaver`() {
+        val enhet1 = Enhetsnummer("1234")
+        val enhet2 = Enhetsnummer("5678")
+        mockNavAnsatt(
+            listOf(
+                Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
+                Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+            )
+        )
+
+        val saksbehandler = "ZATTEST1"
+        val oppgave1 = attesteringsOppgave(enhet1)
+        val oppgaveTilordnetSaksbehandler = attesteringsOppgave(enhet1).copy(tilordnetRessurs = NavIdent(saksbehandler))
+        val egenOppgave = attesteringsOppgave(enhet1).copy(opprettetAv = saksbehandler)
+        val plukketOppgave = attesteringsOppgave(enhet2).copy(tilordnetRessurs = NavIdent("Z654321"))
+        val irrelevantOppgave = attesteringsOppgave(enhet2).copy(behandlesAvApplikasjon = "ANNEN_APP")
+        val oppgave2 = attesteringsOppgave(enhet2)
+
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when {
+                params.tildeltEnhetsnr == enhet1 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = listOf(oppgave1, egenOppgave, oppgaveTilordnetSaksbehandler))
+                params.tildeltEnhetsnr == enhet1 && params.offset == 100L ->
+                    SokOppgaverResponse(oppgaver = emptyList())
+                params.tildeltEnhetsnr == enhet2 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = listOf(plukketOppgave, irrelevantOppgave, oppgave2))
+                params.tildeltEnhetsnr == enhet2 && params.offset == 100L ->
+                    SokOppgaverResponse(oppgaver = emptyList())
+                else -> throw IllegalStateException("Unexpected unit or offset in oppgave search")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactly(oppgave1.id, oppgaveTilordnetSaksbehandler.id, oppgave2.id)
+            })
+
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(4)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues).containsExactly(
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet1,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 100L,
+                offset = 0L,
+            ),
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet1,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 100L,
+                offset = 100L,
+            ),
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet2,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 100L,
+                offset = 0L,
+            ),
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet2,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 100L,
+                offset = 100L,
+            ),
+        )
+    }
+
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `fortsetter etter filtrert tom side og stopper ved nøyaktig 40 oppgaver`() {
+        val enhet = Enhetsnummer("1234")
+        mockNavAnsatt(listOf(Enhet(enhetnummer = enhet, navn = "Enhet")))
+        val filtrertBortSide = List(100) {
+            attesteringsOppgave(enhet).copy(opprettetAv = "ZATTEST1")
+        }
+        val sisteSide = List(40) { attesteringsOppgave(enhet) }
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when (params.offset) {
+                0L -> SokOppgaverResponse(oppgaver = filtrertBortSide)
+                100L -> SokOppgaverResponse(oppgaver = sisteSide)
+                else -> throw IllegalStateException("Unexpected offset in oppgave search: ${params.offset}")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactlyInAnyOrderElementsOf(sisteSide.map { task -> task.id })
+            })
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues.map { it.offset }).containsExactly(0L, 100L)
+    }
+
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `beholder hele siste side når filtrert antall overstiger 40`() {
+        val enhet = Enhetsnummer("1234")
+        mockNavAnsatt(listOf(Enhet(enhetnummer = enhet, navn = "Enhet")))
+        val førsteSide = List(30) { attesteringsOppgave(enhet) }
+        val sisteSide = List(15) { attesteringsOppgave(enhet) }
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when (params.offset) {
+                0L -> SokOppgaverResponse(oppgaver = førsteSide)
+                100L -> SokOppgaverResponse(oppgaver = sisteSide)
+                else -> throw IllegalStateException("Unexpected offset in oppgave search: ${params.offset}")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat (it).hasSize(45)
+                assertThat(it.map(OppgaveMedSak::oppgaveId))
+                    .containsExactlyInAnyOrderElementsOf((førsteSide + sisteSide).map { task -> task.id })
+            })
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues.map { it.offset }).containsExactly(0L, 100L)
+    }
+
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `henter hver enhet uavhengig selv om forrige har nådd grensen`() {
+        val enhet1 = Enhetsnummer("1234")
+        val enhet2 = Enhetsnummer("5678")
+        mockNavAnsatt(
+            listOf(
+                Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
+                Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+            )
+        )
+        val oppgaverEnhet1 = List(40) { attesteringsOppgave(enhet1) }
+        val oppgaverEnhet2 = List(20) { attesteringsOppgave(enhet2) }
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when {
+                params.tildeltEnhetsnr == enhet1 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = oppgaverEnhet1)
+                params.tildeltEnhetsnr == enhet2 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = oppgaverEnhet2)
+                params.tildeltEnhetsnr == enhet2 && params.offset == 100L ->
+                    SokOppgaverResponse(oppgaver = emptyList())
+                else -> throw IllegalStateException("Unexpected unit or offset in oppgave search")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it).hasSize(60)
+            })
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(3)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues.map { it.tildeltEnhetsnr to it.offset }).containsExactly(
+            enhet1 to 0L,
+            enhet2 to 0L,
+            enhet2 to 100L,
+        )
+    }
+
+    @WithAttestant(navIdent = "ZATTEST2")
+    @Test
+    fun `attesteringsoppgaver returnerer tom liste når det ikke er noen oppgaver`() {
+        mockNavAnsatt(NavAnsattTestdata.createEnheter(1))
+        whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(oppgaver = null)
+
+        assertThat(mockMvc.get().uri("/api/oppgave/attestering"))
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it).isEmpty()
+            })
+        verify(oppgaveClient).finnOppgaver(any())
+    }
+
+    @WithSaksbehandler(navIdent = "ZSAKSBEH1", tema = [HEL])
+    @Test
+    fun `attesteringsoppgaver returnerer tom liste uten attestantrolle`() {
+        assertThat(mockMvc.get().uri("/api/oppgave/attestering"))
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it).isEmpty()
+            })
+
+        verify(oppgaveClient, never()).finnOppgaver(any())
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner oppgave til innlogget saksbehandler`() {
+        val oppgave = attesteringsOppgave(Enhetsnummer("1234"))
+            .copy(versjon = 7)
+        val oppdatertOppgave = oppgave.copy(tilordnetRessurs = NavIdent("ZATTEST3"))
+        whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
+        whenever(oppgaveClient.patchOppgave(eq(oppgave.id), any())) doReturn oppdatertOppgave
+
+        assertThat(mockMvc.patch().uri("/api/oppgave/${oppgave.id}/tilordnet").with(csrf()))
+            .hasStatus(HttpStatus.OK)
+
+        val requestCaptor = argumentCaptor<PatchOppgaveRequest>()
+        verify(oppgaveClient).patchOppgave(eq(oppgave.id), requestCaptor.capture())
+        assertThat(requestCaptor.firstValue.versjon).isEqualTo(7)
+        assertThat(requestCaptor.firstValue.tilordnetRessurs).isEqualTo(NavIdent("ZATTEST3"))
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner ikke oppgave på nytt når den allerede er tilordnet innlogget saksbehandler`() {
+        val oppgave = attesteringsOppgave(Enhetsnummer("1234"))
+            .copy(tilordnetRessurs = NavIdent("ZATTEST3"))
+        whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
+
+        assertThat(mockMvc.patch().uri("/api/oppgave/${oppgave.id}/tilordnet").with(csrf()))
+            .hasStatus(HttpStatus.OK)
+
+        verify(oppgaveClient, never()).patchOppgave(any(), any())
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner ikke oppgave når den allerede er tilordnet en annen saksbehandler`() {
+        val oppgave = attesteringsOppgave(Enhetsnummer("1234"))
+            .copy(tilordnetRessurs = NavIdent("ZANNEN1"))
+        whenever(oppgaveClient.hentOppgave(oppgave.id)) doReturn oppgave
+
+        val response = mockMvc.patch().uri("/api/oppgave/${oppgave.id}/tilordnet").with(csrf())
+
+        assertThat(response)
+            .hasStatus(HttpStatus.CONFLICT)
+            .hasContentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON)
+            .bodyJson()
+            .convertTo(ProblemDetail::class.java)
+            .satisfies({
+                assertThat(it.status).isEqualTo(HttpStatus.CONFLICT.value())
+            })
+
+        verify(oppgaveClient, never()).patchOppgave(any(), any())
+    }
+
+    @WithSaksbehandler(navIdent = "ZATTEST3")
+    @Test
+    fun `tilordner ikke oppgave som ikke finnes`() {
+        val oppgaveId = OppgaveTestdata.opprettOppgave().id
+        whenever(oppgaveClient.hentOppgave(oppgaveId)) doReturn null
+
+        assertThat(mockMvc.patch().uri("/api/oppgave/$oppgaveId/tilordnet").with(csrf()))
+            .hasStatus(HttpStatus.NOT_FOUND)
+
+        verify(oppgaveClient, never()).patchOppgave(any(), any())
+    }
+
     @WithSaksbehandler(navIdent = "Z123456", tema = [HEL])
     @Test
     fun `Hent oppgaver for person henter oppgaver for andre applikasjoner også`() {
-//        whenever(entraProxyClient.hentTema()) doReturn setOf("HEL")
+        mockNavAnsatt()
         val fnr = FolkeregisterIdent("12345678901")
         whenever(personService.hentPerson(fnr)) doReturn PersonTestData.testPerson.copy(fnr = fnr)
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
@@ -169,4 +476,23 @@ class OppgaveControllerTest {
 
             })
     }
+
+    private fun mockNavAnsatt(enheter: List<Enhet> = emptyList()) {
+        val bruker = getAuthenticatedUser()
+        whenever(navAnsattService.hentNavAnsatt()) doReturn NavAnsatt(
+            name = bruker.userName,
+            ident = bruker.navIdent,
+            roles = bruker.roles,
+            enheter = enheter,
+            tema = bruker.tema,
+        )
+    }
+
+    private fun attesteringsOppgave(enhet: Enhetsnummer) =
+        OppgaveTestdata.opprettOppgave().copy(
+            tildeltEnhetsnr = enhet,
+            tilordnetRessurs = null,
+            oppgavetype = OppgaveType.GOD_VED.oppgavetype,
+            behandlesAvApplikasjon = APP_NAVN,
+        )
 }

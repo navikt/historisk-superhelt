@@ -61,6 +61,7 @@ Backend-tester krever Docker. API-typer genereres med `pnpm api:generate` mens b
 ## Tester
 
 - Skriv tester for ny funksjonalitet, inkludert suksess- og feiltilfeller.
+- Test funksjonaliet, ikke implementasjon
 - Bruk beskrivende testnavn som uttrykker forventet oppførsel.
 - Bruk AssertJ og JUnit 5 for Kotlin-tester, Testcontainers for integrasjonstester og Playwright for brukerflyter.
 - Ikke hopp over tester eller endre teststruktur uten avklaring.

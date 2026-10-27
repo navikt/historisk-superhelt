@@ -8,6 +8,7 @@ import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.common.types.Saksnummer
 import no.nav.historisk.superhelt.ansatt.NavAnsattService
+import no.nav.historisk.superhelt.infrastruktur.authentication.Role
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.person.PersonService
@@ -20,9 +21,11 @@ import no.nav.oppgave.model.OpprettOppgaveRequest
 import no.nav.oppgave.model.PatchOppgaveRequest
 import no.nav.oppgave.type
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 
 @Service
@@ -41,15 +44,15 @@ class OppgaveService(
 
     /** Hent åpne oppgaver tilordnet en saksbehandler som kan saksbehandles i denne appen */
     @PreAuthorize("hasAuthority('READ')")
-    fun hentOppgaverForSaksbehandler(navident: NavIdent): List<OppgaveMedSak> {
+    fun hentOppgaverForSaksbehandler(): List<OppgaveMedSak> {
 
-        val temaForSaksbehandler = navAnsattService.hentNavAnsatt().tema
+        val navAnsatt = navAnsattService.hentNavAnsatt()
 
         val oppgaver = oppgaveClient.finnOppgaver(
             FinnOppgaverParams(
-                tilordnetRessurs = navident,
+                tilordnetRessurs = navAnsatt.ident,
                 statuskategori = "AAPEN",
-                tema = temaForSaksbehandler,
+                tema = navAnsatt.tema,
                 limit = 50L
             )
         ).oppgaver ?: emptyList()
@@ -87,6 +90,56 @@ class OppgaveService(
                     sak = oppgaveRepository.finnSakForOppgave(it.id)
                 )
             }
+    }
+
+    /** Finn attesteringsoppgaver på tema og enhet, Egne saker og oppgaver som er plukket av andre blir ikke med  */
+    @PreAuthorize("hasAuthority('READ')")
+    fun finnAttesteringsOppgaverForSaksbehandler(): List<OppgaveMedSak> {
+
+        if (!getAuthenticatedUser().hasRole(Role.ATTESTANT)) {
+            logger.debug("Bruker har ikke rollen ATTESTANT, ingen attesteringsoppgaver vil bli returnert")
+            return emptyList()
+        }
+
+        val navAnsatt = navAnsattService.hentNavAnsatt()
+        val saksBehandlersEnheter = navAnsatt.enheter.map { it.enhetnummer }
+
+        val oppgaver = saksBehandlersEnheter.flatMap { enhetsnummer ->
+            val oppgaverForEnhet = mutableListOf<OppgaveDto>()
+            var offset = 0L
+
+            while (oppgaverForEnhet.size < 40) {
+                val side = oppgaveClient.finnOppgaver(
+                    FinnOppgaverParams(
+                        tildeltEnhetsnr = enhetsnummer,
+                        oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                        statuskategori = "AAPEN",
+                        tema = navAnsatt.tema,
+                        limit = 100L,
+                        offset = offset
+                    )
+                ).oppgaver ?: emptyList()
+
+                if (side.isEmpty()) {
+                    break
+                }
+
+                oppgaverForEnhet += side
+                    .filter(relevanteOppgaverPredicate)
+                    .filter { it.opprettetAv != navAnsatt.ident.value } // Ikke attester egne saker
+                    .filter { it.tilordnetRessurs == null || it.tilordnetRessurs == navAnsatt.ident } // Plukk oppgaver som er ufordelt eller tilordnet saksbehandler
+                offset += 100L
+            }
+
+            oppgaverForEnhet
+        }
+
+
+        return oppgaver.map {
+            it.toOppgaveMedSak(
+                sak = oppgaveRepository.finnSakForOppgave(it.id)
+            )
+        }
     }
 
     @PreAuthorize("hasAuthority('READ')")
@@ -183,17 +236,37 @@ class OppgaveService(
         knyttOppgaveTilSak(sak.saksnummer, oppgave.id, type)
 
         if (tilordneTil != null) {
-            oppgaveClient.patchOppgave(
-                oppgaveId = oppgave.id,
-                request = PatchOppgaveRequest(
-                    versjon = oppgave.versjon,
-                    tilordnetRessurs = tilordneTil
-                )
-            )
+            tilordne(oppgave, tilordneTil)
         }
         logger.info("Oppretter oppgave {}:{} for sak {}", type, oppgave.id, sak.saksnummer)
         return oppgave.toOppgaveMedSak(sak)
 
+    }
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    fun tilordneOppgave(oppgaveId: EksternOppgaveId, tilordneTil: NavIdent) {
+        val dto = oppgaveClient.hentOppgave(oppgaveId) ?: throw IkkeFunnetException("Fant ikke oppgave med id $oppgaveId")
+        if (dto.tilordnetRessurs != null) {
+            if (dto.tilordnetRessurs == tilordneTil) {
+                logger.debug("Oppgave {} er allerede tilordnet {}, ingen endring", oppgaveId, dto.tilordnetRessurs)
+                return
+            }
+            throw ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "Oppgave $oppgaveId er allerede tilordnet ${dto.tilordnetRessurs}, kan ikke tilordne til $tilordneTil"
+            )
+        }
+        tilordne(dto, tilordneTil)
+    }
+
+    private fun tilordne(oppgave: OppgaveDto, tilordneTil: NavIdent): OppgaveDto {
+        return oppgaveClient.patchOppgave(
+            oppgaveId = oppgave.id,
+            request = PatchOppgaveRequest(
+                versjon = oppgave.versjon,
+                tilordnetRessurs = tilordneTil
+            )
+        )
     }
 
     private fun finnOpprettetAvEnhet(sak: Sak): Enhetsnummer? {

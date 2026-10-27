@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect } from "@playwright/test";
+import { velgOppgave } from "./oppgave.utils";
 import { behandleSakTilAttestring } from "./sak.utils";
 import { test } from "./test.fixtures";
 
@@ -30,7 +31,7 @@ test.describe("Saksbehandling og attestering ikke godkjent", () => {
         });
 
         await test.step("Velg sak til attestering", async () => {
-            await page.getByRole("button", { name: "Attester" }).click();
+            await velgOppgave(page, "Godkjenne vedtak", "Attester");
         });
 
         await test.step("Velg oppsummering ", async () => {
