@@ -121,10 +121,17 @@ class OppgaveControllerTest {
         val oppgave2 = attesteringsOppgave(enhet2)
 
         whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
-            when (invocation.getArgument<FinnOppgaverParams>(0).tildeltEnhetsnr) {
-                enhet1 -> SokOppgaverResponse(oppgaver = listOf(oppgave1, egenOppgave, oppgaveTilordnetSaksbehandler))
-                enhet2 -> SokOppgaverResponse(oppgaver = listOf(plukketOppgave, irrelevantOppgave, oppgave2))
-                else -> throw IllegalStateException("Unexpected unit in oppgave search")
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when {
+                params.tildeltEnhetsnr == enhet1 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = listOf(oppgave1, egenOppgave, oppgaveTilordnetSaksbehandler))
+                params.tildeltEnhetsnr == enhet1 && params.offset == 100L ->
+                    SokOppgaverResponse(oppgaver = emptyList())
+                params.tildeltEnhetsnr == enhet2 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = listOf(plukketOppgave, irrelevantOppgave, oppgave2))
+                params.tildeltEnhetsnr == enhet2 && params.offset == 100L ->
+                    SokOppgaverResponse(oppgaver = emptyList())
+                else -> throw IllegalStateException("Unexpected unit or offset in oppgave search")
             }
         }
 
@@ -139,7 +146,7 @@ class OppgaveControllerTest {
             })
 
         val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
-        verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
+        verify(oppgaveClient, times(4)).finnOppgaver(paramsCaptor.capture())
         assertThat(paramsCaptor.allValues).containsExactly(
             FinnOppgaverParams(
                 tildeltEnhetsnr = enhet1,
@@ -147,6 +154,15 @@ class OppgaveControllerTest {
                 statuskategori = "AAPEN",
                 tema = listOf(HEL),
                 limit = 100L,
+                offset = 0L,
+            ),
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet1,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 100L,
+                offset = 100L,
             ),
             FinnOppgaverParams(
                 tildeltEnhetsnr = enhet2,
@@ -154,7 +170,121 @@ class OppgaveControllerTest {
                 statuskategori = "AAPEN",
                 tema = listOf(HEL),
                 limit = 100L,
+                offset = 0L,
             ),
+            FinnOppgaverParams(
+                tildeltEnhetsnr = enhet2,
+                oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                statuskategori = "AAPEN",
+                tema = listOf(HEL),
+                limit = 100L,
+                offset = 100L,
+            ),
+        )
+    }
+
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `fortsetter etter filtrert tom side og stopper ved nøyaktig 40 oppgaver`() {
+        val enhet = Enhetsnummer("1234")
+        whenever(entraProxyClient.hentEnheter()) doReturn listOf(Enhet(enhetnummer = enhet, navn = "Enhet"))
+        val filtrertBortSide = List(100) {
+            attesteringsOppgave(enhet).copy(opprettetAv = "ZATTEST1")
+        }
+        val sisteSide = List(40) { attesteringsOppgave(enhet) }
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when (params.offset) {
+                0L -> SokOppgaverResponse(oppgaver = filtrertBortSide)
+                100L -> SokOppgaverResponse(oppgaver = sisteSide)
+                else -> throw IllegalStateException("Unexpected offset in oppgave search: ${params.offset}")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactlyElementsOf(sisteSide.map { task -> task.id })
+            })
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues.map { it.offset }).containsExactly(0L, 100L)
+    }
+
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `beholder hele siste side når filtrert antall overstiger 40`() {
+        val enhet = Enhetsnummer("1234")
+        whenever(entraProxyClient.hentEnheter()) doReturn listOf(Enhet(enhetnummer = enhet, navn = "Enhet"))
+        val førsteSide = List(30) { attesteringsOppgave(enhet) }
+        val sisteSide = List(15) { attesteringsOppgave(enhet) }
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when (params.offset) {
+                0L -> SokOppgaverResponse(oppgaver = førsteSide)
+                100L -> SokOppgaverResponse(oppgaver = sisteSide)
+                else -> throw IllegalStateException("Unexpected offset in oppgave search: ${params.offset}")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it.map(OppgaveMedSak::oppgaveId))
+                    .containsExactlyElementsOf((førsteSide + sisteSide).map { task -> task.id })
+            })
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues.map { it.offset }).containsExactly(0L, 100L)
+    }
+
+    @WithAttestant(navIdent = "ZATTEST1", tema = [HEL])
+    @Test
+    fun `henter hver enhet uavhengig selv om forrige har nådd grensen`() {
+        val enhet1 = Enhetsnummer("1234")
+        val enhet2 = Enhetsnummer("5678")
+        whenever(entraProxyClient.hentEnheter()) doReturn listOf(
+            Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
+            Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+        )
+        val oppgaverEnhet1 = List(40) { attesteringsOppgave(enhet1) }
+        val oppgaverEnhet2 = List(20) { attesteringsOppgave(enhet2) }
+        whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
+            val params = invocation.getArgument<FinnOppgaverParams>(0)
+            when {
+                params.tildeltEnhetsnr == enhet1 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = oppgaverEnhet1)
+                params.tildeltEnhetsnr == enhet2 && params.offset == 0L ->
+                    SokOppgaverResponse(oppgaver = oppgaverEnhet2)
+                params.tildeltEnhetsnr == enhet2 && params.offset == 100L ->
+                    SokOppgaverResponse(oppgaver = emptyList())
+                else -> throw IllegalStateException("Unexpected unit or offset in oppgave search")
+            }
+        }
+
+        val oppgaver = mockMvc.get().uri("/api/oppgave/attestering")
+
+        assertThat(oppgaver)
+            .hasStatus(HttpStatus.OK)
+            .bodyJson()
+            .convertTo(Array<OppgaveMedSak>::class.java)
+            .satisfies({
+                assertThat(it).hasSize(60)
+            })
+        val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
+        verify(oppgaveClient, times(3)).finnOppgaver(paramsCaptor.capture())
+        assertThat(paramsCaptor.allValues.map { it.tildeltEnhetsnr to it.offset }).containsExactly(
+            enhet1 to 0L,
+            enhet2 to 0L,
+            enhet2 to 100L,
         )
     }
 

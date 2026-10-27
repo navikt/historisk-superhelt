@@ -105,27 +105,41 @@ class OppgaveService(
         val saksBehandlersEnheter = navAnsatt.enheter.map { it.enhetnummer }
 
         val oppgaver = saksBehandlersEnheter.flatMap { enhetsnummer ->
-            oppgaveClient.finnOppgaver(
-                FinnOppgaverParams(
-                    tildeltEnhetsnr = enhetsnummer,
-                    oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
-                    statuskategori = "AAPEN",
-                    tema = navAnsatt.tema,
-                    limit = 100L
-                )
-            ).oppgaver ?: emptyList()
+            val oppgaverForEnhet = mutableListOf<OppgaveDto>()
+            var offset = 0L
+
+            while (oppgaverForEnhet.size < 40) {
+                val side = oppgaveClient.finnOppgaver(
+                    FinnOppgaverParams(
+                        tildeltEnhetsnr = enhetsnummer,
+                        oppgavetype = listOf(OppgaveType.GOD_VED.oppgavetype),
+                        statuskategori = "AAPEN",
+                        tema = navAnsatt.tema,
+                        limit = 100L,
+                        offset = offset
+                    )
+                ).oppgaver ?: emptyList()
+
+                if (side.isEmpty()) {
+                    break
+                }
+
+                oppgaverForEnhet += side
+                    .filter(relevanteOppgaverPredicate)
+                    .filter { it.opprettetAv != navAnsatt.ident.value } // Ikke attester egne saker
+                    .filter { it.tilordnetRessurs == null || it.tilordnetRessurs == navAnsatt.ident } // Plukk oppgaver som er ufordelt eller tilordnet saksbehandler
+                offset += 100L
+            }
+
+            oppgaverForEnhet
         }
 
 
-        return oppgaver
-            .filter(relevanteOppgaverPredicate)
-            .filter { it.opprettetAv != navAnsatt.ident.value } // Ikke attester egne saker
-            .filter { it.tilordnetRessurs == null || it.tilordnetRessurs == navAnsatt.ident } // Plukk oppgaver som  er ufordelt eller tilordnet saksbehandler
-            .map {
-                it.toOppgaveMedSak(
-                    sak = oppgaveRepository.finnSakForOppgave(it.id)
-                )
-            }
+        return oppgaver.map {
+            it.toOppgaveMedSak(
+                sak = oppgaveRepository.finnSakForOppgave(it.id)
+            )
+        }
     }
 
     @PreAuthorize("hasAuthority('READ')")
