@@ -7,8 +7,10 @@ import no.nav.common.types.Enhetsnummer
 import no.nav.common.types.FolkeregisterIdent
 import no.nav.common.types.NavIdent
 import no.nav.entraproxy.Enhet
-import no.nav.entraproxy.EntraProxyClient
+import no.nav.historisk.superhelt.ansatt.NavAnsatt
+import no.nav.historisk.superhelt.ansatt.NavAnsattService
 import no.nav.historisk.superhelt.ansatt.NavAnsattTestdata
+import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import no.nav.historisk.superhelt.oppgave.OppgaveMedSak
 import no.nav.historisk.superhelt.oppgave.OppgaveService
 import no.nav.historisk.superhelt.oppgave.OppgaveTestdata
@@ -61,7 +63,7 @@ class OppgaveControllerTest {
     private lateinit var oppgaveClient: OppgaveClient
 
     @MockitoBean
-    private lateinit var entraProxyClient: EntraProxyClient
+    private lateinit var navAnsattService: NavAnsattService
 
     @Autowired
     private lateinit var oppgaveService: OppgaveService
@@ -76,6 +78,7 @@ class OppgaveControllerTest {
     @WithSaksbehandler(navIdent = "Z1111111", tema = [HJE, HEL])
     @Test
     fun `Hent oppgaver for saksbehandler filterer ut oppgaver som ikke kan behandles `() {
+        mockNavAnsatt()
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
             antallTreffTotalt = 4,
             oppgaver = listOf(
@@ -107,9 +110,11 @@ class OppgaveControllerTest {
     fun `finner attesteringsoppgaver per enhet og filtrerer bort egne plukkede og irrelevante oppgaver`() {
         val enhet1 = Enhetsnummer("1234")
         val enhet2 = Enhetsnummer("5678")
-        whenever(entraProxyClient.hentEnheter()) doReturn listOf(
-            Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
-            Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+        mockNavAnsatt(
+            listOf(
+                Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
+                Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+            )
         )
 
         val saksbehandler = "ZATTEST1"
@@ -187,7 +192,7 @@ class OppgaveControllerTest {
     @Test
     fun `fortsetter etter filtrert tom side og stopper ved nøyaktig 40 oppgaver`() {
         val enhet = Enhetsnummer("1234")
-        whenever(entraProxyClient.hentEnheter()) doReturn listOf(Enhet(enhetnummer = enhet, navn = "Enhet"))
+        mockNavAnsatt(listOf(Enhet(enhetnummer = enhet, navn = "Enhet")))
         val filtrertBortSide = List(100) {
             attesteringsOppgave(enhet).copy(opprettetAv = "ZATTEST1")
         }
@@ -208,7 +213,7 @@ class OppgaveControllerTest {
             .bodyJson()
             .convertTo(Array<OppgaveMedSak>::class.java)
             .satisfies({
-                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactlyElementsOf(sisteSide.map { task -> task.id })
+                assertThat(it.map(OppgaveMedSak::oppgaveId)).containsExactlyInAnyOrderElementsOf(sisteSide.map { task -> task.id })
             })
         val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
         verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
@@ -219,7 +224,7 @@ class OppgaveControllerTest {
     @Test
     fun `beholder hele siste side når filtrert antall overstiger 40`() {
         val enhet = Enhetsnummer("1234")
-        whenever(entraProxyClient.hentEnheter()) doReturn listOf(Enhet(enhetnummer = enhet, navn = "Enhet"))
+        mockNavAnsatt(listOf(Enhet(enhetnummer = enhet, navn = "Enhet")))
         val førsteSide = List(30) { attesteringsOppgave(enhet) }
         val sisteSide = List(15) { attesteringsOppgave(enhet) }
         whenever(oppgaveClient.finnOppgaver(any())).thenAnswer { invocation ->
@@ -238,8 +243,9 @@ class OppgaveControllerTest {
             .bodyJson()
             .convertTo(Array<OppgaveMedSak>::class.java)
             .satisfies({
+                assertThat (it).hasSize(45)
                 assertThat(it.map(OppgaveMedSak::oppgaveId))
-                    .containsExactlyElementsOf((førsteSide + sisteSide).map { task -> task.id })
+                    .containsExactlyInAnyOrderElementsOf((førsteSide + sisteSide).map { task -> task.id })
             })
         val paramsCaptor = argumentCaptor<FinnOppgaverParams>()
         verify(oppgaveClient, times(2)).finnOppgaver(paramsCaptor.capture())
@@ -251,9 +257,11 @@ class OppgaveControllerTest {
     fun `henter hver enhet uavhengig selv om forrige har nådd grensen`() {
         val enhet1 = Enhetsnummer("1234")
         val enhet2 = Enhetsnummer("5678")
-        whenever(entraProxyClient.hentEnheter()) doReturn listOf(
-            Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
-            Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+        mockNavAnsatt(
+            listOf(
+                Enhet(enhetnummer = enhet1, navn = "Enhet 1"),
+                Enhet(enhetnummer = enhet2, navn = "Enhet 2"),
+            )
         )
         val oppgaverEnhet1 = List(40) { attesteringsOppgave(enhet1) }
         val oppgaverEnhet2 = List(20) { attesteringsOppgave(enhet2) }
@@ -291,7 +299,7 @@ class OppgaveControllerTest {
     @WithAttestant(navIdent = "ZATTEST2")
     @Test
     fun `attesteringsoppgaver returnerer tom liste når det ikke er noen oppgaver`() {
-        whenever(entraProxyClient.hentEnheter()) doReturn NavAnsattTestdata.createEnheter(1)
+        mockNavAnsatt(NavAnsattTestdata.createEnheter(1))
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(oppgaver = null)
 
         assertThat(mockMvc.get().uri("/api/oppgave/attestering"))
@@ -385,7 +393,7 @@ class OppgaveControllerTest {
     @WithSaksbehandler(navIdent = "Z123456", tema = [HEL])
     @Test
     fun `Hent oppgaver for person henter oppgaver for andre applikasjoner også`() {
-//        whenever(entraProxyClient.hentTema()) doReturn setOf("HEL")
+        mockNavAnsatt()
         val fnr = FolkeregisterIdent("12345678901")
         whenever(personService.hentPerson(fnr)) doReturn PersonTestData.testPerson.copy(fnr = fnr)
         whenever(oppgaveClient.finnOppgaver(any())) doReturn SokOppgaverResponse(
@@ -467,6 +475,17 @@ class OppgaveControllerTest {
                 assertThat(it.sakStatus).isEqualTo(sak.status)
 
             })
+    }
+
+    private fun mockNavAnsatt(enheter: List<Enhet> = emptyList()) {
+        val bruker = getAuthenticatedUser()
+        whenever(navAnsattService.hentNavAnsatt()) doReturn NavAnsatt(
+            name = bruker.userName,
+            ident = bruker.navIdent,
+            roles = bruker.roles,
+            enheter = enheter,
+            tema = bruker.tema,
+        )
     }
 
     private fun attesteringsOppgave(enhet: Enhetsnummer) =
