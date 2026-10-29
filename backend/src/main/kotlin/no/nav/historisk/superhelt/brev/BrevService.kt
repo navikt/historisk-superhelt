@@ -9,7 +9,9 @@ import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.Sak
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import java.time.Instant
 
 @Service
@@ -19,6 +21,7 @@ class BrevService(
     private val pdfgenService: PdfgenService,
     private val dokarkivService: DokarkivService,
     private val dokdistService: DokdistService,
+    private val transactionTemplate: TransactionTemplate,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -44,6 +47,7 @@ class BrevService(
     }
 
 
+    @Transactional(propagation = Propagation.NEVER)
     internal fun arkiver(sak: Sak, brevId: BrevId): Brev {
         var brev = hentBrev(sak, brevId)
         if (brev.status != BrevStatus.KLAR_TIL_SENDING) return brev
@@ -76,19 +80,21 @@ class BrevService(
     }
 
 
+    @Transactional(propagation = Propagation.NEVER)
     fun distribuer(sak: Sak, brevId: BrevId): Brev {
-        var brev = hentBrev(sak, brevId)
+        val brev = hentBrev(sak, brevId)
         if (brev.status != BrevStatus.ARKIVERT) return brev
 
         dokdistService.distribuer(brev)
-        brev = brevRepository.oppdaterStatus(brevId, BrevStatus.SENDT, feil = false)
-        endringsloggService.logChange(
-            saksnummer = sak.saksnummer,
-            endringsType = EndringsloggType.SENDT_BREV,
-            endring = "Brev sendt til ${brev.mottakerType.name.lowercase()}",
-            beskrivelse = "Brev er arkivert og sendt til ${brev.mottakerType.name.lowercase()}",
-        )
-        return brev
+        return transactionTemplate.execute {
+            endringsloggService.logChange(
+                saksnummer = sak.saksnummer,
+                endringsType = EndringsloggType.SENDT_BREV,
+                endring = "Brev sendt til ${brev.mottakerType.name.lowercase()}",
+                beskrivelse = "Brev er arkivert og sendt til ${brev.mottakerType.name.lowercase()}",
+            )
+            brevRepository.oppdaterStatus(brevId, BrevStatus.SENDT, feil = false)
+        }
     }
 
 
