@@ -2,12 +2,11 @@ package no.nav.historisk.superhelt.brev
 
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.JournalpostResponse
-import no.nav.dokdist.DokdistRespons
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
 import no.nav.historisk.superhelt.dokarkiv.DokarkivService
 import no.nav.historisk.superhelt.dokarkiv.DokdistService
 import no.nav.historisk.superhelt.endringslogg.EndringsloggService
-import no.nav.historisk.superhelt.infrastruktur.validation.ValideringException
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
 import no.nav.historisk.superhelt.sak.Sak
 import no.nav.historisk.superhelt.sak.SakRepository
 import no.nav.historisk.superhelt.sak.SakTestData
@@ -15,15 +14,18 @@ import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
+import org.mockito.kotlin.check
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.RestClientException
 
 @MockedSpringBootTest
 @WithSaksbehandler
@@ -50,48 +52,42 @@ class BrevSendingServiceTest {
     @MockitoBean
     private lateinit var dokdistService: DokdistService
 
-
-
     private fun mockPdfgenSuccess(pdf: ByteArray = "test-pdf".toByteArray()) {
         whenever(pdfgenService.genererPdf(any(), any())).thenReturn(pdf)
     }
 
-    private fun mockDokarkivSuccess(journalpostId: String = "123456789") {
+    private fun mockDokarkivSuccess(
+        journalpostId: String = "123456789",
+        journalpostferdigstilt: Boolean = true,
+    ) {
         whenever(dokarkivService.arkiver(any(), any(), any())).thenReturn(
             JournalpostResponse(
                 journalpostId = EksternJournalpostId(journalpostId),
-                journalpostferdigstilt = true,
+                journalpostferdigstilt = journalpostferdigstilt,
                 dokumenter = emptyList()
             )
         )
     }
 
-    private fun mockDokdistSuccess(bestillingsId: String = "bestilling-123") {
-        whenever(dokdistService.distribuer(any())).thenReturn(
-            DokdistRespons(bestillingsId = bestillingsId, sendtOk = true)
-        )
+    private fun mockDokdistManglerAdresse() {
+        whenever(dokdistService.distribuer(any()))
+            .thenThrow(HttpClientErrorException(HttpStatus.GONE))
     }
 
-    private fun mockDokdistManglerAdresse(feilbegrunnelse: String = "Journalpost kan ikke distribueres: mangler adresse") {
-        whenever(dokdistService.distribuer(any())).thenReturn(
-            DokdistRespons(sendtOk = false, feilbegrunnelse = feilbegrunnelse)
-        )
-    }
-
-    private fun mockPdfgenFailure(exception: Exception = RuntimeException("PDF generation failed")) {
+    private fun mockPdfgenFailure(exception: Exception = RestClientException("PDF generation failed")) {
         whenever(pdfgenService.genererPdf(any(), any())).thenThrow(exception)
     }
 
-    private fun mockDokarkivFailure(exception: Exception = RuntimeException("Arkivering failed")) {
+    private fun mockDokarkivFailure(exception: Exception = RestClientException("Arkivering failed")) {
         whenever(dokarkivService.arkiver(any(), any(), any())).thenThrow(exception)
     }
 
-    private fun mockDokdistFailure(exception: Exception = RuntimeException("Distribusjon failed")) {
+    private fun mockDokdistFailure(exception: Exception = RestClientException("Distribusjon failed")) {
         whenever(dokdistService.distribuer(any())).thenThrow(exception)
     }
 
     private fun lagreSakMedBrev(
-        status: BrevStatus = BrevStatus.NY,
+        status: BrevStatus = BrevStatus.UTKAST,
         tittel: String = "Test tittel",
         innhold: String = "Test innhold",
         mottakerType: BrevMottaker = BrevMottaker.BRUKER,
@@ -110,16 +106,15 @@ class BrevSendingServiceTest {
             )
         )
 
-        return Pair(sak, brev)
+        return Pair(sak, brevRepository.getByUUid(brev.uuid))
     }
 
     @Test
-    fun `skal sende brev når status er NY`() {
+    fun `skal sende brev når status er UTKAST`() {
         mockPdfgenSuccess()
         mockDokarkivSuccess()
-        mockDokdistSuccess()
 
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY)
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
         brevSendingService.sendBrev(sak, brev)
 
@@ -144,36 +139,39 @@ class BrevSendingServiceTest {
     }
 
     @Test
-    fun `skal kaste exception når brev mangler tittel`() {
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY, tittel = "")
+    fun `skal avvise sending og markere feil når brev mangler tittel`() {
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST, tittel = "")
 
-        assertThrows<ValideringException> {
-            brevSendingService.sendBrev(sak, brev)
-        }
+        brevSendingService.sendBrev(sak, brev)
 
+        val lagretBrev = brevRepository.getByUUid(brev.uuid)
+        assertThat(lagretBrev.status).isEqualTo(BrevStatus.UTKAST)
+        assertThat(lagretBrev.feil).isTrue()
         verify(pdfgenService, never()).genererPdf(any(), any())
         verify(dokarkivService, never()).arkiver(any(), any(), any())
+        verify(dokdistService, never()).distribuer(any())
     }
 
     @Test
-    fun `skal kaste exception når brev mangler innhold`() {
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY, innhold = "")
+    fun `skal avvise sending og markere feil når brev mangler innhold`() {
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST, innhold = "")
 
-        assertThrows<ValideringException> {
-            brevSendingService.sendBrev(sak, brev)
-        }
+        brevSendingService.sendBrev(sak, brev)
 
+        val lagretBrev = brevRepository.getByUUid(brev.uuid)
+        assertThat(lagretBrev.status).isEqualTo(BrevStatus.UTKAST)
+        assertThat(lagretBrev.feil).isTrue()
         verify(pdfgenService, never()).genererPdf(any(), any())
         verify(dokarkivService, never()).arkiver(any(), any(), any())
+        verify(dokdistService, never()).distribuer(any())
     }
 
     @Test
     fun `skal arkivere brev før distribusjon`() {
         mockPdfgenSuccess()
         mockDokarkivSuccess()
-        mockDokdistSuccess()
 
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY)
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
         brevSendingService.sendBrev(sak, brev)
 
@@ -185,7 +183,6 @@ class BrevSendingServiceTest {
 
     @Test
     fun `skal ikke arkivere på nytt hvis brev allerede har journalpostId`() {
-        mockDokdistSuccess()
 
         val eksisterendeJournalpostId = EksternJournalpostId("987654321")
         val (sak, brev) = lagreSakMedBrev(
@@ -204,9 +201,8 @@ class BrevSendingServiceTest {
     fun `skal sette status til KLAR_TIL_SENDING før arkivering`() {
         mockPdfgenSuccess()
         mockDokarkivSuccess()
-        mockDokdistSuccess()
 
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY)
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
         brevSendingService.sendBrev(sak, brev)
 
@@ -218,12 +214,12 @@ class BrevSendingServiceTest {
     fun `skal håndtere feil ved PDF-generering`() {
         mockPdfgenFailure()
 
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY)
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        assertThrows<RuntimeException> {
-            brevSendingService.sendBrev(sak, brev)
-        }
+        brevSendingService.sendBrev(sak, brev)
 
+        assertThat(brevRepository.getByUUid(brev.uuid).status).isEqualTo(BrevStatus.KLAR_TIL_SENDING)
+        assertThat(brevRepository.getByUUid(brev.uuid).feil).isTrue()
         verify(dokarkivService, never()).arkiver(any(), any(), any())
         verify(dokdistService, never()).distribuer(any())
     }
@@ -233,12 +229,33 @@ class BrevSendingServiceTest {
         mockPdfgenSuccess()
         mockDokarkivFailure()
 
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY)
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        assertThrows<RuntimeException> {
-            brevSendingService.sendBrev(sak, brev)
-        }
+        brevSendingService.sendBrev(sak, brev)
 
+        assertThat(brevRepository.getByUUid(brev.uuid).status).isEqualTo(BrevStatus.KLAR_TIL_SENDING)
+        assertThat(brevRepository.getByUUid(brev.uuid).feil).isTrue()
+        verify(dokdistService, never()).distribuer(any())
+    }
+
+    @Test
+    fun `skal beholde journalpostreferansen når ferdigstilling feiler`() {
+        mockPdfgenSuccess()
+        mockDokarkivSuccess(journalpostferdigstilt = false)
+        whenever(dokarkivService.ferdigstill(any(), any()))
+            .thenThrow(RestClientException("Ferdigstilling feilet"))
+        val (sak, brev) = lagreSakMedBrev()
+
+        brevSendingService.sendBrev(sak, brev)
+
+        val lagretBrev = brevRepository.getByUUid(brev.uuid)
+        assertThat(lagretBrev.status).isEqualTo(BrevStatus.KLAR_TIL_SENDING)
+        assertThat(lagretBrev.journalpostId).isEqualTo(EksternJournalpostId("123456789"))
+        assertThat(lagretBrev.feil).isTrue()
+        verify(dokarkivService).ferdigstill(
+            eq(sak),
+            check { assertThat(it.journalpostId).isEqualTo(lagretBrev.journalpostId) },
+        )
         verify(dokdistService, never()).distribuer(any())
     }
 
@@ -248,15 +265,14 @@ class BrevSendingServiceTest {
         mockDokarkivSuccess()
         mockDokdistFailure()
 
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY)
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        assertThrows<RuntimeException> {
-            brevSendingService.sendBrev(sak, brev)
-        }
+        brevSendingService.sendBrev(sak, brev)
 
         val oppdatertBrev = brevRepository.getByUUid(brev.uuid)
         assertThat(oppdatertBrev.journalpostId).isNotNull()
-        assertThat(oppdatertBrev.status).isNotEqualTo(BrevStatus.SENDT)
+        assertThat(oppdatertBrev.status).isEqualTo(BrevStatus.ARKIVERT)
+        assertThat(oppdatertBrev.feil).isTrue()
     }
 
     @Test
@@ -264,9 +280,8 @@ class BrevSendingServiceTest {
         val forventetPdf = "test-pdf-innhold".toByteArray()
         mockPdfgenSuccess(forventetPdf)
         mockDokarkivSuccess()
-        mockDokdistSuccess()
 
-        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.NY)
+        val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
         brevSendingService.sendBrev(sak, brev)
 
@@ -281,38 +296,38 @@ class BrevSendingServiceTest {
     fun `skal logge endring når brev sendes`() {
         mockPdfgenSuccess()
         mockDokarkivSuccess()
-        mockDokdistSuccess()
 
         val (sak, brev) = lagreSakMedBrev(
-            status = BrevStatus.NY,
+            status = BrevStatus.UTKAST,
             tittel = "Vedtaksbrev om tilbakebetaling"
         )
 
         brevSendingService.sendBrev(sak, brev)
+
+        assertThat(endringsloggService.findBySak(sak.saksnummer))
+            .extracting<EndringsloggType> { it.type }
+            .containsExactly(EndringsloggType.SENDT_BREV)
     }
 
     @Test
-    fun `skal sette status SENDT og logge passende melding når brev mangler adresse (410)`() {
+    fun `skal beholde ARKIVERT og kreve manuell oppfølging når brev mangler adresse (410)`() {
         mockPdfgenSuccess()
         mockDokarkivSuccess()
         mockDokdistManglerAdresse()
 
         val (sak, brev) = lagreSakMedBrev(
-            status = BrevStatus.NY,
+            status = BrevStatus.UTKAST,
             tittel = "Vedtaksbrev"
         )
 
         brevSendingService.sendBrev(sak, brev)
 
         val oppdatertBrev = brevRepository.getByUUid(brev.uuid)
-        assertThat(oppdatertBrev.status).isEqualTo(BrevStatus.SENDT)
+        assertThat(oppdatertBrev.status).isEqualTo(BrevStatus.ARKIVERT)
+        assertThat(oppdatertBrev.feil).isTrue()
 
         val endringslogg = endringsloggService.findBySak(sak.saksnummer)
-        assertThat(endringslogg).anySatisfy { linje ->
-            assertThat(linje.endring).contains("arkivert")
-            assertThat(linje.beskrivelse).contains("mangler adresse")
-        }
+        assertThat(endringslogg).isEmpty()
     }
-
 
 }

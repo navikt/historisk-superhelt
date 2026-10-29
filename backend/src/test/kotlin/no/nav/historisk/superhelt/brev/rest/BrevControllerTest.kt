@@ -5,6 +5,7 @@ import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.brev.BrevId
 import no.nav.historisk.superhelt.brev.BrevMottaker
 import no.nav.historisk.superhelt.brev.BrevRepository
+import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
@@ -20,6 +21,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.doReturn
@@ -68,6 +71,23 @@ class BrevControllerTest {
     @WithSaksbehandler
     @Nested
     inner class `hent eller opprett brev` {
+        @ParameterizedTest
+        @EnumSource(BrevStatus::class, names = ["KLAR_TIL_SENDING", "ARKIVERT", "UTKAST"])
+        fun `skal hente samme brev når sendingen ikke er fullført`(status: BrevStatus) {
+            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
+            val brev = BrevTestdata.lagreBrev(
+                brevRepository, sak.saksnummer, BrevTestdata.vedtaksbrevBruker().copy(status = status),
+            )
+
+            assertThat(hentEllerOpprettBrev(sak.saksnummer, OpprettBrevRequest(BrevType.VEDTAKSBREV, BrevMottaker.BRUKER)))
+                .hasStatus(HttpStatus.OK)
+                .bodyJson()
+                .convertTo(Brev::class.java)
+                .satisfies({
+                    assertThat(it.uuid).isEqualTo(brev.uuid)
+                })
+        }
+
         @Test
         fun `opprett nytt brev når det ikke finnes fra før`() {
 
@@ -87,26 +107,6 @@ class BrevControllerTest {
                     assertThat(it.tittel).isNotEmpty
                     assertThat(it.innhold).isNotEmpty
                     assertThat(it.valideringsfeil).isNotNull
-                })
-            verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(sak.fnr)
-        }
-
-        @Test
-        fun `hent brev om det finnes fra før`() {
-
-            val sak = SakTestData.lagreSak(sakRepository, SakTestData.sakUtenUtbetaling())
-            val brev = BrevTestdata.lagreBrev(brevRepository, sak.saksnummer)
-            val saksnummer = sak.saksnummer
-            val request = OpprettBrevRequest(type = BrevType.VEDTAKSBREV, mottaker = BrevMottaker.BRUKER)
-
-            assertThat(hentEllerOpprettBrev(saksnummer, request))
-                .hasStatus(HttpStatus.OK)
-                .bodyJson()
-                .convertTo(Brev::class.java)
-                .satisfies({
-                    assertThat(it.uuid).isEqualTo(brev.uuid)
-                    assertThat(it.saksnummer).isEqualTo(brev.saksnummer)
-                    assertThat(it.tittel).isEqualTo(brev.tittel)
                 })
             verify(tilgangsmaskinService, atLeast(1)).sjekkKomplettTilgang(sak.fnr)
         }
