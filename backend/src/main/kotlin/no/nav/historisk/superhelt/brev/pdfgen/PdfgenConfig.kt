@@ -3,6 +3,7 @@ package no.nav.historisk.superhelt.brev.pdfgen
 
 import no.nav.historisk.pdfgen.PdfgenClient
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -23,6 +24,7 @@ class PdfgenConfig() {
             .baseUrl(properties.url)
             .requestInterceptor (CallIdClientRequestInterceptor("Nav-Call-Id"))
 //            .requestInterceptor (NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(RetryClientHttpRequestInterceptor())
             .build()
 
         return PdfgenClient(restClient = restClient)
@@ -36,5 +38,3 @@ data class PdfgenProperties(
     /** api://<cluster>.<namespace>.<other-api-app-name>/.default The intended audience (target API or recipient) of the new token. */
 //    val audience: String,
 )
-
-

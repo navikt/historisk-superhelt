@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.person.pdl
 
 
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.pdl.PdlClient
@@ -24,6 +25,7 @@ class PdlConfig() {
             .baseUrl(properties.url)
             .requestInterceptor (CallIdClientRequestInterceptor("Nav-Call-Id"))
             .requestInterceptor (NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(RetryClientHttpRequestInterceptor())
             .build()
 
         return PdlClient(restClient = restClient,
@@ -40,5 +42,3 @@ data class PdlProperties(
     val audience: String,
     val behandlingsnummer: String
 )
-
-
