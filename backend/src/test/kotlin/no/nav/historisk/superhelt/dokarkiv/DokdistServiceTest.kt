@@ -4,7 +4,7 @@ import no.nav.common.consts.APP_NAVN
 import no.nav.common.types.EksternJournalpostId
 import no.nav.dokdist.DistribuerJournalpostRequest
 import no.nav.dokdist.DokdistClient
-import no.nav.dokdist.DokdistRespons
+import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -32,13 +32,11 @@ class DokdistServiceTest {
     fun `distribuer skal kalle dokdistClient med riktige parametere for vedtaksbrev`() {
         val journalpostId = EksternJournalpostId("JP123")
         val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = journalpostId)
-        val expectedResponse = DokdistRespons(bestillingsId = "BEST123", sendtOk = true)
+        val expectedResponse = DistribuerJournalpostResponse(bestillingsId = "BEST123")
 
         whenever(dokdistClient.distribuerJournalpost(any())).thenReturn(expectedResponse)
 
-        val result = dokdistService.distribuer(brev)
-
-        assertEquals(expectedResponse, result)
+        dokdistService.distribuer(brev)
 
         val captor = argumentCaptor<DistribuerJournalpostRequest>()
         verify(dokdistClient).distribuerJournalpost(captor.capture())
@@ -69,7 +67,7 @@ class DokdistServiceTest {
         val brev = BrevTestdata.fritekstbrevBruker().copy(journalpostId = journalpostId)
 
         whenever(dokdistClient.distribuerJournalpost(any()))
-            .thenReturn(DokdistRespons(bestillingsId = "BEST456", sendtOk = true))
+            .thenReturn(DistribuerJournalpostResponse(bestillingsId = "BEST456"))
 
         dokdistService.distribuer(brev)
 

@@ -6,11 +6,14 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.MockRestServiceServer
-import org.springframework.test.web.client.match.MockRestRequestMatchers.*
+import org.springframework.test.web.client.match.MockRestRequestMatchers.content
+import org.springframework.test.web.client.match.MockRestRequestMatchers.method
+import org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo
 import org.springframework.test.web.client.response.MockRestResponseCreators.withStatus
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
 import org.springframework.web.client.HttpClientErrorException
@@ -96,16 +99,18 @@ class DokdistClientTest {
     }
 
     @Test
-    fun `distribuer skal returnere sendtOk false med feilbegrunnelse ved manglende adresse (410)`() {
+    fun `distribuer skal kaste exception ved manglende adresse (410)`() {
         mockServer
             .expect(requestTo("/rest/v1/distribuerjournalpost"))
             .andExpect(method(HttpMethod.POST))
             .andRespond(withStatus(HttpStatus.GONE))
 
-        val result = dokdistClient.distribuerJournalpost(request)
 
-        assertThat(result.sendtOk).isFalse()
-        assertThat(result.feilbegrunnelse).contains("mangler adresse")
-        assertThat(result.bestillingsId).isNull()
+        val exception = assertThrows<HttpClientErrorException> {
+            dokdistClient.distribuerJournalpost(request)
+        }
+        assertThat(exception.statusCode).isEqualTo(HttpStatus.GONE)
+        assertThat(exception.message).containsIgnoringCase("adresse")
+
     }
 }

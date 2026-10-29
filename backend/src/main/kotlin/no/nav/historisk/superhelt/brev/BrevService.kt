@@ -1,5 +1,11 @@
 package no.nav.historisk.superhelt.brev
 
+import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
+import no.nav.historisk.superhelt.dokarkiv.DokarkivService
+import no.nav.historisk.superhelt.dokarkiv.DokdistService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggService
+import no.nav.historisk.superhelt.endringslogg.EndringsloggType
+import no.nav.historisk.superhelt.infrastruktur.exception.IkkeFunnetException
 import no.nav.historisk.superhelt.sak.Sak
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -9,8 +15,82 @@ import java.time.Instant
 @Service
 class BrevService(
     private val brevRepository: BrevRepository,
+    private val endringsloggService: EndringsloggService,
+    private val pdfgenService: PdfgenService,
+    private val dokarkivService: DokarkivService,
+    private val dokdistService: DokdistService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    @Transactional(readOnly = true)
+    fun hentBrev(sak: Sak, brevId: BrevId): Brev {
+        val brev = brevRepository.getByUUid(brevId)
+        if (brev.saksnummer != sak.saksnummer) {
+            throw IkkeFunnetException("Brev ikke funnet")
+        }
+        return brev
+    }
+
+    internal fun klargjorForSending(sak: Sak, brevId: BrevId): Brev {
+        val brev =hentBrev(sak, brevId)
+        if (brev.status != BrevStatus.UTKAST) return brev
+
+        BrevValidator(brev)
+            .checkBrev()
+            .checkKanSendes(sak)
+            .validate()
+
+        return brevRepository.oppdaterStatus(brevId, BrevStatus.KLAR_TIL_SENDING, feil = false)
+    }
+
+
+    internal fun arkiver(sak: Sak, brevId: BrevId): Brev {
+        var brev = hentBrev(sak, brevId)
+        if (brev.status != BrevStatus.KLAR_TIL_SENDING) return brev
+
+        if (brev.journalpostId == null) {
+            val pdf = pdfgenService.genererPdf(sak, brev)
+            val respons = dokarkivService.arkiver(sak, brev, pdf)
+
+            brev = brevRepository.oppdaterStatus(
+                brevId = brevId,
+                journalpostId = respons.journalpostId,
+                feil = false
+            )
+            logger.info(
+                "Brev {} i sak {} arkivert med journalpostId {} ferdigstilt {}",
+                brevId,
+                sak.saksnummer,
+                respons.journalpostId,
+                respons.journalpostferdigstilt
+            )
+            // Hvis journalposten ikke ble ferdigstilt, prøv å ferdigstille den på nytt
+            if (!respons.journalpostferdigstilt) {
+                dokarkivService.ferdigstill(sak, brev)
+            }
+
+        } else {
+            dokarkivService.ferdigstill(sak, brev)
+        }
+        return brevRepository.oppdaterStatus(brevId, BrevStatus.ARKIVERT)
+    }
+
+
+    fun distribuer(sak: Sak, brevId: BrevId): Brev {
+        var brev = hentBrev(sak, brevId)
+        if (brev.status != BrevStatus.ARKIVERT) return brev
+
+        dokdistService.distribuer(brev)
+        brev = brevRepository.oppdaterStatus(brevId, BrevStatus.SENDT, feil = false)
+        endringsloggService.logChange(
+            saksnummer = sak.saksnummer,
+            endringsType = EndringsloggType.SENDT_BREV,
+            endring = "Brev sendt til ${brev.mottakerType.name.lowercase()}",
+            beskrivelse = "Brev er arkivert og sendt til ${brev.mottakerType.name.lowercase()}",
+        )
+        return brev
+    }
+
 
     @Transactional
     internal fun genererNyttBrev(
@@ -33,5 +113,4 @@ class BrevService(
 
         return brevRepository.opprettBrev(brev)
     }
-
 }

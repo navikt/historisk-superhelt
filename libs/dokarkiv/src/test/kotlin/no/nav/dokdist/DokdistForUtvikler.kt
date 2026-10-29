@@ -7,7 +7,7 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestClient
-import java.util.*
+import java.util.UUID
 
 @Disabled
 class DokdistForUtvikler {
@@ -35,7 +35,7 @@ class DokdistForUtvikler {
             distribusjonstidspunkt = DistribuerJournalpostRequest.Distribusjonstidspunkt.UMIDDELBART,
         )
         val respons = client.distribuerJournalpost(request)
-        println("sendtOk=${respons.sendtOk}, bestillingsId=${respons.bestillingsId}, feilbegrunnelse=${respons.feilbegrunnelse}")
+        println("bestillingsId=${respons.bestillingsId}")
     }
 
     @Test
@@ -48,7 +48,7 @@ class DokdistForUtvikler {
             distribusjonstidspunkt = DistribuerJournalpostRequest.Distribusjonstidspunkt.UMIDDELBART,
         )
         val respons = client.distribuerJournalpost(request)
-        println("sendtOk=${respons.sendtOk}, bestillingsId=${respons.bestillingsId}, feilbegrunnelse=${respons.feilbegrunnelse}")
+        println(respons)
     }
     private fun getRestClient(): RestClient =
         RestClient
