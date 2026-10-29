@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.person.tilgangsmaskin
 
 
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.tilgangsmaskin.TilgangsmaskinClient
@@ -25,6 +26,7 @@ class TilgangsmaskinConfig() {
             .baseUrl(properties.url)
 //            .requestInterceptor (CallIdClientRequestInterceptor("Nav-Call-Id"))
             .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(RetryClientHttpRequestInterceptor())
             .build()
 
         val tilgangsmaskinClient = TilgangsmaskinClient(restClient = restClient)
@@ -41,5 +43,3 @@ data class TilgangsmaskinProperties(
     /** api://<cluster>.<namespace>.<other-api-app-name>/.default The intended audience (target API or recipient) of the new token. */
     val audience: String,
 )
-
-

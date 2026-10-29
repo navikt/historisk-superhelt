@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.infotrygd
 
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.M2mNaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.infotrygd.InfotrygdClient
@@ -20,6 +21,7 @@ class InfotrygdConfig {
             .baseUrl(properties.url)
             .requestInterceptor(CallIdClientRequestInterceptor("Nav-Call-Id"))
             .requestInterceptor(M2mNaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(RetryClientHttpRequestInterceptor())
             .build()
 
         return InfotrygdClient(restClient)
