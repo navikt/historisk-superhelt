@@ -97,6 +97,12 @@ jobs:
           if-no-files-found: warn
           retention-days: 3
 
+      - name: Logg inn før Docker-bygg
+        if: ${{ !inputs.publish-image }}
+        uses: nais/login@40b72a35a18ddf2ad74b632461139ab838cc2a2f # v0
+        with:
+          team: historisk
+
       - name: Bygg Docker-image uten publisering
         if: ${{ !inputs.publish-image }}
         run: docker build --tag superhelt:pr ./backend
