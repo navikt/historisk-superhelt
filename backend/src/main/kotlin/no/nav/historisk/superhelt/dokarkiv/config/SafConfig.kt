@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.dokarkiv.config
 
 
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.saf.graphql.SafGraphqlClient
@@ -27,6 +28,7 @@ class SafConfig(private val properties: SafProperties, private val tokenService:
         .baseUrl(properties.url)
         .requestInterceptor(CallIdClientRequestInterceptor("Nav-Callid"))
         .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+        .requestInterceptor(RetryClientHttpRequestInterceptor())
         .build()
 
 }
@@ -37,7 +39,3 @@ data class SafProperties(
     /** api://<cluster>.<namespace>.<other-api-app-name>/.default The intended audience (target API or recipient) of the new token. */
     val audience: String,
 )
-
-
-
-

@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.infrastruktur.token
 
 
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -8,6 +9,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.client.RestClient
 
 @Configuration
 @EnableConfigurationProperties(NaisTokenProperties::class)
@@ -20,7 +22,10 @@ class NaisTokenConfig() {
 
         return NaisTokenService(
             oboEndpoint = naisToken.exchange.endpoint,
-            m2mEndpoint = naisToken.endpoint
+            m2mEndpoint = naisToken.endpoint,
+            client = RestClient.builder()
+                .requestInterceptor(RetryClientHttpRequestInterceptor())
+                .build(),
         )
     }
 }
@@ -40,5 +45,3 @@ data class NaisTokenProperties(
 data class NaisTokenExchangeProperties(
     val endpoint: String
 )
-
-

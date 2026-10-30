@@ -2,6 +2,7 @@ package no.nav.historisk.superhelt.ansatt.config
 
 import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -20,6 +21,7 @@ class EntraProxyConfig {
             .baseUrl(properties.url)
             .requestInterceptor(CallIdClientRequestInterceptor("Nav-Call-Id"))
             .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(RetryClientHttpRequestInterceptor())
             .build()
 
         return EntraProxyClient(restClient)

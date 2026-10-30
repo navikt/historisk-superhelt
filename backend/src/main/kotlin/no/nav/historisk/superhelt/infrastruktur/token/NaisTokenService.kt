@@ -2,15 +2,16 @@ package no.nav.historisk.superhelt.infrastruktur.token
 
 import no.nav.historisk.superhelt.infrastruktur.authentication.getAuthenticatedUser
 import org.slf4j.LoggerFactory
-import org.springframework.web.client.RestClient.builder
+import org.springframework.web.client.RestClient
 
 class NaisTokenService(
     oboEndpoint: String,
-    m2mEndpoint: String
+    m2mEndpoint: String,
+    client: RestClient,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
     private val texas = NaisTokenClient(
-        client = builder().build(),
+        client = client,
         oboEndpoint = oboEndpoint,
         m2mEndpoint = m2mEndpoint
     )
@@ -40,5 +41,4 @@ class NaisTokenService(
         return oboToken(target)
     }
 }
-
 

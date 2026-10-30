@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.klage.config
 
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.M2mNaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.kabal.KabalClient
@@ -24,6 +25,7 @@ class KabalConfig{
             .baseUrl(properties.url)
             .requestInterceptor(CallIdClientRequestInterceptor("X-Correlation-ID"))
             .requestInterceptor(M2mNaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(RetryClientHttpRequestInterceptor())
 
         return KabalClient(restClientBuilder.build())
     }
@@ -37,4 +39,3 @@ data class KabalProperties(
     /** Kafka topic: klage.behandling-events.v1 */
     val behandlingEventTopic: String,
 )
-
