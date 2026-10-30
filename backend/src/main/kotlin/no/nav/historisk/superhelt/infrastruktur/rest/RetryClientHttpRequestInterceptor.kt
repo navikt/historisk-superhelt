@@ -10,6 +10,12 @@ import java.io.InterruptedIOException
 import java.nio.channels.ClosedByInterruptException
 import java.time.Duration
 
+/**
+ * Gjentar kall ved 5xx og I/O-feil med eksponentiell backoff og jitter, uten å lese responsbody.
+ *
+ * Trådavbrudd stopper retry. Ved avbrutt venting gjenopprettes interrupt-flagget slik at
+ * kalleren kan oppdage avbruddet. Socket-timeout uten trådavbrudd får fortsatt retry.
+ */
 class RetryClientHttpRequestInterceptor(
     private val maxAttempts: Int = 3,
     initialDelay: Duration = Duration.ofMillis(200),
@@ -21,9 +27,9 @@ class RetryClientHttpRequestInterceptor(
 
     init {
         require(maxAttempts >= 1) { "maxAttempts must be at least 1" }
-        require(!initialDelay.isNegative) { "initialDelay must not be negative" }
-        require(multiplier.isFinite() && multiplier >= 1) { "multiplier must be finite and at least 1" }
-        require(!jitter.isNegative) { "jitter must not be negative" }
+        require(!initialDelay.isNegative) { "initialDelay must be positive" }
+        require( multiplier >= 1) { "multiplier must be at least 1" }
+        require(!jitter.isNegative) { "jitter must be positive" }
         require(maxDelay >= initialDelay) { "maxDelay must not be less than initialDelay" }
     }
 
