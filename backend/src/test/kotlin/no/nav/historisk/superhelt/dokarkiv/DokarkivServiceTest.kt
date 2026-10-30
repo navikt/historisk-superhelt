@@ -22,8 +22,11 @@ import no.nav.historisk.superhelt.StonadsType
 import no.nav.historisk.superhelt.brev.BrevTestdata
 import no.nav.historisk.superhelt.dokarkiv.rest.JournalforNySakRequest
 import no.nav.historisk.superhelt.sak.SakTestData
+import no.nav.saf.graphql.JournalStatus
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -32,9 +35,12 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
 
 @ExtendWith(MockitoExtension::class)
 class DokarkivServiceTest {
@@ -45,8 +51,86 @@ class DokarkivServiceTest {
     @Mock
     private lateinit var avsenderMottakerResolver: AvsenderMottakerResolver
 
+    @Mock
+    private lateinit var journalpostService: JournalpostService
+
     @InjectMocks
     private lateinit var dokarkivService: DokarkivService
+
+    @Test
+    fun `skal ferdigstille journalpost som fortsatt er under arbeid`() {
+        val sak = SakTestData.sakUtenUtbetaling()
+        val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = EksternJournalpostId("123"))
+        whenever(journalpostService.hentJournalpost(brev.journalpostId!!)).thenReturn(
+            DokarkivTestdata.journalPost(brev.journalpostId).copy(journalstatus = JournalStatus.UNDER_ARBEID),
+        )
+
+        dokarkivService.ferdigstill(sak, brev)
+
+        verify(dokarkivClient).ferdigstill(brev.journalpostId, sak.enhet.value)
+    }
+
+    @Test
+    fun `skal godta at journalpost allerede er ferdigstilt`() {
+        val sak = SakTestData.sakUtenUtbetaling()
+        val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = EksternJournalpostId("123"))
+        whenever(journalpostService.hentJournalpost(brev.journalpostId!!)).thenReturn(
+            DokarkivTestdata.journalPost(brev.journalpostId).copy(journalstatus = JournalStatus.FERDIGSTILT),
+        )
+
+        dokarkivService.ferdigstill(sak, brev)
+
+        verify(dokarkivClient, never()).ferdigstill(any(), any())
+    }
+
+    @Test
+    fun `skal videreføre feil fra Dokarkiv uten å lese journalposten på nytt`() {
+        val sak = SakTestData.sakUtenUtbetaling()
+        val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = EksternJournalpostId("123"))
+        val journalpost = DokarkivTestdata.journalPost(brev.journalpostId!!)
+        whenever(journalpostService.hentJournalpost(brev.journalpostId))
+            .thenReturn(journalpost.copy(journalstatus = JournalStatus.UNDER_ARBEID))
+        val feil = HttpClientErrorException(HttpStatus.BAD_REQUEST)
+        whenever(dokarkivClient.ferdigstill(any(), any()))
+            .thenThrow(feil)
+
+        val exception = assertThrows<HttpClientErrorException> {
+            dokarkivService.ferdigstill(sak, brev)
+        }
+        assertThat(exception).isSameAs(feil)
+        verify(journalpostService).hentJournalpost(brev.journalpostId)
+    }
+
+    @Test
+    fun `skal videreføre Dokarkivs avvisning av en avbrutt journalpost`() {
+        val sak = SakTestData.sakUtenUtbetaling()
+        val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = EksternJournalpostId("123"))
+        whenever(journalpostService.hentJournalpost(brev.journalpostId!!)).thenReturn(
+            DokarkivTestdata.journalPost(brev.journalpostId).copy(journalstatus = JournalStatus.AVBRUTT),
+        )
+        val feil = HttpClientErrorException(HttpStatus.BAD_REQUEST)
+        whenever(dokarkivClient.ferdigstill(brev.journalpostId, sak.enhet.value)).thenThrow(feil)
+
+        val exception = assertThrows<HttpClientErrorException> {
+            dokarkivService.ferdigstill(sak, brev)
+        }
+
+        assertThat(exception).isSameAs(feil)
+        verify(dokarkivClient).ferdigstill(brev.journalpostId, sak.enhet.value)
+    }
+
+    @Test
+    fun `skal ikke ferdigstille en ekspedert journalpost på nytt`() {
+        val sak = SakTestData.sakUtenUtbetaling()
+        val brev = BrevTestdata.vedtaksbrevBruker().copy(journalpostId = EksternJournalpostId("123"))
+        whenever(journalpostService.hentJournalpost(brev.journalpostId!!)).thenReturn(
+            DokarkivTestdata.journalPost(brev.journalpostId).copy(journalstatus = JournalStatus.EKSPEDERT),
+        )
+
+        dokarkivService.ferdigstill(sak, brev)
+
+        verify(dokarkivClient, never()).ferdigstill(any(), any())
+    }
 
     @Test
     @WithMockUser(authorities = ["WRITE"])

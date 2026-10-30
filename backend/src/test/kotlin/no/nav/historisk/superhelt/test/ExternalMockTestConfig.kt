@@ -4,7 +4,7 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.dokarkiv.DokarkivClient
 import no.nav.dokarkiv.JournalpostResponse
 import no.nav.dokdist.DokdistClient
-import no.nav.dokdist.DokdistRespons
+import no.nav.dokdist.DistribuerJournalpostResponse
 import no.nav.entraproxy.EntraProxyClient
 import no.nav.historisk.superhelt.ansatt.NavAnsattTestdata
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
@@ -116,9 +116,8 @@ class ExternalMockTestConfig {
     fun dokDistClientMock(): DokdistClient {
         logger.warn("Bruker mock av DokdistClient")
         return mock<DokdistClient>().stub {
-            on { distribuerJournalpost(any()) } doReturn DokdistRespons(
+            on { distribuerJournalpost(any()) } doReturn DistribuerJournalpostResponse(
                 bestillingsId = "bestillingsId",
-                sendtOk = true,
             )
 
         }

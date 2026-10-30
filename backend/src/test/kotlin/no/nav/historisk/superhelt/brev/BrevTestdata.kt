@@ -30,7 +30,7 @@ object BrevTestdata {
             uuid = BrevId.random(),
             type = faker.options().option(BrevType::class.java),
             mottakerType = faker.options().option(BrevMottaker::class.java),
-            status = BrevStatus.UNDER_ARBEID,
+            status = BrevStatus.UTKAST,
             opprettetTidspunkt = Instant.now()
         )
     }

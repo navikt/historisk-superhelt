@@ -12,7 +12,6 @@ import no.nav.historisk.superhelt.brev.BrevOppdatering
 import no.nav.historisk.superhelt.brev.BrevRepository
 import no.nav.historisk.superhelt.brev.BrevSendingService
 import no.nav.historisk.superhelt.brev.BrevService
-import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.finnGjeldendeBrev
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
@@ -130,7 +129,6 @@ class BrevController(
         val oppdatertBrev = BrevOppdatering(
             tittel = request.tittel,
             innhold = request.innhold,
-            status = BrevStatus.UNDER_ARBEID
         )
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)

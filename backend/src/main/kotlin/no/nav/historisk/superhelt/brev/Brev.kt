@@ -16,10 +16,10 @@ data class Brev(
     val innhold: String?,
     val type: BrevType,
     val mottakerType: BrevMottaker,
-    val status: BrevStatus = BrevStatus.NY,
+    val status: BrevStatus = BrevStatus.UTKAST,
     val journalpostId: EksternJournalpostId? = null,
+    val feil: Boolean = false,
 ){
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val valideringsfeil: List<ValidationFieldError> by lazy { BrevValidator(this).checkBrev().validationErrors }
 }
-
