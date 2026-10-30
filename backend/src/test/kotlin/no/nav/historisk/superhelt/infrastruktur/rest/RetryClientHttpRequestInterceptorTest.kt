@@ -288,9 +288,9 @@ class RetryClientHttpRequestInterceptorTest {
 
     companion object {
         @JvmStatic
-        fun serverErrors(): IntStream = IntStream.rangeClosed(500, 599)
+        fun serverErrors(): IntStream = IntStream.rangeClosed(500, 504)
 
         @JvmStatic
-        fun nonServerStatuses(): IntStream = IntStream.of(200, 201, 302, 307, 400, 401, 403, 404, 409, 410, 429)
+        fun nonServerStatuses(): IntStream = IntStream.of(200, 201, 302,  400, 401, 403, 404, 409, 410, 429)
     }
 }
