@@ -16,6 +16,7 @@ jobs:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
       contents: read
+      id-token: write
       checks: write
       pull-requests: write
   e2e:
