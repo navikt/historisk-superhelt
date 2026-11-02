@@ -3,6 +3,7 @@ package-lock.json
 target/
 dist/
 build/
+.build/
 
 ### IntelliJ IDEA ###
 .idea
@@ -25,3 +26,5 @@ test-coverage-suggestions.md
 frontend/playwright-report/
 frontend/playwright/.cache/
 frontend/test-results/
+
+
