@@ -15,6 +15,8 @@ import java.time.Duration
  *
  * Trådavbrudd stopper retry. Ved avbrutt venting gjenopprettes interrupt-flagget slik at
  * kalleren kan oppdage avbruddet. Socket-timeout uten trådavbrudd får fortsatt retry.
+ *
+ * @param shouldRetry Filter som evalueres én gang per kall. False begrenser kallet til ett forsøk.
  */
 class RetryClientHttpRequestInterceptor(
     private val maxAttempts: Int = 3,
@@ -22,6 +24,7 @@ class RetryClientHttpRequestInterceptor(
     multiplier: Double = 2.0,
     jitter: Duration = Duration.ofMillis(50),
     maxDelay: Duration = Duration.ofSeconds(1),
+    private val shouldRetry: (HttpRequest) -> Boolean = { true },
     private val sleep: (Long) -> Unit = { Thread.sleep(it) },
 ) : ClientHttpRequestInterceptor {
 
@@ -43,6 +46,10 @@ class RetryClientHttpRequestInterceptor(
         body: ByteArray,
         execution: ClientHttpRequestExecution,
     ): ClientHttpResponse {
+        if (!shouldRetry(request)) {
+            return execution.execute(request, body)
+        }
+
         val delays = backOff.start()
         var attempt = 1
         while (true) {
