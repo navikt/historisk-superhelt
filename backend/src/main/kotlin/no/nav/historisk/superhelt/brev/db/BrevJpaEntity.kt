@@ -5,9 +5,11 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import org.hibernate.Hibernate
+import org.hibernate.annotations.DynamicUpdate
 import java.time.Instant
 
 @Entity
+@DynamicUpdate
 @Table(name = "brev")
 class BrevJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

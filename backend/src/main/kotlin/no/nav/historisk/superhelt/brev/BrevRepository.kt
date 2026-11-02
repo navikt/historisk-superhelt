@@ -1,7 +1,5 @@
 package no.nav.historisk.superhelt.brev
 
-import jakarta.persistence.EntityManager
-import jakarta.persistence.LockModeType
 import net.logstash.logback.argument.StructuredArguments.kv
 import no.nav.common.types.EksternJournalpostId
 import no.nav.common.types.Saksnummer
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 class BrevRepository(
     private val jpaRepository: BrevJpaRepository,
     private val sakRepository: SakRepository,
-    private val entityManager: EntityManager,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -35,14 +32,6 @@ class BrevRepository(
     @PreAuthorize("hasAuthority('READ')")
     fun getByUUid(uuid: BrevId): Brev {
         return getEntityByUUid(uuid).toDomain()
-    }
-
-    private fun getLockedEntity(uuid: BrevId): BrevJpaEntity {
-        entityManager.createNativeQuery("SET LOCAL lock_timeout = '5s'").executeUpdate()
-        return getEntityByUUid(uuid).also {
-            // Hent fersk status selv om brevet allerede ligger i persistence context.
-            entityManager.refresh(it, LockModeType.PESSIMISTIC_WRITE)
-        }
     }
 
     @PreAuthorize("hasAuthority('WRITE')")
@@ -68,9 +57,9 @@ class BrevRepository(
     internal fun oppdaterStatus(
         brevId: BrevId,
         status: BrevStatus? = null,
-        feil: Boolean? = null,
+        feil: Boolean = false,
         journalpostId: EksternJournalpostId? = null): Brev {
-        val entity = getLockedEntity(brevId)
+        val entity = getEntityByUUid(brevId)
 
         val currentStatus = entity.status
         if (currentStatus == BrevStatus.SENDT) {
@@ -95,7 +84,7 @@ class BrevRepository(
         if (oppdateringOk) {
             status?.let { entity.status = it }
             journalpostId?.let { entity.journalpostId = it }
-            feil?.let { entity.feil = it }
+            entity.feil = feil
             return jpaRepository.save(entity).toDomain()
         } else {
             logger.error("Oppdatering av status på  brev  blir ignorert ", kv("brevId", brevId), kv("sak", entity.sak.saksnummer))
@@ -107,7 +96,7 @@ class BrevRepository(
     @Transactional
     @PreAuthorize("hasAuthority('WRITE')")
     internal fun oppdater(uuid: BrevId, oppdatering: BrevOppdatering): Brev {
-        val entity = getLockedEntity(uuid)
+        val entity = getEntityByUUid(uuid)
         if (entity.status != BrevStatus.UTKAST) {
             logger.warn("Forsøker å oppdatere brev med uuid $uuid  som ikke er i status UTKAST. Status er ${entity.status}.")
             throw IllegalStateException("Kan ikke oppdatere brev som ikke er i status UTKAST")
@@ -122,7 +111,7 @@ class BrevRepository(
     @PreAuthorize("hasAuthority('WRITE')")
     internal fun slettBrev(brev: Brev?) {
         if (brev == null) return
-        if (getLockedEntity(brev.uuid).status.isLocked()) return
+        if (getEntityByUUid(brev.uuid).status.isLocked()) return
         jpaRepository.deleteByUuid(brev.uuid)
     }
 
@@ -132,4 +121,3 @@ internal data class BrevOppdatering(
     val tittel: String? = null,
     val innhold: String? = null,
 )
-

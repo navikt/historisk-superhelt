@@ -6,10 +6,16 @@ import no.nav.historisk.superhelt.sak.SakTestData
 import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.InvalidDataAccessApiUsageException
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.support.TransactionTemplate
 
 @MockedSpringBootTest
 @WithSaksbehandler
@@ -20,6 +26,58 @@ class BrevRepositoryTest {
 
     @Autowired
     private lateinit var sakRepository: SakRepository
+
+    @Autowired
+    private lateinit var transactionManager: PlatformTransactionManager
+
+    @Test
+    fun `skal bevare sendt status når feil oppdateres fra en utdatert transaksjon`() {
+        val brev = lagreBrev(status = BrevStatus.ARKIVERT)
+        val nyTransaksjon = TransactionTemplate(transactionManager).apply {
+            propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
+        }
+
+        TransactionTemplate(transactionManager).executeWithoutResult {
+            assertThat(brevRepository.getByUUid(brev.uuid).status).isEqualTo(BrevStatus.ARKIVERT)
+
+            nyTransaksjon.executeWithoutResult {
+                brevRepository.oppdaterStatus(brev.uuid, status = BrevStatus.SENDT)
+            }
+
+            brevRepository.oppdaterStatus(brev.uuid, feil = true)
+        }
+
+        assertThat(brevRepository.getByUUid(brev.uuid)).isEqualTo(
+            brev.copy(status = BrevStatus.SENDT, feil = true),
+        )
+    }
+
+    @Test
+    fun `skal kunne redigere og slette et utkast`() {
+        val brev = lagreBrev()
+
+        val oppdatert = brevRepository.oppdater(brev.uuid, BrevOppdatering(innhold = "Nytt innhold"))
+
+        assertThat(brevRepository.getByUUid(brev.uuid)).isEqualTo(brev.copy(innhold = "Nytt innhold"))
+
+        brevRepository.slettBrev(oppdatert)
+
+        assertThat(brevRepository.findBySak(brev.saksnummer)).isEmpty()
+    }
+
+    @ParameterizedTest
+    @EnumSource(BrevStatus::class, names = ["KLAR_TIL_SENDING", "ARKIVERT", "SENDT"])
+    fun `skal ikke redigere eller slette et brev som ikke er utkast`(status: BrevStatus) {
+        val brev = lagreBrev(status = status)
+
+        assertThatThrownBy {
+            brevRepository.oppdater(brev.uuid, BrevOppdatering(innhold = "Nytt innhold"))
+        }.isInstanceOf(InvalidDataAccessApiUsageException::class.java)
+
+        brevRepository.slettBrev(brev)
+
+        assertThat(brevRepository.getByUUid(brev.uuid)).isEqualTo(brev)
+    }
 
     @ParameterizedTest
     @CsvSource("UTKAST,SENDT", "ARKIVERT,KLAR_TIL_SENDING")
