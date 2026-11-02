@@ -59,7 +59,7 @@ jobs:
     name: "Bygg backend"
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Arver callerens tilganger, inkludert OIDC bare ved image-publisering.
+    # Arver callerens tilganger, inkludert OIDC for innlogging til GAR.
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
       telemetry: ${{ steps.docker-build-push.outputs.telemetry }}
@@ -97,14 +97,10 @@ jobs:
           if-no-files-found: warn
           retention-days: 3
 
-      - name: Bygg Docker-image uten publisering
-        if: ${{ !inputs.publish-image }}
-        run: docker build --tag superhelt:pr ./backend
-
       - name: Bygg og push docker image til GAR
-        if: inputs.publish-image
         uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 #v0
         id: docker-build-push
         with:
           team: historisk
           docker_context: ./backend
+          push_image: ${{ inputs.publish-image }}
