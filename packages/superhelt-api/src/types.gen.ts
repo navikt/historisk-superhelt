@@ -35,7 +35,7 @@ export type Brev = {
     innhold?: string | null;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
-    status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
+    status: 'UTKAST' | 'KLAR_TIL_SENDING' | 'ARKIVERT' | 'SENDT';
     journalpostId?: string | null;
     readonly valideringsfeil: Array<ValidationFieldError>;
 };
@@ -218,7 +218,7 @@ export type SakshistorikkResponse = {
 export type SakStatusDto = {
     sakStatus: 'UNDER_BEHANDLING' | 'TIL_ATTESTERING' | 'FERDIG_ATTESTERT' | 'FERDIG' | 'FEILREGISTRERT';
     utbetalingStatus?: 'UTKAST' | 'KLAR_TIL_UTBETALING' | 'SENDT_TIL_UTBETALING' | 'MOTTATT_AV_UTBETALING' | 'BEHANDLET_AV_UTBETALING' | 'UTBETALT' | 'FEILET';
-    brevStatus?: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
+    brevStatus?: 'UTKAST' | 'KLAR_TIL_SENDING' | 'ARKIVERT' | 'SENDT';
     aggregertStatus: 'OK' | 'FEILET';
 };
 
@@ -333,7 +333,7 @@ export type BrevWritable = {
     innhold?: string | null;
     type: 'VEDTAKSBREV' | 'FRITEKSTBREV' | 'HENLEGGESEBREV';
     mottakerType: 'BRUKER' | 'SAMHANDLER';
-    status: 'NY' | 'UNDER_ARBEID' | 'KLAR_TIL_SENDING' | 'SENDT';
+    status: 'UTKAST' | 'KLAR_TIL_SENDING' | 'ARKIVERT' | 'SENDT';
     journalpostId?: string | null;
 };
 

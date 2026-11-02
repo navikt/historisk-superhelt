@@ -1,0 +1,6 @@
+ALTER TABLE brev ADD COLUMN feil BOOLEAN NOT NULL DEFAULT FALSE;
+
+UPDATE brev
+SET brev_status = 'UTKAST'
+WHERE brev_status IN ('NY', 'UNDER_ARBEID');
+

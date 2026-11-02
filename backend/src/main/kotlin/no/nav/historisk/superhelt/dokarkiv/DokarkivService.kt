@@ -21,6 +21,7 @@ import no.nav.dokarkiv.Sakstype
 import no.nav.dokarkiv.Variantformat
 import no.nav.historisk.superhelt.brev.Brev
 import no.nav.historisk.superhelt.sak.Sak
+import no.nav.saf.graphql.JournalStatus
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
@@ -29,8 +30,19 @@ import org.springframework.stereotype.Service
 class DokarkivService(
     private val dokarkivClient: DokarkivClient,
     private val avsenderMottakerResolver: AvsenderMottakerResolver,
+    private val journalpostService: JournalpostService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    @PreAuthorize("hasAuthority('WRITE')")
+    fun ferdigstill(sak: Sak, brev: Brev) {
+        val journalpostId = checkNotNull(brev.journalpostId) { "Brevet mangler journalpostId" }
+        val journalpost = journalpostService.hentJournalpost(journalpostId)
+        if (journalpost?.journalstatus in setOf(JournalStatus.FERDIGSTILT, JournalStatus.EKSPEDERT)) {
+            return
+        }
+        dokarkivClient.ferdigstill(journalpostId, sak.enhet.value)
+    }
 
     @PreAuthorize("hasAuthority('WRITE')")
     fun arkiver(sak: Sak, brev: Brev, pdf: ByteArray): JournalpostResponse {

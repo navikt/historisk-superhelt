@@ -5,9 +5,11 @@ import no.nav.common.types.EksternJournalpostId
 import no.nav.historisk.superhelt.brev.*
 import no.nav.historisk.superhelt.sak.db.SakJpaEntity
 import org.hibernate.Hibernate
+import org.hibernate.annotations.DynamicUpdate
 import java.time.Instant
 
 @Entity
+@DynamicUpdate
 @Table(name = "brev")
 class BrevJpaEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +40,11 @@ class BrevJpaEntity(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "brev_status")
-    var status: BrevStatus = BrevStatus.NY,
+    var status: BrevStatus = BrevStatus.UTKAST,
 
     var journalpostId: EksternJournalpostId? = null,
+
+    var feil: Boolean = false,
 
 ) {
     override fun equals(other: Any?): Boolean {
@@ -63,7 +67,8 @@ class BrevJpaEntity(
             type = this.type,
             mottakerType = this.mottakerType,
             status = this.status,
-            journalpostId = this.journalpostId
+            journalpostId = this.journalpostId,
+            feil = this.feil
         )
     }
 }

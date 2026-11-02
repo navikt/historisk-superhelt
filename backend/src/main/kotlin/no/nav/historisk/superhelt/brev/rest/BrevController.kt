@@ -57,7 +57,7 @@ class BrevController(
         val brevListe = brevRepository.findBySak(saksnummer)
         val brev = brevListe.finnGjeldendeBrev(request.type, request.mottaker)
 
-        if ((brev == null || brev.status.isCompleted())) {
+        if ((brev == null || brev.status == BrevStatus.SENDT)) {
             val harRettighet = when (request.type) {
                 BrevType.VEDTAKSBREV -> sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)
                 BrevType.FRITEKSTBREV -> sak.rettigheter.contains(SakRettighet.FRITEKSTBREV)
@@ -130,7 +130,6 @@ class BrevController(
         val oppdatertBrev = BrevOppdatering(
             tittel = request.tittel,
             innhold = request.innhold,
-            status = BrevStatus.UNDER_ARBEID
         )
         val sak = sakRepository.getSak(saksnummer)
         SakValidator(sak)
