@@ -157,7 +157,7 @@ class BrevSendingServiceTest {
 
         val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
+        brevSendingService.sendBrev(sak, brev)
 
         val inOrder = inOrder(pdfgenService, dokarkivService, dokdistService)
         inOrder.verify(pdfgenService).genererPdf(any(), any())
