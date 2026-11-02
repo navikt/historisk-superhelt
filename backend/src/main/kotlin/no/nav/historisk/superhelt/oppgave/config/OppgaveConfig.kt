@@ -1,6 +1,7 @@
 package no.nav.historisk.superhelt.oppgave.config
 
 import no.nav.historisk.superhelt.infrastruktur.mdc.CallIdClientRequestInterceptor
+import no.nav.historisk.superhelt.infrastruktur.rest.RetryClientHttpRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenClientRequestInterceptor
 import no.nav.historisk.superhelt.infrastruktur.token.NaisTokenService
 import no.nav.oppgave.OppgaveClient
@@ -20,6 +21,7 @@ class OppgaveConfig {
             .baseUrl(properties.url)
             .requestInterceptor(CallIdClientRequestInterceptor("X-Correlation-ID"))
             .requestInterceptor(NaisTokenClientRequestInterceptor(tokenService, properties.audience))
+            .requestInterceptor(RetryClientHttpRequestInterceptor())
             .build()
 
         return OppgaveClient(restClient)
@@ -32,4 +34,3 @@ internal data class OppgaveProperties(
     /** api://<cluster>.<namespace>.<other-api-app-name>/.default The intended audience (target API or recipient) of the new token. */
     val audience: String,
 )
-
