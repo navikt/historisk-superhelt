@@ -29,6 +29,7 @@ class BrevSendingService(
         } catch (e: Exception) {
             log.error("Feil ved sending av brev ", kv("brevId", brevId), kv("sak", sak.saksnummer), e)
             brevRepository.oppdaterStatus(brevId = brevId, feil = true)
+            throw e
         }
 
     }

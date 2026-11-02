@@ -14,6 +14,7 @@ import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.WithSaksbehandler
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.any
 import org.mockito.kotlin.check
 import org.mockito.kotlin.eq
@@ -67,23 +68,6 @@ class BrevSendingServiceTest {
                 dokumenter = emptyList()
             )
         )
-    }
-
-    private fun mockDokdistManglerAdresse() {
-        whenever(dokdistService.distribuer(any()))
-            .thenThrow(HttpClientErrorException(HttpStatus.GONE))
-    }
-
-    private fun mockPdfgenFailure(exception: Exception = RestClientException("PDF generation failed")) {
-        whenever(pdfgenService.genererPdf(any(), any())).thenThrow(exception)
-    }
-
-    private fun mockDokarkivFailure(exception: Exception = RestClientException("Arkivering failed")) {
-        whenever(dokarkivService.arkiver(any(), any(), any())).thenThrow(exception)
-    }
-
-    private fun mockDokdistFailure(exception: Exception = RestClientException("Distribusjon failed")) {
-        whenever(dokdistService.distribuer(any())).thenThrow(exception)
     }
 
     private fun lagreSakMedBrev(
@@ -142,7 +126,7 @@ class BrevSendingServiceTest {
     fun `skal avvise sending og markere feil når brev mangler tittel`() {
         val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST, tittel = "")
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         val lagretBrev = brevRepository.getByUUid(brev.uuid)
         assertThat(lagretBrev.status).isEqualTo(BrevStatus.UTKAST)
@@ -156,7 +140,7 @@ class BrevSendingServiceTest {
     fun `skal avvise sending og markere feil når brev mangler innhold`() {
         val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST, innhold = "")
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         val lagretBrev = brevRepository.getByUUid(brev.uuid)
         assertThat(lagretBrev.status).isEqualTo(BrevStatus.UTKAST)
@@ -173,7 +157,7 @@ class BrevSendingServiceTest {
 
         val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         val inOrder = inOrder(pdfgenService, dokarkivService, dokdistService)
         inOrder.verify(pdfgenService).genererPdf(any(), any())
@@ -212,11 +196,11 @@ class BrevSendingServiceTest {
 
     @Test
     fun `skal håndtere feil ved PDF-generering`() {
-        mockPdfgenFailure()
+        whenever(pdfgenService.genererPdf(any<Sak>(), any<Brev>())).thenThrow(RestClientException("PDF generation failed"))
 
         val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         assertThat(brevRepository.getByUUid(brev.uuid).status).isEqualTo(BrevStatus.KLAR_TIL_SENDING)
         assertThat(brevRepository.getByUUid(brev.uuid).feil).isTrue()
@@ -227,11 +211,11 @@ class BrevSendingServiceTest {
     @Test
     fun `skal håndtere feil ved arkivering`() {
         mockPdfgenSuccess()
-        mockDokarkivFailure()
+        whenever(dokarkivService.arkiver(any<Sak>(), any<Brev>(), any<ByteArray>())).thenThrow(RestClientException("Arkivering failed"))
 
         val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         assertThat(brevRepository.getByUUid(brev.uuid).status).isEqualTo(BrevStatus.KLAR_TIL_SENDING)
         assertThat(brevRepository.getByUUid(brev.uuid).feil).isTrue()
@@ -246,7 +230,7 @@ class BrevSendingServiceTest {
             .thenThrow(RestClientException("Ferdigstilling feilet"))
         val (sak, brev) = lagreSakMedBrev()
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         val lagretBrev = brevRepository.getByUUid(brev.uuid)
         assertThat(lagretBrev.status).isEqualTo(BrevStatus.KLAR_TIL_SENDING)
@@ -263,11 +247,11 @@ class BrevSendingServiceTest {
     fun `skal håndtere feil ved distribusjon`() {
         mockPdfgenSuccess()
         mockDokarkivSuccess()
-        mockDokdistFailure()
+        whenever(dokdistService.distribuer(any<Brev>())).thenThrow(RestClientException("Distribusjon failed"))
 
         val (sak, brev) = lagreSakMedBrev(status = BrevStatus.UTKAST)
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         val oppdatertBrev = brevRepository.getByUUid(brev.uuid)
         assertThat(oppdatertBrev.journalpostId).isNotNull()
@@ -313,14 +297,16 @@ class BrevSendingServiceTest {
     fun `skal beholde ARKIVERT og kreve manuell oppfølging når brev mangler adresse (410)`() {
         mockPdfgenSuccess()
         mockDokarkivSuccess()
-        mockDokdistManglerAdresse()
+
+        whenever(dokdistService.distribuer(any<Brev>()))
+            .thenThrow(HttpClientErrorException(HttpStatus.GONE))
 
         val (sak, brev) = lagreSakMedBrev(
             status = BrevStatus.UTKAST,
             tittel = "Vedtaksbrev"
         )
 
-        brevSendingService.sendBrev(sak, brev)
+        assertThrows<Exception> { brevSendingService.sendBrev(sak, brev) }
 
         val oppdatertBrev = brevRepository.getByUUid(brev.uuid)
         assertThat(oppdatertBrev.status).isEqualTo(BrevStatus.ARKIVERT)

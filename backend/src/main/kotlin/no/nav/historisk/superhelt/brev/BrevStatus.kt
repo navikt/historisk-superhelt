@@ -6,11 +6,7 @@ enum class BrevStatus() {
     ARKIVERT,
     SENDT, ;
 
-    fun isCompleted(): Boolean {
-        return this == SENDT
-    }
-
-    fun isLocked(): Boolean {
+    fun isSendt(): Boolean {
         return this != UTKAST
     }
 

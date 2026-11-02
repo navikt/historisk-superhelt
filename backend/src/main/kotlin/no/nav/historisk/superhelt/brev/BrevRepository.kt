@@ -111,7 +111,7 @@ class BrevRepository(
     @PreAuthorize("hasAuthority('WRITE')")
     internal fun slettBrev(brev: Brev?) {
         if (brev == null) return
-        if (getEntityByUUid(brev.uuid).status.isLocked()) return
+        if (getEntityByUUid(brev.uuid).status.isSendt()) return
         jpaRepository.deleteByUuid(brev.uuid)
     }
 

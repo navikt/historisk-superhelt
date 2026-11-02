@@ -12,6 +12,7 @@ import no.nav.historisk.superhelt.brev.BrevOppdatering
 import no.nav.historisk.superhelt.brev.BrevRepository
 import no.nav.historisk.superhelt.brev.BrevSendingService
 import no.nav.historisk.superhelt.brev.BrevService
+import no.nav.historisk.superhelt.brev.BrevStatus
 import no.nav.historisk.superhelt.brev.BrevType
 import no.nav.historisk.superhelt.brev.finnGjeldendeBrev
 import no.nav.historisk.superhelt.brev.pdfgen.PdfgenService
@@ -56,7 +57,7 @@ class BrevController(
         val brevListe = brevRepository.findBySak(saksnummer)
         val brev = brevListe.finnGjeldendeBrev(request.type, request.mottaker)
 
-        if ((brev == null || brev.status.isCompleted())) {
+        if ((brev == null || brev.status == BrevStatus.SENDT)) {
             val harRettighet = when (request.type) {
                 BrevType.VEDTAKSBREV -> sak.rettigheter.contains(SakRettighet.SAKSBEHANDLE)
                 BrevType.FRITEKSTBREV -> sak.rettigheter.contains(SakRettighet.FRITEKSTBREV)
