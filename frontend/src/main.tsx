@@ -30,14 +30,15 @@ const router = createRouter({
 initialiserFaro(router);
 
 // Render the app
-const rootElement = document.getElementById("root")!;
-if (!rootElement.innerHTML) {
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(
-        <StrictMode>
-            <QueryClientProvider client={queryClient}>
-                <RouterProvider router={router} />
-            </QueryClientProvider>
-        </StrictMode>,
-    );
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+    throw new Error("Failed to find the root element. Make sure it exists in your index.html.");
 }
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+    <StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+        </QueryClientProvider>
+    </StrictMode>,
+);
