@@ -3,7 +3,9 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import "@navikt/ds-css";
 import "~/global.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./common/queryClient";
 import { initialiserFaro } from "./common/telemetry.utils";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -11,8 +13,6 @@ import { routeTree } from "./routeTree.gen";
 export interface RouterContext {
     queryClient: QueryClient;
 }
-
-const queryClient = new QueryClient();
 
 // Set up a Router instance
 const router = createRouter({
