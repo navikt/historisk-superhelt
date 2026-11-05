@@ -3,9 +3,9 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import "@navikt/ds-css";
 import "~/global.css";
+import { queryClient } from "@superhelt/api/query-client";
 import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./common/queryClient";
 import { initialiserFaro } from "./common/telemetry.utils";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";

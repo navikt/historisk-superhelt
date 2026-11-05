@@ -5,9 +5,11 @@
     "type": "module",
     "exports": {
         ".": "./src/index.ts",
+        "./query-client": "./src/queryClient.ts",
         "./react-query.gen": "./src/@tanstack/react-query.gen.ts"
     },
     "scripts": {
+        "test": "vitest run --config ../../vitest.shared.ts --project unit",
         "typecheck": "tsc --noEmit",
         "biome": "biome ci",
         "biome:write": "biome check --write",
