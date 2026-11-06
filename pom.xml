@@ -18,7 +18,7 @@
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
         <java.version>25</java.version>
-        <springdoc.version>3.1.1</springdoc.version>
+        <springdoc.version>3.2.0</springdoc.version>
 
         <!-- Diverse overstyringer av spring boot avhengigheter. Bør fjernes når spring boot kommer med nye versjoner -->
         <!--  midlertidig fix for CVE-2026-65182 -->
