@@ -59,7 +59,7 @@ jobs:
           (github.event.pull_request.head.repo.full_name == github.repository &&
           github.event.pull_request.user.login != 'dependabot[bot]' &&
           github.actor != 'dependabot[bot]'))
-        uses: mikepenz/action-junit-report@6ef3fdcfcd5f0b5d14df3e659ef19b8c6820f93d # v6.6.1
+        uses: mikepenz/action-junit-report@4a26df3e2ae132254ba12a53f65a388d0961e786 # v6.7.0
         with:
           check_name: Pdfgen (Vitest)
           report_paths: pdfgen/test-results/*.xml
@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Bygg og push docker image til GAR
-        uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 #v0
+        uses: nais/docker-build-push@d3a1f7e259ecc381a50435e1d4add9059429ebd7 #v0
         id: docker-build-push
         with:
           team: historisk
