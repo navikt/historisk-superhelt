@@ -3,6 +3,6 @@
     "extends": "//",
 
     "files": {
-        "includes": ["!**/*.gen.ts", "!src"]
+        "includes": ["**", "!**/*.gen.ts", "!src/client", "!src/core", "!src/index.ts"]
     }
 }

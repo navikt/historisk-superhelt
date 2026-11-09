@@ -46,6 +46,9 @@ updates:
       - "/pdfgen"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "cgr-nav/pull-through/nav.no/jre"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "docker-compose"
     directories:
