@@ -7,7 +7,7 @@ class ApiError extends Error {
         readonly status: number,
         problem: ProblemDetail,
     ) {
-        super(problem.detail ?? problem.title ?? `HTTP ${status}`);
+        super(problem.detail || problem.title || `HTTP ${status}`);
         Object.assign(this, problem, { status });
     }
 }
