@@ -24,14 +24,15 @@ Saksbehandler oppretter og fyller ut en sak, sender den til attestering, og vedt
 
 Utbetalingsstatus: `UTKAST` → `KLAR_TIL_UTBETALING` → `SENDT` → `MOTTATT` → `BEHANDLET` → `UTBETALT` eller `FEILET`.
 
+## Arkitektur og kodestandard
+
+Før du endrer backend-kode eller tester, les `docs/arkitektur-og-kodestandard.md`. Der står reglene for lagdeling, validering, transaksjonsgrenser og testdekning, adskilt fra dagens praksis.
+
 ## Backend
 
-- Domenepakker ligger under `backend/src/main/kotlin/no/nav/historisk/superhelt/`.
-- `db/` inneholder JPA-entities og JPA-repositories, `rest/` inneholder controllere og DTO-er. App-repositories mapper til domenemodeller; services inneholder forretningslogikk.
 - Autentisering skjer via Azure AD og Nais Wonderwall. Texas brukes til token exchange.
 - Behold tilgangssjekker: bruk `@PreAuthorize` og personbasert tilgangskontroll der det kreves. Ikke logg fødselsnummer eller andre personopplysninger.
 - Skjemaendringer krever ny Flyway-migrasjon (`V{n}__beskrivelse.sql`). Ikke endre eksisterende migrasjoner.
-- Ikke eksponer JPA-entities utenfor repository-laget. Sett `@Transactional` på service-metoder.
 
 ## Frontend
 
@@ -58,10 +59,16 @@ pnpm e2e:test
 
 Backend-tester krever Docker. API-typer genereres med `pnpm api:generate` mens backend kjører. E2E-tester krever at appen kjører.
 
-## Tester
+## Agent skills
 
-- Skriv tester for ny funksjonalitet, inkludert suksess- og feiltilfeller.
-- Test funksjonaliet, ikke implementasjon
-- Bruk beskrivende testnavn som uttrykker forventet oppførsel.
-- Bruk AssertJ og JUnit 5 for Kotlin-tester, Testcontainers for integrasjonstester og Playwright for brukerflyter.
-- Ikke hopp over tester eller endre teststruktur uten avklaring.
+### Issue tracker
+
+Issues spores i GitHub Issues. Les `docs/agents/issue-tracker.md` før du leser, oppretter eller endrer issues.
+
+### Triage labels
+
+Vi bruker standardetikettene. Les `docs/agents/triage-labels.md` før triage eller endring av triage-etiketter.
+
+### Domain docs
+
+Vi bruker single-context med felles ordliste og ADR-er. Les `docs/agents/domain.md` før du utforsker kodebasen.
