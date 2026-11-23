@@ -22,25 +22,36 @@ Saksbehandler oppretter og fyller ut en sak, sender den til attestering, og vedt
 | `historisk.superhelt.statistikk.saksbehandling.v1` | Saksbehandlingsstatistikk |
 | `klage.behandling-events.v1` | Behandlingshendelser fra Kabal |
 
-Utbetalingsstatus: `UTKAST` → `KLAR_TIL_UTBETALING` → `SENDT` → `MOTTATT` → `BEHANDLET` → `UTBETALT` eller `FEILET`.
+Utbetalingsstatusene og håndteringen av statusmeldinger er beskrevet i `docs/backend-arkitektur.md` under «Utbetaling og status fra Helved».
+
+## Arkitektur og kodestandard
+
+Før du endrer backend-kode eller tester, les `docs/arkitektur-og-kodestandard.md`. Der står reglene for lagdeling, validering, transaksjonsgrenser og testdekning, adskilt fra dagens praksis.
+
+Før endringer i frontend, les `docs/frontend-arkitektur.md` om routing, Query-cache, API-klient og redigering. Før endringer i backend, les `docs/backend-arkitektur.md` om domenemodell, persistens, tilgangsgrenser og eksterne sideeffekter.
+
+Før endringer i pdfgen-maler, fonter eller PDF-generering, les `pdfgen/AGENTS.md`.
+
+- **KISS:** Velg den enkleste løsningen som oppfyller kravet. Gjenbruk eksisterende mønstre fremfor å innføre ekstra lag eller abstraksjoner. Behold nødvendig tilgangskontroll, validering og feilhåndtering.
+- **YAGNI:** Implementer bare det oppgaven krever nå. Legg til konfigurasjon, avhengigheter og generalisering først når et konkret behov krever det.
 
 ## Backend
 
-- Domenepakker ligger under `backend/src/main/kotlin/no/nav/historisk/superhelt/`.
-- `db/` inneholder JPA-entities og JPA-repositories, `rest/` inneholder controllere og DTO-er. App-repositories mapper til domenemodeller; services inneholder forretningslogikk.
+- Følg løkarkitektur med domenet som kjerne og kodeavhengigheter som peker innover. Se `docs/arkitektur-og-kodestandard.md` for grensene og unntaket for enkle serialiseringsannotasjoner.
 - Autentisering skjer via Azure AD og Nais Wonderwall. Texas brukes til token exchange.
 - Behold tilgangssjekker: bruk `@PreAuthorize` og personbasert tilgangskontroll der det kreves. Ikke logg fødselsnummer eller andre personopplysninger.
 - Skjemaendringer krever ny Flyway-migrasjon (`V{n}__beskrivelse.sql`). Ikke endre eksisterende migrasjoner.
-- Ikke eksponer JPA-entities utenfor repository-laget. Sett `@Transactional` på service-metoder.
 
 ## Frontend
 
-- Bruk genererte typer og klienter fra `@superhelt/api`, og React Query-funksjoner fra `@superhelt/api/react-query`.
+- Bruk genererte typer og klienter fra `@superhelt/api`, og React Query-funksjoner fra `@superhelt/api/react-query.gen`.
 - Bruk TanStack Router for filbasert routing og TanStack Query for datahenting.
 - Bruk Nav Aksel (`@navikt/ds-react`). Bruk `Box` og `space-*`-tokens for spacing, ikke Tailwind margin- eller padding-klasser.
 - Kjør Biome bare på filer som er endret i oppgaven.
 
 ## Lokal utvikling og kommandoer
+
+Ved bygg, tester eller lint, les «Vanlige kommandoer» i `docs/arkitektur-og-kodestandard.md` for forutsetninger, enkeltstående tester og avgrensede lint-sjekker.
 
 Start avhengigheter med `docker compose up`, start `DevApplication.kt` med `dev`-profilen, 
 og kjør `pnpm frontend:start`. Pålogging må skje på http://localhost:4000
@@ -56,12 +67,22 @@ pnpm frontend:build
 pnpm e2e:test
 ```
 
-Backend-tester krever Docker. API-typer genereres med `pnpm api:generate` mens backend kjører. E2E-tester krever at appen kjører.
+Backend-integrasjonstester krever Docker. API-typer genereres med `pnpm api:generate` mens backend kjører. E2E-tester krever at appen kjører.
 
-## Tester
+## PR-oppsummering
 
-- Skriv tester for ny funksjonalitet, inkludert suksess- og feiltilfeller.
-- Test funksjonaliet, ikke implementasjon
-- Bruk beskrivende testnavn som uttrykker forventet oppførsel.
-- Bruk AssertJ og JUnit 5 for Kotlin-tester, Testcontainers for integrasjonstester og Playwright for brukerflyter.
-- Ikke hopp over tester eller endre teststruktur uten avklaring.
+Før endringer i PR-oppsummeringen, les «GitHub Actions» i `README.md` for redigering, kompilering og versjonering av genererte workflow-filer.
+
+## Agent skills
+
+### Issue tracker
+
+Issues spores i GitHub Issues. Les `docs/agents/issue-tracker.md` før du leser, oppretter eller endrer issues.
+
+### Triage labels
+
+Vi bruker standardetikettene. Les `docs/agents/triage-labels.md` før triage eller endring av triage-etiketter.
+
+### Domain docs
+
+Vi bruker single-context med felles ordliste og ADR-er. Les `docs/agents/domain.md` før du utforsker kodebasen.
