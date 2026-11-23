@@ -40,7 +40,11 @@ Maven-modulene defineres i [pom.xml](../pom.xml). Node-workspacet defineres i [p
 
 ### Domenet og dagens forenkling
 
-Ordlisten skiller mellom søknad, sak, krav, behandling, vedtak og utbetaling. En søknad kan inneholde flere krav, og ett vedtak kan ha forskjellige utfall for kravene.
+Ordlisten skiller mellom søknad, sak, krav, behandling, vedtak og utbetaling. En søknad kan inneholde flere krav, og hvert vedtak gjelder ett krav.
+
+Kravets utfall er trukket, vedtatt eller omgjort. Et krav under arbeid har ennå ikke noe utfall. Vedtatt og omgjort fører til vedtak med vedtaksresultatet innvilget, delvis innvilget eller avslått, mens trukket ikke fører til vedtak.
+
+Flere vedtak kan underrettes i samme vedtaksbrev etter at behandlingen er avsluttet. Ved omgjøring erstatter det nye vedtaket det gamle for samme krav, men begge beholdes. Feilregistrering gjelder saken, ikke kravet, og fører ikke til vedtak.
 
 Dagens modell forenkler dette til ett resultat og ett beløp per behandling. Se [backendens domenemodell](backend-arkitektur.md#ansvarsgrenser-og-domenemodell) for behandlingsteller, vedtakskopier og databasebegrensninger. Disse forenklingene er ikke domeneregler.
 

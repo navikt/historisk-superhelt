@@ -18,7 +18,7 @@ Domeneobjektene er adskilt fra JPA-modellene. For eksempel representerer `Utbeta
 
 [SakJpaEntity](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/db/SakJpaEntity.kt) har en `behandlingsTeller` som starter på 1 og økes ved gjenåpning. Modellen har ingen separat behandling-entitet. [VedtakRepository](../backend/src/main/kotlin/no/nav/historisk/superhelt/vedtak/VedtakRepository.kt) lagrer en kopi av avgjørelsesfelter med sakens aktuelle behandlingsteller.
 
-Dette er en forenkling av [domenet i ordlisten](../GLOSSARY.md), der en søknad og et vedtak kan omfatte flere krav med forskjellige utfall. Ett resultat og ett beløp i dagens modell er ikke en regel om at domenet bare har ett krav.
+Dette er en forenkling av [domenet i ordlisten](../GLOSSARY.md), der en søknad kan omfatte flere krav, men hvert vedtak gjelder ett krav. Kravets utfall er trukket, vedtatt eller omgjort, og er noe annet enn vedtaksresultatet innvilget, delvis innvilget eller avslått. Et krav under arbeid har ennå ikke noe utfall. Flere vedtak kan underrettes i samme vedtaksbrev etter at behandlingen er avsluttet. Ett resultat og ett beløp i dagens modell er ikke en regel om at domenet bare har ett krav.
 
 [Databasebegrensningen for utbetaling](../backend/src/main/resources/db/migration/V1.007__utbetaling_sak_behandlingsid_unique.sql) tillater én utbetalingsrad per `(sak_id, behandlingsnummer)`. Samme sak kan ha utbetalingsrader fra flere behandlinger. Transaksjons-ID-en er også unik.
 
@@ -108,8 +108,8 @@ Backend-integrasjonstester bruker Testcontainers. [SakRepositoryTest](../backend
 |------|-----------------------------|-------------|
 | Lagdeling | Services orkestrerer brukstilfeller | `SakActionController` validerer og orkestrerer også saksflyt |
 | Persistensgrense | JPA-entities holdes innenfor repository-laget | `getSakEntityOrThrow()` brukes også av `EndringsloggService` |
-| Henlegging | Ordlisten definerer henlegging som et vedtak | `henleggSak()` setter `FERDIG` og `HENLAGT` og sender brev, men kaller ikke vedtakslagringen |
+| Trukket | Utfallet gjelder et krav og fører ikke til vedtak | `henleggSak()` setter `FERDIG` og vedtaksresultatet `HENLAGT` på saken og sender brev, men kaller ikke vedtakslagringen |
 | Gjenåpning | Oppstart av ny behandling er ikke automatisk revurdering | Statistikken klassifiserer `GJENAPNET_SAK` som `REVURDERING` |
-| Flere krav | En søknad og et vedtak kan omfatte flere krav | `Sak` og `Vedtak` har ett resultat og ett beløp |
+| Flere krav | En søknad kan omfatte flere krav, hvert vedtak gjelder ett krav, og flere vedtak kan underrettes i samme vedtaksbrev | `Sak` og `Vedtak` har ett resultat og ett beløp og ingen kravreferanse |
 
-Avvikene beskriver forskjeller mellom kilder, ikke beslutninger om å endre atferd. Henlegging og gjenåpning kan undersøkes i [SakActionController](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt), og statistikkklassifiseringen i `StatistikkService`.
+Avvikene beskriver forskjeller mellom kilder, ikke beslutninger om å endre atferd. Håndteringen av trukket og gjenåpning kan undersøkes i [SakActionController](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt), og statistikkklassifiseringen i `StatistikkService`.
