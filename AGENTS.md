@@ -28,8 +28,14 @@ Utbetalingsstatus: `UTKAST` → `KLAR_TIL_UTBETALING` → `SENDT` → `MOTTATT` 
 
 Før du endrer backend-kode eller tester, les `docs/arkitektur-og-kodestandard.md`. Der står reglene for lagdeling, validering, transaksjonsgrenser og testdekning, adskilt fra dagens praksis.
 
+Før endringer i frontend, les `docs/frontend-arkitektur.md` om routing, Query-cache, API-klient og redigering. Før endringer i backend, les `docs/backend-arkitektur.md` om domenemodell, persistens, tilgangsgrenser og eksterne sideeffekter.
+
+- **KISS:** Velg den enkleste løsningen som oppfyller kravet. Gjenbruk eksisterende mønstre fremfor å innføre ekstra lag eller abstraksjoner. Behold nødvendig tilgangskontroll, validering og feilhåndtering.
+- **YAGNI:** Implementer bare det oppgaven krever nå. Legg til konfigurasjon, avhengigheter og generalisering først når et konkret behov krever det.
+
 ## Backend
 
+- Følg løkarkitektur med domenet som kjerne og kodeavhengigheter som peker innover. Se `docs/arkitektur-og-kodestandard.md` for grensene og unntaket for enkle serialiseringsannotasjoner.
 - Autentisering skjer via Azure AD og Nais Wonderwall. Texas brukes til token exchange.
 - Behold tilgangssjekker: bruk `@PreAuthorize` og personbasert tilgangskontroll der det kreves. Ikke logg fødselsnummer eller andre personopplysninger.
 - Skjemaendringer krever ny Flyway-migrasjon (`V{n}__beskrivelse.sql`). Ikke endre eksisterende migrasjoner.

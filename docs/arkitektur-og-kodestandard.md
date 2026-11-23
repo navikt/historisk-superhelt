@@ -1,6 +1,6 @@
 # Arkitektur og kodestandard
 
-Denne guiden beskriver dagens kode og den avklarte kodestandarden i Historisk Superhelt for nye og eksisterende utviklere. Den skiller mellom regler, observert praksis og avvik. Den forklarer ikke hvorfor tidligere arkitekturvalg ble gjort.
+Denne guiden samler systemoversikten og den avklarte kodestandarden i Historisk Superhelt. Detaljer om dagens kode og kjente avvik står i egne beskrivelser av [frontend](frontend-arkitektur.md) og [backend](backend-arkitektur.md). Dokumentene forklarer ikke hvorfor tidligere arkitekturvalg ble gjort.
 
 ## Hvordan lese guiden
 
@@ -9,6 +9,11 @@ Denne guiden beskriver dagens kode og den avklarte kodestandarden i Historisk Su
 - **Avvik** betyr en konkret forskjell mellom en regel eller domenedefinisjon og implementasjonen.
 
 [AGENTS.md](../AGENTS.md) peker til denne guiden og inneholder øvrige prosjektinstrukser. Reglene for lagdeling, validering, transaksjonsgrenser og testdekning står her. [GLOSSARY.md](../GLOSSARY.md) definerer domenebegrepene.
+
+| Når du arbeider med | Les videre |
+|--------------------|------------|
+| Ruter, Query-cache, API-klient, redigering og breveditor | [Frontend-arkitektur](frontend-arkitektur.md) |
+| Domenemodell, persistens, transaksjoner, tilgang og integrasjoner | [Backend-arkitektur](backend-arkitektur.md) |
 
 ## Arkitekturoversikt
 
@@ -37,9 +42,7 @@ Maven-modulene defineres i [pom.xml](../pom.xml). Node-workspacet defineres i [p
 
 Ordlisten skiller mellom søknad, sak, krav, behandling, vedtak og utbetaling. En søknad kan inneholde flere krav, og ett vedtak kan ha forskjellige utfall for kravene.
 
-Dagens [Sak](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/Sak.kt) bærer gjeldende behandlingsnummer, ett vedtaksresultat og ett beløp. [Vedtak](../backend/src/main/kotlin/no/nav/historisk/superhelt/vedtak/Vedtak.kt) lagrer opplysninger knyttet til sak og behandlingsnummer. Det finnes ikke en separat backend-entitet for hvert behandlingsforløp i dagens modell.
-
-Støtten for én utbetaling per søknad er en forenkling i dagens løsning, ikke en domeneregel. [Databasebegrensningen](../backend/src/main/resources/db/migration/V1.007__utbetaling_sak_behandlingsid_unique.sql) tillater én utbetalingsrad per sak og behandlingsnummer; samme sak kan ha utbetalingsrader fra flere behandlinger.
+Dagens modell forenkler dette til ett resultat og ett beløp per behandling. Se [backendens domenemodell](backend-arkitektur.md#ansvarsgrenser-og-domenemodell) for behandlingsteller, vedtakskopier og databasebegrensninger. Disse forenklingene er ikke domeneregler.
 
 ## En ende-til-ende-flyt
 
@@ -47,13 +50,12 @@ Godkjent attestering viser hvordan UI, REST, tjenester og Kafka henger sammen:
 
 1. [AttesterSakAction](../frontend/src/routes/sak/$saksnummer/-components/AttesterSakAction.tsx) bruker React Query-mutasjonen `attersterSakMutation` fra den genererte API-pakken. Den sender godkjenning og eventuell kommentar.
 2. Den [genererte SDK-en](../packages/superhelt-api/src/sdk.gen.ts) sender `PUT /api/sak/{saksnummer}/status/attester`.
-3. [SakActionController](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt) henter saken, validerer rettighet og status, og håndterer godkjenning eller retur.
-4. Ved godkjenning orkestrerer controllerens `ferdigstill` brev, utbetaling, statusendring og lagring av vedtak.
-5. [UtbetalingService](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/UtbetalingService.kt) undersøker eksisterende utbetaling og avgjør om en utbetaling skal opprettes eller gjenbrukes.
-6. [UtbetalingRepository](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/UtbetalingRepository.kt) håndterer persistens og mapper JPA-objekter til domenetyper.
-7. [UtbetalingKafkaProducer](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/kafka/UtbetalingKafkaProducer.kt) sender utbetalingsmeldingen til Helved. [UtbetalingStatusConsumer](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/kafka/UtbetalingStatusConsumer.kt) håndterer statusmeldinger tilbake.
+3. [SakActionController](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt) validerer handlingen og setter ved godkjenning saken til `FERDIG_ATTESTERT`.
+4. Ferdigstillingen sender eventuelt brev gjennom backendens brev- og pdfgen-integrasjon til journalføring og distribusjon. Deretter sendes eventuell utbetaling til Helved via Kafka.
+5. Backend setter saken til `FERDIG`, lagrer vedtaket og ferdigstiller attestantoppgaven.
+6. Frontenden starter invalidasjon av saksdata etter godkjent serverkall. Helved-status kommer senere inn via Kafka og oppdaterer utbetalingen separat.
 
-Rekkefølgen beskriver kallene i denne flyten. Den innebærer ikke at alle databaseendringer og eksterne kall inngår i én felles transaksjon.
+Flyten er ikke én felles transaksjon. Se [frontendens attestering](frontend-arkitektur.md#attestering-fra-brukergrensesnittet) for pending-, feil- og cachehåndtering og [backendens ferdigstilling](backend-arkitektur.md#attestering-og-ferdigstilling) for rekkefølge og sideeffekter.
 
 ### Kommunikasjonsformer
 
@@ -68,87 +70,63 @@ Frontend bruker REST via den genererte klienten. Backend bruker både synkrone i
 
 Se [topic-manifestet](../.nais/app/topics.yaml), [backend-manifestet](../.nais/app/backend.yaml) og [prosjektoversikten](../AGENTS.md). Kabal-behandlinger er eksterne behandlingsforløp, ikke automatisk nye behandlinger i Superhelt.
 
-## Backend
+## Kodestandard
 
-### Pakker og lag
+### Løkarkitektur i backend
+
+Backend følger løkarkitektur med DDD som utgangspunkt. Domenet er kjernen og uttrykker begreper og forretningsregler. Applikasjonslaget orkestrerer brukstilfeller rundt domenet. Ytre adaptere håndterer HTTP, persistens og eksterne tjenester.
+
+Kodeavhengighetene skal som hovedregel peke innover:
+
+```text
+Ytre adaptere → Applikasjonslag → Domene
+```
+
+Domeneobjekter skal ikke kjenne database, JPA, controllere eller HTTP-responser. Mapping til persistens- og transportmodeller hører hjemme utenfor domenet. Dette er en regel om avhengigheter, ikke et krav om bestemte mapper eller et eget interface og en adapterklasse for hver operasjon.
+
+Enkle serialiseringsannotasjoner, som `@JsonProperty`, er et akseptert unntak så lenge de ikke påvirker forretningsreglene eller former domenemodellen etter et eksternt API. Egne DTO-er, interfaces og ekstra lag innføres ved konkret behov for å beskytte domenets uavhengighet, ikke som et absolutt krav. Dette avveier domenets uavhengighet mot unødvendig mapping og boilerplate, i tråd med KISS og YAGNI.
+
+### Ansvarsdeling i backend
 
 **Regler:** Domenepakker ligger under `backend/src/main/kotlin/no/nav/historisk/superhelt/`. `db/` inneholder JPA-entities og JPA-repositories. `rest/` inneholder controllere og REST-DTO-er. JPA-entities skal ikke eksponeres utenfor repository-laget.
-
-### Ønsket ansvarsdeling
 
 Dette er avklart standard for backend-kode, ikke en påstand om at alle eksisterende flyter følger den.
 
 | Lag | Ansvar |
 |-----|--------|
 | Controller | Håndterer HTTP, request-validering og respons. Delegerer brukstilfellet til en service |
-| Service | Orkestrerer brukstilfellet og håndhever forretningsregler gjennom domenetyper eller validatorer |
+| Service | Orkestrerer brukstilfellet i applikasjonslaget og håndhever forretningsregler gjennom domenetyper eller validatorer |
 | Repository | Oppslag, lagring og mapping mellom persistens- og domenetyper |
 
 Avgjørelser om tillatte handlinger og statusoverganger hører til service-/domenelaget, ikke repositoryets hovedansvar. Databasen håndhever fortsatt sine restriksjoner.
 
 Standarden innebærer ikke at eksisterende tilgangskontroll skal fjernes eller flyttes automatisk. Eventuell flytting av slike sjekker må vurderes separat.
 
-### Dagens lagdeling
-
-**Observert praksis:** [Sak](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/Sak.kt) er en `data class` med immutable felt. [SakJpaEntity](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/db/SakJpaEntity.kt) har mutable persistensfelt og en `toDomain()`-mapping. [SakRepository](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/SakRepository.kt) skjuler JPA-laget for kallere og utfører oppdateringer.
-
-Klasser bruker navn som `SakService`, `SakRepository` og `SakJpaEntity`. Funksjoner og variabler bruker camelCase; pakker bruker lowercase. Dette er observerte navnemønstre.
-
 ### DTO-er, validering og feil
 
 **Regler:** Controlleren validerer request-format og påkrevde felt. Service-/domenelaget validerer om handlingen er tillatt ut fra sakens tilstand, også når inngangen ikke er HTTP. Domeneregler kan samles i egne validatorer som servicen bruker.
 
-[REST-typene](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakRestTypes.kt) bruker Kotlin `data class` og Bean Validation-annotasjoner. Interne oppdateringstyper finnes også i repository- og domenelaget, for eksempel `UpdateSakDto` i [SakRepository](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/SakRepository.kt).
-
-[SakValidator](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/SakValidator.kt) håndterer blant annet tillatte statusoverganger. [GlobalControllerAdvice](../backend/src/main/kotlin/no/nav/historisk/superhelt/infrastruktur/GlobalControllerAdvice.kt) oversetter blant annet valideringsfeil og tilgangsnekt til HTTP-svar med `ProblemDetail`.
+Se [backendens validering og REST-feil](backend-arkitektur.md#lagdeling-validering-og-rest-feil) for dagens DTO-er, validator og sentrale feilhåndtering.
 
 ### Database og transaksjoner
-
-PostgreSQL leveres gjennom Cloud SQL i [Nais-manifestet](../.nais/app/backend.yaml). [application.yaml](../backend/src/main/resources/application.yaml) leser databasekonfigurasjonen fra miljøvariabler og bruker JPA `ddl-auto: validate`. Flyway håndterer skjemaendringer med [versjonerte SQL-migrasjoner](../backend/src/main/resources/db/migration/).
 
 **Regler:** Skjemaendringer krever en ny Flyway-migrasjon. Eksisterende migrasjoner skal ikke endres.
 
 Vurder transaksjonsgrensen for hver operasjon. Skill lokale databaseendringer fra eksterne sideeffekter. Ikke legg som standard én `@Transactional` rundt hele serviceflyten. For operasjoner som sender brev eller betaling, må teamet ha avklart hva som skjer ved delvis feil og nye forsøk.
 
-**Observert praksis:** Transaksjonsannotasjoner finnes på service-metoder, men også på enkelte repository- og Kafka-producer-metoder. Se [UtbetalingService](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/UtbetalingService.kt), [UtbetalingRepository](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/UtbetalingRepository.kt) og [UtbetalingKafkaProducer](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/kafka/UtbetalingKafkaProducer.kt).
-
-I [SakActionController](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt) har tilbakestilling av gjenåpning en ytre transaksjon, mens attestering og ferdigstilling ikke har det. [BrevService](../backend/src/main/kotlin/no/nav/historisk/superhelt/brev/BrevService.kt) bruker `Propagation.NEVER` ved arkivering og distribusjon. Disse flytene kan derfor ikke samles i én transaksjon uten å vurdere dagens grenser og sideeffekter.
+Se backendens beskrivelser av [ferdigstilling](backend-arkitektur.md#attestering-og-ferdigstilling), [brevsending](backend-arkitektur.md#brev-journalføring-og-distribusjon) og [utbetaling](backend-arkitektur.md#utbetaling-og-status-fra-helved) før endringer i disse grensene.
 
 ### Autentisering og tilgangskontroll
 
-Dette er en beskrivelse av eksisterende kode, ikke en sikkerhetsvurdering.
-
-[SecurityConfig](../backend/src/main/kotlin/no/nav/historisk/superhelt/config/SecurityConfig.kt) konfigurerer Spring Security som stateless JWT resource server. `/api/**` krever `READ`, `/admin/**` krever `DRIFT`, og øvrige forespørsler krever autentisering med unntak av eksplisitt åpne mønstre.
-
-[NavJwtAuthenticationConverter](../backend/src/main/kotlin/no/nav/historisk/superhelt/infrastruktur/authentication/NavJwtAuthenticationConverter.kt) mapper gruppeclaims til roller, tilganger og tema. [Role](../backend/src/main/kotlin/no/nav/historisk/superhelt/infrastruktur/authentication/Role.kt) definerer rollenes tilganger.
-
-Person- og tematilgang kontrolleres også ved metodekall. [SakRepository](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/SakRepository.kt) bruker blant annet `@PreAuthorize` og `@PostAuthorize`; [TilgangsmaskinAuthLogic](../backend/src/main/kotlin/no/nav/historisk/superhelt/infrastruktur/permission/TilgangsmaskinAuthLogic.kt) kobler inn Tilgangsmaskin.
-
-Azure/Wonderwall er konfigurert i [Nais-manifestet](../.nais/app/backend.yaml). Utgående kall bruker Texas-tokenhåndtering gjennom [NaisTokenService](../backend/src/main/kotlin/no/nav/historisk/superhelt/infrastruktur/token/NaisTokenService.kt) og [request-interceptoren](../backend/src/main/kotlin/no/nav/historisk/superhelt/infrastruktur/token/NaisTokenClientRequestInterceptor.kt). Eksempler på integrasjonsoppsett er [PDL](../backend/src/main/kotlin/no/nav/historisk/superhelt/person/pdl/PdlConfig.kt) og [Kabal](../backend/src/main/kotlin/no/nav/historisk/superhelt/klage/config/KabalConfig.kt).
-
 **Regler:** Behold nødvendige tilgangssjekker, og ikke logg fødselsnummer eller andre personopplysninger. En generell autentiseringsregel erstatter ikke personbasert tilgangskontroll.
 
-## Frontend
+Se [backendens tilgangsgrenser](backend-arkitektur.md#autentisering-og-tilgangsgrenser) for innlogging, person-/temakontroll og utgående tokenhåndtering.
 
-### Ruter, serverdata og lokal state
+### Frontend
 
-**Regler:** Bruk TanStack Router for filbasert routing, TanStack Query for datahenting og genererte typer og klienter fra `@superhelt/api`. Se [AGENTS.md](../AGENTS.md).
+**Regler:** Bruk TanStack Router for filbasert routing, TanStack Query for datahenting og genererte typer og klienter fra `@superhelt/api`. Oppdater genererte filer gjennom generatoren. Bruk Nav Aksel med `Box` og `space-*`-tokens for spacing, ikke Tailwind margin- og padding-klasser.
 
-**Observert praksis:** [Saksruten](../frontend/src/routes/sak/$saksnummer/route.tsx) bruker en loader til å fylle Query-cache og `useSuspenseQuery` til å lese serverdata. [SakOpplysningerEditor](../frontend/src/routes/sak/$saksnummer/-components/SakOpplysningerEditor.tsx) bruker debouncing og cacheoppdatering ved redigering.
-
-[AttesterSakAction](../frontend/src/routes/sak/$saksnummer/-components/AttesterSakAction.tsx) viser skillet mellom lokal inputstate med `useState` og serverendringer med `useMutation`. Komponenter bruker PascalCase, funksjoner og variabler camelCase, og props beskrives med TypeScript-typer.
-
-### API-generering
-
-[openapi-ts.config.ts](../packages/superhelt-api/openapi-ts.config.ts) genererer typer, SDK og React Query-hjelpere fra backendens `/v3/api-docs`. Generering krever at backend kjører. Genererte filer oppdateres gjennom generatoren, ikke som vanlige håndskrevne klienter.
-
-Den faktiske package-exporten for React Query-hjelperne er `@superhelt/api/react-query.gen`. Se [API-pakkens package.json](../packages/superhelt-api/package.json) og importene i `AttesterSakAction`.
-
-### UI og feilhåndtering
-
-**Regler:** Bruk Nav Aksel. Spacing skal bruke `Box` og `space-*`-tokens, ikke Tailwind margin- og padding-klasser.
-
-**Observert praksis:** [Saksruten](../frontend/src/routes/sak/$saksnummer/route.tsx) bruker Aksel-komponenter og spacing-tokens. [ErrorAlert](../frontend/src/common/error/ErrorAlert.tsx) viser API-feil, og ruten har en egen feilkomponent.
+Se [frontend-arkitekturen](frontend-arkitektur.md) for routing, API-exports, Query-cache, feil og redigering.
 
 ## Tester og verktøy
 
@@ -171,18 +149,7 @@ Tabellen er ikke et krav om å teste hver operasjon på alle nivåer. Test relev
 
 Bruk JUnit 5 og AssertJ for Kotlin-tester, Testcontainers for integrasjonstester og Playwright for brukerflyter. Ikke hopp over tester eller endre teststruktur uten avklaring.
 
-### Dagens testeksempler
-
-| Testområde | Representativt eksempel |
-|------------|-------------------------|
-| Backend-repository | [SakRepositoryTest](../backend/src/test/kotlin/no/nav/historisk/superhelt/sak/SakRepositoryTest.kt) |
-| Backend-controller | [SakActionControllerAttesterTest](../backend/src/test/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionControllerAttesterTest.kt) |
-| Kafka-integrasjon | [UtbetalingKafkaProducerIntegrationTest](../backend/src/test/kotlin/no/nav/historisk/superhelt/utbetaling/kafka/UtbetalingKafkaProducerIntegrationTest.kt) |
-| Integrasjonsklient | [DokarkivClientTest](../libs/dokarkiv/src/test/kotlin/no/nav/dokarkiv/DokarkivClientTest.kt) |
-| React-komponent | [ProcessMenu.test.tsx](../frontend/src/common/process-menu/ProcessMenu.test.tsx), med Vitest og Testing Library |
-| Brukerflyt | [henlegg.spec.ts](../e2e/end-to-end/henlegg.spec.ts), med Playwright |
-
-De undersøkte attesteringstestene kaller controller-metoder direkte. De er derfor ikke i seg selv tester av HTTP-validering og respons. Se [SakActionControllerAttesterTest](../backend/src/test/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionControllerAttesterTest.kt) og [testoppsettet](../backend/src/test/kotlin/no/nav/historisk/superhelt/sak/rest/AbstractSakActionTest.kt).
+Testoppsett, representative eksempler og begrensninger beskrives sammen med [frontend](frontend-arkitektur.md#tester-og-kjente-avvik) og [backend](backend-arkitektur.md#database-drift-og-tester).
 
 ### Hva verktøyene håndhever
 
@@ -218,17 +185,6 @@ Backend-tester krever Docker. API-generering krever en kjørende backend, og E2E
 
 ## Observerte avvik og begrensninger
 
-Tabellen beskriver konkrete forskjeller. Den er ikke en prioritert feilrapport eller et forslag om å endre kode.
-
-| Tema | Regel eller domenedefinisjon | Observert implementasjon |
-|------|-----------------------------|--------------------------|
-| React Query-import | `AGENTS.md` oppgir `@superhelt/api/react-query` | [Package-exporten](../packages/superhelt-api/package.json) og komponentene bruker `@superhelt/api/react-query.gen` |
-| Forretningslogikk | Services skal orkestrere brukstilfellene og håndheve domeneregler | [SakActionController](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt) validerer og orkestrerer også saksflyt |
-| Transaksjonsgrenser | Grensen skal vurderes per operasjon, med avklart håndtering av sideeffekter | Controllerens `ferdigstill` er ikke annotert; underliggende metoder har egne annotasjoner. Du kan ikke anta én samlet transaksjon i denne flyten |
-| Spacing | Prosjektet krever Aksel `Box` og spacing-tokens | [Saksruten](../frontend/src/routes/sak/$saksnummer/route.tsx) inneholder også inline `marginTop` |
-| Utbetalingsstatus | Instruksens oversikt bruker `SENDT`, `MOTTATT` og `BEHANDLET` | [Enumen](../backend/src/main/kotlin/no/nav/historisk/superhelt/utbetaling/UtbetalingStatus.kt) bruker `SENDT_TIL_UTBETALING`, `MOTTATT_AV_UTBETALING` og `BEHANDLET_AV_UTBETALING` |
-| Henlegging | Ordlisten definerer henlegging som vedtak | [Henleggingsflyten](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt) setter `FERDIG` og `HENLAGT`, men kaller ikke vedtakslagringen |
-| Gjenåpning og revurdering | Ordlisten skiller oppstart av ny behandling fra behandlingens formål | [StatistikkService](../backend/src/main/kotlin/no/nav/historisk/superhelt/statistikk/StatistikkService.kt) klassifiserer gjenåpning som `REVURDERING` |
-| Flere krav | Søknader og vedtak kan omfatte flere krav med ulike utfall | Dagens [Sak](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/Sak.kt) og [Vedtak](../backend/src/main/kotlin/no/nav/historisk/superhelt/vedtak/Vedtak.kt) bruker ett resultat og ett beløp |
+Konkrete avvik er samlet ved det aktuelle området: [frontend](frontend-arkitektur.md#tester-og-kjente-avvik) og [backend](backend-arkitektur.md#observerte-avvik-og-begrensninger). De er ikke en prioritert feilrapport eller et forslag om å endre kode.
 
 Ved senere endringer må instruksjoner, domenedefinisjoner og kode vurderes hver for seg. Et eksisterende mønster er ikke i seg selv en beslutning om ønsket praksis.
