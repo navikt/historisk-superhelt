@@ -22,13 +22,15 @@ Saksbehandler oppretter og fyller ut en sak, sender den til attestering, og vedt
 | `historisk.superhelt.statistikk.saksbehandling.v1` | Saksbehandlingsstatistikk |
 | `klage.behandling-events.v1` | Behandlingshendelser fra Kabal |
 
-Utbetalingsstatus: `UTKAST` → `KLAR_TIL_UTBETALING` → `SENDT` → `MOTTATT` → `BEHANDLET` → `UTBETALT` eller `FEILET`.
+Utbetalingsstatusene og håndteringen av statusmeldinger er beskrevet i `docs/backend-arkitektur.md` under «Utbetaling og status fra Helved».
 
 ## Arkitektur og kodestandard
 
 Før du endrer backend-kode eller tester, les `docs/arkitektur-og-kodestandard.md`. Der står reglene for lagdeling, validering, transaksjonsgrenser og testdekning, adskilt fra dagens praksis.
 
 Før endringer i frontend, les `docs/frontend-arkitektur.md` om routing, Query-cache, API-klient og redigering. Før endringer i backend, les `docs/backend-arkitektur.md` om domenemodell, persistens, tilgangsgrenser og eksterne sideeffekter.
+
+Før endringer i pdfgen-maler, fonter eller PDF-generering, les `pdfgen/AGENTS.md`.
 
 - **KISS:** Velg den enkleste løsningen som oppfyller kravet. Gjenbruk eksisterende mønstre fremfor å innføre ekstra lag eller abstraksjoner. Behold nødvendig tilgangskontroll, validering og feilhåndtering.
 - **YAGNI:** Implementer bare det oppgaven krever nå. Legg til konfigurasjon, avhengigheter og generalisering først når et konkret behov krever det.
@@ -42,12 +44,14 @@ Før endringer i frontend, les `docs/frontend-arkitektur.md` om routing, Query-c
 
 ## Frontend
 
-- Bruk genererte typer og klienter fra `@superhelt/api`, og React Query-funksjoner fra `@superhelt/api/react-query`.
+- Bruk genererte typer og klienter fra `@superhelt/api`, og React Query-funksjoner fra `@superhelt/api/react-query.gen`.
 - Bruk TanStack Router for filbasert routing og TanStack Query for datahenting.
 - Bruk Nav Aksel (`@navikt/ds-react`). Bruk `Box` og `space-*`-tokens for spacing, ikke Tailwind margin- eller padding-klasser.
 - Kjør Biome bare på filer som er endret i oppgaven.
 
 ## Lokal utvikling og kommandoer
+
+Ved bygg, tester eller lint, les «Vanlige kommandoer» i `docs/arkitektur-og-kodestandard.md` for forutsetninger, enkeltstående tester og avgrensede lint-sjekker.
 
 Start avhengigheter med `docker compose up`, start `DevApplication.kt` med `dev`-profilen, 
 og kjør `pnpm frontend:start`. Pålogging må skje på http://localhost:4000
@@ -63,7 +67,11 @@ pnpm frontend:build
 pnpm e2e:test
 ```
 
-Backend-tester krever Docker. API-typer genereres med `pnpm api:generate` mens backend kjører. E2E-tester krever at appen kjører.
+Backend-integrasjonstester krever Docker. API-typer genereres med `pnpm api:generate` mens backend kjører. E2E-tester krever at appen kjører.
+
+## PR-oppsummering
+
+Før endringer i PR-oppsummeringen, les «GitHub Actions» i `README.md` for redigering, kompilering og versjonering av genererte workflow-filer.
 
 ## Agent skills
 

@@ -17,9 +17,19 @@ Frontenden er en React-applikasjon med TanStack Router, TanStack Query og Nav Ak
 
 Dette er ansvarsområder i dagens kode, ikke uavhengig deploybare applikasjoner. Frontenden pakkes og deployes sammen med backend.
 
+## Komponentkonvensjoner
+
+Dette er regler for React-kode, ikke en beskrivelse av all eksisterende kode:
+
+- Bruk TypeScript-interfaces for props og objektkontrakter for komponenter og state.
+- Begrens bruk av `useEffect` når det er mulig.
+- Hold komponentenes ansvar avgrenset.
+
 ## Routing og innlasting
 
 [Vite-oppsettet](../frontend/vite.config.ts) kjører TanStack Router-pluginen før React-pluginen. Pluginen genererer `routeTree.gen.ts` og deler opp rutekoden automatisk. Aliaset `~/` peker til `frontend/src/`. Mapper som `-components/` og `-api/` samler hjelpefiler ved rutene.
+
+Lokalt kjører Vite på `http://localhost:3000` og proxyer `/api` og `/oauth2` til Wonderwall på `http://localhost:4000`. Innlogging må skje via Wonderwall før Vite-serveren brukes.
 
 Routeren preloader ved brukerintensjon, for eksempel når en lenke pekes på, og har `defaultPreloadStaleTime: 0`. Query-cachen brukes også ved slik innlasting.
 
@@ -32,7 +42,7 @@ Dette er ikke et generelt mønster der alle loadere venter på alle data. [Saken
 
 ## API-kontrakt og serverdata
 
-[API-generatoren](../packages/superhelt-api/openapi-ts.config.ts) leser backendens `/v3/api-docs` og genererer fetch-klient, typer, SDK og TanStack Query-hjelpere. Backend må kjøre lokalt på port 8080 når `pnpm api:generate` kjøres.
+[API-generatoren](../packages/superhelt-api/openapi-ts.config.ts) leser backendens `/v3/api-docs` og genererer fetch-klient, typer, SDK og TanStack Query-hjelpere. Etter endringer i REST-kontrakten, kjør `pnpm api:generate` med backend tilgjengelig på `http://localhost:8080/v3/api-docs`.
 
 [Pakkens exports](../packages/superhelt-api/package.json) skiller mellom:
 
@@ -86,11 +96,12 @@ Valideringsfeil er ikke bare HTTP-feil. Saks- og brevmodellene kan inneholde `va
 
 [Vitest-oppsettet](../vitest.shared.ts) skiller unit-tester fra `*.browser.test.ts(x)`, som kjøres i headless Chromium. [Frontendens oppsett](../frontend/vitest.config.ts) bruker jsdom for unit-prosjektet. Breveditorens browser-tester dekker komponenter i en faktisk nettleser, mens [Playwright E2E](../e2e/playwright.config.ts) kjører mot appen gjennom Wonderwall.
 
+E2E-testene krever en kjørende app og starter den ikke selv. Standardadressen er `http://localhost:4000`; `BASE_URL` overstyrer adressen. Gjenbruk [test.fixtures.ts](../e2e/end-to-end/test.fixtures.ts) og eksisterende page objects ved nye E2E-tester.
+
 [Attesteringsflyten i E2E](../e2e/end-to-end/saksbehandling-attestert.spec.ts) er et eksempel på godkjent saksflyt. Den dokumenterer ikke alene hvordan alle feil- og gjenopprettingssituasjoner virker.
 
 | Tema | Avklart regel | Observert avvik |
 |------|---------------|-----------------|
-| API-import | Bruk pakkens eksporterte Query-hjelpere | Rotens `AGENTS.md` oppgir `@superhelt/api/react-query`, mens pakken og komponentene bruker `@superhelt/api/react-query.gen` |
 | Spacing | Bruk Aksel `Box` og spacing-tokens | Saksrutens `Tabs` bruker også inline `marginTop` |
 
-Se [felles teststandard](arkitektur-og-kodestandard.md#ønsket-testdekning) for valg av testnivå og [Copilot-instruksene](../.github/copilot-instructions.md#bygg-tester-og-lint) for kommandoer.
+Se [felles teststandard](arkitektur-og-kodestandard.md#ønsket-testdekning) for valg av testnivå og [vanlige kommandoer](arkitektur-og-kodestandard.md#vanlige-kommandoer) for bygg, tester og lint.

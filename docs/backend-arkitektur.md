@@ -111,6 +111,5 @@ Backend-integrasjonstester bruker Testcontainers. [SakRepositoryTest](../backend
 | Henlegging | Ordlisten definerer henlegging som et vedtak | `henleggSak()` setter `FERDIG` og `HENLAGT` og sender brev, men kaller ikke vedtakslagringen |
 | Gjenåpning | Oppstart av ny behandling er ikke automatisk revurdering | Statistikken klassifiserer `GJENAPNET_SAK` som `REVURDERING` |
 | Flere krav | En søknad og et vedtak kan omfatte flere krav | `Sak` og `Vedtak` har ett resultat og ett beløp |
-| Statusnavn | Enumverdiene er de konkrete kodene | Rotens `AGENTS.md` bruker kortformene `SENDT`, `MOTTATT` og `BEHANDLET` |
 
 Avvikene beskriver forskjeller mellom kilder, ikke beslutninger om å endre atferd. Henlegging og gjenåpning kan undersøkes i [SakActionController](../backend/src/main/kotlin/no/nav/historisk/superhelt/sak/rest/SakActionController.kt), og statistikkklassifiseringen i `StatistikkService`.

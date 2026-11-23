@@ -161,19 +161,42 @@ I de undersøkte Maven- og CI-konfigurasjonene er det ikke funnet Kotlin-formatt
 
 ### Vanlige kommandoer
 
-Kommandoene finnes i [package.json](../package.json), [frontend/package.json](../frontend/package.json) og [prosjektinstruksene](../AGENTS.md).
+Kjør kommandoene fra repo-roten. Verktøyversjoner styres av [pom.xml](../pom.xml) og [package.json](../package.json). Se [README](../README.md#krav) for verktøykrav og [prosjektinstruksene](../AGENTS.md#lokal-utvikling-og-kommandoer) for lokal oppstart.
+
+| Oppgave | Kommando |
+|---------|----------|
+| Installer workspace-avhengigheter fra låsefilen | `pnpm install --frozen-lockfile` |
+| Bygg og verifiser Maven-modulene, inkludert frontend | `mvn clean verify` |
+| Bygg uten tester | `mvn package -DskipTests` |
+| Kjør Maven-tester | `mvn test` |
+| Én backend-testklasse med nødvendige moduler | `mvn test -pl backend -am -Dtest=SakValidatorTest -Dsurefire.failIfNoSpecifiedTests=false` |
+| Unit-tester i pnpm-workspaces | `pnpm test` |
+| Én frontend-testfil | `pnpm --filter super-frontend test src/common/dato.utils.test.ts` |
+| Typekontroll i workspaces | `pnpm typecheck` |
+| Produksjonsbygg av frontend | `pnpm frontend:build` |
+| Generer API-klienten | `pnpm api:generate` |
+| Installer Chromium for browser-tester | `pnpm test:browser:install` |
+| Browser-tester | `pnpm test:browser` |
+| Én browser-testfil | `pnpm --filter @superhelt/breveditor test:browser src/HtmlPdfgenEditor.browser.test.tsx` |
+| Alle E2E-tester | `pnpm e2e:test` |
+| Én E2E-testfil | `pnpm e2e:test end-to-end/henlegg.spec.ts` |
+
+Filstiene i tabellen er eksempler; erstatt dem med testfilene du skal kjøre. Testkommandoene er definert i workspace-pakkenes `package.json`.
+
+`pnpm test` inkluderer ikke browser- eller integrasjonsprosjektene. Browser-tester krever Chromium. Backend-integrasjonstester bruker Testcontainers og krever Docker. For pdfgen-tester og deres forutsetninger, se [pdfgen/AGENTS.md](../pdfgen/AGENTS.md#tester).
+
+Maven-modulen `frontend` kjører pnpm-installasjon, frontend-bygg og unit-tester som del av Maven-livssyklusen når tester er aktivert. Dette gjelder også når modulen tas med via `-am`.
+
+Kjør Biome på eksplisitte filstier som er endret i oppgaven:
 
 ```bash
-mvn test
-mvn test -pl backend -am -Dtest=SakValidatorTest -Dsurefire.failIfNoSpecifiedTests=false
-pnpm test
-pnpm typecheck
-pnpm frontend:build
-pnpm api:generate
-pnpm e2e:test
+pnpm exec biome check frontend/src/common/dato.utils.ts
+pnpm exec biome check --write frontend/src/common/dato.utils.ts
 ```
 
-Backend-tester krever Docker. API-generering krever en kjørende backend, og E2E-testene krever en kjørende app. For lokal utvikling beskriver `AGENTS.md` oppstart med Docker Compose, `DevApplication.kt` og frontend. Innlogging skjer via Wonderwall på `http://localhost:4000`; Vite kjører på `http://localhost:3000`.
+Bytt eksempelstien med de endrede filene. `pnpm biome` sjekker hele prosjektets konfigurerte omfang.
+
+API-generering krever en kjørende backend, og E2E-testene krever en kjørende app. For lokal utvikling beskriver `AGENTS.md` oppstart med Docker Compose, `DevApplication.kt` og frontend. Innlogging skjer via Wonderwall på `http://localhost:4000`; Vite kjører på `http://localhost:3000`.
 
 ## CI og deployment
 
