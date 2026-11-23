@@ -23,7 +23,7 @@
         "@tiptap/pm": "^3.31.4",
         "@tiptap/react": "^3.31.4",
         "@tiptap/starter-kit": "^3.31.4",
-        "dompurify": "^3.4.16"
+        "dompurify": "^3.4.17"
     },
     "peerDependencies": {
         "@navikt/ds-css": "catalog:",
