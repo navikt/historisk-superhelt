@@ -2,9 +2,7 @@ import { Box, GlobalAlert, Page } from "@navikt/ds-react";
 import { Theme } from "@navikt/ds-react/Theme";
 import { getUserInfoOptions } from "@superhelt/api/react-query.gen";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { RfcErrorBoundary } from "~/common/error/RfcErrorBoundary";
 import { Breakpoint3xl } from "~/common/layout/layout.constants";
 import type { RouterContext } from "~/main";
@@ -25,8 +23,6 @@ function RootComponent() {
                     </RfcErrorBoundary>
                 </Page.Block>
             </Page>
-            <TanStackRouterDevtools />
-            <ReactQueryDevtools buttonPosition="bottom-right" />
         </Theme>
     );
 }

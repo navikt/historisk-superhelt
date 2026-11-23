@@ -22,9 +22,7 @@
         "@superhelt/api": "workspace:*",
         "@superhelt/breveditor": "workspace:*",
         "@tanstack/react-query": "catalog:",
-        "@tanstack/react-query-devtools": "^5.107.1",
         "@tanstack/react-router": "^1.170.46",
-        "@tanstack/react-router-devtools": "^1.167.3",
         "@tanstack/router-core": "1.171.39",
         "react": "catalog:",
         "react-dom": "catalog:"
