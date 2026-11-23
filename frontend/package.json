@@ -14,32 +14,32 @@
         "biome:write": "biome check --write"
     },
     "dependencies": {
-        "@grafana/faro-web-sdk": "^2.12.1",
+        "@grafana/faro-web-sdk": "^2.14.0",
         "@navikt/aksel-icons": "catalog:",
         "@navikt/ds-css": "catalog:",
         "@navikt/ds-react": "catalog:",
-        "@navikt/ds-tokens": "^8.18.0",
+        "@navikt/ds-tokens": "^8.23.0",
         "@superhelt/api": "workspace:*",
         "@superhelt/breveditor": "workspace:*",
         "@tanstack/react-query": "catalog:",
-        "@tanstack/react-query-devtools": "^5.104.1",
-        "@tanstack/react-router": "^1.170.41",
-        "@tanstack/react-router-devtools": "^1.167.2",
-        "@tanstack/router-core": "1.171.34",
+        "@tanstack/react-query-devtools": "^5.107.1",
+        "@tanstack/react-router": "^1.170.46",
+        "@tanstack/react-router-devtools": "^1.167.3",
+        "@tanstack/router-core": "1.171.39",
         "react": "catalog:",
         "react-dom": "catalog:"
     },
     "devDependencies": {
         "@biomejs/biome": "catalog:",
-        "@tanstack/router-plugin": "^1.168.42",
+        "@tanstack/router-plugin": "^1.169.0",
         "@testing-library/react": "^16.3.3",
         "@types/css-modules": "^1.0.5",
-        "@types/node": "^25.9.9",
+        "@types/node": "^26.6.6",
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
-        "@vitejs/plugin-react": "^6.1.1",
+        "@vitejs/plugin-react": "^6.3.0",
         "typescript": "catalog:",
-        "vite": "^8.3.2",
+        "vite": "^8.3.8",
         "vitest": "catalog:"
     }
 }

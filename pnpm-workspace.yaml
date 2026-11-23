@@ -10,17 +10,17 @@ registries:
   '@navikt': https://registry.npmjs.org/
 
 catalog:
-  react: ^19.3.0
-  react-dom: ^19.3.0
+  react: ^19.3.1
+  react-dom: ^19.3.1
   '@types/react': ^19.3.0
   '@types/react-dom': ^19.3.0
-  '@navikt/ds-react': ^8.18.0
-  '@navikt/ds-css': ^8.18.0
-  '@navikt/aksel-icons': ^8.18.0
-  '@biomejs/biome': 2.5.15
+  '@navikt/ds-react': ^8.23.0
+  '@navikt/ds-css': ^8.23.0
+  '@navikt/aksel-icons': ^8.23.0
+  '@biomejs/biome': 2.6.8
   vitest: ^4.1.11
   typescript: ^5.9.3
-  '@tanstack/react-query': ^5.104.1
+  '@tanstack/react-query': ^5.107.1
 
 allowBuilds:
   esbuild: true

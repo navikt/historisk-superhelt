@@ -37,16 +37,19 @@ pnpm run test
 Typer genereres automatisk fra backend sin OpenAPI-spec inn i `@superhelt/api`. Backend må kjøre lokalt på `:8080`.
 
 Fra repo-rot:
+
 ```bash
 pnpm api:generate
 ```
 
 Eller i `packages/superhelt-api`:
+
 ```bash
 pnpm generate
 ```
 
 Importer typer og funksjoner direkte fra `@superhelt/api`, og React Query-hooks fra `@superhelt/api/react-query.gen`:
+
 ```ts
 import type { Sak } from "@superhelt/api";
 import { hentEllerOpprettBrev } from "@superhelt/api";
