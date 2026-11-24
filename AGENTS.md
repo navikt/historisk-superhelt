@@ -67,7 +67,7 @@ pnpm frontend:build
 pnpm e2e:test
 ```
 
-Backend-integrasjonstester krever Docker. API-typer genereres med `pnpm api:generate` mens backend kjører. E2E-tester krever at appen kjører.
+Backend-integrasjonstester bruker Testcontainers som standard. Se [backendarkitekturen](docs/backend-arkitektur.md#database-drift-og-tester) for profilen `sandkasse`. API-typer genereres med `pnpm api:generate` mens backend kjører. E2E-tester krever at appen kjører.
 
 ## PR-oppsummering
 
