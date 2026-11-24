@@ -183,6 +183,11 @@ Bruk `spring.profiles.include` for å legge profilen til testenes eksisterende
 testene Testcontainers som før. I sandkassemodus gir utilgjengelige tjenester
 feil; testene hopper ikke over kontroller eller starter containere som reservevei.
 
+Hver Spring-testkontekst får et eget databaseskjema, slik at testkontekstene
+beholder databaseisolasjonen de har med hver sin Testcontainers-database.
+Flyway oppretter skjemaet og kjører migrasjonene. Skjemaene beholdes til
+sandkassestacken stoppes eller restartes.
+
 Sandkassen må tillate nettverkstilgang til begge portene. Dette konfigureres
 utenfor testkoden. Standardoppsettet binder portene til loopback på maskinen der
 Docker kjører. En sandkasse med eget nettverksmiljø trenger også en eksplisitt
