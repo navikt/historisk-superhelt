@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${SANDBOX_POSTGRES_HOST:localhost}:${SANDBOX_POSTGRES_PORT:15432}/historisk-superhelt-sandkasse
+    username: ${SANDBOX_DB_USERNAME:superhelt_sandkasse}
+    password: ${SANDBOX_DB_PASSWORD:sandkasse}
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 0
+  kafka:
+    bootstrap-servers: ${SANDBOX_KAFKA_ADVERTISED_HOST:localhost}:${SANDBOX_KAFKA_PORT:29092}
+    admin:
+      fail-fast: true
+      operation-timeout: 10s
+    properties:
+      request.timeout.ms: 10000
+      default.api.timeout.ms: 10000

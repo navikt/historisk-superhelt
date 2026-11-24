@@ -151,6 +151,69 @@ make test
 ```
 For Colima på Mac, se https://golang.testcontainers.org/system_requirements/using_colima/
 
+#### Backend-tester fra sandkasse uten Docker
+
+Start den separate teststacken fra repo-roten **utenfor sandkassen**:
+
+```shell
+docker compose -f compose.sandkasse.yml up -d --wait
+docker compose -f compose.sandkasse.yml ps
+```
+
+Stacken kjører bare PostgreSQL og Kafka. Den har eget Compose-prosjekt og bruker
+ikke utviklingsstacken. Begge tjenestene lagrer data i `tmpfs`. Dataene slettes
+når containerne stoppes eller restartes. PostgreSQL nås på `localhost:15432` med
+database `historisk-superhelt-sandkasse`, bruker `superhelt_sandkasse` og lokalt
+testpassord `sandkasse`. Kafka nås på `localhost:29092`.
+
+Kjør testene **inne i sandkassen** med Spring-profilen `sandkasse`:
+
+```shell
+mvn test -Dspring.profiles.include=sandkasse
+
+# Bare database- og Kafka-produsenttestene, med nødvendige Maven-moduler:
+mvn test -pl backend -am \
+  -Dspring.profiles.include=sandkasse \
+  -Dtest=SakRepositoryTest,UtbetalingKafkaProducerIntegrationTest \
+  -Dsurefire.failIfNoSpecifiedTests=false
+```
+
+Bruk `spring.profiles.include` for å legge profilen til testenes eksisterende
+`junit`-profil. Mocks og testautentisering beholdes. Uten `sandkasse` starter
+testene Testcontainers som før. I sandkassemodus gir utilgjengelige tjenester
+feil; testene hopper ikke over kontroller eller starter containere som reservevei.
+
+Sandkassen må tillate nettverkstilgang til begge portene. Dette konfigureres
+utenfor testkoden. Standardoppsettet binder portene til loopback på maskinen der
+Docker kjører. En sandkasse med eget nettverksmiljø trenger også en eksplisitt
+nettverksløsning for å nå disse portene.
+
+Tilkoblingene kan overstyres med følgende miljøvariabler. Bruk samme portverdier
+ved Compose-oppstart og testkjøring:
+
+| Miljøvariabel | Standard | Bruk |
+|---------------|----------|------|
+| `SANDBOX_POSTGRES_HOST` | `localhost` | PostgreSQL-adresse fra testprosessen |
+| `SANDBOX_POSTGRES_PORT` | `15432` | Publisert PostgreSQL-port |
+| `SANDBOX_DB_USERNAME` | `superhelt_sandkasse` | Databasebruker |
+| `SANDBOX_DB_PASSWORD` | `sandkasse` | Lokalt testpassord |
+| `SANDBOX_KAFKA_ADVERTISED_HOST` | `localhost` | Kafka-adresse annonsert til klientene |
+| `SANDBOX_KAFKA_PORT` | `29092` | Publisert Kafka-port |
+
+Spring-properties som `spring.datasource.url` og `spring.kafka.bootstrap-servers`
+kan også overstyres ved testkjøring. Kafka må annonsere en adresse som testprosessen
+kan nå; å endre bare bootstrap-adressen er ikke nok hvis den annonserte adressen
+er utilgjengelig.
+
+Stopp teststacken **utenfor sandkassen**. Dette sletter testdataene i begge tjenestene:
+
+```shell
+docker compose -f compose.sandkasse.yml down
+```
+
+Teststacken er beregnet på én testkjøring om gangen. Pålitelighet ved gjentatte
+kjøringer uten nullstilling følges opp i [#398](https://github.com/navikt/historisk-superhelt/issues/398).
+
 **Workspaces (frontend, packages):**
 ```shell
 pnpm test

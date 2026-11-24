@@ -7,6 +7,7 @@ import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 import org.testcontainers.kafka.ConfluentKafkaContainer
 import org.testcontainers.utility.DockerImageName
 
@@ -18,6 +19,7 @@ class KafkaTestcontainersConfiguration(
 
     @Bean
     @ServiceConnection
+    @Profile("!sandkasse")
     fun kafkaContainer(): ConfluentKafkaContainer {
         return ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:8.2.0"))
             .withReuse(System.getenv("CI") == null)
