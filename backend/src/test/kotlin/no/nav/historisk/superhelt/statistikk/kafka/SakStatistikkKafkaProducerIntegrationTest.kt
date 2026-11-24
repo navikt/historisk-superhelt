@@ -8,7 +8,6 @@ import no.nav.sakstatistikk.BehandlingStatus
 import no.nav.sakstatistikk.BehandlingType
 import no.nav.sakstatistikk.SaksbehandlingsStatistikk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
@@ -16,17 +15,15 @@ import org.springframework.context.annotation.Bean
 import tools.jackson.databind.JsonNode
 import java.time.Instant
 import java.time.LocalDate
+import java.util.UUID
 
 @MockedSpringBootTest
 class SakStatistikkKafkaProducerIntegrationTest {
-
-
     @Autowired
     private lateinit var producer: SakStatistikkKafkaProducer
 
     @Autowired
     private lateinit var consumer: StringKafkaTestConsumer
-
 
     @TestConfiguration(proxyBeanMethods = false)
     class StatistikkKafkaConsumerTestConfiguration(private val statistikkProperties: StatistikkConfigProperties) {
@@ -35,15 +32,14 @@ class SakStatistikkKafkaProducerIntegrationTest {
         fun sakStatistikkKafkaConsumer() = StringKafkaTestConsumer(topic = statistikkProperties.saksBehandlingStatistikkTopic)
     }
 
-
-
     private fun enStatistikk(
+        behandlingId: String = UUID.randomUUID().toString(),
         behandlingResultat: Enum<*>? = null,
         mottattTid: Instant = Instant.now(),
         ferdigBehandletTid: Instant? = null,
         utbetaltTid: LocalDate? = null,
     ) = SaksbehandlingsStatistikk(
-        behandlingId = "behandling-123",
+        behandlingId = behandlingId,
         sakId = "sak-456",
         saksnummer = "SAK-001",
         fnr = "1234567890123",
@@ -67,12 +63,9 @@ class SakStatistikkKafkaProducerIntegrationTest {
     private fun sendOgMottaMelding(statistikk: SaksbehandlingsStatistikk): JsonNode {
         producer.registrerStatistikk(statistikk)
 
-        return consumer.assertMessageReceived()
-    }
-
-    @BeforeEach
-    fun setUp() {
-        consumer.clearMessages()
+        return consumer.assertMessageReceived {
+            it["behandling_id"].asString() == statistikk.behandlingId
+        }
     }
 
 
