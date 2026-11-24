@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help all build test up down test-all typecheck biome biome-write frontend-start frontend-build e2e-test e2e-test-ui
+.PHONY: help all build test up down up-sandkasse down-sandkasse test-all typecheck biome biome-write frontend-start frontend-build e2e-test e2e-test-ui
 
 MVN ?= $(shell command -v mvnd >/dev/null 2>&1 && echo mvnd || echo mvn) # Bruk mvnd hvis tilgjengelig, ellers fallback til mvn
 
@@ -10,8 +10,8 @@ MVN ?= $(shell command -v mvnd >/dev/null 2>&1 && echo mvnd || echo mvn) # Bruk 
 help: ## Vis tilgjengelige targets og beskrivelse
 	@echo "Bruk: make [target]"
 	@echo ""
-	@awk 'BEGIN {FS = ":.*##"; print "Targets:"} \
-		/^[a-zA-Z0-9_.-]+:.*##/ {printf "  %-14s %s\n", $$1, $$2} \
+	@awk 'BEGIN {FS = ":[[:space:]]+##"; print "Targets:"} \
+		/^[a-zA-Z0-9_.\\:-]+:.*##/ {gsub(/\\:/, ":", $$1); printf "  %-14s %s\n", $$1, $$2} \
 		/^##@/ {printf "\n%s\n", substr($$0,5)}' $(MAKEFILE_LIST)
 
 all: ## Bygger og tester applikasjonen
@@ -34,3 +34,8 @@ up: ## Starter alle avhengigheter
 down: ## Stopper og fjerner alle avhengigheter
 	docker compose -f compose.yml down
 
+up-sandkasse: ## Starter PostgreSQL og Kafka for sandkassen
+	docker compose -f compose.sandkasse.yml up --wait -d
+
+down-sandkasse: ## Stopper sandkassestacken og sletter testdata
+	docker compose -f compose.sandkasse.yml down

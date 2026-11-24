@@ -6,12 +6,13 @@ import org.springframework.kafka.annotation.KafkaListener
 import tools.jackson.databind.JsonNode
 import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.util.UUID
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
 
 class StringKafkaTestConsumer(val topic: String) {
 
     private val objectMapper = jacksonObjectMapper()
-    private val messages = mutableListOf<String>()
+    private val messages = ConcurrentLinkedQueue<String>()
 
     // Unik per instans slik at ulike Spring-kontekster ikke deler consumer group og forstyrrer hverandre
     val groupId = "test-${UUID.randomUUID()}"
@@ -19,25 +20,19 @@ class StringKafkaTestConsumer(val topic: String) {
     @KafkaListener(
         topics = ["#{__listener.topic}"],
         groupId = "#{__listener.groupId}",
-        properties = ["auto.offset.reset=latest"],
+        properties = ["auto.offset.reset=earliest"],
     )
     fun receive(record: ConsumerRecord<String, String>) {
         messages.add(record.value())
     }
 
-    val lastMessage: String?
-        get() = messages.lastOrNull()
+    fun assertMessageReceived(predicate: (JsonNode) -> Boolean): JsonNode {
+        await().atMost(3, TimeUnit.SECONDS).until {
+            messages.any { predicate(objectMapper.readTree(it)) }
+        }
 
-    fun hasMessages(): Boolean = messages.isNotEmpty()
-
-    @Synchronized
-    fun clearMessages() = messages.clear()
-
-    fun assertMessageReceived(): JsonNode {
-        await().atMost(3, TimeUnit.SECONDS).until { hasMessages() }
-        val message = lastMessage ?: throw AssertionError("Forventet å finne en melding")
-        return objectMapper.readTree(message)
+        return messages.firstNotNullOfOrNull { message ->
+            objectMapper.readTree(message).takeIf(predicate)
+        } ?: throw AssertionError("Forventet å finne en melding som samsvarer med vilkåret")
     }
-
-
 }

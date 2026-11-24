@@ -6,8 +6,9 @@ import no.nav.historisk.superhelt.test.MockedSpringBootTest
 import no.nav.historisk.superhelt.test.StringKafkaTestConsumer
 import no.nav.historisk.superhelt.utbetaling.Utbetaling
 import no.nav.historisk.superhelt.utbetaling.UtbetalingTestData
+import org.awaitility.core.ConditionTimeoutException
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
@@ -33,11 +34,6 @@ class UtbetalingKafkaProducerIntegrationTest {
         fun utbetalingkafkaConsumer() = StringKafkaTestConsumer(topic = utbetalingConfigProperties.utbetalingTopic)
     }
 
-    @BeforeEach
-    fun setUp() {
-        consumer.clearMessages()
-    }
-
     private fun enUtbetaling(
         belop: Int = 1234,
         vedtakstidspunkt: Instant = Instant.parse("2026-03-03T14:29:25.211Z"),
@@ -47,7 +43,9 @@ class UtbetalingKafkaProducerIntegrationTest {
     private fun sendOgMottaMelding(utbetaling: Utbetaling = enUtbetaling()): JsonNode {
         val sak = SakTestData.sakMedStatus(SakStatus.FERDIG_ATTESTERT)
         producer.sendTilUtbetaling(sak, utbetaling)
-        return consumer.assertMessageReceived()
+        return consumer.assertMessageReceived {
+            it["id"].asString() == utbetaling.utbetalingsUuid.toString()
+        }
     }
 
 
@@ -119,7 +117,9 @@ class UtbetalingKafkaProducerIntegrationTest {
         val sak = SakTestData.sakMedStatus(SakStatus.FERDIG_ATTESTERT)
         val utbetaling = enUtbetaling(belop = 5000)
         producer.sendTilUtbetaling(sak, utbetaling)
-        val json = consumer.assertMessageReceived()
+        val json = consumer.assertMessageReceived {
+            it["id"].asString() == utbetaling.utbetalingsUuid.toString()
+        }
 
         assertThat(json["sakId"].asString()).isEqualTo(sak.saksnummer.value)
         assertThat(json["behandlingId"].asString()).isEqualTo(sak.behandlingsnummer.toString())
@@ -127,5 +127,28 @@ class UtbetalingKafkaProducerIntegrationTest {
         assertThat(json["saksbehandler"].asString()).isEqualTo(sak.saksbehandler.navIdent.value)
         assertThat(json["beslutter"].asString()).isEqualTo(sak.attestant!!.navIdent.value)
         assertThat(json["perioder"][0]["beløp"].asInt()).isEqualTo(5000)
+    }
+
+    @Test
+    fun `eldre utbetaling skal ikke tilfredsstille venting på en usendt utbetaling`() {
+        val gammelUtbetaling = enUtbetaling()
+        val usendtUtbetaling = enUtbetaling()
+        assertThat(usendtUtbetaling.utbetalingsUuid).isNotEqualTo(gammelUtbetaling.utbetalingsUuid)
+
+        producer.sendTilUtbetaling(
+            SakTestData.sakMedStatus(SakStatus.FERDIG_ATTESTERT),
+            gammelUtbetaling,
+        )
+        val mottattMelding = consumer.assertMessageReceived {
+            it["id"].asString() == gammelUtbetaling.utbetalingsUuid.toString()
+        }
+        assertThat(mottattMelding["id"].asString()).isEqualTo(gammelUtbetaling.utbetalingsUuid.toString())
+
+        assertThatThrownBy {
+            consumer.assertMessageReceived {
+                it["id"].asString() == usendtUtbetaling.utbetalingsUuid.toString()
+            }
+        }
+            .isInstanceOf(ConditionTimeoutException::class.java)
     }
 }

@@ -187,7 +187,7 @@ Kjør kommandoene fra repo-roten. Verktøyversjoner styres av [pom.xml](../pom.x
 
 Filstiene i tabellen er eksempler; erstatt dem med testfilene du skal kjøre. Testkommandoene er definert i workspace-pakkenes `package.json`.
 
-`pnpm test` inkluderer ikke browser- eller integrasjonsprosjektene. Browser-tester krever Chromium. Backend-integrasjonstester bruker Testcontainers og krever Docker. For pdfgen-tester og deres forutsetninger, se [pdfgen/AGENTS.md](../pdfgen/AGENTS.md#tester).
+`pnpm test` inkluderer ikke browser- eller integrasjonsprosjektene. Browser-tester krever Chromium. Backend-integrasjonstester bruker som standard Testcontainers og krever Docker. Med `-Dspring.profiles.include=sandkasse` bruker de i stedet en separat PostgreSQL- og Kafka-teststack startet utenfor sandkassen. Se [sandkasseoppsettet i README](../README.md#backend-tester-fra-sandkasse-uten-docker) for oppstart og tilkoblingsinnstillinger. For pdfgen-tester og deres forutsetninger, se [pdfgen/AGENTS.md](../pdfgen/AGENTS.md#tester).
 
 Maven-modulen `frontend` kjører pnpm-installasjon, frontend-bygg og unit-tester som del av Maven-livssyklusen når tester er aktivert. Dette gjelder også når modulen tas med via `-am`.
 
