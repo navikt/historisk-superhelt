@@ -18,9 +18,9 @@ catalog:
   '@navikt/ds-css': ^8.23.0
   '@navikt/aksel-icons': ^8.23.0
   '@biomejs/biome': 2.6.8
-  vitest: ^4.1.11
+  vitest: ^4.1.12
   typescript: ^5.9.3
-  '@tanstack/react-query': ^5.107.1
+  '@tanstack/react-query': ^5.108.1
 
 allowBuilds:
   esbuild: true
