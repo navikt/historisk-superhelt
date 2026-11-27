@@ -2,7 +2,7 @@ name: historisk-superhelt-sandkasse
 
 services:
   postgres:
-    image: postgres:18-alpine
+    image: postgres:19-alpine
     ports:
       - "127.0.0.1:${SANDBOX_POSTGRES_PORT:-15432}:5432"
     environment:
@@ -19,7 +19,7 @@ services:
       start_period: 10s
 
   kafka:
-    image: confluentinc/cp-kafka:8.2.0
+    image: confluentinc/cp-kafka:8.4.1
     ports:
       - "127.0.0.1:${SANDBOX_KAFKA_PORT:-29092}:9093"
     environment:
